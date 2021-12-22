@@ -12,11 +12,11 @@ import multiply from "lodash/multiply";
 
 import get from "lodash/get";
 import set from "lodash/set";
-import { autoDetectType } from "./utils";
+import { autoDetectType, isBoolean, isNumber } from "./utils";
 import { performance } from "perf_hooks";
 
 export function RuleMachine<
-  TInput extends { [k: string]: string | boolean | number | null } = any
+  TInput extends { [k: string]: string | boolean | number | null | TInput } = any
 >(name: string, rules: Rule[]) {
   // Validate, parse & load rules
 
@@ -49,7 +49,9 @@ export function RuleMachine<
             rule: rule.else,
           });
         } else {
-          throw Error(`Rule ${name} has an invalid if/else rule`);
+
+          // console.error('Rule "' + JSON.stringify(rule) + '" has no "then" or "else"');
+          // throw Error(`Rule ${name} has an invalid if/else rule.`);
         }
       } else if ("return" in rule) {
         const returnResult = evaluateRule({
@@ -132,7 +134,9 @@ export function RuleMachine<
       if (token.includes(".") && get(input, token)) {
         return autoDetectType(get(input, token));
       }
-      return autoDetectType(token);
+      if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
+      // if we have a string key and don't find it in the input, assume it's undefined.
+      return undefined;
     }
     function extractValueOrNumber(input: TInput, token: string): number {
       const val = extractValueOrLiteral(input, token);

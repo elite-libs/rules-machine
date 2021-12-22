@@ -9,7 +9,7 @@ export function toBoolean(value: any) {
 }
 
 export function isNumber(value: string): boolean {
-  return /^[0-9\.]+$/.test(value);
+  return /^[0-9.]+$/.test(`${value}`);
 }
 
 export function toNumber(value: string): number {
