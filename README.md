@@ -1,23 +1,22 @@
 # rules-machine
 
-## _Rules Against The Machine_
+## _Rules Against The Machine_ 🤘
 
 The rules engine to rule them all.
 
 ## TODO
 
-- [ ] Simplify TS, making `Rule[]` the sole recursive type.
-- [ ] Avoid `eval` parsing.
-- [ ] Use reduced JS syntax, scope.
-- [ ] Use context for input and output.
-- [ ] 
+- [x] Simplify TS, making `Rule[]` the sole recursive type.
+- [x] Avoid `eval` parsing.
+- [x] Use reduced JS syntax, scope.
+- [x] Use context for input and output.
+- [ ] Add support for multiple boolean expressions. (`&&` and `||`).
 
 ## Prior Works & Research
 
 - JSON Rules Engine - the Microsoft one
 - json-rules-engine - the HE one
 - GitHub Actions YAML's conditional syntax
-- a
 
 ## Syntax Ideas
 
@@ -29,6 +28,7 @@ Scenario: Determine customer discount: `if price >= 100 then discount = 20, else
 [
   {"if": "price >= 25", "then": "discount = 5"},
   {"if": "price >= 100", "then": "discount = 20"},
+  {"return": "discount"},
 ]
 ```
 
