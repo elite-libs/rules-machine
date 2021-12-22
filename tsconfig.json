@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    // "declaration": true,
+    // "declarationMap": true,
+    "esModuleInterop": true,
+    // "extendedDiagnostics": true,
+    "forceConsistentCasingInFileNames": true,
+    // "isolatedModules": true,
+    // "jsx": "preserve",
+    "lib": ["esnext"],
+    "module": "amd",
+    "moduleResolution": "node",
+    // "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6",
+    "useUnknownInCatchVariables": false
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "**/node_modules",
+    "**/.*/",
+    "**/dist",
+    "jest.config.ts"
+  ]
+}
