@@ -15,11 +15,11 @@ import set from 'lodash/set';
 import { autoDetectType, isBoolean, isNumber } from './utils';
 import { performance } from 'perf_hooks';
 
-const trailingQuotes = /^('|").*('|")$/gm
+const trailingQuotes = /^('|").*('|")$/gm;
 
 export function RuleMachine<
   TInput extends {
-    [k: string]: string | boolean | number | null | TInput;
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(name: string, rules: Rule[]) {
   // Validate, parse & load rules
@@ -27,28 +27,52 @@ export function RuleMachine<
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput) {
     const trace: RuleTrace[] = [];
-    input = cloneDeep(input);
-    let step = 0;
+    // input = cloneDeep(input);
+    let stepRow = 0;
+    let stepCount = 0;
     const results = { trace, input, returnValue: null as any };
     const startTime = performance.now();
 
     for (const rule of rules) {
       if ('if' in rule) {
         // NOTE: Add || and && operators here.
-        const conditionResult = evaluateRule({
-          step,
-          input,
-          rule: rule.if,
-        });
-        if (conditionResult && typeof rule.then === 'string') {
-          const ruleResult = evaluateRule({
-            step,
+        let conditionResult: boolean | undefined = undefined;
+        if (typeof rule.if === 'object' && 'and' in rule.if) {
+          const and = rule.if.and;
+          const results = and.map((rule) =>
+            evaluateRule({ stepRow, input, rule })
+          );
+          conditionResult = results.every((result) => result);
+        } else if (typeof rule.if === 'object' && 'or' in rule.if) {
+          const or = rule.if.or;
+          const results = or.map((rule) =>
+            evaluateRule({ stepRow, input, rule })
+          );
+          conditionResult = results.some((result) => result);
+        } else if (typeof rule.if === 'string') {
+          conditionResult = Boolean(
+            evaluateRule({
+              stepRow,
+              input,
+              rule: rule.if,
+            })
+          );
+        }
+        if (
+          conditionResult &&
+          (typeof rule.then === 'string' || Array.isArray(rule.then))
+        ) {
+          const parseResult = evaluateRule({
+            stepRow,
             input,
             rule: rule.then,
           });
-        } else if (!conditionResult && typeof rule.else === 'string') {
-          const ruleResult = evaluateRule({
-            step,
+        } else if (
+          !conditionResult &&
+          (typeof rule.else === 'string' || Array.isArray(rule.else))
+        ) {
+          const parseResult = evaluateRule({
+            stepRow,
             input,
             rule: rule.else,
           });
@@ -58,27 +82,37 @@ export function RuleMachine<
         }
       } else if ('return' in rule) {
         const returnResult = evaluateRule({
-          step,
+          stepRow,
           input,
           rule: rule.return,
         });
         results.returnValue = returnResult;
       }
-      step++;
+      stepRow++;
     }
     return results;
 
     function evaluateRule({
-      step,
+      stepRow,
       input,
       rule,
     }: {
-      step: number;
+      stepRow: number;
       input: TInput;
-      rule: string | Rule;
-    }) {
-      if (typeof rule !== "string") throw new Error('Nested rules not yet implemented.');
+      rule: string | string[] | Rule;
+    }):
+      | string
+      | boolean
+      | number
+      | null
+      | undefined
+      | Array<string | boolean | number | null | undefined> {
+      if (Array.isArray(rule) && typeof rule[0] === 'string')
+        return rule.flatMap((rule) => evaluateRule({ stepRow, input, rule }));
+      if (typeof rule !== 'string')
+        throw new Error('Nested rules not yet implemented.');
 
+      stepCount++;
       const tokens = rule.split(/\s+/g);
 
       let [leftSide, operator, rightSide] = tokens;
@@ -94,12 +128,7 @@ export function RuleMachine<
         let result = ConditionalOperators[
           operator as keyof typeof ConditionalOperators
         ](leftSideValue, rightSideValue);
-        trace.push({
-          name: `${name}:${operator}`,
-          runtime: performance.now() - startTime,
-          step,
-          ruleResult: { result, rule },
-        });
+        logTrace(result);
         return result;
       } else if (operator in ModifierOperators) {
         leftSideValue = extractValueOrNumber(input, leftSide);
@@ -107,36 +136,43 @@ export function RuleMachine<
         let result = ModifierOperators[
           operator as keyof typeof ModifierOperators
         ](leftSideValue, rightSideValue);
-        trace.push({
-          name: `${name}:${operator}`,
-          runtime: performance.now() - startTime,
-          step,
-          ruleResult: { result, rule },
-        });
+        logTrace(result);
         return result;
       } else if (operator in AssignmentOperators) {
         leftSideValue = extractValueOrNumber(input, leftSide);
         rightSideValue = extractValueOrNumber(input, rightSide);
         switch (operator) {
-          case '+=': leftSideValue += rightSideValue; break;
-          case '-=': leftSideValue -= rightSideValue; break;
-          case '*=': leftSideValue *= rightSideValue; break;
-          case '/=': leftSideValue /= rightSideValue; break;
-          case '**=': leftSideValue **= rightSideValue; break;
-          case '%=': leftSideValue %= rightSideValue; break;
-          case '||=': leftSideValue ||= rightSideValue; break;
-          case '??=': leftSideValue ??= rightSideValue; break;
-          default: throw Error(`Rule ${name} has an invalid assignment operator.`);
+          case '+=':
+            leftSideValue += rightSideValue;
+            break;
+          case '-=':
+            leftSideValue -= rightSideValue;
+            break;
+          case '*=':
+            leftSideValue *= rightSideValue;
+            break;
+          case '/=':
+            leftSideValue /= rightSideValue;
+            break;
+          case '**=':
+            leftSideValue **= rightSideValue;
+            break;
+          case '%=':
+            leftSideValue %= rightSideValue;
+            break;
+          case '||=':
+            leftSideValue ||= rightSideValue;
+            break;
+          case '??=':
+            leftSideValue ??= rightSideValue;
+            break;
+          default:
+            throw Error(`Rule ${name} has an invalid assignment operator.`);
         }
         let result = set(input, leftSide, leftSideValue);
 
-        trace.push({
-          name: `${name}:${operator}`,
-          runtime: performance.now() - startTime,
-          step,
-          ruleResult: { result, rule, lhs: leftSide, rhs: rightSide, rhsv: rightSideValue, lhsv: leftSideValue },
-        });
-        return result;
+        logTrace(result);
+        return leftSideValue;
       } else if (operator === '=') {
         leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide);
         // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
@@ -146,13 +182,26 @@ export function RuleMachine<
             `Rule ${name} has an invalid rule. Left side must be a string.`
           );
         let result = set(input, leftSideValue, rightSideValue);
+        logTrace(result);
+        return leftSideValue;
+      }
+      function logTrace(result: any) {
         trace.push({
-          name: `${name}:${operator}`,
+          name: `${name}`,
+          operator,
           runtime: performance.now() - startTime,
-          step,
-          ruleResult: { result, rule, leftSideValue, rightSideValue },
+          stepRow,
+          stepCount,
+          state: JSON.stringify(input),
+          result,
+          rule: typeof rule === 'string' ? rule : JSON.stringify(rule),
+          parseResult: {
+            lhs: leftSide,
+            rhs: rightSide,
+            rhsv: rightSideValue,
+            lhsv: leftSideValue,
+          },
         });
-        return result;
       }
       return false;
     }
@@ -200,29 +249,36 @@ const AssignmentOperators = {
   '/=': divide,
   '**=': Math.pow,
   '%=': (a: number, b: number) => a % b,
-  '||=': (a: any, b: any) => (a || b),
-  '??=': (a: any, b: any) => (a ?? b),
+  '||=': (a: any, b: any) => a || b,
+  '??=': (a: any, b: any) => a ?? b,
 };
 
 export type Rule =
   | {
-      if: string | Rule;
-      then: string | Rule;
-      else?: string | Rule;
+      if: string | LogicalRule;
+      then: string | string[] | Rule;
+      else?: string | string[] | Rule;
     }
   | {
       return: string | Rule;
     };
-// | {
-//     and: string | Rule;
-//   }
-// | {
-//     or: string | Rule;
-//   };
+
+export type LogicalRule =
+  | {
+      and: string[];
+    }
+  | {
+      or: string[];
+    };
 
 interface RuleTrace {
   name: string;
-  step: number;
+  rule: string;
+  operator: string;
+  stepRow: number;
+  stepCount: number;
   runtime: number;
-  ruleResult: any;
+  parseResult: any;
+  state?: string;
+  result?: any;
 }

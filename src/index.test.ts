@@ -1,48 +1,53 @@
 import { RuleMachine } from './index';
 
+const omitRuntime = ({runtime, ...keys}: any) => keys;
 test("can process 'then' rules", () => {
-  const input = { price: 100 };
-  const calculateDiscount = [
+  const rulesMachine = RuleMachine('calculateDiscount', [
     { if: 'price >= 25', then: 'discount = 5' },
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
-  ];
+  ]);
 
-  const result = RuleMachine('getDiscount', calculateDiscount)(input);
+  const input = { price: 100 };
+  const result = rulesMachine(input);
 
-  // console.log(JSON.stringify(result.trace, null, 2));
-
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(20);
   expect(result.input.discount).toBe(20);
 });
 
 test("can process omitted 'else' rules", () => {
-  const input = { price: 10 };
-  const calculateDiscount = [
+  const rulesMachine = RuleMachine('calculateDiscount', [
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
-  ];
+  ]);
 
-  const result = RuleMachine('getDiscount', calculateDiscount)(input);
+  const input = { price: 10 };
+  const result = rulesMachine(input);
 
-  // console.log(JSON.stringify(result.trace, null, 2));
-
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(undefined);
 });
 
-test("can process increment operator +=", () => {
-  const input = { price: 100, discount: 10 };
-  const calculateDiscount = [
+test('can process increment operator +=', () => {
+  const rulesMachine = RuleMachine('calculateDiscount', [
     { if: 'price >= 100', then: 'discount += 20' },
     { return: 'discount' },
-  ];
-  const result = RuleMachine('getDiscount', calculateDiscount)(input);
-  console.log(JSON.stringify(result.trace, null, 2));
+  ]);
+  const input = { price: 100, discount: 10 };
+  const result = rulesMachine(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(30);
 });
 
 test('structured input', () => {
-  const input = {
+  const rulesMachine = RuleMachine('calculateDiscount', [
+    { if: 'user.plan == "premium"', then: 'discount = 15' },
+    { if: 'user.employee == true', then: 'discount = 15' },
+    { return: 'discount' },
+  ]);
+  const result = rulesMachine({
     user: {
       plan: 'premium',
       employee: true,
@@ -53,20 +58,61 @@ test('structured input', () => {
     shoppingCart: {
       discount: 1,
       total: 100,
-    }
-  };
-  const calculateDiscount = [
-    { if: 'user.plan == "premium"', then: 'discount = 15' },
-    { if: 'user.employee == true', then: 'discount = 15' },
-    // { if: 'user.employee == true', then: 'discount += 15' },
-    { return: 'discount' },
-  ];
+    },
+  });
 
-  const result = RuleMachine('getDiscount', calculateDiscount)(input);
-
-  // console.log(JSON.stringify(result.trace, null, 2));
-
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(15);
 });
 
-test.todo('nested rules');
+test("can process 'and' rules", () => {
+  const rulesMachine = RuleMachine('calculateDiscount', [
+    { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
+    { if: 'price >= 100', then: 'discount = 20' },
+    { return: 'discount' },
+  ]);
+  const input = { price: 35 };
+  const result = rulesMachine(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  expect(result.returnValue).toBe(5);
+  expect(result.input.discount).toBe(5);
+});
+
+test("can process 'or' rules", () => {
+  const rulesMachine = RuleMachine('calculateDiscount', [
+    { if: 'price <= 100', then: 'discount = 5' },
+    {
+      if: { or: ['price >= 100', 'user.isAdmin == true'] },
+      then: 'discount = 20',
+    },
+    { return: 'discount' },
+  ]);
+  const input = { price: 35, user: { isAdmin: true } };
+  const result = rulesMachine(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  expect(result.returnValue).toBe(20);
+  expect(result.input.discount).toBe(20);
+});
+
+test('can process rule arrays', () => {
+  const rulesMachine = RuleMachine('calculateDiscount', [
+    {
+      if: 'price <= 100',
+      then: ['discount = 5', 'user.discountApplied = true'],
+    },
+    {
+      if: { and: ['price >= 90', 'user.discountApplied != true'] },
+      then: 'discount = 20',
+    },
+    { return: 'discount' },
+  ]);
+  const input = { price: 90, user: { isAdmin: true } };
+  const result = rulesMachine(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  expect(result.returnValue).toBe(5);
+  expect(result.input.discount).toBe(5);
+  expect(result.input.user?.discountApplied).toBe(true);
+});
