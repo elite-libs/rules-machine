@@ -1,12 +1,12 @@
 {
-  "name": "rules-machine",
-  "version": "1.1.2",
+  "name": "@justsml/rules-machine",
+  "version": "1.1.3",
   "description": "",
   "type": "commonjs",
-  "homepage": "https://github.com/justsml/auto-config",
+  "homepage": "https://github.com/justsml/rules-machine",
   "repository": {
     "type": "git",
-    "url": "https://github.com/justsml/auto-config.git"
+    "url": "git://github.com/justsml/rules-machine.git"
   },
   "private": false,
   "packageManager": "yarn@1.10.0",
@@ -24,6 +24,10 @@
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
     "build": "npx rimraf dist && npx tsc && mv ./dist/src/* ./dist && rm -rf ./dist/src"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com",
+    "access": "public"
   },
   "keywords": [],
   "devDependencies": {

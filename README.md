@@ -1,6 +1,8 @@
-# rules-machine
+# Rules Machine
 
-## _Rules Against The Machine_ 🤘
+![Rules Machine](img/rules-machine-header.svg)
+
+> _Rules Against The Machine_ 🤘
 
 The rules engine to rule them all.
 

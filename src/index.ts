@@ -1,19 +1,21 @@
-import isEqual from "lodash/isEqual";
-import gt from "lodash/gt";
-import gte from "lodash/gte";
-import lt from "lodash/lt";
-import lte from "lodash/lte";
+import isEqual from 'lodash/isEqual';
+import gt from 'lodash/gt';
+import gte from 'lodash/gte';
+import lt from 'lodash/lt';
+import lte from 'lodash/lte';
 
-import cloneDeep from "lodash/cloneDeep";
-import divide from "lodash/divide";
-import add from "lodash/add";
-import subtract from "lodash/subtract";
-import multiply from "lodash/multiply";
+import cloneDeep from 'lodash/cloneDeep';
+import divide from 'lodash/divide';
+import add from 'lodash/add';
+import subtract from 'lodash/subtract';
+import multiply from 'lodash/multiply';
 
-import get from "lodash/get";
-import set from "lodash/set";
-import { autoDetectType, isBoolean, isNumber } from "./utils";
-import { performance } from "perf_hooks";
+import get from 'lodash/get';
+import set from 'lodash/set';
+import { autoDetectType, isBoolean, isNumber } from './utils';
+import { performance } from 'perf_hooks';
+
+const trailingQuotes = /^('|").*('|")$/gm
 
 export function RuleMachine<
   TInput extends {
@@ -31,20 +33,20 @@ export function RuleMachine<
     const startTime = performance.now();
 
     for (const rule of rules) {
-      if ("if" in rule) {
+      if ('if' in rule) {
         // NOTE: Add || and && operators here.
         const conditionResult = evaluateRule({
           step,
           input,
           rule: rule.if,
         });
-        if (conditionResult && typeof rule.then === "string") {
+        if (conditionResult && typeof rule.then === 'string') {
           const ruleResult = evaluateRule({
             step,
             input,
             rule: rule.then,
           });
-        } else if (!conditionResult && typeof rule.else === "string") {
+        } else if (!conditionResult && typeof rule.else === 'string') {
           const ruleResult = evaluateRule({
             step,
             input,
@@ -54,7 +56,7 @@ export function RuleMachine<
           // console.error('Rule "' + JSON.stringify(rule) + '" has no "then" or "else"');
           // throw Error(`Rule ${name} has an invalid if/else rule.`);
         }
-      } else if ("return" in rule) {
+      } else if ('return' in rule) {
         const returnResult = evaluateRule({
           step,
           input,
@@ -112,11 +114,11 @@ export function RuleMachine<
           ruleResult: { result, rule },
         });
         return result;
-      } else if (operator === "=") {
+      } else if (operator === '=') {
         let leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide);
         // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
         let rightSideValue = extractValueOrLiteral(input, rightSide);
-        if (typeof leftSideValue !== "string")
+        if (typeof leftSideValue !== 'string')
           throw Error(
             `Rule ${name} has an invalid rule. Left side must be a string.`
           );
@@ -134,37 +136,49 @@ export function RuleMachine<
 
     function extractValueOrLiteral(input: TInput, token: string) {
       if (input[token]) return autoDetectType(input[token]);
-      if (token.includes(".") && get(input, token)) {
+      if (token.includes('.') && get(input, token)) {
         return autoDetectType(get(input, token));
       }
+      if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
       if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
       // if we have a string key and don't find it in the input, assume it's undefined.
       return undefined;
     }
     function extractValueOrNumber(input: TInput, token: string): number {
       const val = extractValueOrLiteral(input, token);
-      if (typeof val === "number") return val;
+      if (typeof val === 'number') return val;
       return parseFloat(`${val}`);
     }
   };
 }
 
 const ConditionalOperators = {
-  "===": isEqual,
-  "==": isEqual,
-  "!=": (a: any, b: any) => !isEqual(a, b),
-  "!==": (a: any, b: any) => !isEqual(a, b),
-  ">": gt,
-  "<": lt,
-  ">=": gte,
-  "<=": lte,
+  // "===": isEqual,
+  '==': isEqual,
+  '!=': (a: any, b: any) => !isEqual(a, b),
+  '!==': (a: any, b: any) => !isEqual(a, b),
+  '>': gt,
+  '<': lt,
+  '>=': gte,
+  '<=': lte,
 };
 
 const ModifierOperators = {
-  "+": add,
-  "-": subtract,
-  "*": multiply,
-  "/": divide,
+  '+': add,
+  '-': subtract,
+  '*': multiply,
+  '/': divide,
+};
+
+const AssignmentOperators = {
+  '+=': add,
+  '-=': subtract,
+  '*=': multiply,
+  '/=': divide,
+  '**=': Math.pow,
+  '%=': (a: number, b: number) => a % b,
+  '||=': (a: any, b: any) => (a || b),
+  '??=': (a: any, b: any) => (a ?? b),
 };
 
 export type Rule =
