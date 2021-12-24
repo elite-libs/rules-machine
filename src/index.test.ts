@@ -10,7 +10,7 @@ test("can process 'then' rules", () => {
 
   const result = RuleMachine('getDiscount', calculateDiscount)(input);
 
-  console.log(JSON.stringify(result.trace, null, 2));
+  // console.log(JSON.stringify(result.trace, null, 2));
 
   expect(result.returnValue).toBe(20);
   expect(result.input.discount).toBe(20);
@@ -25,24 +25,21 @@ test("can process omitted 'else' rules", () => {
 
   const result = RuleMachine('getDiscount', calculateDiscount)(input);
 
-  console.log(JSON.stringify(result.trace, null, 2));
+  // console.log(JSON.stringify(result.trace, null, 2));
 
   expect(result.returnValue).toBe(undefined);
 });
 
-// test("can process increment operator +=", () => {
-//   const input = { price: 10, discount: 10 };
-//   const calculateDiscount = [
-//     { if: 'price >= 100', then: 'discount += 20' },
-//     { return: 'discount' },
-//   ];
-
-//   const result = RuleMachine('getDiscount', calculateDiscount)(input);
-
-//   console.log(JSON.stringify(result.trace, null, 2));
-
-//   expect(result.returnValue).toBe(30);
-// });
+test("can process increment operator +=", () => {
+  const input = { price: 100, discount: 10 };
+  const calculateDiscount = [
+    { if: 'price >= 100', then: 'discount += 20' },
+    { return: 'discount' },
+  ];
+  const result = RuleMachine('getDiscount', calculateDiscount)(input);
+  console.log(JSON.stringify(result.trace, null, 2));
+  expect(result.returnValue).toBe(30);
+});
 
 test('structured input', () => {
   const input = {
@@ -67,7 +64,7 @@ test('structured input', () => {
 
   const result = RuleMachine('getDiscount', calculateDiscount)(input);
 
-  console.log(JSON.stringify(result.trace, null, 2));
+  // console.log(JSON.stringify(result.trace, null, 2));
 
   expect(result.returnValue).toBe(15);
 });

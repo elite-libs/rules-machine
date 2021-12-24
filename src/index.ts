@@ -78,7 +78,7 @@ export function RuleMachine<
       rule: string | Rule;
     }) {
       if (typeof rule !== "string") throw new Error('Nested rules not yet implemented.');
-      
+
       const tokens = rule.split(/\s+/g);
 
       let [leftSide, operator, rightSide] = tokens;
@@ -88,43 +88,66 @@ export function RuleMachine<
       if (!operator || !leftSide || !rightSide)
         throw Error(`Rule ${name} has an invalid rule. 3 parts required.`);
 
+      let leftSideValue = extractValueOrLiteral(input, leftSide);
+      let rightSideValue = extractValueOrLiteral(input, rightSide);
       if (operator in ConditionalOperators) {
-        let leftSideValue = extractValueOrLiteral(input, leftSide);
-        let rightSideValue = extractValueOrLiteral(input, rightSide);
         let result = ConditionalOperators[
           operator as keyof typeof ConditionalOperators
         ](leftSideValue, rightSideValue);
         trace.push({
-          name,
+          name: `${name}:${operator}`,
           runtime: performance.now() - startTime,
           step,
           ruleResult: { result, rule },
         });
         return result;
       } else if (operator in ModifierOperators) {
-        let leftSideValue = extractValueOrNumber(input, leftSide);
-        let rightSideValue = extractValueOrNumber(input, rightSide);
+        leftSideValue = extractValueOrNumber(input, leftSide);
+        rightSideValue = extractValueOrNumber(input, rightSide);
         let result = ModifierOperators[
           operator as keyof typeof ModifierOperators
         ](leftSideValue, rightSideValue);
         trace.push({
-          name,
+          name: `${name}:${operator}`,
           runtime: performance.now() - startTime,
           step,
           ruleResult: { result, rule },
         });
         return result;
+      } else if (operator in AssignmentOperators) {
+        leftSideValue = extractValueOrNumber(input, leftSide);
+        rightSideValue = extractValueOrNumber(input, rightSide);
+        switch (operator) {
+          case '+=': leftSideValue += rightSideValue; break;
+          case '-=': leftSideValue -= rightSideValue; break;
+          case '*=': leftSideValue *= rightSideValue; break;
+          case '/=': leftSideValue /= rightSideValue; break;
+          case '**=': leftSideValue **= rightSideValue; break;
+          case '%=': leftSideValue %= rightSideValue; break;
+          case '||=': leftSideValue ||= rightSideValue; break;
+          case '??=': leftSideValue ??= rightSideValue; break;
+          default: throw Error(`Rule ${name} has an invalid assignment operator.`);
+        }
+        let result = set(input, leftSide, leftSideValue);
+
+        trace.push({
+          name: `${name}:${operator}`,
+          runtime: performance.now() - startTime,
+          step,
+          ruleResult: { result, rule, lhs: leftSide, rhs: rightSide, rhsv: rightSideValue, lhsv: leftSideValue },
+        });
+        return result;
       } else if (operator === '=') {
-        let leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide);
+        leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide);
         // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
-        let rightSideValue = extractValueOrLiteral(input, rightSide);
+        rightSideValue = extractValueOrLiteral(input, rightSide);
         if (typeof leftSideValue !== 'string')
           throw Error(
             `Rule ${name} has an invalid rule. Left side must be a string.`
           );
         let result = set(input, leftSideValue, rightSideValue);
         trace.push({
-          name,
+          name: `${name}:${operator}`,
           runtime: performance.now() - startTime,
           step,
           ruleResult: { result, rule, leftSideValue, rightSideValue },
