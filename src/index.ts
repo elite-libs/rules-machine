@@ -16,7 +16,9 @@ import { autoDetectType, isBoolean, isNumber } from "./utils";
 import { performance } from "perf_hooks";
 
 export function RuleMachine<
-  TInput extends { [k: string]: string | boolean | number | null | TInput } = any
+  TInput extends {
+    [k: string]: string | boolean | number | null | TInput;
+  } = any
 >(name: string, rules: Rule[]) {
   // Validate, parse & load rules
 
@@ -49,7 +51,6 @@ export function RuleMachine<
             rule: rule.else,
           });
         } else {
-
           // console.error('Rule "' + JSON.stringify(rule) + '" has no "then" or "else"');
           // throw Error(`Rule ${name} has an invalid if/else rule.`);
         }
@@ -72,8 +73,10 @@ export function RuleMachine<
     }: {
       step: number;
       input: TInput;
-      rule: string;
+      rule: string | Rule;
     }) {
+      if (typeof rule !== "string") throw new Error('Nested rules not yet implemented.');
+      
       const tokens = rule.split(/\s+/g);
 
       let [leftSide, operator, rightSide] = tokens;
@@ -166,13 +169,19 @@ const ModifierOperators = {
 
 export type Rule =
   | {
-      if: string;
+      if: string | Rule;
       then: string | Rule;
       else?: string | Rule;
     }
   | {
-      return: string;
+      return: string | Rule;
     };
+// | {
+//     and: string | Rule;
+//   }
+// | {
+//     or: string | Rule;
+//   };
 
 interface RuleTrace {
   name: string;
