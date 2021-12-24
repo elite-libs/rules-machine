@@ -29,3 +29,126 @@ The rules engine to rule them all.
   {"return": "discount"},
 ]
 ```
+
+```json
+[
+  {
+    "if": "price >= 25",
+    "then": "discount = 5"
+  },
+  {
+    "if": "price >= 100",
+    "then": "discount = 20"
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+```json
+[
+  {
+    "if": "price >= 100",
+    "then": "discount = 20"
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+```json
+[
+  {
+    "if": "price >= 100",
+    "then": "discount += 20"
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+```json
+[
+  {
+    "if": "user.plan == \"premium\"",
+    "then": "discount = 15"
+  },
+  {
+    "if": "user.employee == true",
+    "then": "discount = 15"
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+```json
+[
+  {
+    "if": {
+      "and": [
+        "price >= 25",
+        "price <= 50"
+      ]
+    },
+    "then": "discount = 5"
+  },
+  {
+    "if": "price >= 100",
+    "then": "discount = 20"
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+```json
+[
+  {
+    "if": "price <= 100",
+    "then": "discount = 5"
+  },
+  {
+    "if": {
+      "or": [
+        "price >= 100",
+        "user.isAdmin == true"
+      ]
+    },
+    "then": "discount = 20"
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+```json
+[
+  {
+    "if": "price <= 100",
+    "then": [
+      "discount = 5",
+      "user.discountApplied = true"
+    ]
+  },
+  {
+    "if": {
+      "and": [
+        "price >= 90",
+        "user.discountApplied != true"
+      ]
+    },
+    "then": "discount = 20"
+  },
+  {
+    "return": "discount"
+  }
+]
+
+```
