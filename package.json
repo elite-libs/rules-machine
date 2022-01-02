@@ -1,6 +1,6 @@
 {
   "name": "@rules-tools/rules-machine",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
   "type": "commonjs",
   "homepage": "https://github.com/rules-tools/rules-machine",
