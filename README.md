@@ -4,14 +4,30 @@
 
 > _Rules Against The Machine_ 🤘
 
-* One Rules Engine to rule them all.
-* With great _Rules_, comes great observability.
+<!-- * One Rules Engine to rule them all.
+* With great _Rules_, comes great observability. -->
 
-## What is `Rules Machine`?
+**Table of Content**
 
-It's a fast, general purpose `JSON Rules Engine` 🚀
+- [What's a `Rules Machine`?](#whats-a-rules-machine)
+  - [Key Goals](#key-goals)
+  - [Key Terms](#key-terms)
+- [Why Rules Engines?](#why-rules-engine)
+  - [Pros](#pros)
+  - [Cons](#cons)
+- [Examples](#examples)
+    - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
+    - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
+    - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
+    - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
+- [More Reading & Related Projects](#more-reading--related-projects)
+- [TODO](#todo)
 
-### Key goals
+## What's a `Rules Machine`?
+
+It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/bliki/RulesEngine.html) library for both the Browser & Node.js! 🚀
+
+### Key Goals
 
 - **Share business logic** - move logic around the I/O layer, just like data.
   - Shared validation logic (same logic from the web form to the backend)
@@ -41,7 +57,7 @@ It's a fast, general purpose `JSON Rules Engine` 🚀
   * _"If State is NY, add NY tax."_
   * _"If State is AZ and during Daylight Savings, offset an hour."_
 
-<!-- **Note: This isn't a strict categorization!** -->
+
 App Logic is close to Core component behavior. For example, adding a `locale={countryCode}` to the `<Calendar>` component will change it's App Logic.
 
 Whereas _"Prevent meeting requests on Weekends."_ is more of a Business Rule, because it's specific to a scheduling application, and its current context.
@@ -50,7 +66,7 @@ Whereas _"Prevent meeting requests on Weekends."_ is more of a Business Rule, be
 
 (I know there are other ways to describe this concept. I'm choosing to avoid CS jargon stuffing.)
 
-## Why Rules Engine?
+## Why Rules Engines?
 
 Typically App Logic & Business Rules are woven together throughout the project. This co-location of logic is usually helpful, keeping things readable in small and even mid-sized projects.
 
@@ -62,18 +78,24 @@ This works great, until you run into one of the following challenges:
 2. **Unavoidable Complexity**
   - In many industries like healthcare, insurance, finance, etc. it's common to find 100's or 1,000s of rules run on every transaction.
   - Over time, "Hand-coded Rules" can distract & obscure from core App Logic.
-    - Example: Adding a feature to a `DepositTransaction` controller shouldn't require careful reading of 2,000 lines of custom rules around currency hackery & country-code checks.
+  - Example: Adding a feature to a `DepositTransaction` controller shouldn't require careful reading of 2,000 lines of custom rules around currency hackery & country-code checks.
   - Without a strategy, code eventually sprawls as logic gets duplicated & placed arbitrarily. Projects become harder to understand, risky to modify, and adding new rules become high-stakes exercises.
 3. **Tracing Errors or Miscalculations**
   - Complex pricing, taxes & discount policies can be fully "covered" by unit tests, yet still fail in surprising ways.
-  - Determine out how a customer's subtotal is calculated can be a pain.
-    - Example: Sales tax rates and rules are defined by several layers of local government. (Mainly City, County, and State.)
-      - Depending on the State rules, you'll need to calculate based on the Billing Address or Shipping Address.
-    - Scenario: A California customer has expanded into Canada. Their new shipping destination seems to cause double taxation!?!
-      - In this situation, a trace of the computations can save hours of dev work, boost Customer Support' confidence issuing a partial refund, and the data team can use the raw data to understand the scope of the issue.
-    - Scenario: "Why did we approve a $10,000,000 loan for 'The Joker'?"
-    - Scenario: "How did an Ultra Sports Car ($1M+) qualify for fiscal hardship rates?"
+  - Determining how a customer's subtotal WAS calculated after the fact can be tedious & time consuming.
 
+<detail>
+<summary>
+Additional Scenarios & Details
+</summary>
+
+- Example: Sales tax rates and rules are defined by several layers of local government. (Mainly City, County, and State.)
+  - Depending on the State rules, you'll need to calculate based on the Billing Address or Shipping Address.
+- Scenario: A California customer has expanded into Canada. Their new shipping destination seems to cause double taxation!?!
+  - In this situation, a trace of the computations can save hours of dev work, boost Customer Support' confidence issuing a partial refund, and the data team can use the raw data to understand the scope of the issue.
+- Scenario: "Why did we approve a $10,000,000 loan for 'The Joker'?"
+- Scenario: "How did an Ultra Sports Car ($1M+) qualify for fiscal hardship rates?"
+</detail>
 
 <!-- Investigating these questions is usually a manual process, with expensive senior developers trudging through 10K-100Ks of lines of code, all to give you an unsatisfying shrug and a mere plausible cause. -->
 
