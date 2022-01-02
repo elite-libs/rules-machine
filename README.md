@@ -85,9 +85,7 @@ This works great, until you run into one of the following challenges:
   - Determining how a customer's subtotal WAS calculated after the fact can be tedious & time consuming.
 
 <detail>
-<summary>
-Additional Scenarios & Details
-</summary>
+<summary>Additional Scenarios & Details</summary>
 
 - Example: Sales tax rates and rules are defined by several layers of local government. (Mainly City, County, and State.)
   - Depending on the State rules, you'll need to calculate based on the Billing Address or Shipping Address.
@@ -95,6 +93,7 @@ Additional Scenarios & Details
   - In this situation, a trace of the computations can save hours of dev work, boost Customer Support' confidence issuing a partial refund, and the data team can use the raw data to understand the scope of the issue.
 - Scenario: "Why did we approve a $10,000,000 loan for 'The Joker'?"
 - Scenario: "How did an Ultra Sports Car ($1M+) qualify for fiscal hardship rates?"
+
 </detail>
 
 <!-- Investigating these questions is usually a manual process, with expensive senior developers trudging through 10K-100Ks of lines of code, all to give you an unsatisfying shrug and a mere plausible cause. -->
