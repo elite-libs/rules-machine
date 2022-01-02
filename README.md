@@ -10,7 +10,7 @@
 **Table of Content**
 
 - [What's a `Rules Machine`?](#whats-a-rules-machine)
-  - [Key Goals](#key-goals)
+  - [Goals](#goals)
   - [Key Terms](#key-terms)
 - [Why Rules Engines?](#why-rules-engine)
   - [Pros](#pros)
@@ -27,7 +27,7 @@
 
 It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/bliki/RulesEngine.html) library for both the Browser & Node.js! 🚀
 
-### Key Goals
+### Goals
 
 - **Share business logic** - move logic around the I/O layer, just like data.
   - Shared validation logic (same logic from the web form to the backend)
