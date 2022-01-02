@@ -218,6 +218,7 @@ This works great, until you run into one of the following challenges:
 
 ## TODO
 
+- [ ] **Publish modules for CJS, ESM, AMD, UMD. (Implement parceljs, rollup, etc.)**
 - [ ] rule type: `{"runRules": "ruleSetName"}`
 - [ ] rule type: `{"throw": "error message"}`
 - [ ] rule type: `{"log": "rule/value expression"}`
