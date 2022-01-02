@@ -1,23 +1,19 @@
-import isEqual from 'lodash/isEqual';
-import gt from 'lodash/gt';
-import gte from 'lodash/gte';
-import lt from 'lodash/lt';
-import lte from 'lodash/lte';
-
-import cloneDeep from 'lodash/cloneDeep';
-import divide from 'lodash/divide';
-import add from 'lodash/add';
-import subtract from 'lodash/subtract';
-import multiply from 'lodash/multiply';
-
+import debug from 'debug';
 import get from 'lodash/get';
 import set from 'lodash/set';
-import { autoDetectType, isBoolean, isNumber } from './utils';
 import { performance } from 'perf_hooks';
+import { isBoolean, isNumber, autoDetectType, shuntingYard } from './utils';
+import {
+  AssignmentOperators,
+  ConditionalOperators,
+  ModifierOperators,
+} from './operators';
+import { reversePolishNotation } from './utils/reversePolishNotation';
 
-const trailingQuotes = /^('|").*('|")$/gm;
+const trailingQuotes = /^('|").*('|")$/g;
+const whitespacePattern = /\s+/g;
 
-export function RuleMachine<
+export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
@@ -113,9 +109,22 @@ export function RuleMachine<
         throw new Error('Nested rules not yet implemented.');
 
       stepCount++;
-      const tokens = rule.split(/\s+/g);
-
-      let [leftSide, operator, rightSide] = tokens;
+      const tokens = rule.split(whitespacePattern);
+      // TODO: Change to split on operator. 1 at a time
+      let [leftSide, operator, ...rightSideItems] = tokens;
+      let rightSide = rightSideItems.join(' '); // Warning: This may be a string with quotes.
+      // To support math expressions, check right-side
+      if (whitespacePattern.test(rightSide)) {
+        // to see if we need to run RPN on the rule
+        const reversePolishNotationExpression = shuntingYard(rightSide);
+        console.log(
+          rightSide,
+          'reversePolishNotation',
+          reversePolishNotationExpression
+        );
+        const result = reversePolishNotation(reversePolishNotationExpression);
+        console.log('reversePolishNotation', result);
+      }
       if (tokens.length === 1) {
         return extractValueOrLiteral(input, tokens[0]);
       }
@@ -213,9 +222,14 @@ export function RuleMachine<
       }
       if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
       if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
+      console.warn(
+        `Unrecognized token in rule expression (${stepRow}, ${stepCount}):`,
+        token
+      );
       // if we have a string key and don't find it in the input, assume it's undefined.
       return undefined;
     }
+
     function extractValueOrNumber(input: TInput, token: string): number {
       const val = extractValueOrLiteral(input, token);
       if (typeof val === 'number') return val;
@@ -223,35 +237,6 @@ export function RuleMachine<
     }
   };
 }
-
-const ConditionalOperators = {
-  // "===": isEqual,
-  '==': isEqual,
-  '!=': (a: any, b: any) => !isEqual(a, b),
-  '!==': (a: any, b: any) => !isEqual(a, b),
-  '>': gt,
-  '<': lt,
-  '>=': gte,
-  '<=': lte,
-};
-
-const ModifierOperators = {
-  '+': add,
-  '-': subtract,
-  '*': multiply,
-  '/': divide,
-};
-
-const AssignmentOperators = {
-  '+=': add,
-  '-=': subtract,
-  '*=': multiply,
-  '/=': divide,
-  '**=': Math.pow,
-  '%=': (a: number, b: number) => a % b,
-  '||=': (a: any, b: any) => a || b,
-  '??=': (a: any, b: any) => a ?? b,
-};
 
 export type Rule =
   | {

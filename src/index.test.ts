@@ -1,8 +1,8 @@
-import { RuleMachine } from './index';
+import { ruleFactory } from './index';
 
 const omitRuntime = ({runtime, ...keys}: any) => keys;
 test("can process 'then' rules", () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     { if: 'price >= 25', then: 'discount = 5' },
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
@@ -17,7 +17,7 @@ test("can process 'then' rules", () => {
 });
 
 test("can process omitted 'else' rules", () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
   ]);
@@ -30,7 +30,7 @@ test("can process omitted 'else' rules", () => {
 });
 
 test('can process increment operator +=', () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     { if: 'price >= 100', then: 'discount += 20' },
     { return: 'discount' },
   ]);
@@ -42,7 +42,7 @@ test('can process increment operator +=', () => {
 });
 
 test('structured input', () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     { if: 'user.plan == "premium"', then: 'discount = 15' },
     { if: 'user.employee == true', then: 'discount = 15' },
     { return: 'discount' },
@@ -66,7 +66,7 @@ test('structured input', () => {
 });
 
 test("can process 'and' rules", () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
@@ -80,7 +80,7 @@ test("can process 'and' rules", () => {
 });
 
 test("can process 'or' rules", () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     { if: 'price <= 100', then: 'discount = 5' },
     {
       if: { or: ['price >= 100', 'user.isAdmin == true'] },
@@ -97,7 +97,7 @@ test("can process 'or' rules", () => {
 });
 
 test('can process rule arrays', () => {
-  const rulesMachine = RuleMachine('calculateDiscount', [
+  const rulesMachine = ruleFactory('calculateDiscount', [
     {
       if: 'price <= 100',
       then: ['discount = 5', 'user.discountApplied = true'],
