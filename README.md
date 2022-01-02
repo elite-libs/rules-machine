@@ -86,7 +86,9 @@ This works great, until you run into one of the following challenges:
 
 <details>
 
-<summary>Additional Scenarios & Details</summary>
+<summary>
+**Additional Scenarios & Details**
+</summary>
 
 - Example: Sales tax rates and rules are defined by several layers of local government. (Mainly City, County, and State.)
   - Depending on the State rules, you'll need to calculate based on the Billing Address or Shipping Address.
