@@ -12,7 +12,7 @@
 - [What's a `Rules Machine`?](#whats-a-rules-machine)
   - [Goals](#goals)
   - [Key Terms](#key-terms)
-- [Why Rules Engines?](#why-rules-engine)
+- [Why Rules Engines?](#why-rules-engines)
   - [Pros](#pros)
   - [Cons](#cons)
 - [Examples](#examples)
