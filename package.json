@@ -1,6 +1,6 @@
 {
   "name": "@rules-tools/rules-machine",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
   "type": "commonjs",
   "homepage": "https://github.com/rules-tools/rules-machine",
@@ -20,16 +20,23 @@
   "types": "./dist/src/index.d.ts",
   "scripts": {
     "prepublishOnly": "yarn run build",
-    "release": "npm publish --access public",
+    "release:npm": "npm publish --access public --registry https://registry.npmjs.org/",
+    "release:github": "npm publish --access public --registry https://npm.pkg.github.com/",
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
     "build": "npx rimraf dist/* && npx tsc"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
-  },
-  "keywords": [],
+  "keywords": [
+    "Rules Engine",
+    "JSON Rules Engine",
+    "JSON Rules",
+    "JSON",
+    "JSON-based",
+    "JSON-based Rules Engine",
+    "JSON-based Rules",
+    "JSON-based Rules Engine",
+    "YAML Rules Engine"
+  ],
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/jest": "26.x.x",
