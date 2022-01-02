@@ -1,4 +1,6 @@
 import { ruleFactory } from './index';
+// import legacy from '../dist/legacy.js';
+// import modern from '../dist/modern.js';
 
 const omitRuntime = ({runtime, ...keys}: any) => keys;
 test("can process 'then' rules", () => {

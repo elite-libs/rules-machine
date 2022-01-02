@@ -1,7 +1,6 @@
 import debug from 'debug';
 import get from 'lodash/get';
 import set from 'lodash/set';
-import { performance } from 'perf_hooks';
 import { isBoolean, isNumber, autoDetectType, shuntingYard } from './utils';
 import {
   AssignmentOperators,
@@ -9,6 +8,8 @@ import {
   ModifierOperators,
 } from './operators';
 import { reversePolishNotation } from './utils/reversePolishNotation';
+// import { performance } from 'perf_hooks';
+import performance from './utils/performance';
 
 const trailingQuotes = /^('|").*('|")$/g;
 const whitespacePattern = /\s+/g;

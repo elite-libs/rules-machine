@@ -8,6 +8,14 @@
     "type": "git",
     "url": "git://github.com/rules-tools/rules-machine.git"
   },
+
+  "source": "./src/index.ts",
+
+  "exports": "./dist/src/index.js",
+  "main": "./dist/main.js",
+  "module": "./dist/module.js",
+  "types": "./dist/index.d.ts",
+
   "private": false,
   "packageManager": "yarn@1.10.0",
   "engineStrict": true,
@@ -15,16 +23,37 @@
     "yarn": ">=1.10.0",
     "node": ">=12.0.0"
   },
-  "main": "./dist/src/index.js",
-  "exports": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+
+  "modern": "dist/modern.js",
+  "legacy": "dist/legacy.js",
+  "targets": {
+    "types": {
+      "source": "src/index.d.ts"
+    },
+    "modern": {
+      "optimize": false,
+      "outputFormat": "esmodule",
+      "engines": {
+        "node": ">= 14"
+      }
+    },
+    "legacy": {
+      "optimize": false,
+      "outputFormat": "commonjs",
+      "engines": {
+        "browsers": "> 0.5%, last 2 versions, not dead"
+      }
+    }
+  },
   "scripts": {
     "prepublishOnly": "yarn run build",
     "release:npm": "npm publish --access public --registry https://registry.npmjs.org/",
     "release:github": "npm publish --access public --registry https://npm.pkg.github.com/",
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
-    "build": "npx rimraf dist/* && npx tsc"
+    "build": "npx rimraf ./dist/* && yarn run build:types && yarn run build:bundle",
+    "build:bundle": "parcel build ./src/index.ts",
+    "build:types": "tsc --declaration --declarationMap --module amd --outFile dist/index.js"
   },
   "keywords": [
     "Rules Engine",
@@ -38,11 +67,14 @@
     "YAML Rules Engine"
   ],
   "devDependencies": {
+    "@parcel/packager-ts": "^2.0.1",
+    "@parcel/transformer-typescript-types": "^2.0.1",
     "@types/debug": "^4.1.7",
     "@types/jest": "26.x.x",
     "@types/lodash": "^4.14.178",
     "@types/node": "^17.0.0",
     "jest": "26.x.x",
+    "parcel": "^2.0.1",
     "ts-jest": "26.x.x",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
