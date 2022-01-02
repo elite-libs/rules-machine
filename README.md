@@ -73,18 +73,19 @@ Typically App Logic & Business Rules are woven together throughout the project. 
 This works great, until you run into one of the following challenges:
 
 1. **Storing Rules**
-  - A note taking app could let users create custom shortcuts, where typing "TODO" could load a template.
-  - These "shortcuts" (JSON Rules) can be stored in a local file, synced to a database, or even broadcast over a mesh network.
+    - A note taking app could let users create custom shortcuts, where typing "TODO" could load a template.
+    - These "shortcuts" (JSON Rules) can be stored in a local file, synced to a database, or even broadcast over a mesh network.
 2. **Unavoidable Complexity**
-  - In many industries like healthcare, insurance, finance, etc. it's common to find 100's or 1,000s of rules run on every transaction.
-  - Over time, "Hand-coded Rules" can distract & obscure from core App Logic.
-  - Example: Adding a feature to a `DepositTransaction` controller shouldn't require careful reading of 2,000 lines of custom rules around currency hackery & country-code checks.
-  - Without a strategy, code eventually sprawls as logic gets duplicated & placed arbitrarily. Projects become harder to understand, risky to modify, and adding new rules become high-stakes exercises.
+    - In many industries like healthcare, insurance, finance, etc. it's common to find 100's or 1,000s of rules run on every transaction.
+    - Over time, "Hand-coded Rules" can distract & obscure from core App Logic.
+    - Example: Adding a feature to a `DepositTransaction` controller shouldn't require careful reading of 2,000 lines of custom rules around currency hackery & country-code checks.
+    - Without a strategy, code eventually sprawls as logic gets duplicated & placed arbitrarily. Projects become harder to understand, risky to modify, and adding new rules become high-stakes exercises.
 3. **Tracing Errors or Miscalculations**
-  - Complex pricing, taxes & discount policies can be fully "covered" by unit tests, yet still fail in surprising ways.
-  - Determining how a customer's subtotal WAS calculated after the fact can be tedious & time consuming.
+    - Complex pricing, taxes & discount policies can be fully "covered" by unit tests, yet still fail in surprising ways.
+    - Determining how a customer's subtotal WAS calculated after the fact can be tedious & time consuming.
 
-<detail>
+<details>
+
 <summary>Additional Scenarios & Details</summary>
 
 - Example: Sales tax rates and rules are defined by several layers of local government. (Mainly City, County, and State.)
@@ -94,7 +95,8 @@ This works great, until you run into one of the following challenges:
 - Scenario: "Why did we approve a $10,000,000 loan for 'The Joker'?"
 - Scenario: "How did an Ultra Sports Car ($1M+) qualify for fiscal hardship rates?"
 
-</detail>
+</details>
+
 
 <!-- Investigating these questions is usually a manual process, with expensive senior developers trudging through 10K-100Ks of lines of code, all to give you an unsatisfying shrug and a mere plausible cause. -->
 
