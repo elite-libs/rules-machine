@@ -28,7 +28,7 @@
   "legacy": "dist/legacy.js",
   "targets": {
     "types": {
-      "source": "src/index.d.ts"
+      "source": "src/types.ts"
     },
     "modern": {
       "optimize": false,

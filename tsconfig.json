@@ -15,7 +15,7 @@
     // "isolatedModules": true,
     // "jsx": "preserve",
     "lib": ["esnext", "DOM"],
-    "module": "AMD",
+    // "module": "System",
     "moduleResolution": "node",
     // "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -28,7 +28,7 @@
     "target": "ESNext",
     "useUnknownInCatchVariables": false
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": [
     "**/node_modules",
     "**/.*/",
