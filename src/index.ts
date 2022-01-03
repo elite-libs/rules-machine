@@ -257,7 +257,7 @@ export type LogicalRule =
       or: string[];
     };
 
-interface RuleTrace {
+export interface RuleTrace {
   name: string;
   rule: string;
   operator: string;
