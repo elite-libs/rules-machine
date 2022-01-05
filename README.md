@@ -51,20 +51,26 @@ It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/blik
 * **App Logic** - applies more broadly and changes less frequently than Business Rules.
   * _"Throw Error if ShoppingCart total is less than zero."_
   * _"Only one discount code can be applied at a time."_
-* **Business Rules** - targeted & detailed, tends to change frequently. Supports business goals & objectives, accumulated from Product, A/B Tuning, Legal, Finance, etc.
+<!-- App Logic is close to Core component behavior. For example, adding a `locale={countryCode}` to the `<Calendar>` component will change it's App Logic. -->
+
+
+* **Business Rules** - targeted & detailed, can change frequently.
+  * Supports business goals & objectives (as they evolve) from Product, Leadership, Legal, Finance, A/B Tuning, etc.
   * _"Premium customers can apply 3 discounts, up to 25% off."_
-  * _"Add covid19 discount for existing customers."_
+  * _"If we're in lock-down, double shipping estimates."_
   * _"If State is NY, add NY tax."_
   * _"If State is AZ and during Daylight Savings, offset an hour."_
+<!-- _"Prevent meeting requests on Weekends."_ is more of a Business Rule, because it's specific to a scheduling application, and its current context. -->
 
+### Finding Opportunities for Rules
 
-App Logic is close to Core component behavior. For example, adding a `locale={countryCode}` to the `<Calendar>` component will change it's App Logic.
+Typically Business Rules are better-suited to 'rules engine' style pattern.
 
-Whereas _"Prevent meeting requests on Weekends."_ is more of a Business Rule, because it's specific to a scheduling application, and its current context.
+If your Business Rules or logic changes frequently, you can get alignment benefits by moving that logic to a serializable & sharable format. Specifically, this can provide immediate benefits to mobile & native apps, as you don't have to wait for an approvals process for every change. ✨
 
-> Using this as a mental model greatly accelerates identifying specific places to utilize a Rules Engine.
-
+<!--
 (I know there are other ways to describe this concept. I'm choosing to avoid CS jargon stuffing.)
+ -->
 
 ## Why Rules Engines?
 
@@ -111,6 +117,28 @@ This works great, until you run into one of the following challenges:
 - Sizable projects require up-front planning & design work to properly adapt this pattern. (1,000s rules, for example.)
 - Possible early optimization or premature architecture decision.
 - Not as easy to write compared to a native language.
+
+
+## Install
+
+```bash
+yarn add @elite-libs/rules-machine
+# Or
+npm install @elite-libs/rules-machine
+```
+
+## Usage
+
+```ts
+import { ruleFactory } from '@elite-libs/rules-machine';
+
+const fishRhyme = ruleFactory('fishRhyme', [
+  {if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
+  {if: 'fish == "redFish"', then: 'fish = "blueFish"' },
+]);
+
+fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
+```
 
 ## Examples
 

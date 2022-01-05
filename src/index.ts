@@ -17,7 +17,7 @@ import { performance } from 'perf_hooks';
 
 const trailingQuotes = /^('|").*('|")$/gm;
 
-export function RuleMachine<
+export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
