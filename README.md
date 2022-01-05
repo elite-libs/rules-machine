@@ -12,6 +12,7 @@
 - [What's a `Rules Machine`?](#whats-a-rules-machine)
   - [Goals](#goals)
   - [Key Terms](#key-terms)
+  - [Finding Opportunities for Rules](#finding-opportunities-for-rules)
 - [Why Rules Engines?](#why-rules-engines)
   - [Pros](#pros)
   - [Cons](#cons)
