@@ -1,12 +1,12 @@
 {
-  "name": "@rules-tools/rules-machine",
-  "version": "1.1.6",
+  "name": "@elite-libs/rules-machine",
+  "version": "1.0.0",
   "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
   "type": "commonjs",
-  "homepage": "https://github.com/rules-tools/rules-machine",
+  "homepage": "https://github.com/elite-libs/rules-machine",
   "repository": {
     "type": "git",
-    "url": "git://github.com/rules-tools/rules-machine.git"
+    "url": "git://github.com/elite-libs/rules-machine.git"
   },
 
   "source": "./src/index.ts",
