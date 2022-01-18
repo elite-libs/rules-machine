@@ -8,14 +8,11 @@
     "type": "git",
     "url": "git://github.com/elite-libs/rules-machine.git"
   },
-
   "source": "./src/index.ts",
-
   "exports": "./dist/src/index.js",
   "main": "./dist/main.js",
   "module": "./dist/module.js",
   "types": "./dist/index.d.ts",
-
   "private": false,
   "packageManager": "yarn@1.10.0",
   "engineStrict": true,
@@ -23,7 +20,6 @@
     "yarn": ">=1.10.0",
     "node": ">=12.0.0"
   },
-
   "modern": "dist/modern.js",
   "legacy": "dist/legacy.js",
   "targets": {
@@ -86,6 +82,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "debug": "^4.3.3",
+    "expressionparser": "^1.1.5",
     "lodash": "^4.17.21"
   }
 }

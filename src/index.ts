@@ -10,6 +10,9 @@ import {
 import { reversePolishNotation } from './utils/reversePolishNotation';
 // import { performance } from 'perf_hooks';
 import performance from './utils/performance';
+import { ruleExpressionLanguage } from './rule-expression-language';
+import { init } from 'expressionparser';
+import { ValuePrimitive } from 'expressionparser/dist/ExpressionParser';
 
 const trailingQuotes = /^('|").*('|")$/g;
 const whitespacePattern = /\s+/g;
@@ -20,7 +23,6 @@ export function ruleFactory<
   } = any
 >(name: string, rules: Rule[]) {
   // Validate, parse & load rules
-
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput) {
     const trace: RuleTrace[] = [];
@@ -29,6 +31,17 @@ export function ruleFactory<
     let stepCount = 0;
     const results = { trace, input, returnValue: null as any };
     const startTime = performance.now();
+
+    const parser = init(ruleExpressionLanguage, (term: string) => {
+      if (typeof term === 'string') {
+        const result = extractValueOrLiteral(input, term, stepRow, stepCount) || 'INVALID';
+        console.log(`TERM: ${term} => ${result}`);
+        return extractValueOrLiteral(input, term, stepRow, stepCount) || 'INVALID';
+        // return 42;
+      } else {
+        throw new Error(`Invalid term: ${term}`);
+      }
+    });
 
     for (const rule of rules) {
       if ('if' in rule) {
@@ -115,25 +128,21 @@ export function ruleFactory<
       let [leftSide, operator, ...rightSideItems] = tokens;
       let rightSide = rightSideItems.join(' '); // Warning: This may be a string with quotes.
       // To support math expressions, check right-side
-      if (whitespacePattern.test(rightSide)) {
-        // to see if we need to run RPN on the rule
-        const reversePolishNotationExpression = shuntingYard(rightSide);
-        console.log(
-          rightSide,
-          'reversePolishNotation',
-          reversePolishNotationExpression
-        );
-        const result = reversePolishNotation(reversePolishNotationExpression);
-        console.log('reversePolishNotation', result);
-      }
+
+      const rightSideParsed = whitespacePattern.test(rightSide) ?
+        parser.expressionToValue(rightSide) : extractValueOrLiteral(input, rightSide, stepRow, stepCount);
+      //    set(input, leftSide, result);
+      //   logTrace(result)
+      //   console.log('reversePolishNotation', result);
+      // }
       if (tokens.length === 1) {
-        return extractValueOrLiteral(input, tokens[0]);
+        return extractValueOrLiteral(input, tokens[0], stepRow, stepCount);
       }
       if (!operator || !leftSide || !rightSide)
         throw Error(`Rule ${name} has an invalid rule. 3 parts required.`);
 
-      let leftSideValue = extractValueOrLiteral(input, leftSide);
-      let rightSideValue = extractValueOrLiteral(input, rightSide);
+      let leftSideValue = extractValueOrLiteral(input, leftSide, stepRow, stepCount);
+      let rightSideValue = rightSideParsed // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
       if (operator in ConditionalOperators) {
         let result = ConditionalOperators[
           operator as keyof typeof ConditionalOperators
@@ -150,7 +159,8 @@ export function ruleFactory<
         return result;
       } else if (operator in AssignmentOperators) {
         leftSideValue = extractValueOrNumber(input, leftSide);
-        rightSideValue = extractValueOrNumber(input, rightSide);
+        // rightSideValue = extractValueOrNumber(input, rightSide);
+        rightSideValue = rightSideValue as number;
         switch (operator) {
           case '+=':
             leftSideValue += rightSideValue;
@@ -184,9 +194,9 @@ export function ruleFactory<
         logTrace(result);
         return leftSideValue;
       } else if (operator === '=') {
-        leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide);
+        leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide, stepRow, stepCount);
         // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
-        rightSideValue = extractValueOrLiteral(input, rightSide);
+        // rightSideValue = extractValueOrLiteral(input, rightSide, stepRow, stepCount);
         if (typeof leftSideValue !== 'string')
           throw Error(
             `Rule ${name} has an invalid rule. Left side must be a string.`
@@ -216,28 +226,32 @@ export function ruleFactory<
       return false;
     }
 
-    function extractValueOrLiteral(input: TInput, token: string) {
-      if (input[token]) return autoDetectType(input[token]);
-      if (token.includes('.') && get(input, token)) {
-        return autoDetectType(get(input, token));
-      }
-      if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
-      if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
-      console.warn(
-        `Unrecognized token in rule expression (${stepRow}, ${stepCount}):`,
-        token
-      );
-      // if we have a string key and don't find it in the input, assume it's undefined.
-      return undefined;
-    }
-
     function extractValueOrNumber(input: TInput, token: string): number {
-      const val = extractValueOrLiteral(input, token);
+      const val = extractValueOrLiteral(input, token, stepRow, stepCount);
       if (typeof val === 'number') return val;
       return parseFloat(`${val}`);
     }
   };
 }
+
+export function extractValueOrLiteral<TInput extends {
+  [k: string]: string | boolean | number | null | undefined | TInput;
+} = any
+>(input: TInput, token: string, stepRow?: number, stepCount?: number) {
+  if (input[token]) return autoDetectType(input[token]);
+  if (token.includes('.') && get(input, token)) {
+    return autoDetectType(get(input, token));
+  }
+  if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
+  if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
+  console.warn(
+    `Unrecognized token in rule expression (${stepRow}, ${stepCount}):`,
+    token
+  );
+  // if we have a string key and don't find it in the input, assume it's undefined.
+  return undefined;
+}
+
 
 export type Rule =
   | {
