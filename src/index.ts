@@ -1,13 +1,13 @@
 import debug from 'debug';
 import get from 'lodash/get';
 import set from 'lodash/set';
-import { isBoolean, isNumber, autoDetectType, shuntingYard } from './utils';
+import { isBoolean, isNumber, autoDetectType } from './utils';
 import {
   AssignmentOperators,
   ConditionalOperators,
   ModifierOperators,
 } from './operators';
-import { reversePolishNotation } from './utils/reversePolishNotation';
+// import { reversePolishNotation } from './utils/reversePolishNotation';
 // import { performance } from 'perf_hooks';
 import performance from './utils/performance';
 import { ruleExpressionLanguage } from './rule-expression-language';
