@@ -1,8 +1,8 @@
+# Rules Machine
+
 [![CI Status](https://github.com/elite-libs/rules-machine/workflows/test/badge.svg)](https://github.com/elite-libs/rules-machine/actions)
 [![NPM version](https://img.shields.io/npm/v/@elite-libs/rules-machine.svg)](https://www.npmjs.com/package/@elite-libs/rules-machine)
 [![GitHub stars](https://img.shields.io/github/stars/elite-libs/rules-machine.svg?style=social)](https://github.com/elite-libs/rules-machine)
-
-# Rules Machine
 
 ![Rules Machine](img/rules-machine-header.svg)
 
@@ -21,10 +21,10 @@
   - [Pros](#pros)
   - [Cons](#cons)
 - [Examples](#examples)
-    - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
-    - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
-    - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
-    - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
+  - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
+  - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
+  - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
+  - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
 - [More Reading & Related Projects](#more-reading--related-projects)
 - [TODO](#todo)
 
@@ -44,7 +44,6 @@ It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/blik
   - Help non-dev stakeholders (QA, Product) understand critical logic.
   - Simply formatting JSON Rules sheds light on both hierarchy & steps.
 
-
 <!-- Designed to prioritize simplicity, limited operations, security - no access to runtime (`eval`/`new Func`).
 
  in one flavor or another, whether you realize it or not. In fact this sort of rough design is built into everything from [GitHub Actions](#reference-gh-actions), [VS Code Keybindings config](https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-rules), [Ansible Playbooks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#basic-conditionals-with-when), [Helm templates](https://helm.sh/docs/chart_template_guide/control_structures/), [Datree](https://hub.datree.io/basic-examples#c6-example-1) and so many more. -->
@@ -53,18 +52,17 @@ It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/blik
 
 `App Logic != Business Rules`
 
-* **App Logic** - applies more broadly and changes less frequently than Business Rules.
-  * _"Throw Error if ShoppingCart total is less than zero."_
-  * _"Only one discount code can be applied at a time."_
+- **App Logic** - applies more broadly and changes less frequently than Business Rules.
+  - _"Throw Error if ShoppingCart total is less than zero."_
+  - _"Only one discount code can be applied at a time."_
 <!-- App Logic is close to Core component behavior. For example, adding a `locale={countryCode}` to the `<Calendar>` component will change it's App Logic. -->
 
-
-* **Business Rules** - targeted & detailed, can change frequently.
-  * Supports business goals & objectives (as they evolve) from Product, Leadership, Legal, Finance, A/B Tuning, etc.
-  * _"Premium customers can apply 3 discounts, up to 25% off."_
-  * _"If we're in lock-down, double shipping estimates."_
-  * _"If State is NY, add NY tax."_
-  * _"If State is AZ and during Daylight Savings, offset an hour."_
+- **Business Rules** - targeted & detailed, can change frequently.
+  - Supports business goals & objectives (as they evolve) from Product, Leadership, Legal, Finance, A/B Tuning, etc.
+  - _"Premium customers can apply 3 discounts, up to 25% off."_
+  - _"If we're in lock-down, double shipping estimates."_
+  - _"If State is NY, add NY tax."_
+  - _"If State is AZ and during Daylight Savings, offset an hour."_
 <!-- _"Prevent meeting requests on Weekends."_ is more of a Business Rule, because it's specific to a scheduling application, and its current context. -->
 
 ### Finding Opportunities for Rules
@@ -108,7 +106,6 @@ This works great, until you run into one of the following challenges:
 
 </details>
 
-
 <!-- Investigating these questions is usually a manual process, with expensive senior developers trudging through 10K-100Ks of lines of code, all to give you an unsatisfying shrug and a mere plausible cause. -->
 
 ### Pros
@@ -122,7 +119,6 @@ This works great, until you run into one of the following challenges:
 - Sizable projects require up-front planning & design work to properly adapt this pattern. (1,000s rules, for example.)
 - Possible early optimization or premature architecture decision.
 - Not as easy to write compared to a native language.
-
 
 ## Install
 
@@ -147,7 +143,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 
 ## Examples
 
-#### Example Rule: Apply Either $5 or $10 Discount
+### Example Rule: Apply Either $5 or $10 Discount
 
 ```json
 [
@@ -167,9 +163,10 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
   then: discount = 10
 - return: discount
 ```
+
 </details>
 
-#### Example Rule: Apply $15 Discount if Employee, or Premium Customer
+### Example Rule: Apply $15 Discount if Employee, or Premium Customer
 
 ```json
 [
@@ -187,7 +184,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 ]
 ```
 
-#### Example Rule: Multiple Conditional, Nested Rules
+### Example Rule: Multiple Conditional, Nested Rules
 
 ```json
 [
@@ -221,9 +218,10 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
   then: discount = 20
 - return: discount
 ```
+
 </details>
 
-#### Example Rule: Use variable between rules
+### Example Rule: Use variable between rules
 
 ```json
 [
@@ -264,7 +262,115 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
   then: discount = 20
 - return: discount
 ```
+
 </details>
+
+## Supported Operators
+
+1. `!=`
+1. `%`
+1. `*`
+1. `+`
+1. `,`
+1. `-`
+1. `/`
+1. `<`
+1. `<=`
+1. `<>`
+1. `=`
+1. `==`
+1. `>`
+1. `>=`
+1. `^`
+1. `~=`
+1. `AND`
+1. `OR`
+
+## Supported Functions
+
+1. ABS()
+1. ACOS()
+1. ACOSH()
+1. ADD()
+1. ARRAY()
+1. ASIN()
+1. ASINH()
+1. ATAN()
+1. ATAN2()
+1. ATANH()
+1. AVERAGE()
+1. BIN2DEC()
+1. CEIL()
+1. CHAR()
+1. CHARARRAY()
+1. CODE()
+1. CONCAT()
+1. CONS()
+1. COS()
+1. COSH()
+1. CUBEROOT()
+1. DEC2BIN()
+1. DEC2HEX()
+1. DEC2STR()
+1. DEGREES()
+1. DICT()
+1. DIV()
+1. DROP()
+1. DROPWHILE()
+1. EXP()
+1. FILTER()
+1. FLOOR()
+1. GCD()
+1. GET()
+1. HEAD()
+1. HEX2DEC()
+1. IF()
+1. INDEX()
+1. ISNAN()
+1. ISPRIME()
+1. JOIN()
+1. KEYS()
+1. LAST()
+1. LENGTH()
+1. LN()
+1. LOG()
+1. LOG2()
+1. LOWER()
+1. MAP()
+1. MAX()
+1. MIN()
+1. MOD()
+1. MUL()
+1. NEG()
+1. NOT()
+1. PUT()
+1. RADIANS()
+1. RANGE()
+1. REDUCE()
+1. REVERSE()
+1. ROUND()
+1. SIGN()
+1. SIN()
+1. SINH()
+1. SLICE()
+1. SORT()
+1. SPLIT()
+1. SQRT()
+1. STR2DEC()
+1. STRING()
+1. SUB()
+1. SUM()
+1. TAIL()
+1. TAKE()
+1. TAKEWHILE()
+1. TAN()
+1. TANH()
+1. TRUNC()
+1. UNZIP()
+1. UNZIPDICT()
+1. UPPER()
+1. VALUES()
+1. ZIP()
 
 ## More Reading & Related Projects
 
@@ -286,4 +392,3 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 - [x] misc: Use single object for input and output. (Doesn't mutate input.)
 - [x] misc: Add support for multiple boolean expressions. (see: `{"and": []}` `{"or": []}`).
 - [x] misc: Rules are serializable, and can be shared.
-
