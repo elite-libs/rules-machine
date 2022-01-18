@@ -1,3 +1,7 @@
+[![CI Status](https://github.com/elite-libs/rules-machine/workflows/test/badge.svg)](https://github.com/elite-libs/rules-machine/actions)
+[![NPM version](https://img.shields.io/npm/v/@elite-libs/rules-machine.svg)](https://www.npmjs.com/package/@elite-libs/rules-machine)
+[![GitHub stars](https://img.shields.io/github/stars/elite-libs/rules-machine.svg?style=social)](https://github.com/elite-libs/rules-machine)
+
 # Rules Machine
 
 ![Rules Machine](img/rules-machine-header.svg)
