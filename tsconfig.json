@@ -7,12 +7,12 @@
 
     "declaration": true,
     "declarationMap": true,
-    "declarationDir": "./dist/types",
+    // "declarationDir": "./dist/types",
 
     "esModuleInterop": true,
     // "extendedDiagnostics": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
+    // "isolatedModules": true,
     // "jsx": "preserve",
     "lib": ["esnext", "DOM"],
     "module": "ES2015",
@@ -25,7 +25,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ESNext",
+    "target": "ES2019",
     "useUnknownInCatchVariables": false
   },
   "include": ["**/*.ts"],
