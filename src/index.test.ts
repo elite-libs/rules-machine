@@ -116,3 +116,18 @@ test('can process rule arrays', () => {
   expect(result.input.discount).toBe(5);
   expect(result.input.user?.discountApplied).toBe(true);
 });
+
+test("can process complex rule expressions", () => {
+  const rulesMachine = ruleFactory('calculateDiscount', [
+    { if: 'price >= 25', then: 'discount = 5 * 2' },
+    { if: 'price >= 100', then: 'discount = 20 * 4' },
+    { return: 'discount' },
+  ]);
+
+  const input = { price: 100 };
+  const result = rulesMachine(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  expect(result.input.discount).toBe(80);
+  expect(result.returnValue).toBe(80);
+});

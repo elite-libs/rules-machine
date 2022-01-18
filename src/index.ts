@@ -1,21 +1,21 @@
-import isEqual from 'lodash/isEqual';
-import gt from 'lodash/gt';
-import gte from 'lodash/gte';
-import lt from 'lodash/lt';
-import lte from 'lodash/lte';
-
-import cloneDeep from 'lodash/cloneDeep';
-import divide from 'lodash/divide';
-import add from 'lodash/add';
-import subtract from 'lodash/subtract';
-import multiply from 'lodash/multiply';
-
+import debug from 'debug';
 import get from 'lodash/get';
 import set from 'lodash/set';
-import { autoDetectType, isBoolean, isNumber } from './utils';
-import { performance } from 'perf_hooks';
+import { isBoolean, isNumber, autoDetectType } from './utils';
+import {
+  AssignmentOperators,
+  ConditionalOperators,
+  ModifierOperators,
+} from './operators';
+// import { reversePolishNotation } from './utils/reversePolishNotation';
+// import { performance } from 'perf_hooks';
+import performance from './utils/performance';
+import { ruleExpressionLanguage } from './rule-expression-language';
+import { init } from 'expressionparser';
+import { ValuePrimitive } from 'expressionparser/dist/ExpressionParser';
 
-const trailingQuotes = /^('|").*('|")$/gm;
+const trailingQuotes = /^('|").*('|")$/g;
+const whitespacePattern = /\s+/g;
 
 export function ruleFactory<
   TInput extends {
@@ -23,7 +23,6 @@ export function ruleFactory<
   } = any
 >(name: string, rules: Rule[]) {
   // Validate, parse & load rules
-
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput) {
     const trace: RuleTrace[] = [];
@@ -32,6 +31,17 @@ export function ruleFactory<
     let stepCount = 0;
     const results = { trace, input, returnValue: null as any };
     const startTime = performance.now();
+
+    const parser = init(ruleExpressionLanguage, (term: string) => {
+      if (typeof term === 'string') {
+        const result = extractValueOrLiteral(input, term, stepRow, stepCount) || 'INVALID';
+        console.log(`TERM: ${term} => ${result}`);
+        return extractValueOrLiteral(input, term, stepRow, stepCount) || 'INVALID';
+        // return 42;
+      } else {
+        throw new Error(`Invalid term: ${term}`);
+      }
+    });
 
     for (const rule of rules) {
       if ('if' in rule) {
@@ -113,17 +123,26 @@ export function ruleFactory<
         throw new Error('Nested rules not yet implemented.');
 
       stepCount++;
-      const tokens = rule.split(/\s+/g);
+      const tokens = rule.split(whitespacePattern);
+      // TODO: Change to split on operator. 1 at a time
+      let [leftSide, operator, ...rightSideItems] = tokens;
+      let rightSide = rightSideItems.join(' '); // Warning: This may be a string with quotes.
+      // To support math expressions, check right-side
 
-      let [leftSide, operator, rightSide] = tokens;
+      const rightSideParsed = whitespacePattern.test(rightSide) ?
+        parser.expressionToValue(rightSide) : extractValueOrLiteral(input, rightSide, stepRow, stepCount);
+      //    set(input, leftSide, result);
+      //   logTrace(result)
+      //   console.log('reversePolishNotation', result);
+      // }
       if (tokens.length === 1) {
-        return extractValueOrLiteral(input, tokens[0]);
+        return extractValueOrLiteral(input, tokens[0], stepRow, stepCount);
       }
       if (!operator || !leftSide || !rightSide)
         throw Error(`Rule ${name} has an invalid rule. 3 parts required.`);
 
-      let leftSideValue = extractValueOrLiteral(input, leftSide);
-      let rightSideValue = extractValueOrLiteral(input, rightSide);
+      let leftSideValue = extractValueOrLiteral(input, leftSide, stepRow, stepCount);
+      let rightSideValue = rightSideParsed // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
       if (operator in ConditionalOperators) {
         let result = ConditionalOperators[
           operator as keyof typeof ConditionalOperators
@@ -140,7 +159,8 @@ export function ruleFactory<
         return result;
       } else if (operator in AssignmentOperators) {
         leftSideValue = extractValueOrNumber(input, leftSide);
-        rightSideValue = extractValueOrNumber(input, rightSide);
+        // rightSideValue = extractValueOrNumber(input, rightSide);
+        rightSideValue = rightSideValue as number;
         switch (operator) {
           case '+=':
             leftSideValue += rightSideValue;
@@ -174,9 +194,9 @@ export function ruleFactory<
         logTrace(result);
         return leftSideValue;
       } else if (operator === '=') {
-        leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide);
+        leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide, stepRow, stepCount);
         // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
-        rightSideValue = extractValueOrLiteral(input, rightSide);
+        // rightSideValue = extractValueOrLiteral(input, rightSide, stepRow, stepCount);
         if (typeof leftSideValue !== 'string')
           throw Error(
             `Rule ${name} has an invalid rule. Left side must be a string.`
@@ -206,52 +226,32 @@ export function ruleFactory<
       return false;
     }
 
-    function extractValueOrLiteral(input: TInput, token: string) {
-      if (input[token]) return autoDetectType(input[token]);
-      if (token.includes('.') && get(input, token)) {
-        return autoDetectType(get(input, token));
-      }
-      if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
-      if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
-      // if we have a string key and don't find it in the input, assume it's undefined.
-      return undefined;
-    }
     function extractValueOrNumber(input: TInput, token: string): number {
-      const val = extractValueOrLiteral(input, token);
+      const val = extractValueOrLiteral(input, token, stepRow, stepCount);
       if (typeof val === 'number') return val;
       return parseFloat(`${val}`);
     }
   };
 }
 
-const ConditionalOperators = {
-  // "===": isEqual,
-  '==': isEqual,
-  '!=': (a: any, b: any) => !isEqual(a, b),
-  '!==': (a: any, b: any) => !isEqual(a, b),
-  '>': gt,
-  '<': lt,
-  '>=': gte,
-  '<=': lte,
-};
+export function extractValueOrLiteral<TInput extends {
+  [k: string]: string | boolean | number | null | undefined | TInput;
+} = any
+>(input: TInput, token: string, stepRow?: number, stepCount?: number) {
+  if (input[token]) return autoDetectType(input[token]);
+  if (token.includes('.') && get(input, token)) {
+    return autoDetectType(get(input, token));
+  }
+  if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
+  if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
+  console.warn(
+    `Unrecognized token in rule expression (${stepRow}, ${stepCount}):`,
+    token
+  );
+  // if we have a string key and don't find it in the input, assume it's undefined.
+  return undefined;
+}
 
-const ModifierOperators = {
-  '+': add,
-  '-': subtract,
-  '*': multiply,
-  '/': divide,
-};
-
-const AssignmentOperators = {
-  '+=': add,
-  '-=': subtract,
-  '*=': multiply,
-  '/=': divide,
-  '**=': Math.pow,
-  '%=': (a: number, b: number) => a % b,
-  '||=': (a: any, b: any) => a || b,
-  '??=': (a: any, b: any) => a ?? b,
-};
 
 export type Rule =
   | {
@@ -271,7 +271,7 @@ export type LogicalRule =
       or: string[];
     };
 
-interface RuleTrace {
+export interface RuleTrace {
   name: string;
   rule: string;
   operator: string;

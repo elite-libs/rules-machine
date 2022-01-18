@@ -231,6 +231,77 @@ Array [
 ]
 `;
 
+exports[`can process complex rule expressions 1`] = `
+Array [
+  Object {
+    "name": "calculateDiscount",
+    "operator": ">=",
+    "parseResult": Object {
+      "lhs": "price",
+      "lhsv": 100,
+      "rhs": "25",
+      "rhsv": 25,
+    },
+    "result": true,
+    "rule": "price >= 25",
+    "state": "{\\"price\\":100}",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "name": "calculateDiscount",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "discount",
+      "lhsv": "discount",
+      "rhs": "5 * 2",
+      "rhsv": 10,
+    },
+    "result": Object {
+      "discount": 80,
+      "price": 100,
+    },
+    "rule": "discount = 5 * 2",
+    "state": "{\\"price\\":100,\\"discount\\":10}",
+    "stepCount": 2,
+    "stepRow": 0,
+  },
+  Object {
+    "name": "calculateDiscount",
+    "operator": ">=",
+    "parseResult": Object {
+      "lhs": "price",
+      "lhsv": 100,
+      "rhs": "100",
+      "rhsv": 100,
+    },
+    "result": true,
+    "rule": "price >= 100",
+    "state": "{\\"price\\":100,\\"discount\\":10}",
+    "stepCount": 3,
+    "stepRow": 1,
+  },
+  Object {
+    "name": "calculateDiscount",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "discount",
+      "lhsv": "discount",
+      "rhs": "20 * 4",
+      "rhsv": 80,
+    },
+    "result": Object {
+      "discount": 80,
+      "price": 100,
+    },
+    "rule": "discount = 20 * 4",
+    "state": "{\\"price\\":100,\\"discount\\":80}",
+    "stepCount": 4,
+    "stepRow": 1,
+  },
+]
+`;
+
 exports[`can process increment operator += 1`] = `
 Array [
   Object {
