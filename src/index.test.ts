@@ -2,14 +2,14 @@ import { ruleFactory } from './index';
 
 const omitRuntime = ({runtime, ...keys}: any) => keys;
 test("can process 'then' rules", () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: 'price >= 25', then: 'discount = 5' },
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
 
   const input = { price: 100 };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(20);
@@ -17,37 +17,37 @@ test("can process 'then' rules", () => {
 });
 
 test("can process omitted 'else' rules", () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
 
   const input = { price: 10 };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(undefined);
 });
 
 test('can process increment operator +=', () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: 'price >= 100', then: 'discount += 20' },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
   const input = { price: 100, discount: 10 };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(30);
 });
 
 test('structured input', () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: 'user.plan == "premium"', then: 'discount = 15' },
     { if: 'user.employee == true', then: 'discount = 15' },
     { return: 'discount' },
-  ]);
-  const result = rulesMachine({
+  ], 'calculateDiscount');
+  const result = rulesFn({
     user: {
       plan: 'premium',
       employee: true,
@@ -66,13 +66,13 @@ test('structured input', () => {
 });
 
 test("can process 'and' rules", () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
     { if: 'price >= 100', then: 'discount = 20' },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
   const input = { price: 35 };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(5);
@@ -80,16 +80,16 @@ test("can process 'and' rules", () => {
 });
 
 test("can process 'or' rules", () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: 'price <= 100', then: 'discount = 5' },
     {
       if: { or: ['price >= 100', 'user.isAdmin == true'] },
       then: 'discount = 20',
     },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
   const input = { price: 35, user: { isAdmin: true } };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(20);
@@ -97,7 +97,7 @@ test("can process 'or' rules", () => {
 });
 
 test('can process rule arrays', () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     {
       if: 'price <= 100',
       then: ['discount = 5', 'user.discountApplied = true'],
@@ -107,9 +107,9 @@ test('can process rule arrays', () => {
       then: 'discount = 20',
     },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
   const input = { price: 90, user: { isAdmin: true } };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.returnValue).toBe(5);
@@ -118,14 +118,14 @@ test('can process rule arrays', () => {
 });
 
 test("can process complex rule expressions", () => {
-  const rulesMachine = ruleFactory('calculateDiscount', [
+  const rulesFn = ruleFactory([
     { if: 'price >= 25', then: 'discount = 5 * 2' },
     { if: 'price >= 100', then: 'discount = 20 * 4' },
     { return: 'discount' },
-  ]);
+  ], 'calculateDiscount');
 
   const input = { price: 100 };
-  const result = rulesMachine(input);
+  const result = rulesFn(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.input.discount).toBe(80);

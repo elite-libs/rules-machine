@@ -1,5 +1,8 @@
 # Rules Machine
 
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD036 -->
+
 [![CI Status](https://github.com/elite-libs/rules-machine/workflows/test/badge.svg)](https://github.com/elite-libs/rules-machine/actions)
 [![NPM version](https://img.shields.io/npm/v/@elite-libs/rules-machine.svg)](https://www.npmjs.com/package/@elite-libs/rules-machine)
 [![GitHub stars](https://img.shields.io/github/stars/elite-libs/rules-machine.svg?style=social)](https://github.com/elite-libs/rules-machine)
@@ -20,6 +23,7 @@
 - [Why Rules Engines?](#why-rules-engines)
   - [Pros](#pros)
   - [Cons](#cons)
+- [All Operators & Functions](#all-operators--functions)
 - [Examples](#examples)
   - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
   - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
@@ -133,10 +137,13 @@ npm install @elite-libs/rules-machine
 ```ts
 import { ruleFactory } from '@elite-libs/rules-machine';
 
-const fishRhyme = ruleFactory('fishRhyme', [
+const fishRhyme = ruleFactory([
   {if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
   {if: 'fish == "redFish"', then: 'fish = "blueFish"' },
 ]);
+// Equivalent to:
+// if (fish == "oneFish") fish = "twoFish"
+// if (fish == "redFish") fish = "blueFish"
 
 fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 ```
@@ -146,8 +153,15 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 ### Example Rule: Apply Either $5 or $10 Discount
 
 ```json
+// Using "and" object style operator
 [
   {"if": {"and": ["price >= 25", "price <= 50"]}, "then": "discount = 5"},
+  {"if": "price > 50", "then": "discount = 10"},
+  {"return": "discount"}
+]
+// Using inline AND operator
+[
+  {"if": "price >= 25 AND price <= 50", "then": "discount = 5"},
   {"if": "price > 50", "then": "discount = 10"},
   {"return": "discount"}
 ]
@@ -265,112 +279,134 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 
 </details>
 
-## Supported Operators
+## All Operators & Functions
+
+### Builtin Operators
 
 1. `!=`
-1. `%`
-1. `*`
-1. `+`
-1. `,`
-1. `-`
-1. `/`
+1. `=` - equality check.
+1. `==` - equality check.
 1. `<`
 1. `<=`
 1. `<>`
-1. `=`
-1. `==`
 1. `>`
 1. `>=`
+1. `%` - `10 % 2` => `0` (tip: odd/even check)
+1. `*` - `42 * 10` => `420`
+1. `+` - `42 + 10` => `52`
+1. `-`
+1. `/`
 1. `^`
 1. `~=`
 1. `AND`
 1. `OR`
 
-## Supported Functions
+<!-- 1. `,` -->
 
-1. ABS()
+### Builtin Functions
+
+#### Utility Functions
+
+1. IF() - `IF(7 > 5, 8, 10)` => `8`
+
+<!-- 
+1. GET()
+1. PUT()
+-->
+
+#### Math Functions: Core
+
+1. AVERAGE() - `AVERAGE([10, 20, 30])` => `20`
+1. CEIL() - `CEIL(0.1)` => `1`
+1. FLOOR() - `FLOOR(1.9)` => `1`
+1. ROUND() - `FLOOR(0.6)` => `1`
+1. TRUNC() - `TRUNC(1.9)` => `1`
+1. SUM() - `SUM([1,2,3])` => `6`
+1. ADD() - `ADD(2, 3)` => `5`
+1. SUB() - `SUB(2, 3)` => `-1`
+1. DIV() - `DIV(9, 3)` => `3`
+1. MUL() - `MUL(3, 3)` => `9`
+1. NEG() - `NEG(ADD(1, 2))` => `-3`
+1. NOT() - `NOT(ISPRIME(7))` => `false`
+1. ISNAN() - `ISNAN('hai')` => `true`
+1. ISPRIME() - `ISPRIME(7)` => `true`
+1. MOD() - `MOD(10, 2)` => `0`
+1. GCD() - `GCD(9, 3)` => `3`
+
+#### Array Functions
+
+1. SLICE() - `SLICE(1, 3, [1, 42, 69, 54])` => `[42, 69]`
+1. LENGTH() - `LENGTH([42, 69, 54])` => `3`
+1. SORT() - `SORT([2,2,1])` => `[1, 2, 2]`
+1. FILTER() - `FILTER(isEven, [1,2,3,4,5,6])` => `[2, 4, 6]`
+1. INDEX() - `INDEX([42, 69, 54], 0)` => `42`
+1. MAP() - `MAP("NOT", [FALSE, TRUE, FALSE])` => `[true, false, true]`
+1. MIN() - `MIN([42, 69, 54])` => `42`
+1. MAX() - `MAX([42, 69, 54])` => `69`
+1. HEAD() - `HEAD([42, 69, 54])` => `42`
+1. LAST() - `LAST([42, 69, 54])` => `54`
+1. TAIL() - `TAIL([42, 69, 54])` => `[69, 54]`
+1. TAKE() - `TAKE(2, [42, 69, 54])` => `[42, 69]`
+1. TAKEWHILE() - `TAKEWHILE(isEven, [0,2,4,5,6,7,8])` => `[0, 2, 4]`
+1. DROP() - `DROP(2, [1, 42, 69, 54])` => `[69, 54]`
+1. DROPWHILE() - `DROPWHILE(isEven, [0,2,4,5,6,7,8])` => `[5,6,7,8]`
+1. REDUCE() - `REDUCE("ADD", 0, [1, 2, 3])` => `6`
+1. REVERSE() - `REVERSE([1,2,2])` => `[2, 2, 1]`
+1. CHARARRAY() - `CHARARRAY("abc")` => `['a', 'b', 'c']`
+1. CONCAT() - `CONCAT([42, 69], [54])` => `[42, 69, 54]`
+1. CONS() - `CONS(2, [3, 4])` => `[2, 3, 4]`
+1. JOIN() - `JOIN(",", ["a", "b"])` => `a,b`
+1. RANGE() - `RANGE(0, 5)` => `[0, 1, 2, 3, 4]`
+1. UNZIPDICT() - `UNZIPDICT([["a", 1], ["b", 5]])` => `{a: 1, b: 5}`
+1. ZIP() - `ZIP([1, 3], [2, 4])` => `[[1, 2], [3, 4]]`
+<!-- 1. ARRAY() -->
+
+#### Object Functions
+
+1. DICT() - `DICT(["a", "b"], [1, 4])` => `{a: 1, b: 4}`
+1. KEYS() - `KEYS(DICT(["a", "b"], [1, 4]))` => `['a', 'b']`
+1. VALUES() - `VALUES(DICT(["a", "b"], [1, 4]))` => `[1, 4]`
+1. UNZIP() - `UNZIP([[1, 2], [3, 4]])` => `[[1, 3], [2, 4]]`
+
+#### String Functions
+
+1. LOWER() - `LOWER('HELLO')` => `hello`
+1. UPPER() - `UPPER('hello')` => `HELLO`
+1. SPLIT() - `SPLIT(',', 'a,b')` => `['a', 'b']`
+1. CHAR() - `CHAR(65)` => `A`
+1. CODE() - `CODE('A')` => `65`
+1. BIN2DEC() - `BIN2DEC('101010')` => `42`
+1. DEC2BIN() - `DEC2BIN(42)` => `101010`
+1. DEC2HEX() - `DEC2HEX('42')` => `2a`
+1. DEC2STR() - `DEC2STR('42')` => `42`
+1. HEX2DEC() - `HEX2DEC("F")` => `15`
+1. STR2DEC() - `STR2DEC('42')` => `42`
+
+#### Math Functions: Advanced
+
+1. SQRT()
+1. CUBEROOT()
+1. SIGN() - `SIGN(-42)` => `-1`
+1. ABS() - `ABS(-42)` => `42`
 1. ACOS()
 1. ACOSH()
-1. ADD()
-1. ARRAY()
 1. ASIN()
 1. ASINH()
 1. ATAN()
 1. ATAN2()
 1. ATANH()
-1. AVERAGE()
-1. BIN2DEC()
-1. CEIL()
-1. CHAR()
-1. CHARARRAY()
-1. CODE()
-1. CONCAT()
-1. CONS()
 1. COS()
 1. COSH()
-1. CUBEROOT()
-1. DEC2BIN()
-1. DEC2HEX()
-1. DEC2STR()
 1. DEGREES()
-1. DICT()
-1. DIV()
-1. DROP()
-1. DROPWHILE()
+1. RADIANS()
+1. SIN()
+1. SINH()
+1. TAN()
+1. TANH()
 1. EXP()
-1. FILTER()
-1. FLOOR()
-1. GCD()
-1. GET()
-1. HEAD()
-1. HEX2DEC()
-1. IF()
-1. INDEX()
-1. ISNAN()
-1. ISPRIME()
-1. JOIN()
-1. KEYS()
-1. LAST()
-1. LENGTH()
 1. LN()
 1. LOG()
 1. LOG2()
-1. LOWER()
-1. MAP()
-1. MAX()
-1. MIN()
-1. MOD()
-1. MUL()
-1. NEG()
-1. NOT()
-1. PUT()
-1. RADIANS()
-1. RANGE()
-1. REDUCE()
-1. REVERSE()
-1. ROUND()
-1. SIGN()
-1. SIN()
-1. SINH()
-1. SLICE()
-1. SORT()
-1. SPLIT()
-1. SQRT()
-1. STR2DEC()
-1. STRING()
-1. SUB()
-1. SUM()
-1. TAIL()
-1. TAKE()
-1. TAKEWHILE()
-1. TAN()
-1. TANH()
-1. TRUNC()
-1. UNZIP()
-1. UNZIPDICT()
-1. UPPER()
-1. VALUES()
-1. ZIP()
 
 ## More Reading & Related Projects
 
@@ -380,11 +416,9 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 
 ## TODO
 
-- [ ] **Publish modules for CJS, ESM, AMD, UMD. (Implement parceljs, rollup, etc.)**
-- [ ] rule type: `{"runRules": "ruleSetName"}`
-- [ ] rule type: `{"throw": "error message"}`
-- [ ] rule type: `{"log": "rule/value expression"}`
-- [ ] rule type: `{"set": "newVar = value"}`
+- [x] Add arithmetic & function support to expression parser.
+  - Over 80 builtin functions supported.
+- [x] Publish modules for CJS, ESM, AMD, UMD. (Using parcel.)
 - [ ] misc: Structured Type validation.
 - [x] security: NEVER use `eval`/`Function('...')` parsing.
 - [x] misc: Simplify TS, making `Rule[]` the sole recursive type.
@@ -392,3 +426,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 - [x] misc: Use single object for input and output. (Doesn't mutate input.)
 - [x] misc: Add support for multiple boolean expressions. (see: `{"and": []}` `{"or": []}`).
 - [x] misc: Rules are serializable, and can be shared.
+- [ ] rule type: `{"run": Rule[] | Rule | "ruleSetName"}`
+- [ ] rule type: `{"throw": "error message"}`
+- [ ] rule type: `{"log": "rule/value expression"}`
+- [ ] rule type: `{"set": "newVar = value"}`

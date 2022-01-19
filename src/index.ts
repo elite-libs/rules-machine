@@ -21,7 +21,7 @@ export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
->(name: string, rules: Rule[]) {
+>(rules: Rule[], name?: string) {
   // Validate, parse & load rules
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput) {
