@@ -12,6 +12,7 @@ import {
   TermTyper,
   TermType,
 } from "expressionparser/dist/ExpressionParser";
+import ms from "ms";
 
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
@@ -147,6 +148,23 @@ const char = (result: ExpressionValue) => {
   return result;
 };
 
+const dateParser = (arg: ExpressionThunk | string | number): number | string => {
+  const dateArg = typeof arg === 'function' ? arg() : arg;
+
+  if (typeof dateArg === "string" && dateArg.length < 6) {
+    // possible date duration expression
+    const duration = ms(dateArg);
+    const d = new Date(Date.now() + duration);
+    // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
+    return d.getTime();
+  }
+  if (typeof dateArg === "string" || typeof dateArg === "number") {
+    const d = new Date(dateArg);
+    return d.getTime();
+  }
+  return `UnknownDate(${dateArg})`
+};
+
 type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
@@ -238,6 +256,14 @@ export const ruleExpressionLanguage = function (
         if (a === 0) return b;
         b %= a;
       }
+    },
+    DATE: dateParser,
+    DATEISO: (arg) => {
+      const dateArg = arg();
+      if (typeof dateArg === "string" || typeof dateArg === "number") {
+        return new Date(dateParser(dateArg)).toISOString();
+      }
+      return `UnknownDate(${dateArg})`
     },
     NOT: (arg) => !arg(),
     "!": (arg) => !arg(),

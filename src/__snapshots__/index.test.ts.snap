@@ -1,5 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`can invoke date functions 1`] = `
+Array [
+  Object {
+    "name": "dateMath",
+    "operator": ">=",
+    "parseResult": Object {
+      "lhs": "3",
+      "lhsv": 3,
+      "rhs": "1",
+      "rhsv": 1,
+    },
+    "result": true,
+    "rule": "3 >= 1",
+    "state": "{\\"addToDate\\":\\"10m\\"}",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "name": "dateMath",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "inTenMinutes",
+      "lhsv": "inTenMinutes",
+      "rhs": "DATEISO(\\"10m\\")",
+      "rhsv": "2020-01-20T07:10:00.000Z",
+    },
+    "result": Object {
+      "addToDate": "10m",
+      "inTenMinutes": "2020-01-20T07:10:00.000Z",
+    },
+    "rule": "inTenMinutes = DATEISO(\\"10m\\")",
+    "state": "{\\"addToDate\\":\\"10m\\",\\"inTenMinutes\\":\\"2020-01-20T07:10:00.000Z\\"}",
+    "stepCount": 2,
+    "stepRow": 0,
+  },
+]
+`;
+
 exports[`can process 'and' rules 1`] = `
 Array [
   Object {
@@ -340,6 +378,77 @@ Array [
 ]
 `;
 
+exports[`can process nested rule dictionary 1`] = `
+Array [
+  Object {
+    "name": "undefined",
+    "operator": ">=",
+    "parseResult": Object {
+      "lhs": "price",
+      "lhsv": 100,
+      "rhs": "25",
+      "rhsv": 25,
+    },
+    "result": true,
+    "rule": "price >= 25",
+    "state": "{\\"price\\":100}",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "name": "undefined",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "discount",
+      "lhsv": "discount",
+      "rhs": "5 * 2",
+      "rhsv": 10,
+    },
+    "result": Object {
+      "discount": 80,
+      "price": 100,
+    },
+    "rule": "discount = 5 * 2",
+    "state": "{\\"price\\":100,\\"discount\\":10}",
+    "stepCount": 2,
+    "stepRow": 0,
+  },
+  Object {
+    "name": "undefined",
+    "operator": ">=",
+    "parseResult": Object {
+      "lhs": "price",
+      "lhsv": 100,
+      "rhs": "100",
+      "rhsv": 100,
+    },
+    "result": true,
+    "rule": "price >= 100",
+    "state": "{\\"price\\":100,\\"discount\\":10}",
+    "stepCount": 3,
+    "stepRow": 1,
+  },
+  Object {
+    "name": "undefined",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "discount",
+      "lhsv": "discount",
+      "rhs": "20 * 4",
+      "rhsv": 80,
+    },
+    "result": Object {
+      "discount": 80,
+      "price": 100,
+    },
+    "rule": "discount = 20 * 4",
+    "state": "{\\"price\\":100,\\"discount\\":80}",
+    "stepCount": 4,
+    "stepRow": 1,
+  },
+]
+`;
+
 exports[`can process omitted 'else' rules 1`] = `
 Array [
   Object {
@@ -463,12 +572,40 @@ Array [
       "lhs": "user.plan",
       "lhsv": "premium",
       "rhs": "\\"premium\\"",
-      "rhsv": "",
+      "rhsv": "premium",
     },
-    "result": false,
+    "result": true,
     "rule": "user.plan == \\"premium\\"",
     "state": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100}}",
     "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "name": "calculateDiscount",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "discount",
+      "lhsv": "discount",
+      "rhs": "15",
+      "rhsv": 15,
+    },
+    "result": Object {
+      "config": Object {
+        "maxDiscount": 10,
+      },
+      "discount": 15,
+      "shoppingCart": Object {
+        "discount": 1,
+        "total": 100,
+      },
+      "user": Object {
+        "employee": true,
+        "plan": "premium",
+      },
+    },
+    "rule": "discount = 15",
+    "state": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "stepCount": 2,
     "stepRow": 0,
   },
   Object {
@@ -482,8 +619,8 @@ Array [
     },
     "result": true,
     "rule": "user.employee == true",
-    "state": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100}}",
-    "stepCount": 2,
+    "state": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "stepCount": 3,
     "stepRow": 1,
   },
   Object {
@@ -511,7 +648,7 @@ Array [
     },
     "rule": "discount = 15",
     "state": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
-    "stepCount": 3,
+    "stepCount": 4,
     "stepRow": 1,
   },
 ]

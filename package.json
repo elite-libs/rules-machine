@@ -83,6 +83,7 @@
   "dependencies": {
     "debug": "^4.3.3",
     "expressionparser": "^1.1.5",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "ms": "^2.1.3"
   }
 }

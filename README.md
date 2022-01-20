@@ -309,7 +309,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 
 1. IF() - `IF(7 > 5, 8, 10)` => `8`
 
-<!-- 
+<!--
 1. GET()
 1. PUT()
 -->
@@ -430,3 +430,4 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 - [ ] rule type: `{"throw": "error message"}`
 - [ ] rule type: `{"log": "rule/value expression"}`
 - [ ] rule type: `{"set": "newVar = value"}`
+- [ ] Disallow input keys that can cause weirdness: `undefined`, `valueOf`, `toString`, `__proto__`, `constructor`.

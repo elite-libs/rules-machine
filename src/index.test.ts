@@ -1,6 +1,24 @@
-import { ruleFactory } from './index';
+import { Rule, ruleFactory } from './index';
+import mockDateHelper from './utils/mockDateHelper';
 
 const omitRuntime = ({runtime, ...keys}: any) => keys;
+
+test("can invoke date functions", () => {
+  const unMockDate = mockDateHelper(new Date(2020, 0, 20));
+  const rulesFn = ruleFactory([
+    { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },
+    { return: 'inTenMinutes' },
+  ], 'dateMath');
+
+  const input = { addToDate: '10m' };
+  const result = rulesFn(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  expect(result.returnValue).toMatch(/.*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*/);
+  expect(result.lastValue).toBeDefined();
+  unMockDate();
+});
+
 test("can process 'then' rules", () => {
   const rulesFn = ruleFactory([
     { if: 'price >= 25', then: 'discount = 5' },
@@ -126,6 +144,49 @@ test("can process complex rule expressions", () => {
 
   const input = { price: 100 };
   const result = rulesFn(input);
+
+  expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  expect(result.input.discount).toBe(80);
+  expect(result.returnValue).toBe(80);
+});
+
+test("can process nested rule dictionary", () => {
+  const userRules: Record<string, Rule[]> = {
+    /**
+     * Example Input: (User object)
+     * ```js
+     * {
+     *   user: {
+     *     plan: 'premium',
+     *     name: 'Dan',
+     *     rewardsBalance: 0,
+     *   }
+     * }
+     * ```
+     */
+    applyNewUserPromotion: ["user.rewardsBalance = 500"],
+    applyFreeTrial: ["user.rewardsBalance = 500"],
+
+  };
+  const rewardsRules: Record<string, Rule[]> = {
+    /**
+     * convertRewardsToPercentDiscount determines a user's `discountPercent`.
+     */
+    convertRewardsToPercentDiscount: [
+      { if: 'user.rewardsBalance >= 1000', then: 'discountPercent = 0.05' },
+      { if: 'user.rewardsBalance >= 250', then: 'discountPercent = 0.02' },
+      { if: 'user.rewardsBalance >= 100', then: 'discountPercent = 0.01' },
+      { return: 'discountPercent' },
+    ],
+  }
+  const rulesMachine = ruleFactory([
+    { if: 'price >= 25', then: 'discount = 5 * 2' },
+    { if: 'price >= 100', then: 'discount = 20 * 4' },
+    { return: 'discount' },
+  ]);
+
+  const input = { price: 100 };
+  const result = rulesMachine(input);
 
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.input.discount).toBe(80);
