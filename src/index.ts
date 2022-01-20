@@ -17,11 +17,31 @@ import { ValuePrimitive } from 'expressionparser/dist/ExpressionParser';
 const trailingQuotes = /^('|").*('|")$/g;
 const whitespacePattern = /\s+/g;
 
+type RuleMachineOptions = {
+  name?: string;
+  traceResults?: boolean
+}
+
+type RulesTraceResults<
+TInput extends {
+  [k: string]: string | boolean | number | null | undefined | TInput;
+} = any
+> = {
+  trace: RuleTrace[],
+  input: TInput,
+  returnValue: any,
+  lastValue: any,
+}
+
 export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
->(rules: Rule[], name?: string) {
+>(rules: Rule[], options: string | RuleMachineOptions = { name: 'rules.unnamed' }) {
+  if (typeof options === 'string') {
+    options = { name: options } as RuleMachineOptions;
+  }
+  let {name = 'rules.unnamed', traceResults} = options;
   // Validate, parse & load rules
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput) {
@@ -116,7 +136,11 @@ export function ruleFactory<
       }
       stepRow++;
     }
-    return results;
+    if (traceResults) {
+      return results;
+    } else {
+      return results.returnValue || results.lastValue;
+    }
 
     function evaluateRule({
       stepRow,

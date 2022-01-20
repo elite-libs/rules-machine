@@ -416,6 +416,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 
 ## TODO
 
+- [ ] **Return result by default, make trace and metadata opt-in via options.**
 - [x] Add arithmetic & function support to expression parser.
   - Over 80 builtin functions supported.
 - [x] Publish modules for CJS, ESM, AMD, UMD. (Using parcel.)
