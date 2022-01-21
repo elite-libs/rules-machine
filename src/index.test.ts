@@ -7,6 +7,7 @@ test("can invoke date functions", () => {
   const unMockDate = mockDateHelper(new Date(2020, 0, 20));
   const rulesFn = ruleFactory([
     { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },
+    // { if: '3 >= 1', then: 'inTenMinutes = DATEISO("2022-01-10", "-10d")' },
     { return: 'inTenMinutes' },
   ], { name: 'dateMath', traceResults: false });
 

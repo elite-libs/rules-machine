@@ -15,18 +15,15 @@ import { ruleFactory } from '@elite-libs/rules-machine';
 import { userRules } from './rules/users';
 import { rewardsRules } from './rules/rewards';
 
-const appHooks = {
-  onUserRegister: [
+export const appHooks = {
+  onUserRegister: ruleFactory([
     userRules.applyFreeTrial,
     userRules.applyNewUserPromotion,
-  ],
-  getDiscountPercent: [
+  ]),
+  getDiscountPercent: ruleFactory([
     rewardsRules.convertRewardsToPercentDiscount
-  ],
+  ]),
 }
-
-export const onUserRegister = ruleFactory(appHooks.onUserRegister);
-export const getDiscountPercent = ruleFactory(appHooks.getDiscountPercent);
 ```
 
 ### App Usage example
@@ -35,7 +32,9 @@ Here's where we use our app-level functions (`registerUser`, `calculateCartDisco
 
 ```ts
 // `./src/users/index.ts`
-import { onUserRegister, getDiscountPercent } from './src/app-hooks';
+import appHooks from './src/app-hooks';
+
+const { onUserRegister, getDiscountPercent } = appHooks;
 
 export function registerUser(user) {
   // Call a rules function just like any other function.
