@@ -1,23 +1,19 @@
 {
   "compilerOptions": {
+    "target": "ES2019",
+    "module": "es2015",
+    "lib": ["esnext", "DOM"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "baseUrl": ".",
-
     "declaration": true,
     "declarationMap": true,
-    // "declarationDir": "./dist/types",
-
     "esModuleInterop": true,
+    "removeComments": true,
     // "extendedDiagnostics": true,
     "forceConsistentCasingInFileNames": true,
-    // "isolatedModules": true,
-    // "jsx": "preserve",
-    "lib": ["esnext", "DOM"],
-    "module": "ES2015",
     "moduleResolution": "node",
-    // "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
     "resolveJsonModule": true,
@@ -25,7 +21,6 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2019",
     "useUnknownInCatchVariables": false
   },
   "include": ["**/*.ts"],

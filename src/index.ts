@@ -33,6 +33,8 @@ TInput extends {
   lastValue: any,
 }
 
+// export default ruleFactory;
+
 export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
