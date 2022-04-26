@@ -1,4 +1,4 @@
-import debug from 'debug';
+// import debug from 'debug';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { isBoolean, isNumber, autoDetectType } from './utils';
@@ -7,41 +7,41 @@ import {
   ConditionalOperators,
   ModifierOperators,
 } from './operators';
-// import { reversePolishNotation } from './utils/reversePolishNotation';
-// import { performance } from 'perf_hooks';
 import performance from './utils/performance';
 import { ruleExpressionLanguage } from './rule-expression-language';
 import { init } from 'expressionparser';
-import { ValuePrimitive } from 'expressionparser/dist/ExpressionParser';
 
 const trailingQuotes = /^('|").*('|")$/g;
 const whitespacePattern = /\s+/g;
 
 type RuleMachineOptions = {
   name?: string;
-  traceResults?: boolean
-}
+  traceResults?: boolean;
+};
 
 type RulesTraceResults<
-TInput extends {
-  [k: string]: string | boolean | number | null | undefined | TInput;
-} = any
+  TInput extends {
+    [k: string]: string | boolean | number | null | undefined | TInput;
+  } = any
 > = {
-  trace: RuleTrace[],
-  input: TInput,
-  returnValue: any,
-  lastValue: any,
-}
+  trace: RuleTrace[];
+  input: TInput;
+  returnValue: any;
+  lastValue: any;
+};
 
 export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
->(rules: Rule[], options: string | RuleMachineOptions = { name: 'rules.unnamed' }) {
+>(
+  rules: Rule,
+  options: string | RuleMachineOptions = { name: 'rules.unnamed' }
+) {
   if (typeof options === 'string') {
     options = { name: options } as RuleMachineOptions;
   }
-  let {name = 'rules.unnamed', traceResults} = options;
+  let { name = 'rules.unnamed', traceResults } = options;
   // Validate, parse & load rules
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput) {
@@ -60,7 +60,8 @@ export function ruleFactory<
     const parser = init(ruleExpressionLanguage, (term: string) => {
       if (typeof term === 'string') {
         const result =
-          extractValueOrLiteral(input, term, stepRow, stepCount, false) || 'INVALID';
+          extractValueOrLiteral(input, term, stepRow, stepCount, false) ||
+          'INVALID';
         // console.log(`TERM: ${term} => ${result}`);
         return result;
         // return 42;
@@ -68,6 +69,8 @@ export function ruleFactory<
         throw new Error(`Invalid term: ${term}`);
       }
     });
+
+    rules = arrayify(rules);
 
     for (const rule of rules) {
       if (
@@ -83,14 +86,14 @@ export function ruleFactory<
         // NOTE: Add || and && operators here.
         let conditionResult: boolean | undefined = undefined;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
-          const and = rule.if.and;
+          const and = arrayify(rule.if.and);
           const results = and.map((rule) =>
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.every((result) => result);
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = rule.if.or;
-          const results = or.map((rule) =>
+          const results = arrayify(or).map((rule) =>
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.some((result) => result);
@@ -160,7 +163,9 @@ export function ruleFactory<
       | undefined
       | Array<string | boolean | number | null | undefined> {
       if (Array.isArray(rule) && typeof rule[0] === 'string')
-        return rule.flatMap((rule) => evaluateRule({ stepRow, input, rule, ignoreMissingKeys }));
+        return rule.flatMap((rule) =>
+          evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
+        );
       if (typeof rule !== 'string')
         throw new Error('Nested rules not yet implemented.');
 
@@ -180,7 +185,13 @@ export function ruleFactory<
       }
       if (tokens.length === 1) {
         // TODO: Convert to new parser here!?
-        const result =  extractValueOrLiteral(input, tokens[0], stepRow, stepCount, ignoreMissingKeys);
+        const result = extractValueOrLiteral(
+          input,
+          tokens[0],
+          stepRow,
+          stepCount,
+          ignoreMissingKeys
+        );
         results.lastValue = result;
         return result;
       }
@@ -192,7 +203,7 @@ export function ruleFactory<
         leftSide,
         stepRow,
         stepCount,
-        true,
+        true
       );
       let rightSideValue = rightSideParsed; // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
       if (operator in ConditionalOperators) {
@@ -282,19 +293,40 @@ export function ruleFactory<
       return false;
     }
 
-    function extractValueOrNumber(input: TInput, token: string, ignoreMissingKeys?: boolean): number {
-      const val = extractValueOrLiteral(input, token, stepRow, stepCount, ignoreMissingKeys);
+    function extractValueOrNumber(
+      input: TInput,
+      token: string,
+      ignoreMissingKeys?: boolean
+    ): number {
+      const val = extractValueOrLiteral(
+        input,
+        token,
+        stepRow,
+        stepCount,
+        ignoreMissingKeys
+      );
       if (typeof val === 'number') return val;
       return parseFloat(`${val}`);
     }
   };
 }
 
+function arrayify<T>(items: T | T[]): T[] {
+  if (!Array.isArray(items)) return [items];
+  return items;
+}
+
 export function extractValueOrLiteral<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
->(input: TInput, token: string, stepRow?: number, stepCount?: number, ignoreMissingKeys?: boolean) {
+>(
+  input: TInput,
+  token: string,
+  stepRow?: number,
+  stepCount?: number,
+  ignoreMissingKeys?: boolean
+) {
   if (input[token]) return autoDetectType(input[token]);
   if (token.includes('.') && get(input, token)) {
     return autoDetectType(get(input, token));
@@ -303,8 +335,10 @@ export function extractValueOrLiteral<
   if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
 
   // throw if we got an undefined key
-  if (!ignoreMissingKeys && token.length > 0) throw new Error(`Undefined key: ${token}`);
+  if (!ignoreMissingKeys && token.length > 0)
+    throw new Error(`Undefined key: ${token}`);
   if (ignoreMissingKeys == true) return undefined;
+  // @ts-ignore
   console.warn(
     `Unrecognized token in rule expression (${stepRow}, ${stepCount}):`,
     token
@@ -316,20 +350,27 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-      if: string | LogicalRule;
-      then: string | string[] | Rule;
-      else?: string | string[] | Rule;
+      if: Rule;
+      then: Rule;
+      else?: Rule;
     }
   | {
-      return: string | Rule;
-    };
+      and: Rule[];
+    }
+  | {
+      or: Rule[];
+    }
+  | {
+      return: Rule;
+    }
+  | Rule[];
 
 export type LogicalRule =
   | {
-      and: string[];
+      and: Rule[];
     }
   | {
-      or: string[];
+      or: Rule[];
     };
 
 export interface RuleTrace {
