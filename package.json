@@ -9,10 +9,29 @@
     "url": "git://github.com/elite-libs/rules-machine.git"
   },
   "source": "./src/index.ts",
-  "exports": "./dist/main.js",
-  "main": "./dist/main.js",
-  "module": "./dist/module.js",
+  "// exports": {
+    ".": {
+      "import": "./dist/index.cjs",
+      "require": "./dist/main.cjs"
+    },
+    "./main": {
+      "import": "./dist/index.cjs",
+      "require": "./dist/main.cjs",
+      "types": "./dist/main.d.ts"
+    },
+    "./legacy": {
+      "import": "./dist/main.cjs",
+      "require": "./dist/main.cjs"
+    },
+    "./src/index": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    }
+  },
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.mjs",
   "types": "./dist/index.d.ts",
+  "browser": "./dist/index.cjs",
   "private": false,
   "packageManager": "yarn@1.10.0",
   "engineStrict": true,
@@ -27,14 +46,18 @@
       "source": "src/types.ts"
     },
     "modern": {
+      "context": "browser",
       "optimize": false,
+      "isLibrary": true,
       "outputFormat": "esmodule",
       "engines": {
         "node": ">= 12"
       }
     },
     "legacy": {
+      "context": "browser",
       "optimize": false,
+      "isLibrary": true,
       "outputFormat": "commonjs",
       "engines": {
         "browsers": "> 1.5%, last 2 versions, not dead"
