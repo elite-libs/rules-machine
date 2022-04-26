@@ -6,7 +6,7 @@
     "baseUrl": ".",
 
     "declaration": true,
-    "declarationMap": true,
+    // "declarationMap": true,
     // "declarationDir": "./dist/types",
 
     "esModuleInterop": true,

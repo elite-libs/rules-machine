@@ -11,7 +11,7 @@ import {
   ExpressionParserOptions,
   TermTyper,
   TermType,
-} from "expressionparser/dist/ExpressionParser";
+} from "expressionparser/dist/ExpressionParser.js";
 import ms from "ms";
 
 export interface FunctionOps {
