@@ -1,3 +1,4 @@
+// import { Rule, ruleFactory } from '../';
 import { Rule, ruleFactory } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 
