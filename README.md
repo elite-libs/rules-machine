@@ -16,21 +16,33 @@
 
 **Table of Content**
 
-- [What's a `Rules Machine`?](#whats-a-rules-machine)
-  - [Goals](#goals)
-  - [Key Terms](#key-terms)
-  - [Finding Opportunities for Rules](#finding-opportunities-for-rules)
-- [Why Rules Engines?](#why-rules-engines)
-  - [Pros](#pros)
-  - [Cons](#cons)
-- [All Operators & Functions](#all-operators--functions)
-- [Examples](#examples)
-  - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
-  - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
-  - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
-  - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
-- [More Reading & Related Projects](#more-reading--related-projects)
-- [TODO](#todo)
+- [Rules Machine](#rules-machine)
+  - [What's a `Rules Machine`?](#whats-a-rules-machine)
+    - [Goals](#goals)
+    - [Key Terms](#key-terms)
+    - [Finding Opportunities for Rules](#finding-opportunities-for-rules)
+  - [Why Rules Engines?](#why-rules-engines)
+    - [Pros](#pros)
+    - [Cons](#cons)
+  - [Install](#install)
+  - [Usage](#usage)
+  - [Examples](#examples)
+    - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
+    - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
+    - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
+    - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
+  - [All Operators & Functions](#all-operators--functions)
+    - [Builtin Operators](#builtin-operators)
+    - [Functions](#functions)
+      - [Extended Methods](#extended-methods)
+      - [Utility Functions](#utility-functions)
+      - [Math Functions: Core](#math-functions-core)
+      - [Array Functions](#array-functions)
+      - [Object Functions](#object-functions)
+      - [String Functions](#string-functions)
+      - [Math Functions: Advanced](#math-functions-advanced)
+  - [More Reading & Related Projects](#more-reading--related-projects)
+  - [TODO](#todo)
 
 ## What's a `Rules Machine`?
 
@@ -301,16 +313,19 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 1. `AND`
 1. `OR`
 
-<!-- 1. `,` -->
+### Functions
 
-### Builtin Functions
+#### Extended Methods
+
+1. `REMOVE_VALUES(matches, input)` - will remove all values matching the item(s) in the 1st argument from the 2nd argument array. (XOR operation.)
+1. `INCLUDES_VALUES(matches, input)` - will ONLY INCLUDE values that are in the 1st & 2nd arguments. (Intersection operation.)
 
 #### Utility Functions
 
 1. IF() - `IF(7 > 5, 8, 10)` => `8`
+1. GET() - `GET('users[2].name', users)` => `Mary`
 
 <!--
-1. GET()
 1. PUT()
 -->
 
@@ -359,7 +374,6 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 1. RANGE() - `RANGE(0, 5)` => `[0, 1, 2, 3, 4]`
 1. UNZIPDICT() - `UNZIPDICT([["a", 1], ["b", 5]])` => `{a: 1, b: 5}`
 1. ZIP() - `ZIP([1, 3], [2, 4])` => `[[1, 2], [3, 4]]`
-<!-- 1. ARRAY() -->
 
 #### Object Functions
 
