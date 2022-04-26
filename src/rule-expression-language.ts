@@ -1,4 +1,3 @@
-// import { type } from "os";
 import {
   Delegate,
   ExpressionThunk,
@@ -12,6 +11,7 @@ import {
   TermTyper,
   TermType,
 } from "expressionparser/dist/ExpressionParser.js";
+import get from "lodash/get.js";
 import ms from "ms";
 
 export interface FunctionOps {
@@ -123,6 +123,8 @@ const obj = (obj: ExpressionValue) => {
 
   return obj;
 };
+
+const toArray = <TInput>(input: TInput): TInput[] => !Array.isArray(input) || typeof input === "string" ? [input] : input;
 
 const iterable = (result: ExpressionValue) => {
   if (!Array.isArray(result) && typeof result !== "string") {
@@ -524,12 +526,52 @@ export const ruleExpressionLanguage = function (
 
       return arr.slice(i);
     },
+    /**
+     * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.
+     * 
+     * ```js
+     * REMOVE_VALUES([1 ,3], [1, 2, 3, 4, 5])
+     * //-> [2, 4, 5]
+     * 
+     * REMOVE_VALUES(1, [1, 2, 3, 4, 5])
+     * //-> [2, 3, 4, 5]
+     * ```
+     * 
+     * @param {*} arg1 
+     * @param {*} arg2 
+     */
+     REMOVE_VALUES: (arg1, arg2) => {
+      const removeValues = toArray(arg1());
+      const data = evalArray(arg2());
 
+      return data.filter((val) => removeValues.includes(val) === false);
+    },
+    /**
+     * 
+     * INCLUDES_VALUES will ONLY INCLUDE values that are in the 1st argument.
+     * 
+     * ```js
+     * INCLUDES_VALUES([1 ,3], [1, 2, 3, 4, 5])
+     * //-> [2, 4, 5]
+     * 
+     * INCLUDES_VALUES(1, [1, 2, 3, 4, 5])
+     * //-> [2, 3, 4, 5]
+     * ```
+     * 
+     * @param {*} arg1 
+     * @param {*} arg2 
+     */
+     INCLUDES_VALUES: (arg1, arg2) => {
+      const includeValues = toArray(arg1());
+      const data = evalArray(arg2());
+
+      return data.filter((val) => includeValues.includes(val));
+    },
     GET: (arg1, arg2) => {
       const key = string(arg1());
       const inputObj = obj(arg2());
 
-      return inputObj[key];
+      return get(inputObj, key);
     },
     PUT: (arg1, arg2, arg3) => {
       const key = string(arg1());
