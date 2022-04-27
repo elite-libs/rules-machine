@@ -1,5 +1,5 @@
 // import { Rule, ruleFactory } from '../';
-import { Rule, ruleFactory } from './index';
+import { ruleFactory } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 
 const omitRuntime = ({runtime, ...keys}: any) => keys;
