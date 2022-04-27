@@ -1,6 +1,6 @@
 // import debug from 'debug';
-import get from 'lodash/get';
-import set from 'lodash/set';
+import get from 'lodash/get.js';
+import set from 'lodash/set.js';
 import { isBoolean, isNumber, autoDetectType } from './utils';
 import {
   AssignmentOperators,

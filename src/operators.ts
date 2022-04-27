@@ -1,15 +1,15 @@
-import isEqual from 'lodash/isEqual';
-import gt from 'lodash/gt';
-import gte from 'lodash/gte';
-import lt from 'lodash/lt';
-import lte from 'lodash/lte';
+import isEqual from 'lodash/isEqual.js';
+import gt from 'lodash/gt.js';
+import gte from 'lodash/gte.js';
+import lt from 'lodash/lt.js';
+import lte from 'lodash/lte.js';
 
-import cloneDeep from 'lodash/cloneDeep';
-import divide from 'lodash/divide';
-import add from 'lodash/add';
-import sum from 'lodash/sum';
-import subtract from 'lodash/subtract';
-import multiply from 'lodash/multiply';
+// import cloneDeep from 'lodash/cloneDeep.js';
+import divide from 'lodash/divide.js';
+import add from 'lodash/add.js';
+// import sum from 'lodash/sum.js';
+import subtract from 'lodash/subtract.js';
+import multiply from 'lodash/multiply.js';
 
 export const ConditionalOperators = {
   // "===": isEqual,
