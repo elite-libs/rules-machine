@@ -36,7 +36,7 @@ export function ruleFactory<
   } = any
 >(
   rules: Rule,
-  options: string | RuleMachineOptions = { name: 'rules.unnamed' }
+  options: RuleMachineOptions = { name: 'rules.unnamed', traceResults: false },
 ) {
   if (typeof options === 'string') {
     options = { name: options } as RuleMachineOptions;
@@ -110,7 +110,7 @@ export function ruleFactory<
           conditionResult &&
           (typeof rule.then === 'string' || Array.isArray(rule.then))
         ) {
-          const parseResult = evaluateRule({
+          results.lastValue = evaluateRule({
             stepRow,
             input,
             rule: rule.then,
@@ -119,7 +119,7 @@ export function ruleFactory<
           !conditionResult &&
           (typeof rule.else === 'string' || Array.isArray(rule.else))
         ) {
-          const parseResult = evaluateRule({
+          results.lastValue = evaluateRule({
             stepRow,
             input,
             rule: rule.else,
