@@ -13,6 +13,7 @@ import {
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
 import ms from 'ms';
+import { toArray } from './utils/toArray';
 
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
@@ -54,12 +55,17 @@ const array = (result: ExpressionValue) => {
     );
   }
 
+  result = unpackArray([...result]);
   if (isArgumentsArray(result)) {
     throw new Error(`Expected array, found: arguments`);
   }
 
   return result;
 };
+
+const unpackArray = <TInput extends unknown[]>(
+  thunks: TInput | ExpressionThunk[]
+) => thunks.map((thunk) => (typeof thunk === 'function' ? thunk() : thunk));
 
 const bool = (value: ExpressionValue) => {
   if (typeof value !== 'boolean') {
@@ -100,7 +106,7 @@ const evalArray = (
   arr: ExpressionValue,
   typeCheck?: (value: ExpressionValue) => ExpressionValue
 ) => {
-  return array(arr).map((value) => {
+  return toArray(arr).map((value) => {
     let result;
     if (typeof value === 'function' && value.length === 0) {
       result = value();
@@ -132,20 +138,31 @@ const obj = (obj: ExpressionValue) => {
   return obj;
 };
 
-const toArray = <TInput>(input: TInput): TInput[] =>
-  !Array.isArray(input) || typeof input === 'string' ? [input] : input;
+const isCSV = (s: unknown) =>
+  !!(typeof s != null && typeof s === 'string' && /.+,.+/.test(`${s}`));
+const toCSV = (s: string) => s.split(',');
 
+/**
+ *
+ * FILTER_VALUES will ONLY INCLUDE values that are in the 1st argument.
+ *
+ * ```js
+ * FILTER_VALUES([1 ,3], [1, 2, 3, 4, 5])
+ * //-> [2, 4, 5]
+ *
+ * FILTER_VALUES(1, [1, 2, 3, 4, 5])
+ * //-> [2, 3, 4, 5]
+ * ```
+ */
 const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   const includeValues = toArray(arg1());
-  const data = evalArray(arg2());
-
-  return data.filter((val) => includeValues.includes(val));
+  const data = toArray(arg2());
+  return data.filter((val) => !includeValues.includes(val));
 };
 
 const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   const matches = toArray(arg1());
   const data = evalArray(arg2());
-
   return data.some((val) => matches.includes(val));
 };
 
@@ -398,7 +415,7 @@ export const ruleExpressionLanguage = function (
       const str = string(arg());
       return str.split('');
     },
-    ARRAY: (arg) => toArray(arg()).slice(),
+    ARRAY: (arg) => array(arg()),
     ISNAN: (arg) => isNaN(num(arg())),
     MAP: (arg1, arg2) => {
       const func = arg1();
@@ -588,22 +605,7 @@ export const ruleExpressionLanguage = function (
       const data = evalArray(arg2());
 
       return data.filter((val) => removeValues.includes(val) === false);
-    }
-    /**
-     *
-     * FILTER_VALUES will ONLY INCLUDE values that are in the 1st argument.
-     *
-     * ```js
-     * FILTER_VALUES([1 ,3], [1, 2, 3, 4, 5])
-     * //-> [2, 4, 5]
-     *
-     * FILTER_VALUES(1, [1, 2, 3, 4, 5])
-     * //-> [2, 3, 4, 5]
-     * ```
-     *
-     * @param {*} arg1
-     * @param {*} arg2
-     */,
+    },
     FILTER_VALUES: filterValues,
     INCLUDES_VALUES: filterValues,
     GET: (arg1, arg2) => {
