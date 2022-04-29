@@ -71,15 +71,14 @@ It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/blik
 - **App Logic** - applies more broadly and changes less frequently than Business Rules.
   - _"Throw Error if ShoppingCart total is less than zero."_
   - _"Only one discount code can be applied at a time."_
-<!-- App Logic is close to Core component behavior. For example, adding a `locale={countryCode}` to the `<Calendar>` component will change it's App Logic. -->
-
+  <!-- App Logic is close to Core component behavior. For example, adding a `locale={countryCode}` to the `<Calendar>` component will change it's App Logic. -->
 - **Business Rules** - targeted & detailed, can change frequently.
   - Supports business goals & objectives (as they evolve) from Product, Leadership, Legal, Finance, A/B Tuning, etc.
   - _"Premium customers can apply 3 discounts, up to 25% off."_
   - _"If we're in lock-down, double shipping estimates."_
   - _"If State is NY, add NY tax."_
   - _"If State is AZ and during Daylight Savings, offset an hour."_
-<!-- _"Prevent meeting requests on Weekends."_ is more of a Business Rule, because it's specific to a scheduling application, and its current context. -->
+  <!-- _"Prevent meeting requests on Weekends."_ is more of a Business Rule, because it's specific to a scheduling application, and its current context. -->
 
 ### Finding Opportunities for Rules
 
@@ -98,16 +97,16 @@ Typically App Logic & Business Rules are woven together throughout the project. 
 This works great, until you run into one of the following challenges:
 
 1. **Storing Rules**
-    - A note taking app could let users create custom shortcuts, where typing "TODO" could load a template.
-    - These "shortcuts" (JSON Rules) can be stored in a local file, synced to a database, or even broadcast over a mesh network.
+   - A note taking app could let users create custom shortcuts, where typing "TODO" could load a template.
+   - These "shortcuts" (JSON Rules) can be stored in a local file, synced to a database, or even broadcast over a mesh network.
 2. **Unavoidable Complexity**
-    - In many industries like healthcare, insurance, finance, etc. it's common to find 100's or 1,000s of rules run on every transaction.
-    - Over time, "Hand-coded Rules" can distract & obscure from core App Logic.
-    - Example: Adding a feature to a `DepositTransaction` controller shouldn't require careful reading of 2,000 lines of custom rules around currency hackery & country-code checks.
-    - Without a strategy, code eventually sprawls as logic gets duplicated & placed arbitrarily. Projects become harder to understand, risky to modify, and adding new rules become high-stakes exercises.
+   - In many industries like healthcare, insurance, finance, etc. it's common to find 100's or 1,000s of rules run on every transaction.
+   - Over time, "Hand-coded Rules" can distract & obscure from core App Logic.
+   - Example: Adding a feature to a `DepositTransaction` controller shouldn't require careful reading of 2,000 lines of custom rules around currency hackery & country-code checks.
+   - Without a strategy, code eventually sprawls as logic gets duplicated & placed arbitrarily. Projects become harder to understand, risky to modify, and adding new rules become high-stakes exercises.
 3. **Tracing Errors or Miscalculations**
-    - Complex pricing, taxes & discount policies can be fully "covered" by unit tests, yet still fail in surprising ways.
-    - Determining how a customer's subtotal WAS calculated after the fact can be tedious & time consuming.
+   - Complex pricing, taxes & discount policies can be fully "covered" by unit tests, yet still fail in surprising ways.
+   - Determining how a customer's subtotal WAS calculated after the fact can be tedious & time consuming.
 
 <details>
 
@@ -150,14 +149,14 @@ npm install @elite-libs/rules-machine
 import { ruleFactory } from '@elite-libs/rules-machine';
 
 const fishRhyme = ruleFactory([
-  {if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
-  {if: 'fish == "redFish"', then: 'fish = "blueFish"' },
+  { if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
+  { if: 'fish == "redFish"', then: 'fish = "blueFish"' },
 ]);
 // Equivalent to:
 // if (fish == "oneFish") fish = "twoFish"
 // if (fish == "redFish") fish = "blueFish"
 
-fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
+fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 ```
 
 ## Examples
@@ -183,7 +182,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 <summary>Show YAML</summary>
 
 ```yaml
-- if: {and: [price >= 25, price <= 50]}
+- if: { and: [price >= 25, price <= 50] }
   then: discount = 5
 - if: price > 50
   then: discount = 10
@@ -220,10 +219,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
   },
   {
     "if": {
-      "or": [
-        "price >= 100",
-        "user.isAdmin == true"
-      ]
+      "or": ["price >= 100", "user.isAdmin == true"]
     },
     "then": "discount = 20"
   },
@@ -253,17 +249,11 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 [
   {
     "if": "price <= 100",
-    "then": [
-      "discount = 5",
-      "user.discountApplied = true"
-    ]
+    "then": ["discount = 5", "user.discountApplied = true"]
   },
   {
     "if": {
-      "and": [
-        "price >= 90",
-        "user.discountApplied != true"
-      ]
+      "and": ["price >= 90", "user.discountApplied != true"]
     },
     "then": "discount = 20"
   },
@@ -279,12 +269,12 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 ```yaml
 - if: price <= 100
   then:
-  - discount = 5
-  - user.discountApplied = true
+    - discount = 5
+    - user.discountApplied = true
 - if:
     and:
-    - price >= 90
-    - user.discountApplied != true
+      - price >= 90
+      - user.discountApplied != true
   then: discount = 20
 - return: discount
 ```

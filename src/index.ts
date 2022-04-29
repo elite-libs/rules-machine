@@ -36,7 +36,7 @@ export function ruleFactory<
   } = any
 >(
   rules: Rule,
-  options: RuleMachineOptions = { name: 'rules.unnamed', traceResults: false },
+  options: RuleMachineOptions = { name: 'rules.unnamed', traceResults: false }
 ) {
   if (typeof options === 'string') {
     options = { name: options } as RuleMachineOptions;

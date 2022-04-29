@@ -33,7 +33,8 @@
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
     "build": "npx rimraf ./dist/* && yarn run build:bundle",
-    "build:bundle": "./scripts/build.sh"
+    "build:bundle": "./scripts/build.sh",
+    "format": "prettier --config package.json -w  ."
   },
   "keywords": [
     "Rules Engine",
@@ -66,10 +67,15 @@
     "debug": "^4.3.3",
     "expressionparser": "^1.1.5",
     "lodash": "^4.17.21",
-    "ms": "^2.1.3"
+    "ms": "^2.1.3",
+    "prettier": "^2.6.2"
   },
   "files": [
     "dist",
     "*.md"
-  ]
+  ],
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
 }

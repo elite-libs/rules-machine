@@ -191,19 +191,17 @@ test('can use conditional array helpers', () => {
 });
 
 test('can use conditional array helpers', () => {
-  const rulesFn = ruleFactory(
-    [
-      'hasLondon = CONTAINS("London", cities)',
-    ],
-    { name: 'trace', traceResults: true }
-  );
+  const rulesFn = ruleFactory(['hasLondon = CONTAINS("London", cities)'], {
+    name: 'trace',
+    traceResults: true,
+  });
 
   const input = {
     cities: ['Denver', 'London', 'LA'],
     onlyUSA: true,
   };
   const result = rulesFn(input);
-  
+
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.input?.hasLondon).toBe(true);
 });
