@@ -1,6 +1,6 @@
-
 export default function mockDateHelper(targetDate: Date | string | number) {
-  const currentDate = targetDate instanceof Date ? targetDate : new Date(targetDate);
+  const currentDate =
+    targetDate instanceof Date ? targetDate : new Date(targetDate);
   const realDate = Date;
   // @ts-ignore
   global.Date = class extends Date {
@@ -19,7 +19,7 @@ export default function mockDateHelper(targetDate: Date | string | number) {
   const cleanup = () => {
     // @ts-ignore
     global.Date = realDate;
-  }
+  };
 
   return cleanup;
 }

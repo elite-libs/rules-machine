@@ -454,6 +454,68 @@ Array [
 ]
 `;
 
+exports[`can use conditional array helpers 1`] = `
+Array [
+  Object {
+    "name": "trace",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "availableCities",
+      "lhsv": "availableCities",
+      "rhs": "FILTER_VALUES([\\"London\\", \\"Milan\\"], cities)",
+      "rhsv": Array [
+        "Denver",
+        "LA",
+      ],
+    },
+    "result": Object {
+      "availableCities": Array [
+        "Denver",
+        "LA",
+      ],
+      "cities": Array [
+        "Denver",
+        "London",
+        "LA",
+      ],
+      "onlyUSA": true,
+    },
+    "rule": "availableCities = FILTER_VALUES([\\"London\\", \\"Milan\\"], cities)",
+    "state": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+]
+`;
+
+exports[`can use conditional array helpers 2`] = `
+Array [
+  Object {
+    "name": "trace",
+    "operator": "=",
+    "parseResult": Object {
+      "lhs": "hasLondon",
+      "lhsv": "hasLondon",
+      "rhs": "CONTAINS(\\"London\\", cities)",
+      "rhsv": true,
+    },
+    "result": Object {
+      "cities": Array [
+        "Denver",
+        "London",
+        "LA",
+      ],
+      "hasLondon": true,
+      "onlyUSA": true,
+    },
+    "rule": "hasLondon = CONTAINS(\\"London\\", cities)",
+    "state": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+]
+`;
+
 exports[`structured input 1`] = `
 Array [
   Object {
