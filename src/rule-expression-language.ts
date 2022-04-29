@@ -10,9 +10,9 @@ import {
   ExpressionParserOptions,
   TermTyper,
   TermType,
-} from "expressionparser/dist/ExpressionParser.js";
-import get from "lodash/get.js";
-import ms from "ms";
+} from 'expressionparser/dist/ExpressionParser.js';
+import get from 'lodash/get.js';
+import ms from 'ms';
 
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
@@ -38,8 +38,10 @@ const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
 };
 
 const num = (result: ExpressionValue) => {
-  if (typeof result !== "number") {
-    throw new Error(`Expected number, found: ${typeof result} ${JSON.stringify(result)}`);
+  if (typeof result !== 'number') {
+    throw new Error(
+      `Expected number, found: ${typeof result} ${JSON.stringify(result)}`
+    );
   }
 
   return result;
@@ -47,7 +49,9 @@ const num = (result: ExpressionValue) => {
 
 const array = (result: ExpressionValue) => {
   if (!Array.isArray(result)) {
-    throw new Error(`Expected array, found: ${typeof result} ${JSON.stringify(result)}`);
+    throw new Error(
+      `Expected array, found: ${typeof result} ${JSON.stringify(result)}`
+    );
   }
 
   if (isArgumentsArray(result)) {
@@ -58,8 +62,10 @@ const array = (result: ExpressionValue) => {
 };
 
 const bool = (value: ExpressionValue) => {
-  if (typeof value !== "boolean") {
-    throw new Error(`Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`);
+  if (typeof value !== 'boolean') {
+    throw new Error(
+      `Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`
+    );
   }
 
   return value;
@@ -68,7 +74,7 @@ const bool = (value: ExpressionValue) => {
 const evalBool = (value: ExpressionValue): boolean => {
   let result;
 
-  while (typeof value === "function" && value.length === 0) {
+  while (typeof value === 'function' && value.length === 0) {
     result = value();
   }
 
@@ -81,7 +87,7 @@ const evalBool = (value: ExpressionValue): boolean => {
 
 const evalString = (value: ExpressionValue) => {
   let result;
-  if (typeof value === "function" && value.length === 0) {
+  if (typeof value === 'function' && value.length === 0) {
     result = value();
   } else {
     result = value;
@@ -96,7 +102,7 @@ const evalArray = (
 ) => {
   return array(arr).map((value) => {
     let result;
-    if (typeof value === "function" && value.length === 0) {
+    if (typeof value === 'function' && value.length === 0) {
       result = value();
     } else {
       result = value;
@@ -115,8 +121,10 @@ const evalArray = (
 };
 
 const obj = (obj: ExpressionValue) => {
-  if (typeof obj !== "object" || obj === null) {
-    throw new Error(`Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`);
+  if (typeof obj !== 'object' || obj === null) {
+    throw new Error(
+      `Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`
+    );
   } else if (Array.isArray(obj)) {
     throw new Error(`Expected object, found array`);
   }
@@ -124,54 +132,72 @@ const obj = (obj: ExpressionValue) => {
   return obj;
 };
 
-const toArray = <TInput>(input: TInput): TInput[] => !Array.isArray(input) || typeof input === "string" ? [input] : input;
+const toArray = <TInput>(input: TInput): TInput[] =>
+  !Array.isArray(input) || typeof input === 'string' ? [input] : input;
+
+const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+  const includeValues = toArray(arg1());
+  const data = evalArray(arg2());
+
+  return data.filter((val) => includeValues.includes(val));
+};
 
 const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   const matches = toArray(arg1());
   const data = evalArray(arg2());
 
   return data.some((val) => matches.includes(val));
-}
+};
 
 const iterable = (result: ExpressionValue) => {
-  if (!Array.isArray(result) && typeof result !== "string") {
-    throw new Error(`Expected array or string, found: ${typeof result} ${JSON.stringify(result)}`);
+  if (!Array.isArray(result) && typeof result !== 'string') {
+    throw new Error(
+      `Expected array or string, found: ${typeof result} ${JSON.stringify(
+        result
+      )}`
+    );
   }
 
   return result;
 };
 
 const string = (result: ExpressionValue) => {
-  if (typeof result !== "string") {
-    throw new Error(`Expected string, found: ${typeof result} ${JSON.stringify(result)}`);
+  if (typeof result !== 'string') {
+    throw new Error(
+      `Expected string, found: ${typeof result} ${JSON.stringify(result)}`
+    );
   }
 
   return result;
 };
 
 const char = (result: ExpressionValue) => {
-  if (typeof result !== "string" || result.length !== 1) {
-    throw new Error(`Expected char, found: ${typeof result} ${JSON.stringify(result)}`);
+  if (typeof result !== 'string' || result.length !== 1) {
+    throw new Error(
+      `Expected char, found: ${typeof result} ${JSON.stringify(result)}`
+    );
   }
 
   return result;
 };
 
-const dateParser = (arg: ExpressionThunk | string | number): number | string => {
+const dateParser = (
+  arg: ExpressionThunk | string | number
+): number | string => {
   const dateArg = typeof arg === 'function' ? arg() : arg;
 
-  if (typeof dateArg === "string" && dateArg.length < 6) {
+  if (typeof dateArg === 'string' && dateArg.length < 6) {
     // possible date duration expression
     const duration = ms(dateArg);
     const d = new Date(Date.now() + duration);
     // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
     return d.getTime();
   }
-  if (typeof dateArg === "string" || typeof dateArg === "number") {
+  if (typeof dateArg === 'string' || typeof dateArg === 'number') {
     const d = new Date(dateArg);
     return d.getTime();
   }
-  return `UnknownDate(${dateArg})`
+  return `UnknownDate(${dateArg})`;
 };
 
 type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
@@ -181,7 +207,7 @@ type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
 export const ruleExpressionLanguage = function (
   termDelegate: TermDelegate,
   termTypeDelegate?: TermTyper,
-  termSetter?: TermSetterFunction,
+  termSetter?: TermSetterFunction
 ): ExpressionParserOptions {
   const call = (name: string): Callable => {
     const upperName = name.toUpperCase();
@@ -198,11 +224,11 @@ export const ruleExpressionLanguage = function (
   };
 
   const infixOps: InfixOps = {
-    "+": (a, b) => num(a()) + num(b()),
-    "-": (a, b) => num(a()) - num(b()),
-    "*": (a, b) => num(a()) * num(b()),
-    "/": (a, b) => num(a()) / num(b()),
-    ",": (a, b): ArgumentsArray => {
+    '+': (a, b) => num(a()) + num(b()),
+    '-': (a, b) => num(a()) - num(b()),
+    '*': (a, b) => num(a()) * num(b()),
+    '/': (a, b) => num(a()) / num(b()),
+    ',': (a, b): ArgumentsArray => {
       const aVal = a();
       const aArr: ExpressionArray<ExpressionValue> = isArgumentsArray(aVal)
         ? aVal
@@ -211,7 +237,7 @@ export const ruleExpressionLanguage = function (
       args.isArgumentsArray = true;
       return args as ArgumentsArray;
     },
-    "%": (a, b) => num(a()) % num(b()),
+    '%': (a, b) => num(a()) % num(b()),
     // "=": (a, b) => {
     //   const term = a();
     //   const result = b();
@@ -221,18 +247,18 @@ export const ruleExpressionLanguage = function (
     //     throw Error(``)
     //   }
     // },
-    "=": (a, b) => a() === b(),
-    "==": (a, b) => a() === b(),
-    "!=": (a, b) => a() !== b(),
-    "<>": (a, b) => a() !== b(),
-    "~=": (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
-    ">": (a, b) => a() > b(),
-    "<": (a, b) => a() < b(),
-    ">=": (a, b) => a() >= b(),
-    "<=": (a, b) => a() <= b(),
+    '=': (a, b) => a() === b(),
+    '==': (a, b) => a() === b(),
+    '!=': (a, b) => a() !== b(),
+    '<>': (a, b) => a() !== b(),
+    '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
+    '>': (a, b) => a() > b(),
+    '<': (a, b) => a() < b(),
+    '>=': (a, b) => a() >= b(),
+    '<=': (a, b) => a() <= b(),
     AND: (a, b) => a() && b(),
     OR: (a, b) => a() || b(),
-    "^": (a, b) => Math.pow(num(a()), num(b())),
+    '^': (a, b) => Math.pow(num(a()), num(b())),
   };
 
   const prefixOps: FunctionOps = {
@@ -269,13 +295,13 @@ export const ruleExpressionLanguage = function (
     DATE: dateParser,
     DATEISO: (arg) => {
       const dateArg = arg();
-      if (typeof dateArg === "string" || typeof dateArg === "number") {
+      if (typeof dateArg === 'string' || typeof dateArg === 'number') {
         return new Date(dateParser(dateArg)).toISOString();
       }
-      return `UnknownDate(${dateArg})`
+      return `UnknownDate(${dateArg})`;
     },
     NOT: (arg) => !arg(),
-    "!": (arg) => !arg(),
+    '!': (arg) => !arg(),
     ABS: (arg) => Math.abs(num(arg())),
     ACOS: (arg) => Math.acos(num(arg())),
     ACOSH: (arg) => Math.acosh(num(arg())),
@@ -366,22 +392,19 @@ export const ruleExpressionLanguage = function (
       return iterable(arg()).length;
     },
     JOIN: (arg1, arg2) => evalArray(arg2()).join(string(arg1())),
-    STRING: (arg) => evalArray(arg()).join(""),
+    STRING: (arg) => evalArray(arg()).join(''),
     SPLIT: (arg1, arg2) => string(arg2()).split(string(arg1())),
     CHARARRAY: (arg) => {
       const str = string(arg());
-      return str.split("");
+      return str.split('');
     },
-    ARRAY: (arg) => {
-      const val = arg();
-      return isArgumentsArray(val) ? val.slice() : [val];
-    },
+    ARRAY: (arg) => toArray(arg()).slice(),
     ISNAN: (arg) => isNaN(num(arg())),
     MAP: (arg1, arg2) => {
       const func = arg1();
       const arr = evalArray(arg2());
       return arr.map((val) => {
-        if (typeof func === "function") {
+        if (typeof func === 'function') {
           return () => func(val);
         } else {
           return call(string(func))(() => val);
@@ -394,7 +417,7 @@ export const ruleExpressionLanguage = function (
       const arr = evalArray(arg3());
       return arr.reduce((prev, curr) => {
         const args: ExpressionArray<ExpressionThunk> = [() => prev, () => curr];
-        if (typeof func === "function") {
+        if (typeof func === 'function') {
           return func(...args);
         } else {
           return call(string(func))(...args);
@@ -418,7 +441,7 @@ export const ruleExpressionLanguage = function (
       const arr2 = evalArray(arg2());
 
       if (arr1.length !== arr2.length) {
-        throw new Error("ZIP: Arrays are of different lengths");
+        throw new Error('ZIP: Arrays are of different lengths');
       } else {
         return arr1.map((v1, i) => [v1, arr2[i]]);
       }
@@ -427,10 +450,7 @@ export const ruleExpressionLanguage = function (
       const inputArr = evalArray(arg1());
       const arr1 = inputArr.map((item) => array(item)[0]);
       const arr2 = inputArr.map((item) => array(item)[1]);
-      return [
-        arr1,
-        arr2
-      ];
+      return [arr1, arr2];
     },
     TAKE: (arg1, arg2) => {
       const n = num(arg1());
@@ -463,7 +483,7 @@ export const ruleExpressionLanguage = function (
     },
     LAST: (arg1) => {
       const arr = array(arg1());
-      return arr[arr.length-1];
+      return arr[arr.length - 1];
     },
     CONS: (arg1, arg2) => {
       const head = arg1();
@@ -476,7 +496,7 @@ export const ruleExpressionLanguage = function (
       const result: ExpressionArray<ExpressionValue> = [];
       arr.forEach((val) => {
         let isSatisfied;
-        if (typeof func === "function") {
+        if (typeof func === 'function') {
           isSatisfied = evalBool(func(val));
         } else {
           isSatisfied = evalBool(call(string(func))(() => val));
@@ -495,7 +515,7 @@ export const ruleExpressionLanguage = function (
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === "function") {
+        if (typeof func === 'function') {
           isSatisfied = evalBool(func(val));
         } else {
           isSatisfied = evalBool(call(string(func))(() => val));
@@ -517,7 +537,7 @@ export const ruleExpressionLanguage = function (
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === "function") {
+        if (typeof func === 'function') {
           isSatisfied = evalBool(func(val));
         } else {
           isSatisfied = evalBool(call(string(func))(() => val));
@@ -535,60 +555,57 @@ export const ruleExpressionLanguage = function (
     },
     /**
      * CONTAINS will return true if any value(s) from the 1st argument occur in the 2nd argument.
-     * 
+     *
      * ```js
      * CONTAINS([1 ,3], [1, 2, 3, 4, 5])
      * //-> true
-     * 
+     *
      * CONTAINS(99, [1, 2, 3, 4, 5])
      * //-> false
      * ```
-     * 
-     * @param {*} arg1 
-     * @param {*} arg2 
+     *
+     * @param {*} arg1
+     * @param {*} arg2
      */
-     CONTAINS: containsValues,
-     INCLUDES: containsValues,
+    CONTAINS: containsValues,
+    INCLUDES: containsValues,
     /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.
-     * 
+     *
      * ```js
      * REMOVE_VALUES([1 ,3], [1, 2, 3, 4, 5])
      * //-> [2, 4, 5]
-     * 
+     *
      * REMOVE_VALUES(1, [1, 2, 3, 4, 5])
      * //-> [2, 3, 4, 5]
      * ```
-     * 
-     * @param {*} arg1 
-     * @param {*} arg2 
+     *
+     * @param {*} arg1
+     * @param {*} arg2
      */
-     REMOVE_VALUES: (arg1, arg2) => {
+    REMOVE_VALUES: (arg1, arg2) => {
       const removeValues = toArray(arg1());
       const data = evalArray(arg2());
 
       return data.filter((val) => removeValues.includes(val) === false);
-    },    /**
-     * 
-     * INCLUDES_VALUES will ONLY INCLUDE values that are in the 1st argument.
-     * 
+    }
+    /**
+     *
+     * FILTER_VALUES will ONLY INCLUDE values that are in the 1st argument.
+     *
      * ```js
-     * INCLUDES_VALUES([1 ,3], [1, 2, 3, 4, 5])
+     * FILTER_VALUES([1 ,3], [1, 2, 3, 4, 5])
      * //-> [2, 4, 5]
-     * 
-     * INCLUDES_VALUES(1, [1, 2, 3, 4, 5])
+     *
+     * FILTER_VALUES(1, [1, 2, 3, 4, 5])
      * //-> [2, 3, 4, 5]
      * ```
-     * 
-     * @param {*} arg1 
-     * @param {*} arg2 
-     */
-     INCLUDES_VALUES: (arg1, arg2) => {
-      const includeValues = toArray(arg1());
-      const data = evalArray(arg2());
-
-      return data.filter((val) => includeValues.includes(val));
-    },
+     *
+     * @param {*} arg1
+     * @param {*} arg2
+     */,
+    FILTER_VALUES: filterValues,
+    INCLUDES_VALUES: filterValues,
     GET: (arg1, arg2) => {
       const key = string(arg1());
       const inputObj = obj(arg2());
@@ -628,7 +645,7 @@ export const ruleExpressionLanguage = function (
 
         try {
           result[evalString(key)] = value;
-        } catch(err) {
+        } catch (err) {
           throw new Error(`UNZIPDICT keys; ${err.message}`);
         }
       });
@@ -641,64 +658,66 @@ export const ruleExpressionLanguage = function (
     },
     VALUES: (arg1) => {
       const inputObj = obj(arg1());
-      return Object.keys(inputObj).sort().map((key) => inputObj[key]);
-    }
+      return Object.keys(inputObj)
+        .sort()
+        .map((key) => inputObj[key]);
+    },
   };
 
   // Ensure arguments are unpacked accordingly
   // Except for the ARRAY constructor
   Object.keys(prefixOps).forEach((key) => {
-    if (key !== "ARRAY") {
+    if (key !== 'ARRAY') {
       // @ts-ignore
       prefixOps[key] = unpackArgs(prefixOps[key]);
     }
   });
 
   return {
-    ESCAPE_CHAR: "\\",
+    ESCAPE_CHAR: '\\',
     INFIX_OPS: infixOps,
     PREFIX_OPS: prefixOps,
     PRECEDENCE: [
       Object.keys(prefixOps),
-      ["^"],
-      ["*", "/", "%", "MOD"],
-      ["+", "-"],
-      ["<", ">", "<=", ">="],
-      ["=", "!=", "<>", "~="],
-      ["AND", "OR"],
-      [","],
+      ['^'],
+      ['*', '/', '%', 'MOD'],
+      ['+', '-'],
+      ['<', '>', '<=', '>='],
+      ['=', '!=', '<>', '~='],
+      ['AND', 'OR'],
+      [','],
     ],
     LITERAL_OPEN: '"',
     LITERAL_CLOSE: '"',
-    GROUP_OPEN: "(",
-    GROUP_CLOSE: ")",
-    SEPARATOR: " ",
+    GROUP_OPEN: '(',
+    GROUP_CLOSE: ')',
+    SEPARATOR: ' ',
     SYMBOLS: [
-      "^",
-      "*",
-      "/",
-      "%",
-      "+",
-      "-",
-      "<",
-      ">",
-      "=",
-      "!",
-      ",",
+      '^',
+      '*',
+      '/',
+      '%',
+      '+',
+      '-',
+      '<',
+      '>',
+      '=',
+      '!',
+      ',',
       '"',
-      "(",
-      ")",
-      "[",
-      "]",
-      "~",
+      '(',
+      ')',
+      '[',
+      ']',
+      '~',
     ],
     AMBIGUOUS: {
-      "-": "NEG",
+      '-': 'NEG',
     },
     SURROUNDING: {
       ARRAY: {
-        OPEN: "[",
-        CLOSE: "]",
+        OPEN: '[',
+        CLOSE: ']',
       },
     },
     // @ts-ignore
@@ -706,36 +725,36 @@ export const ruleExpressionLanguage = function (
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
         switch (term) {
-          case "E":
+          case 'E':
             return Math.E;
-          case "LN2":
+          case 'LN2':
             return Math.LN2;
-          case "LN10":
+          case 'LN10':
             return Math.LN10;
-          case "LOG2E":
+          case 'LOG2E':
             return Math.LOG2E;
-          case "LOG10E":
+          case 'LOG10E':
             return Math.LOG10E;
-          case "PI":
+          case 'PI':
             return Math.PI;
-          case "SQRTHALF":
+          case 'SQRTHALF':
             return Math.SQRT1_2;
-          case "SQRT2":
+          case 'SQRT2':
             return Math.SQRT2;
-          case "FALSE":
+          case 'FALSE':
             return false;
-          case "TRUE":
+          case 'TRUE':
             return true;
-          case "EMPTY":
+          case 'EMPTY':
             return [];
-          case "EMPTYDICT":
+          case 'EMPTYDICT':
             return {};
-          case "INFINITY":
+          case 'INFINITY':
             return Number.POSITIVE_INFINITY;
-          case "EPSILON":
+          case 'EPSILON':
             return Number.EPSILON;
-          case "UNDEFINED":
-            return undefined
+          case 'UNDEFINED':
+            return undefined;
           default:
             return termDelegate(term);
         }
@@ -749,37 +768,37 @@ export const ruleExpressionLanguage = function (
 
       if (Number.isNaN(numVal)) {
         switch (term) {
-          case "E":
-            return "number";
-          case "LN2":
-            return "number";
-          case "LN10":
-            return "number";
-          case "LOG2E":
-            return "number";
-          case "LOG10E":
-            return "number";
-          case "PI":
-            return "number";
-          case "SQRTHALF":
-            return "number";
-          case "SQRT2":
-            return "number";
-          case "FALSE":
-            return "boolean";
-          case "TRUE":
-            return "boolean";
-          case "EMPTY":
-            return "array";
-          case "INFINITY":
-            return "number";
-          case "EPSILON":
-            return "number";
+          case 'E':
+            return 'number';
+          case 'LN2':
+            return 'number';
+          case 'LN10':
+            return 'number';
+          case 'LOG2E':
+            return 'number';
+          case 'LOG10E':
+            return 'number';
+          case 'PI':
+            return 'number';
+          case 'SQRTHALF':
+            return 'number';
+          case 'SQRT2':
+            return 'number';
+          case 'FALSE':
+            return 'boolean';
+          case 'TRUE':
+            return 'boolean';
+          case 'EMPTY':
+            return 'array';
+          case 'INFINITY':
+            return 'number';
+          case 'EPSILON':
+            return 'number';
           default:
-            return termTypeDelegate ? termTypeDelegate(term) : "unknown";
+            return termTypeDelegate ? termTypeDelegate(term) : 'unknown';
         }
       } else {
-        return "number";
+        return 'number';
       }
     },
 
@@ -787,662 +806,614 @@ export const ruleExpressionLanguage = function (
 
     descriptions: [
       {
-        op: "+",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs addition: a + b",
+        op: '+',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs addition: a + b',
       },
       {
-        op: "ADD",
-        fix: "prefix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs addition: ADD(a, b) = a + b",
+        op: 'ADD',
+        fix: 'prefix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs addition: ADD(a, b) = a + b',
       },
       {
-        op: "*",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs multiplication: a * b",
+        op: '*',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs multiplication: a * b',
       },
       {
-        op: "MUL",
-        fix: "prefix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs multiplication: MUL(a, b) = a * b",
+        op: 'MUL',
+        fix: 'prefix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs multiplication: MUL(a, b) = a * b',
       },
       {
-        op: "-",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs subtraction: a - b",
+        op: '-',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs subtraction: a - b',
       },
       {
-        op: "SUB",
-        fix: "prefix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs subtraction: SUB(a, b) = a - b",
+        op: 'SUB',
+        fix: 'prefix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs subtraction: SUB(a, b) = a - b',
       },
       {
-        op: "/",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs division: a / b",
+        op: '/',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs division: a / b',
       },
       {
-        op: "DIV",
-        fix: "prefix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs division: DIV(a, b) = a / b",
+        op: 'DIV',
+        fix: 'prefix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs division: DIV(a, b) = a / b',
       },
       {
-        op: ",",
-        fix: "infix",
-        sig: ["a", "b", "Arguments"],
-        text:
-          "Returns an array of arguments with b appended to a. If a is not an argument array, it is automatically appended to an empty array.",
+        op: ',',
+        fix: 'infix',
+        sig: ['a', 'b', 'Arguments'],
+        text: 'Returns an array of arguments with b appended to a. If a is not an argument array, it is automatically appended to an empty array.',
       },
       {
-        op: "MOD",
-        fix: "prefix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs modulo operation: MOD(a, b). (equivalent to a % b)",
+        op: 'MOD',
+        fix: 'prefix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs modulo operation: MOD(a, b). (equivalent to a % b)',
       },
       {
-        op: "%",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs modulo operation: a % b. (equivalent to MOD(a, b))",
+        op: '%',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs modulo operation: a % b. (equivalent to MOD(a, b))',
       },
       {
-        op: "=",
-        fix: "infix",
-        sig: ["a", "b", "Boolean"],
-        text: "Returns TRUE if a = b. Otherwise returns FALSE.",
+        op: '=',
+        fix: 'infix',
+        sig: ['a', 'b', 'Boolean'],
+        text: 'Returns TRUE if a = b. Otherwise returns FALSE.',
       },
       {
-        op: "!=",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text:
-          "Returns FALSE if a = b. Otherwise returns TRUE. (equivalent to <>)",
+        op: '!=',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Returns FALSE if a = b. Otherwise returns TRUE. (equivalent to <>)',
       },
       {
-        op: "<>",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text:
-          "Returns FALSE if a = b. Otherwise returns TRUE. (equivalent to !=)",
+        op: '<>',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Returns FALSE if a = b. Otherwise returns TRUE. (equivalent to !=)',
       },
       {
-        op: "~=",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Returns TRUE if ABS(a - b) < EPSILON. Otherwise returns FALSE.",
+        op: '~=',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Returns TRUE if ABS(a - b) < EPSILON. Otherwise returns FALSE.',
       },
       {
-        op: ">",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Boolean"],
-        text: "Performs greater-than operation: a > b",
+        op: '>',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Boolean'],
+        text: 'Performs greater-than operation: a > b',
       },
       {
-        op: "<",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Boolean"],
-        text: "Performs less-than operation: a < b",
+        op: '<',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Boolean'],
+        text: 'Performs less-than operation: a < b',
       },
       {
-        op: ">=",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Boolean"],
-        text: "Performs greater-than-or-equal operation: a >= b",
+        op: '>=',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Boolean'],
+        text: 'Performs greater-than-or-equal operation: a >= b',
       },
       {
-        op: "<=",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Boolean"],
-        text: "Performs less-than-or-equal operation: a <= b",
+        op: '<=',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Boolean'],
+        text: 'Performs less-than-or-equal operation: a <= b',
       },
       {
-        op: "AND",
-        fix: "infix",
-        sig: ["a: Boolean", "b: Boolean", "Boolean"],
-        text: "Performs logical AND: a AND b.",
+        op: 'AND',
+        fix: 'infix',
+        sig: ['a: Boolean', 'b: Boolean', 'Boolean'],
+        text: 'Performs logical AND: a AND b.',
       },
       {
-        op: "OR",
-        fix: "infix",
-        sig: ["a: Boolean", "b: Boolean", "Boolean"],
-        text: "Performs logical OR: a OR b.",
+        op: 'OR',
+        fix: 'infix',
+        sig: ['a: Boolean', 'b: Boolean', 'Boolean'],
+        text: 'Performs logical OR: a OR b.',
       },
       {
-        op: "^",
-        fix: "infix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Performs exponentiation (a to the power of b): a ^ b",
+        op: '^',
+        fix: 'infix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Performs exponentiation (a to the power of b): a ^ b',
       },
       {
-        op: "NEG",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Performs negation of the value: NEG(value). (equivalent to -value)",
+        op: 'NEG',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Performs negation of the value: NEG(value). (equivalent to -value)',
       },
       {
-        op: "-",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          'Performs negation of the value: -value. Note: no space can be present before "value". (equivalent to NEG(value))',
+        op: '-',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Performs negation of the value: -value. Note: no space can be present before "value". (equivalent to NEG(value))',
       },
       {
-        op: "ISPRIME",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns TRUE if value is prime, FALSE otherwise.",
+        op: 'ISPRIME',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns TRUE if value is prime, FALSE otherwise.',
       },
       {
-        op: "GCD",
-        fix: "prefix",
-        sig: ["a: Number", "b: Number", "Number"],
-        text: "Returns the greatest common divisor of a and b.",
+        op: 'GCD',
+        fix: 'prefix',
+        sig: ['a: Number', 'b: Number', 'Number'],
+        text: 'Returns the greatest common divisor of a and b.',
       },
       {
-        op: "NOT",
-        fix: "prefix",
-        sig: ["value: Boolean", "Boolean"],
-        text:
-          "Performs logical NOT of the value: NOT(value). (equivalent to !value)",
+        op: 'NOT',
+        fix: 'prefix',
+        sig: ['value: Boolean', 'Boolean'],
+        text: 'Performs logical NOT of the value: NOT(value). (equivalent to !value)',
       },
       {
-        op: "!",
-        fix: "prefix",
-        sig: ["value: Boolean", "Boolean"],
-        text:
-          "Performs logical NOT of the value: !value. (equivalent to NOT(value))",
+        op: '!',
+        fix: 'prefix',
+        sig: ['value: Boolean', 'Boolean'],
+        text: 'Performs logical NOT of the value: !value. (equivalent to NOT(value))',
       },
       {
-        op: "ABS",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the absolute value of the number: ABS(value).",
+        op: 'ABS',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the absolute value of the number: ABS(value).',
       },
       {
-        op: "ACOS",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the arc cosine (inverse cosine) of the number: ACOS(value).",
+        op: 'ACOS',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the arc cosine (inverse cosine) of the number: ACOS(value).',
       },
       {
-        op: "ACOSH",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the inverse hyperbolic cosine of the number: ACOSH(value).",
+        op: 'ACOSH',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the inverse hyperbolic cosine of the number: ACOSH(value).',
       },
       {
-        op: "ASIN",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the arcsine of the number: ASIN(value).",
+        op: 'ASIN',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the arcsine of the number: ASIN(value).',
       },
       {
-        op: "ASINH",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the inverse hyperbolic sine of the number: ASINH(value).",
+        op: 'ASINH',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the inverse hyperbolic sine of the number: ASINH(value).',
       },
       {
-        op: "ATAN",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the arctangent of the number: ATAN(value).",
+        op: 'ATAN',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the arctangent of the number: ATAN(value).',
       },
       {
-        op: "ATAN2",
-        fix: "prefix",
-        sig: ["y: Number", "x: Number", "Number"],
-        text:
-          "Returns the angle (radians) from the X-axis to a point, given a cartesian y-coordinate and x-coordinate: ATAN2(y, x).",
+        op: 'ATAN2',
+        fix: 'prefix',
+        sig: ['y: Number', 'x: Number', 'Number'],
+        text: 'Returns the angle (radians) from the X-axis to a point, given a cartesian y-coordinate and x-coordinate: ATAN2(y, x).',
       },
       {
-        op: "ATANH",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the inverse hyperbolic tangent of the number: ATANH(value).",
+        op: 'ATANH',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the inverse hyperbolic tangent of the number: ATANH(value).',
       },
       {
-        op: "CUBEROOT",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns an approximation of the cubed root of the number: CUBEROOT(value).",
+        op: 'CUBEROOT',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns an approximation of the cubed root of the number: CUBEROOT(value).',
       },
       {
-        op: "COS",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the cosine of the number: COS(value).",
+        op: 'COS',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the cosine of the number: COS(value).',
       },
       {
-        op: "COSH",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the hyperbolic cosine of the number: COSH(value).",
+        op: 'COSH',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the hyperbolic cosine of the number: COSH(value).',
       },
       {
-        op: "EXP",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the natural logarithm (e) raised to this value: EXP(value).",
+        op: 'EXP',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the natural logarithm (e) raised to this value: EXP(value).',
       },
       {
-        op: "LN",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the natural logarithm (base e) of the number: LN(value).",
+        op: 'LN',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the natural logarithm (base e) of the number: LN(value).',
       },
       {
-        op: "LOG",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the base 10 logarithm of the number: LOG(value).",
+        op: 'LOG',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the base 10 logarithm of the number: LOG(value).',
       },
       {
-        op: "LOG2",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the base 2 logarithm of the number: LOG2(value).",
+        op: 'LOG2',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the base 2 logarithm of the number: LOG2(value).',
       },
       {
-        op: "SIN",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the sine of the number: SIN(value).",
+        op: 'SIN',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the sine of the number: SIN(value).',
       },
       {
-        op: "SINH",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the hyperbolic sine of the number: SINH(value).",
+        op: 'SINH',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the hyperbolic sine of the number: SINH(value).',
       },
       {
-        op: "SQRT",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the square root of the number: SQRT(value).",
+        op: 'SQRT',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the square root of the number: SQRT(value).',
       },
       {
-        op: "TAN",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the tangent of the number: TAN(value).",
+        op: 'TAN',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the tangent of the number: TAN(value).',
       },
       {
-        op: "TANH",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the hyperbolic tangent of the number: TANH(value).",
+        op: 'TANH',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the hyperbolic tangent of the number: TANH(value).',
       },
       {
-        op: "DEGREES",
-        fix: "prefix",
-        sig: ["radians: Number", "Number"],
-        text: "Performs a conversion of radians to degrees: DEGREES(radians).",
+        op: 'DEGREES',
+        fix: 'prefix',
+        sig: ['radians: Number', 'Number'],
+        text: 'Performs a conversion of radians to degrees: DEGREES(radians).',
       },
       {
-        op: "RADIANS",
-        fix: "prefix",
-        sig: ["degrees: Number", "Number"],
-        text: "Performs a conversion of radians to degrees: RADIANS(degrees).",
+        op: 'RADIANS',
+        fix: 'prefix',
+        sig: ['degrees: Number', 'Number'],
+        text: 'Performs a conversion of radians to degrees: RADIANS(degrees).',
       },
       {
-        op: "CEIL",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the smallest integer greater-than or equal-to the number: CEIL(value).",
+        op: 'CEIL',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the smallest integer greater-than or equal-to the number: CEIL(value).',
       },
       {
-        op: "FLOOR",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the greatest integer less-than or equal-to the number: CEIL(value).",
+        op: 'FLOOR',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the greatest integer less-than or equal-to the number: CEIL(value).',
       },
       {
-        op: "ROUND",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text: "Returns the value rounded to the nearest integer: ROUND(value).",
+        op: 'ROUND',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the value rounded to the nearest integer: ROUND(value).',
       },
       {
-        op: "TRUNC",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the integral part of the number, truncating any fractional digits: TRUNC(value).",
+        op: 'TRUNC',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the integral part of the number, truncating any fractional digits: TRUNC(value).',
       },
       {
-        op: "SIGN",
-        fix: "prefix",
-        sig: ["value: Number", "Number"],
-        text:
-          "Returns the sign of the value, indicating whether the number is positive (1) or negative (-1): SIGN(value).",
+        op: 'SIGN',
+        fix: 'prefix',
+        sig: ['value: Number', 'Number'],
+        text: 'Returns the sign of the value, indicating whether the number is positive (1) or negative (-1): SIGN(value).',
       },
       {
-        op: "ISNAN",
-        fix: "prefix",
-        sig: ["value", "Boolean"],
-        text:
-          "Returns TRUE if a value is not a number (e.g. the result of an invalid mathematical operation), otherwise returns FALSE: ISNAN(value).",
+        op: 'ISNAN',
+        fix: 'prefix',
+        sig: ['value', 'Boolean'],
+        text: 'Returns TRUE if a value is not a number (e.g. the result of an invalid mathematical operation), otherwise returns FALSE: ISNAN(value).',
       },
       {
-        op: "IF",
-        fix: "prefix",
-        sig: ["condition: Boolean", "then", "else", "result"],
-        text:
-          'Tests the condition and returns the "then" value if the condition is TRUE, otherwise returns the "else" value: IF(condition, then, else).',
+        op: 'IF',
+        fix: 'prefix',
+        sig: ['condition: Boolean', 'then', 'else', 'result'],
+        text: 'Tests the condition and returns the "then" value if the condition is TRUE, otherwise returns the "else" value: IF(condition, then, else).',
       },
       {
-        op: "AVERAGE",
-        fix: "prefix",
-        sig: ["values: Array of Numbers", "Number"],
-        text:
-          "Returns the average (mean) of an array of numbers. AVERAGE(array).",
+        op: 'AVERAGE',
+        fix: 'prefix',
+        sig: ['values: Array of Numbers', 'Number'],
+        text: 'Returns the average (mean) of an array of numbers. AVERAGE(array).',
       },
       {
-        op: "SUM",
-        fix: "prefix",
-        sig: ["values: Array of Numbers", "Number"],
-        text: "Returns the sum of an array of numbers. SUM(array).",
+        op: 'SUM',
+        fix: 'prefix',
+        sig: ['values: Array of Numbers', 'Number'],
+        text: 'Returns the sum of an array of numbers. SUM(array).',
       },
       {
-        op: "MIN",
-        fix: "prefix",
-        sig: ["values: Array of Numbers", "Number"],
-        text: "Returns the minimum value in an array of numbers. MIN(array).",
+        op: 'MIN',
+        fix: 'prefix',
+        sig: ['values: Array of Numbers', 'Number'],
+        text: 'Returns the minimum value in an array of numbers. MIN(array).',
       },
       {
-        op: "MAX",
-        fix: "prefix",
-        sig: ["values: Array of Numbers", "Number"],
-        text: "Returns the maximum value in an array of numbers. MAX(array).",
+        op: 'MAX',
+        fix: 'prefix',
+        sig: ['values: Array of Numbers', 'Number'],
+        text: 'Returns the maximum value in an array of numbers. MAX(array).',
       },
       {
-        op: "CHAR",
-        fix: "prefix",
-        sig: ["code: Integer", "String"],
-        text:
-          "Returns a single-character string with a unicode character representing the value of the given code. CHAR(code)",
+        op: 'CHAR',
+        fix: 'prefix',
+        sig: ['code: Integer', 'String'],
+        text: 'Returns a single-character string with a unicode character representing the value of the given code. CHAR(code)',
       },
       {
-        op: "CODE",
-        fix: "prefix",
-        sig: ["string: String", "Integer"],
-        text:
-          "Returns the unicode value of the first character of a string: CODE(string)",
+        op: 'CODE',
+        fix: 'prefix',
+        sig: ['string: String', 'Integer'],
+        text: 'Returns the unicode value of the first character of a string: CODE(string)',
       },
       {
-        op: "UPPER",
-        fix: "prefix",
-        sig: ["string: String", "String"],
-        text: "Converts a string to uppercase: UPPER(string).",
+        op: 'UPPER',
+        fix: 'prefix',
+        sig: ['string: String', 'String'],
+        text: 'Converts a string to uppercase: UPPER(string).',
       },
       {
-        op: "LOWER",
-        fix: "prefix",
-        sig: ["string: String", "String"],
-        text: "Converts a string to lowercase: LOWER(string).",
+        op: 'LOWER',
+        fix: 'prefix',
+        sig: ['string: String', 'String'],
+        text: 'Converts a string to lowercase: LOWER(string).',
       },
       {
-        op: "DEC2BIN",
-        fix: "prefix",
-        sig: ["decimal: Integer", "binary: String"],
-        text:
-          'Returns a string of "1" and "0" characters representing the binary representation of the decimal value. DEC2BIN(decimal)',
+        op: 'DEC2BIN',
+        fix: 'prefix',
+        sig: ['decimal: Integer', 'binary: String'],
+        text: 'Returns a string of "1" and "0" characters representing the binary representation of the decimal value. DEC2BIN(decimal)',
       },
       {
-        op: "DEC2HEX",
-        fix: "prefix",
-        sig: ["decimal: Integer", "hex: String"],
-        text:
-          "Returns a string of characters representing the hexadecimal representation of the decimal value. DEC2HEX(decimal)",
+        op: 'DEC2HEX',
+        fix: 'prefix',
+        sig: ['decimal: Integer', 'hex: String'],
+        text: 'Returns a string of characters representing the hexadecimal representation of the decimal value. DEC2HEX(decimal)',
       },
       {
-        op: "BIN2DEC",
-        fix: "prefix",
-        sig: ["binary: String", "decimal: Integer"],
-        text:
-          'Returns the base 10 value of a binary string of "1" and "0" characters. BIN2DEC(binary)',
+        op: 'BIN2DEC',
+        fix: 'prefix',
+        sig: ['binary: String', 'decimal: Integer'],
+        text: 'Returns the base 10 value of a binary string of "1" and "0" characters. BIN2DEC(binary)',
       },
       {
-        op: "HEX2DEC",
-        fix: "prefix",
-        sig: ["hex: String", "decimal: Integer"],
-        text: "Returns the base 10 value of a hexadecimal string. HEX2DEC(hex)",
+        op: 'HEX2DEC',
+        fix: 'prefix',
+        sig: ['hex: String', 'decimal: Integer'],
+        text: 'Returns the base 10 value of a hexadecimal string. HEX2DEC(hex)',
       },
       {
-        op: "SORT",
-        fix: "prefix",
-        sig: ["array: Array", "Array"],
-        text: "Returns a sorted array: SORT(array).",
+        op: 'SORT',
+        fix: 'prefix',
+        sig: ['array: Array', 'Array'],
+        text: 'Returns a sorted array: SORT(array).',
       },
       {
-        op: "REVERSE",
-        fix: "prefix",
-        sig: ["array: Array", "Array"],
-        text: "Returns a reversed array: REVERSE(array).",
+        op: 'REVERSE',
+        fix: 'prefix',
+        sig: ['array: Array', 'Array'],
+        text: 'Returns a reversed array: REVERSE(array).',
       },
       {
-        op: "INDEX",
-        fix: "prefix",
-        sig: ["array: Array", "i: Integer", "Value"],
-        text: "Returns the value at the given array index: INDEX(array, i).",
+        op: 'INDEX',
+        fix: 'prefix',
+        sig: ['array: Array', 'i: Integer', 'Value'],
+        text: 'Returns the value at the given array index: INDEX(array, i).',
       },
       {
-        op: "LENGTH",
-        fix: "prefix",
-        sig: ["array: Array", "Integer"],
-        text: "Returns the length of an array: LENGTH(array).",
+        op: 'LENGTH',
+        fix: 'prefix',
+        sig: ['array: Array', 'Integer'],
+        text: 'Returns the length of an array: LENGTH(array).',
       },
       {
-        op: "JOIN",
-        fix: "prefix",
-        sig: ["array: Array", "separator: String", "String"],
-        text:
-          "Joins each array element into a string, using a separator: JOIN(array, separator).",
+        op: 'JOIN',
+        fix: 'prefix',
+        sig: ['array: Array', 'separator: String', 'String'],
+        text: 'Joins each array element into a string, using a separator: JOIN(array, separator).',
       },
       {
-        op: "SPLIT",
-        fix: "prefix",
-        sig: ["string: String", "separator: String", "Array"],
-        text:
-          "Splits a string into an array of characters, using a separator: SPLIT(string, separator).",
+        op: 'SPLIT',
+        fix: 'prefix',
+        sig: ['string: String', 'separator: String', 'Array'],
+        text: 'Splits a string into an array of characters, using a separator: SPLIT(string, separator).',
       },
       {
-        op: "STRING",
-        fix: "prefix",
-        sig: ["array: Array", "String"],
-        text: "Converts an array into a string: STRING(array).",
+        op: 'STRING',
+        fix: 'prefix',
+        sig: ['array: Array', 'String'],
+        text: 'Converts an array into a string: STRING(array).',
       },
       {
-        op: "CHARARRAY",
-        fix: "prefix",
-        sig: ["string: String", "Array"],
-        text:
-          "Converts a string into an array of characters: CHARARRAY(string)",
+        op: 'CHARARRAY',
+        fix: 'prefix',
+        sig: ['string: String', 'Array'],
+        text: 'Converts a string into an array of characters: CHARARRAY(string)',
       },
       {
-        op: "ARRAY",
-        fix: "prefix",
-        sig: ["arguments...", "Array"],
-        text: "Converts arguments into an array: ARRAY(a, b, c, ...).",
+        op: 'ARRAY',
+        fix: 'prefix',
+        sig: ['arguments...', 'Array'],
+        text: 'Converts arguments into an array: ARRAY(a, b, c, ...).',
       },
       {
-        op: "MAP",
-        fix: "prefix",
-        sig: ["mapper: Reference", "array: Array", "Array"],
-        text:
-          "Performs a mapper function on each element of the array: MAP(mapper, array).",
+        op: 'MAP',
+        fix: 'prefix',
+        sig: ['mapper: Reference', 'array: Array', 'Array'],
+        text: 'Performs a mapper function on each element of the array: MAP(mapper, array).',
       },
       {
-        op: "REDUCE",
-        fix: "prefix",
-        sig: ["reducer: Reference", "start", "array: Array", "Array"],
-        text:
-          'Performs a reducer function on each pair of array elements, using "start" as its starting value: REDUCE(reducer, array).',
+        op: 'REDUCE',
+        fix: 'prefix',
+        sig: ['reducer: Reference', 'start', 'array: Array', 'Array'],
+        text: 'Performs a reducer function on each pair of array elements, using "start" as its starting value: REDUCE(reducer, array).',
       },
       {
-        op: "RANGE",
-        fix: "prefix",
-        sig: ["start: Integer", "limit: Integer", "Array"],
-        text:
-          "Creates an array of integers, incrementing from start (included) to the limit (excluded): RANGE(start, limit)",
+        op: 'RANGE',
+        fix: 'prefix',
+        sig: ['start: Integer', 'limit: Integer', 'Array'],
+        text: 'Creates an array of integers, incrementing from start (included) to the limit (excluded): RANGE(start, limit)',
       },
       {
-        op: "ZIP",
-        fix: "prefix",
-        sig: ["array1: Array", "array2: Array", "Array of [array1[i], array2[i]]"],
-        text:
-          "Combines two arrays into a single array of both values, paired at their respective position: ZIP(array1, array2)",
+        op: 'ZIP',
+        fix: 'prefix',
+        sig: [
+          'array1: Array',
+          'array2: Array',
+          'Array of [array1[i], array2[i]]',
+        ],
+        text: 'Combines two arrays into a single array of both values, paired at their respective position: ZIP(array1, array2)',
       },
       {
-        op: "UNZIP",
-        fix: "prefix",
-        sig: ["array: Array of [a, b]", "[Array of a, Array of b]"],
-        text:
-          "Splits a single array of pairs into two arrays with values at their respective positions: UNZIP(array)",
+        op: 'UNZIP',
+        fix: 'prefix',
+        sig: ['array: Array of [a, b]', '[Array of a, Array of b]'],
+        text: 'Splits a single array of pairs into two arrays with values at their respective positions: UNZIP(array)',
       },
       {
-        op: "TAKE",
-        fix: "prefix",
-        sig: ["n: Integer", "Array"],
-        text:
-          "Takes the first n values from the array: TAKE(n, array)",
+        op: 'TAKE',
+        fix: 'prefix',
+        sig: ['n: Integer', 'Array'],
+        text: 'Takes the first n values from the array: TAKE(n, array)',
       },
       {
-        op: "DROP",
-        fix: "prefix",
-        sig: ["n: Integer", "Array"],
-        text:
-          "Drops the first n values from the array: DROP(n, array)",
+        op: 'DROP',
+        fix: 'prefix',
+        sig: ['n: Integer', 'Array'],
+        text: 'Drops the first n values from the array: DROP(n, array)',
       },
       {
-        op: "SLICE",
-        fix: "prefix",
-        sig: ["startIndex: Integer", "limitIndex: Integer", "Array"],
-        text:
-          "Slices an array from startIndex to (but not including) limitIndex: SLICE(startIndex, limitIndex, array)",
+        op: 'SLICE',
+        fix: 'prefix',
+        sig: ['startIndex: Integer', 'limitIndex: Integer', 'Array'],
+        text: 'Slices an array from startIndex to (but not including) limitIndex: SLICE(startIndex, limitIndex, array)',
       },
       {
-        op: "CONCAT",
-        fix: "prefix",
-        sig: ["array1: Array", "array2: Array", "Array"],
-        text:
-          "Concatenates two arrays into one: CONCAT(array1, array2)",
+        op: 'CONCAT',
+        fix: 'prefix',
+        sig: ['array1: Array', 'array2: Array', 'Array'],
+        text: 'Concatenates two arrays into one: CONCAT(array1, array2)',
       },
       {
-        op: "HEAD",
-        fix: "prefix",
-        sig: ["array: Array", "Value"],
-        text:
-          "Retrieves the first element of an array: HEAD(array)",
+        op: 'HEAD',
+        fix: 'prefix',
+        sig: ['array: Array', 'Value'],
+        text: 'Retrieves the first element of an array: HEAD(array)',
       },
       {
-        op: "TAIL",
-        fix: "prefix",
-        sig: ["array: Array", "Array"],
-        text:
-          "Returns the array without the first element: TAIL(array)",
+        op: 'TAIL',
+        fix: 'prefix',
+        sig: ['array: Array', 'Array'],
+        text: 'Returns the array without the first element: TAIL(array)',
       },
       {
-        op: "LAST",
-        fix: "prefix",
-        sig: ["array: Array", "Value"],
-        text:
-          "Retrieves the last element of an array: HEAD(array)",
+        op: 'LAST',
+        fix: 'prefix',
+        sig: ['array: Array', 'Value'],
+        text: 'Retrieves the last element of an array: HEAD(array)',
       },
       {
-        op: "CONS",
-        fix: "prefix",
-        sig: ["head: Value", "array: Array", "Array"],
-        text:
-          "Returns an array with a new value at the first position: CONS(head, array)",
+        op: 'CONS',
+        fix: 'prefix',
+        sig: ['head: Value', 'array: Array', 'Array'],
+        text: 'Returns an array with a new value at the first position: CONS(head, array)',
       },
       {
-        op: "FILTER",
-        fix: "prefix",
-        sig: ["filter: Reference", "array: Array", "Array"],
-        text:
-          "Returns an array of all elements for which 'filter(element)' returns true: FILTER(filter, array).",
+        op: 'FILTER',
+        fix: 'prefix',
+        sig: ['filter: Reference', 'array: Array', 'Array'],
+        text: "Returns an array of all elements for which 'filter(element)' returns true: FILTER(filter, array).",
       },
       {
-        op: "TAKEWHILE",
-        fix: "prefix",
-        sig: ["check: Reference", "array: Array", "Array"],
-        text:
-          "Returns a new array of all elements up until 'check(element)' returns false: TAKEWHILE(check, array).",
+        op: 'TAKEWHILE',
+        fix: 'prefix',
+        sig: ['check: Reference', 'array: Array', 'Array'],
+        text: "Returns a new array of all elements up until 'check(element)' returns false: TAKEWHILE(check, array).",
       },
       {
-        op: "DROPWHILE",
-        fix: "prefix",
-        sig: ["check: Reference", "array: Array", "Array"],
-        text:
-          "Returns a new array skipping all elements up until 'check(element)' returns false: DROPWHILE(check, array).",
+        op: 'DROPWHILE',
+        fix: 'prefix',
+        sig: ['check: Reference', 'array: Array', 'Array'],
+        text: "Returns a new array skipping all elements up until 'check(element)' returns false: DROPWHILE(check, array).",
       },
       {
-        op: "GET",
-        fix: "prefix",
-        sig: ["key: String", "dict: Dictionary", "Value"],
-        text:
-          "Retrieves the value of the associated key in a dictionary: GET(key, dict)",
+        op: 'GET',
+        fix: 'prefix',
+        sig: ['key: String', 'dict: Dictionary', 'Value'],
+        text: 'Retrieves the value of the associated key in a dictionary: GET(key, dict)',
       },
       {
-        op: "PUT",
-        fix: "prefix",
-        sig: ["key: String", "value: Value", "dict: Dictionary", "Dictionary"],
-        text:
-          "Returns a dictionary with the key set to a new value: PUT(key, value, dict)",
+        op: 'PUT',
+        fix: 'prefix',
+        sig: ['key: String', 'value: Value', 'dict: Dictionary', 'Dictionary'],
+        text: 'Returns a dictionary with the key set to a new value: PUT(key, value, dict)',
       },
       {
-        op: "DICT",
-        fix: "prefix",
-        sig: ["keys: Array", "values: Array", "Dictionary"],
-        text:
-          "Constructs a new dictionary out of an array of keys and a corresponding array of values: DICT(keys, values)",
+        op: 'DICT',
+        fix: 'prefix',
+        sig: ['keys: Array', 'values: Array', 'Dictionary'],
+        text: 'Constructs a new dictionary out of an array of keys and a corresponding array of values: DICT(keys, values)',
       },
       {
-        op: "UNZIPDICT",
-        fix: "prefix",
-        sig: ["keyValuePairs: Array", "Dictionary"],
-        text:
-          "Constructs a new dictionary out of an array of [key, value] pairs: UNZIPDICT(keyValuePairs)",
+        op: 'UNZIPDICT',
+        fix: 'prefix',
+        sig: ['keyValuePairs: Array', 'Dictionary'],
+        text: 'Constructs a new dictionary out of an array of [key, value] pairs: UNZIPDICT(keyValuePairs)',
       },
       {
-        op: "KEYS",
-        fix: "prefix",
-        sig: ["dict: Dictionary", "Array"],
-        text:
-          "Returns all the keys of a dictionary in alphabetical order: KEYS(dict)",
+        op: 'KEYS',
+        fix: 'prefix',
+        sig: ['dict: Dictionary', 'Array'],
+        text: 'Returns all the keys of a dictionary in alphabetical order: KEYS(dict)',
       },
       {
-        op: "VALUES",
-        fix: "prefix",
-        sig: ["dict: Dictionary", "Array"],
-        text:
-          "Returns all the values of a dictionary, in alphabetical order of their keys: VALUES(dict)",
+        op: 'VALUES',
+        fix: 'prefix',
+        sig: ['dict: Dictionary', 'Array'],
+        text: 'Returns all the values of a dictionary, in alphabetical order of their keys: VALUES(dict)',
       },
       {
-        op: "[...]",
-        fix: "surround",
-        sig: ["arguments...", "Array"],
-        text: "Converts arguments into an array: [a, b, c, ...].",
+        op: '[...]',
+        fix: 'surround',
+        sig: ['arguments...', 'Array'],
+        text: 'Converts arguments into an array: [a, b, c, ...].',
       },
     ],
   };
