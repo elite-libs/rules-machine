@@ -126,6 +126,13 @@ const obj = (obj: ExpressionValue) => {
 
 const toArray = <TInput>(input: TInput): TInput[] => !Array.isArray(input) || typeof input === "string" ? [input] : input;
 
+const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+  const matches = toArray(arg1());
+  const data = evalArray(arg2());
+
+  return data.some((val) => matches.includes(val));
+}
+
 const iterable = (result: ExpressionValue) => {
   if (!Array.isArray(result) && typeof result !== "string") {
     throw new Error(`Expected array or string, found: ${typeof result} ${JSON.stringify(result)}`);
@@ -527,6 +534,22 @@ export const ruleExpressionLanguage = function (
       return arr.slice(i);
     },
     /**
+     * CONTAINS will return true if any value(s) from the 1st argument occur in the 2nd argument.
+     * 
+     * ```js
+     * CONTAINS([1 ,3], [1, 2, 3, 4, 5])
+     * //-> true
+     * 
+     * CONTAINS(99, [1, 2, 3, 4, 5])
+     * //-> false
+     * ```
+     * 
+     * @param {*} arg1 
+     * @param {*} arg2 
+     */
+     CONTAINS: containsValues,
+     INCLUDES: containsValues,
+    /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.
      * 
      * ```js
@@ -545,8 +568,7 @@ export const ruleExpressionLanguage = function (
       const data = evalArray(arg2());
 
       return data.filter((val) => removeValues.includes(val) === false);
-    },
-    /**
+    },    /**
      * 
      * INCLUDES_VALUES will ONLY INCLUDE values that are in the 1st argument.
      * 

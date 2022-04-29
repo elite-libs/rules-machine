@@ -319,6 +319,7 @@ fishyRhyme({fish: 'oneFish'}); // {fish: 'twoFish'}
 
 1. `REMOVE_VALUES(matches, input)` - will remove all values matching the item(s) in the 1st argument from the 2nd argument array. (XOR operation.)
 1. `INCLUDES_VALUES(matches, input)` - will ONLY INCLUDE values that are in the 1st & 2nd arguments. (Intersection operation.)
+1. `CONTAINS(42, [41, 42, 43])` => `true`
 
 #### Utility Functions
 
