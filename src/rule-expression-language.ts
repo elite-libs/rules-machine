@@ -12,6 +12,7 @@ import {
   TermType,
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
+import set from 'lodash/set.js';
 import ms from 'ms';
 import { toArray } from './utils/toArray';
 
@@ -80,13 +81,8 @@ const bool = (value: ExpressionValue) => {
 const evalBool = (value: ExpressionValue): boolean => {
   let result;
 
-  while (typeof value === 'function' && value.length === 0) {
-    result = value();
-  }
-
-  if (!result) {
-    result = value;
-  }
+  while (typeof value === 'function' && value.length === 0) result = value();
+  if (!result) result = value;
 
   return bool(result);
 };
@@ -264,7 +260,16 @@ export const ruleExpressionLanguage = function (
     //     throw Error(``)
     //   }
     // },
-    '=': (a, b) => a() === b(),
+
+    // NOTE: Moving the '=' operator to the pre process stuff
+    // '=': (a, b) => {
+    //   const variablePath = a();
+    //   const variableValue = b();
+    //   console.log('SETTING VARIABLE', variablePath, variableValue);
+    //   input
+
+    //   return variablePath === variableValue;
+    // },
     '==': (a, b) => a() === b(),
     '!=': (a, b) => a() !== b(),
     '<>': (a, b) => a() !== b(),
@@ -726,7 +731,7 @@ export const ruleExpressionLanguage = function (
     termDelegate: function (term: string) {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
-        switch (term) {
+        switch (term.toUpperCase()) {
           case 'E':
             return Math.E;
           case 'LN2':
@@ -769,7 +774,7 @@ export const ruleExpressionLanguage = function (
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {
-        switch (term) {
+        switch (term.toUpperCase()) {
           case 'E':
             return 'number';
           case 'LN2':
