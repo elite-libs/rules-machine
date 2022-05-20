@@ -206,7 +206,6 @@ export function ruleFactory<
         stepCount,
         true
       );
-      // @ts-ignore
       let rightSideValue = rightSideParsed; // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
       if (operator in ConditionalOperators) {
         let result = ConditionalOperators[
@@ -220,8 +219,7 @@ export function ruleFactory<
         rightSideValue = extractValueOrNumber(input, rightSide);
         let result = ModifierOperators[
           operator as keyof typeof ModifierOperators
-          // @ts-ignore
-        ](leftSideValue, rightSideValue);
+        ](leftSideValue as number, rightSideValue);
         logTrace(result);
         results.lastValue = result;
         return result;

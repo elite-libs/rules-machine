@@ -11,6 +11,7 @@ import {
   TermTyper,
   TermType,
 } from 'expressionparser/dist/ExpressionParser.js';
+import { isObject } from 'lodash';
 import get from 'lodash/get.js';
 import omit from 'lodash/omit.js';
 import ms from 'ms';
@@ -174,9 +175,15 @@ const objectContainsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
 };
 
 const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
-  const matches = toArray(arg1());
+  const matches = toArray(arg1()) as [];
   const data = arg2();
-  // @ts-ignore
+  if (!isObject(data)) {
+    throw new Error(
+      `OMIT expects object for second argument, ${typeof data} ${JSON.stringify(
+        data
+      )}`
+    );
+  }
   return omit(data, matches);
 };
 
