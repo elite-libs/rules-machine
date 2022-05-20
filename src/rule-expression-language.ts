@@ -22,6 +22,60 @@ export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
+const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
+  '+': (a, b) => num(a()) + num(b()),
+  '-': (a, b) => num(a()) - num(b()),
+  '*': (a, b) => num(a()) * num(b()),
+  '/': (a, b) => num(a()) / num(b()),
+  ',': (a, b): ArgumentsArray => {
+    const aVal = a();
+    const aArr: ExpressionArray<ExpressionValue> = isArgumentsArray(aVal)
+      ? aVal
+      : [() => aVal];
+    const args: ExpressionArray<ExpressionValue> = aArr.concat([b]);
+    args.isArgumentsArray = true;
+    return args as ArgumentsArray;
+  },
+  '%': (a, b) => num(a()) % num(b()),
+  '+=': (a, b) => {
+    const token = a();
+    const value = b();
+    const resolvedToken =
+      typeof token === 'number'
+        ? token
+        : typeof token === 'string'
+        ? termDelegate(token)
+        : (undefined as never);
+    const resolvedValue =
+      typeof value === 'number' && isFinite(value)
+        ? value
+        : typeof value === 'string'
+        ? termDelegate(value)
+        : NaN;
+
+    if (isNumberLodash(resolvedToken) && isNumberLodash(resolvedValue)) {
+      return resolvedToken + resolvedValue;
+    } else {
+      throw new Error(
+        `Cannot apply += operation to expression: ${token} += ${value}`
+      );
+    }
+  },
+  '==': (a, b) => a() === b(),
+  '!=': (a, b) => a() !== b(),
+  '<>': (a, b) => a() !== b(),
+  '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
+  '>': (a, b) => a() > b(),
+  '<': (a, b) => a() < b(),
+  '>=': (a, b) => a() >= b(),
+  '<=': (a, b) => a() <= b(),
+  AND: (a, b) => a() && b(),
+  OR: (a, b) => a() || b(),
+  '^': (a, b) => Math.pow(num(a()), num(b())),
+});
+
+export const infixOperators = Object.keys(() => '');
+
 const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();
 
@@ -224,6 +278,8 @@ export const ruleExpressionLanguage = function (
   termTypeDelegate?: TermTyper,
   termSetter?: TermSetterFunction
 ): ExpressionParserOptions {
+  const infixOps = getInfixOps(termDelegate);
+
   const call = (name: string): Callable => {
     const upperName = name.toUpperCase();
     if (prefixOps.hasOwnProperty(upperName)) {
@@ -236,34 +292,6 @@ export const ruleExpressionLanguage = function (
     } else {
       throw new Error(`Unknown function: ${name}`);
     }
-  };
-
-  const infixOps: InfixOps = {
-    '+': (a, b) => num(a()) + num(b()),
-    '-': (a, b) => num(a()) - num(b()),
-    '*': (a, b) => num(a()) * num(b()),
-    '/': (a, b) => num(a()) / num(b()),
-    ',': (a, b): ArgumentsArray => {
-      const aVal = a();
-      const aArr: ExpressionArray<ExpressionValue> = isArgumentsArray(aVal)
-        ? aVal
-        : [() => aVal];
-      const args: ExpressionArray<ExpressionValue> = aArr.concat([b]);
-      args.isArgumentsArray = true;
-      return args as ArgumentsArray;
-    },
-    '%': (a, b) => num(a()) % num(b()),
-    '==': (a, b) => a() === b(),
-    '!=': (a, b) => a() !== b(),
-    '<>': (a, b) => a() !== b(),
-    '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
-    '>': (a, b) => a() > b(),
-    '<': (a, b) => a() < b(),
-    '>=': (a, b) => a() >= b(),
-    '<=': (a, b) => a() <= b(),
-    AND: (a, b) => a() && b(),
-    OR: (a, b) => a() || b(),
-    '^': (a, b) => Math.pow(num(a()), num(b())),
   };
 
   const prefixOps: FunctionOps = {
@@ -1408,15 +1436,3 @@ export const ruleExpressionLanguage = function (
     ],
   };
 };
-
-export const assignmentOperators = [
-  '=',
-  '+=',
-  '-=',
-  '*=',
-  '/=',
-  '**=',
-  '%=',
-  '||=',
-  '??=',
-];
