@@ -229,41 +229,11 @@ export function ruleFactory<
         leftSideValue = extractValueOrNumber(input, leftSide, true);
         // rightSideValue = extractValueOrNumber(input, rightSide);
         rightSideValue = rightSideValue as number;
-        switch (operator) {
-          case '+=':
-            leftSideValue += rightSideValue;
-            break;
-          case '-=':
-            // @ts-ignore
-            leftSideValue -= rightSideValue;
-            break;
-          case '*=':
-            // @ts-ignore
-            leftSideValue *= rightSideValue;
-            break;
-          case '/=':
-            // @ts-ignore
-            leftSideValue /= rightSideValue;
-            break;
-          case '**=':
-            // @ts-ignore
-            leftSideValue **= rightSideValue;
-            break;
-          case '%=':
-            // @ts-ignore
-            leftSideValue %= rightSideValue;
-            break;
-          case '||=':
-            leftSideValue ||= rightSideValue;
-            break;
-          case '??=':
-            leftSideValue ??= rightSideValue;
-            break;
-          default:
-            throw Error(`Rule ${name} has an invalid assignment operator.`);
-        }
+        leftSideValue = AssignmentOperators[operator](
+          leftSideValue,
+          rightSideValue
+        );
         let result = set(input, leftSide, leftSideValue);
-
         logTrace(result);
         results.lastValue = leftSideValue;
         return leftSideValue;
