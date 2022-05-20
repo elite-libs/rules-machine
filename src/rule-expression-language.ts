@@ -13,7 +13,9 @@ import {
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
+import isNumberLodash from 'lodash/isNumber.js';
 import ms from 'ms';
+import { isNumber } from './utils/isNumber';
 import { toArray } from './utils/toArray';
 
 export interface FunctionOps {
@@ -251,25 +253,6 @@ export const ruleExpressionLanguage = function (
       return args as ArgumentsArray;
     },
     '%': (a, b) => num(a()) % num(b()),
-    // "=": (a, b) => {
-    //   const term = a();
-    //   const result = b();
-    //   if (termSetter) {
-    //     termSetter(term, result);
-    //   } else {
-    //     throw Error(``)
-    //   }
-    // },
-
-    // NOTE: Moving the '=' operator to the pre process stuff
-    // '=': (a, b) => {
-    //   const variablePath = a();
-    //   const variableValue = b();
-    //   console.log('SETTING VARIABLE', variablePath, variableValue);
-    //   input
-
-    //   return variablePath === variableValue;
-    // },
     '==': (a, b) => a() === b(),
     '!=': (a, b) => a() !== b(),
     '<>': (a, b) => a() !== b(),
@@ -1425,3 +1408,15 @@ export const ruleExpressionLanguage = function (
     ],
   };
 };
+
+export const assignmentOperators = [
+  '=',
+  '+=',
+  '-=',
+  '*=',
+  '/=',
+  '**=',
+  '%=',
+  '||=',
+  '??=',
+];

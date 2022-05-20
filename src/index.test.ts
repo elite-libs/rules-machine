@@ -128,19 +128,22 @@ describe('Logical', () => {
   });
 });
 
-describe.only('Custom Functions', () => {
+describe('Custom Functions', () => {
   test('can use functions as expressions', () => {
-    const unMockDate = mockDateHelper(new Date(2020, 0, 20));
+    const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
     const rulesFn = ruleFactory('DATEISO("10m")');
     expect(rulesFn({})).toMatchSnapshot();
     unMockDate();
   });
 
   test('can invoke date functions', () => {
-    const unMockDate = mockDateHelper(new Date(2020, 0, 20));
+    const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
     const rulesFn = ruleFactory(
       [
-        { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },
+        {
+          if: '3 >= 1',
+          then: 'inTenMinutes = DATEISO("10m")',
+        },
         { return: 'inTenMinutes' },
       ],
       { name: 'dateMath', traceResults: false }
@@ -190,7 +193,7 @@ describe.only('Custom Functions', () => {
 });
 
 describe('Assignment Operators', () => {
-  test('can process increment operator +=', () => {
+  test.only('can process increment operator +=', () => {
     const rulesFn = ruleFactory(
       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
       { name: 'calculateDiscount', traceResults: true }

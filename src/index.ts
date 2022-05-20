@@ -8,8 +8,12 @@ import {
   ModifierOperators,
 } from './operators';
 import performance from './utils/performance';
-import { ruleExpressionLanguage } from './rule-expression-language';
+import {
+  ruleExpressionLanguage,
+  assignmentOperators,
+} from './rule-expression-language';
 import { init } from 'expressionparser';
+import { escapeRegExp } from 'lodash';
 
 const trailingQuotes = /^('|").*('|")$/g;
 const whitespacePattern = /\s+/g;
@@ -37,12 +41,20 @@ export function ruleFactory<
   } = any
 >(
   rules: Rule,
-  options: RuleMachineOptions = { name: 'rules.unnamed', traceResults: false, ignoreMissingKeys: true }
+  options: RuleMachineOptions = {
+    name: 'rules.unnamed',
+    traceResults: false,
+    ignoreMissingKeys: true,
+  }
 ) {
   if (typeof options === 'string') {
     options = { name: options } as RuleMachineOptions;
   }
-  let { name = 'rules.unnamed', traceResults, ignoreMissingKeys = true } = options;
+  let {
+    name = 'rules.unnamed',
+    traceResults,
+    ignoreMissingKeys = true,
+  } = options;
   // Validate, parse & load rules
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput = {} as TInput) {
@@ -62,8 +74,13 @@ export function ruleFactory<
     const parser = init(ruleExpressionLanguage, (term: string) => {
       if (typeof term === 'string') {
         const result =
-          extractValueOrLiteral(input, term, stepRow, stepCount, ignoreMissingKeys) ||
-          term;
+          extractValueOrLiteral(
+            input,
+            term,
+            stepRow,
+            stepCount,
+            ignoreMissingKeys
+          ) || term;
         // console.log(`TERM: ${term} => ${result}`);
         return result;
         // return 42;
@@ -80,9 +97,11 @@ export function ruleFactory<
         (Array.isArray(rule) && typeof rule[0] === 'string')
       ) {
         if (typeof rule === 'string') {
-          evaluateRule({ stepRow, input, rule });
+          results.lastValue = evaluateRule({ stepRow, input, rule });
         } else {
-          rule.map((rule) => evaluateRule({ stepRow, input, rule }));
+          results.lastValue = rule.map((rule) =>
+            evaluateRule({ stepRow, input, rule })
+          );
         }
       } else if ('if' in rule) {
         // NOTE: Add || and && operators here.
@@ -174,25 +193,36 @@ export function ruleFactory<
       stepCount++;
 
       try {
-        if (rule.includes('=')) {
-          const [lhs, rhs] = rule.split(/\b=\b/);
-          const value = parser.expressionToValue(rhs);
+        const matchedOperator = assignmentOperators.find((op) =>
+          rule.includes(` ${op} `)
+        );
+        const isAssignmentOp = matchedOperator === ' = ';
+        // const operatorPattern = matchedOperator ? new RegExp(escapeRegExp(` ${matchedOperator} `)) : / = /;
+
+        if (matchedOperator) {
+          const [lhs, rhs] = rule.split(matchedOperator, 2);
+          const value = parser.expressionToValue(isAssignmentOp ? rhs : rule);
           const result = set(input, lhs, value);
-          traceSimple.push({result, lhs, value})
-          console.log('TODO: log this diff!!!', lhs, value, JSON.stringify(input));
+          traceSimple.push({ result, lhs, value });
+          console.log(
+            'TODO: log this diff!!!',
+            lhs,
+            value,
+            JSON.stringify(input)
+          );
           return input as any; // value???
         } else {
           const result = parser.expressionToValue(rule) as any;
-          traceSimple.push({result})
+          traceSimple.push({ result });
           console.log('TODO: log this result!!!', rule, result);
           return result;
         }
       } catch (e) {
-        traceSimple.push({error: e.message});        
+        traceSimple.push({ error: e.message });
         console.error('PARSER FAIL:', e);
-        return `ERROR[${e.message}]`
+        throw e;
       }
-      
+
       // console.log('parser.rule:', rule, parser.expressionToValue(rule));
 
       // const tokens = rule.split(whitespacePattern);

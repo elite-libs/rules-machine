@@ -38,4 +38,22 @@ Array [
 ]
 `;
 
-exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T07:10:00.000Z"`;
+exports[`Custom Functions can use CONTAINS array function 1`] = `Array []`;
+
+exports[`Custom Functions can use functional array helpers 1`] = `Array []`;
+
+exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T00:10:00.000Z"`;
+
+exports[`Logical and/or can process 'and' rules 1`] = `Array []`;
+
+exports[`Logical and/or can process 'or' rules 1`] = `Array []`;
+
+exports[`Logical and/or can process nested logical rule arrays 1`] = `Array []`;
+
+exports[`Logical if/then/else can process 'then' rules 1`] = `Array []`;
+
+exports[`Logical if/then/else can process omitted 'else' rules 1`] = `Array []`;
+
+exports[`Logical if/then/else can process series of if/then rules 1`] = `Array []`;
+
+exports[`Nested Rule Structures can process complex rule expressions 1`] = `Array []`;
