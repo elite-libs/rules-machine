@@ -12,6 +12,7 @@ import {
   TermType,
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
+import omit from 'lodash/omit.js';
 import ms from 'ms';
 import { toArray } from './utils/toArray';
 
@@ -164,6 +165,19 @@ const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   const matches = toArray(arg1());
   const data = evalArray(arg2());
   return data.some((val) => matches.includes(val));
+};
+
+const objectContainsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+  const matches = toArray(arg1());
+  const data = arg2();
+  return Object.keys(data).some((val) => matches.includes(val));
+};
+
+const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+  const matches = toArray(arg1());
+  const data = arg2();
+  // @ts-ignore
+  return omit(data, matches);
 };
 
 const iterable = (result: ExpressionValue) => {
@@ -586,6 +600,8 @@ export const ruleExpressionLanguage = function (
      */
     CONTAINS: containsValues,
     INCLUDES: containsValues,
+    OBJECT_CONTAINS: objectContainsValues,
+    OMIT: omitProperties,
     /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.
      *

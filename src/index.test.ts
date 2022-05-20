@@ -205,3 +205,61 @@ test('can use conditional array helpers', () => {
   expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   expect(result.input?.hasLondon).toBe(true);
 });
+
+describe('can use functional object helpers', () => {
+  test('OBJECT_CONTAINS', () => {
+    const rulesFn = ruleFactory(
+      ['hasLondon = OBJECT_CONTAINS("London", cities)'],
+      {
+        name: 'trace',
+        traceResults: true,
+      }
+    );
+
+    const hasLondonInput = {
+      cities: { Denver: true, London: true, LA: true },
+    };
+    const hasTaipeiInput = {
+      cities: { Denver: true, Taipei: true, LA: true },
+    };
+    const withLondon = rulesFn(hasLondonInput);
+    const withoutLondon = rulesFn(hasTaipeiInput);
+
+    expect(withLondon.input?.hasLondon).toBe(true);
+    expect(withoutLondon.input?.hasLondon).toBe(false);
+  });
+
+  test('OMIT', () => {
+    const rulesFn = ruleFactory(
+      [
+        { if: 'usaOnly == true', then: 'cities = OMIT("London", cities)' },
+        { return: 'cities' },
+      ],
+      {
+        name: 'trace',
+        traceResults: true,
+      }
+    );
+
+    const hasLondonInput = {
+      cities: { Denver: true, London: true, LA: true },
+      usaOnly: true,
+    };
+    const hasTaipeiInput = {
+      cities: { Denver: true, Taipei: true, LA: true },
+      usaOnly: true,
+    };
+    const withLondon = rulesFn(hasLondonInput);
+    const withoutLondon = rulesFn(hasTaipeiInput);
+
+    expect(withLondon.returnValue).toStrictEqual({
+      Denver: true,
+      LA: true,
+    });
+    expect(withoutLondon.returnValue).toStrictEqual({
+      Denver: true,
+      Taipei: true,
+      LA: true,
+    });
+  });
+});

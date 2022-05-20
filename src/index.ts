@@ -161,6 +161,7 @@ export function ruleFactory<
       | number
       | null
       | undefined
+      | {}
       | Array<string | boolean | number | null | undefined> {
       if (Array.isArray(rule) && typeof rule[0] === 'string')
         return rule.flatMap((rule) =>
@@ -205,6 +206,7 @@ export function ruleFactory<
         stepCount,
         true
       );
+      // @ts-ignore
       let rightSideValue = rightSideParsed; // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
       if (operator in ConditionalOperators) {
         let result = ConditionalOperators[
@@ -218,6 +220,7 @@ export function ruleFactory<
         rightSideValue = extractValueOrNumber(input, rightSide);
         let result = ModifierOperators[
           operator as keyof typeof ModifierOperators
+          // @ts-ignore
         ](leftSideValue, rightSideValue);
         logTrace(result);
         results.lastValue = result;
@@ -231,18 +234,23 @@ export function ruleFactory<
             leftSideValue += rightSideValue;
             break;
           case '-=':
+            // @ts-ignore
             leftSideValue -= rightSideValue;
             break;
           case '*=':
+            // @ts-ignore
             leftSideValue *= rightSideValue;
             break;
           case '/=':
+            // @ts-ignore
             leftSideValue /= rightSideValue;
             break;
           case '**=':
+            // @ts-ignore
             leftSideValue **= rightSideValue;
             break;
           case '%=':
+            // @ts-ignore
             leftSideValue %= rightSideValue;
             break;
           case '||=':
