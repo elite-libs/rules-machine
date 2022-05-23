@@ -4,6 +4,14 @@ import mockDateHelper from './utils/mockDateHelper';
 
 const omitRuntime = ({ runtime, ...keys }: any) => keys;
 
+describe('Assignment Operators', () => {
+  test('should be able to assign a value to a variable', () => {
+    const rulesFn = ruleFactory('amITheWalrus = true');
+    expect(rulesFn({})).toMatchSnapshot();
+
+  });
+});
+
 describe('Logical', () => {
   describe('if/then/else', () => {
     test("can process 'then' rules", () => {
@@ -130,20 +138,17 @@ describe('Logical', () => {
 
 describe('Custom Functions', () => {
   test('can use functions as expressions', () => {
-    const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
+    const unMockDate = mockDateHelper(new Date(2020, 0, 20));
     const rulesFn = ruleFactory('DATEISO("10m")');
     expect(rulesFn({})).toMatchSnapshot();
     unMockDate();
   });
 
   test('can invoke date functions', () => {
-    const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
+    const unMockDate = mockDateHelper(new Date(2020, 0, 20));
     const rulesFn = ruleFactory(
       [
-        {
-          if: '3 >= 1',
-          then: 'inTenMinutes = DATEISO("10m")',
-        },
+        { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },
         { return: 'inTenMinutes' },
       ],
       { name: 'dateMath', traceResults: false }
@@ -193,7 +198,7 @@ describe('Custom Functions', () => {
 });
 
 describe('Assignment Operators', () => {
-  test.only('can process increment operator +=', () => {
+  test('can process increment operator +=', () => {
     const rulesFn = ruleFactory(
       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
       { name: 'calculateDiscount', traceResults: true }

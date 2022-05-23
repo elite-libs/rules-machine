@@ -9,8 +9,8 @@ import {
 } from './operators';
 import performance from './utils/performance';
 import {
-  ruleExpressionLanguage,
   assignmentOperators,
+  ruleExpressionLanguage,
 } from './rule-expression-language';
 import { init } from 'expressionparser';
 import { escapeRegExp } from 'lodash';
@@ -80,7 +80,7 @@ export function ruleFactory<
             stepRow,
             stepCount,
             ignoreMissingKeys
-          ) || term;
+          ) || get(input, term, undefined as any);
         // console.log(`TERM: ${term} => ${result}`);
         return result;
         // return 42;
@@ -203,6 +203,7 @@ export function ruleFactory<
           const [lhs, rhs] = rule.split(matchedOperator, 2);
           const value = parser.expressionToValue(isAssignmentOp ? rhs : rule);
           const result = set(input, lhs, value);
+          results.lastValue = value;
           traceSimple.push({ result, lhs, value });
           console.log(
             'TODO: log this diff!!!',
@@ -214,6 +215,7 @@ export function ruleFactory<
         } else {
           const result = parser.expressionToValue(rule) as any;
           traceSimple.push({ result });
+          results.lastValue = result;
           console.log('TODO: log this result!!!', rule, result);
           return result;
         }

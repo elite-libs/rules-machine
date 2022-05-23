@@ -1,48 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Assignment Operators can process increment operator += 1`] = `
-Array [
-  Object {
-    "name": "calculateDiscount",
-    "operator": ">=",
-    "parseResult": Object {
-      "lhs": "price",
-      "lhsv": 100,
-      "rhs": "100",
-      "rhsv": 100,
-    },
-    "result": true,
-    "rule": "price >= 100",
-    "state": "{\\"price\\":100,\\"discount\\":10}",
-    "stepCount": 1,
-    "stepRow": 0,
-  },
-  Object {
-    "name": "calculateDiscount",
-    "operator": "+=",
-    "parseResult": Object {
-      "lhs": "discount",
-      "lhsv": 30,
-      "rhs": "20",
-      "rhsv": 20,
-    },
-    "result": Object {
-      "discount": 30,
-      "price": 100,
-    },
-    "rule": "discount += 20",
-    "state": "{\\"price\\":100,\\"discount\\":30}",
-    "stepCount": 2,
-    "stepRow": 0,
-  },
-]
-`;
+exports[`Assignment Operators can process increment operator += 1`] = `Array []`;
+
+exports[`Assignment Operators should be able to assign a value to a variable 1`] = `true`;
 
 exports[`Custom Functions can use CONTAINS array function 1`] = `Array []`;
 
 exports[`Custom Functions can use functional array helpers 1`] = `Array []`;
 
-exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T00:10:00.000Z"`;
+exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T07:10:00.000Z"`;
 
 exports[`Logical and/or can process 'and' rules 1`] = `Array []`;
 

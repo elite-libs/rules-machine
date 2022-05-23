@@ -22,6 +22,19 @@ export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
+export const assignmentOperators = ['+='] 
+// TODO: , '-=', '*=', '/=', '%='];
+/*
+'+='
+'-='
+'*='
+'/='
+'**='
+'%='
+'||='
+'??='
+*/
+
 const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
   '+': (a, b) => num(a()) + num(b()),
   '-': (a, b) => num(a()) - num(b()),
