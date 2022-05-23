@@ -200,7 +200,9 @@ export function ruleFactory<
         // const operatorPattern = matchedOperator ? new RegExp(escapeRegExp(` ${matchedOperator} `)) : / = /;
 
         if (matchedOperator) {
-          const [lhs, rhs] = rule.split(matchedOperator, 2);
+          const [lhs, rhs] = rule
+            .split(matchedOperator, 2)
+            .map((s) => s.trim());
           const value = parser.expressionToValue(isAssignmentOp ? rhs : rule);
           const result = set(input, lhs, value);
           results.lastValue = value;
