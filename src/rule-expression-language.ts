@@ -29,10 +29,10 @@ export const assignmentOperators = ['+=', '='];
 '-='
 '*='
 '/='
+'??='
 '**='
 '%='
 '||='
-'??='
 */
 
 const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
@@ -74,17 +74,7 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
       );
     }
   },
-  '=': (_, b) => {
-    const value = b();
-    const resolvedValue =
-      typeof value === 'number' && isFinite(value)
-        ? value
-        : typeof value === 'string'
-        ? termDelegate(value)
-        : NaN;
-
-    return value;
-  },
+  '=': (_, b) => b(),
   '==': (a, b) => a() === b(),
   '!=': (a, b) => a() !== b(),
   '<>': (a, b) => a() !== b(),
