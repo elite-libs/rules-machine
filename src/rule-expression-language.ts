@@ -22,7 +22,7 @@ export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
-export const assignmentOperators = ['+='] 
+export const assignmentOperators = ['+=', '='];
 // TODO: , '-=', '*=', '/=', '%='];
 /*
 '+='

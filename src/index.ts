@@ -196,7 +196,7 @@ export function ruleFactory<
         const matchedOperator = assignmentOperators.find((op) =>
           rule.includes(` ${op} `)
         );
-        const isAssignmentOp = matchedOperator === ' = ';
+        const isAssignmentOp = !!matchedOperator;
         // const operatorPattern = matchedOperator ? new RegExp(escapeRegExp(` ${matchedOperator} `)) : / = /;
 
         if (matchedOperator) {
