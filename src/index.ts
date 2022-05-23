@@ -196,14 +196,13 @@ export function ruleFactory<
         const matchedOperator = assignmentOperators.find((op) =>
           rule.includes(` ${op} `)
         );
-        const isAssignmentOp = !!matchedOperator;
         // const operatorPattern = matchedOperator ? new RegExp(escapeRegExp(` ${matchedOperator} `)) : / = /;
 
         if (matchedOperator) {
           const [lhs, rhs] = rule
             .split(matchedOperator, 2)
             .map((s) => s.trim());
-          const value = parser.expressionToValue(isAssignmentOp ? rhs : rule);
+          const value = parser.expressionToValue(rule);
           const result = set(input, lhs, value);
           results.lastValue = value;
           traceSimple.push({ result, lhs, value });

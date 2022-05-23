@@ -74,6 +74,17 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
       );
     }
   },
+  '=': (_, b) => {
+    const value = b();
+    const resolvedValue =
+      typeof value === 'number' && isFinite(value)
+        ? value
+        : typeof value === 'string'
+        ? termDelegate(value)
+        : NaN;
+
+    return value;
+  },
   '==': (a, b) => a() === b(),
   '!=': (a, b) => a() !== b(),
   '<>': (a, b) => a() !== b(),
