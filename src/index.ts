@@ -8,8 +8,12 @@ import {
   ModifierOperators,
 } from './operators';
 import performance from './utils/performance';
-import { ruleExpressionLanguage } from './rule-expression-language';
+import {
+  assignmentOperators,
+  ruleExpressionLanguage,
+} from './rule-expression-language';
 import { init } from 'expressionparser';
+import { escapeRegExp } from 'lodash';
 
 const trailingQuotes = /^('|").*('|")$/g;
 const whitespacePattern = /\s+/g;
@@ -17,6 +21,7 @@ const whitespacePattern = /\s+/g;
 type RuleMachineOptions = {
   name?: string;
   traceResults?: boolean;
+  ignoreMissingKeys?: boolean;
 };
 
 type RulesTraceResults<
@@ -36,16 +41,25 @@ export function ruleFactory<
   } = any
 >(
   rules: Rule,
-  options: RuleMachineOptions = { name: 'rules.unnamed', traceResults: false }
+  options: RuleMachineOptions = {
+    name: 'rules.unnamed',
+    traceResults: false,
+    ignoreMissingKeys: true,
+  }
 ) {
   if (typeof options === 'string') {
     options = { name: options } as RuleMachineOptions;
   }
-  let { name = 'rules.unnamed', traceResults } = options;
+  let {
+    name = 'rules.unnamed',
+    traceResults,
+    ignoreMissingKeys = true,
+  } = options;
   // Validate, parse & load rules
   // Then return a function that takes an input object and returns a RuleTrace[]
-  return function executeRulePipeline(input: TInput) {
+  return function executeRulePipeline(input: TInput = {} as TInput) {
     const trace: RuleTrace[] = [];
+    const traceSimple: any[] = [];
     // input = cloneDeep(input);
     let stepRow = 0;
     let stepCount = 0;
@@ -60,8 +74,13 @@ export function ruleFactory<
     const parser = init(ruleExpressionLanguage, (term: string) => {
       if (typeof term === 'string') {
         const result =
-          extractValueOrLiteral(input, term, stepRow, stepCount, false) ||
-          'INVALID';
+          extractValueOrLiteral(
+            input,
+            term,
+            stepRow,
+            stepCount,
+            ignoreMissingKeys
+          ) || get(input, term, undefined as any);
         // console.log(`TERM: ${term} => ${result}`);
         return result;
         // return 42;
@@ -78,9 +97,11 @@ export function ruleFactory<
         (Array.isArray(rule) && typeof rule[0] === 'string')
       ) {
         if (typeof rule === 'string') {
-          evaluateRule({ stepRow, input, rule });
+          results.lastValue = evaluateRule({ stepRow, input, rule });
         } else {
-          rule.map((rule) => evaluateRule({ stepRow, input, rule }));
+          results.lastValue = rule.map((rule) =>
+            evaluateRule({ stepRow, input, rule })
+          );
         }
       } else if ('if' in rule) {
         // NOTE: Add || and && operators here.
@@ -171,102 +192,163 @@ export function ruleFactory<
         throw new Error('Nested rules not yet implemented.');
 
       stepCount++;
-      const tokens = rule.split(whitespacePattern);
-      // TODO: Change to split on operator. 1 at a time
-      let [leftSide, operator, ...rightSideItems] = tokens;
-      let rightSide = rightSideItems.join(' '); // Warning: This may be a string with quotes.
-      let rightSideParsed: any = undefined;
 
-      if (tokens.length >= 2) {
-        // To support math expressions, check right-side
-        // rightSideParsed = whitespacePattern.test(rightSide)
-        //   ? parser.expressionToValue(rightSide)
-        //   : extractValueOrLiteral(input, rightSide, stepRow, stepCount);
-        rightSideParsed = parser.expressionToValue(rightSide);
-      }
-      if (tokens.length === 1) {
-        // TODO: Convert to new parser here!?
-        const result = extractValueOrLiteral(
-          input,
-          tokens[0],
-          stepRow,
-          stepCount,
-          ignoreMissingKeys
+      try {
+        const matchedOperator = assignmentOperators.find((op) =>
+          rule.includes(` ${op} `)
         );
-        results.lastValue = result;
-        return result;
-      }
-      if (!operator || !leftSide || !rightSide)
-        throw Error(`Rule ${name} has an invalid rule. 3 parts required.`);
+        // const operatorPattern = matchedOperator ? new RegExp(escapeRegExp(` ${matchedOperator} `)) : / = /;
 
-      let leftSideValue = extractValueOrLiteral(
-        input,
-        leftSide,
-        stepRow,
-        stepCount,
-        true
-      );
-      let rightSideValue = rightSideParsed; // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
-      if (operator in ConditionalOperators) {
-        let result = ConditionalOperators[
-          operator as keyof typeof ConditionalOperators
-        ](leftSideValue, rightSideValue);
-        logTrace(result);
-        results.lastValue = result;
-        return result;
-      } else if (operator in ModifierOperators) {
-        leftSideValue = extractValueOrNumber(input, leftSide, true);
-        rightSideValue = extractValueOrNumber(input, rightSide);
-        let result = ModifierOperators[
-          operator as keyof typeof ModifierOperators
-        ](leftSideValue as number, rightSideValue);
-        logTrace(result);
-        results.lastValue = result;
-        return result;
-      } else if (operator in AssignmentOperators) {
-        leftSideValue = extractValueOrNumber(input, leftSide, true);
-        // rightSideValue = extractValueOrNumber(input, rightSide);
-        rightSideValue = rightSideValue as number;
-        leftSideValue = AssignmentOperators[operator](
-          leftSideValue,
-          rightSideValue
-        );
-        let result = set(input, leftSide, leftSideValue);
-        logTrace(result);
-        results.lastValue = leftSideValue;
-        return leftSideValue;
-      } else if (operator === '=') {
-        leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide, stepRow, stepCount);
-        // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
-        // rightSideValue = extractValueOrLiteral(input, rightSide, stepRow, stepCount);
-        if (typeof leftSideValue !== 'string')
-          throw Error(
-            `Rule ${name} has an invalid rule. Left side must be a string.`
-          );
-        let result = set(input, leftSideValue, rightSideValue);
-        logTrace(result);
-        results.lastValue = leftSideValue;
-        return leftSideValue;
+        if (matchedOperator) {
+          const [lhs, rhs] = rule
+            .split(matchedOperator, 2)
+            .map((s) => s.trim());
+          const value = parser.expressionToValue(rule);
+          const result = set(input, lhs, value);
+          results.lastValue = value;
+          traceSimple.push({ result, lhs, value });
+          return input as any; // value???
+        } else {
+          const result = parser.expressionToValue(rule) as any;
+          traceSimple.push({ result });
+          results.lastValue = result;
+          return result;
+        }
+      } catch (e) {
+        traceSimple.push({ error: e.message });
+        console.error('PARSER FAIL:', e);
+        throw e;
       }
-      function logTrace(result: any) {
-        trace.push({
-          name: `${name}`,
-          operator,
-          runtime: performance.now() - startTime,
-          stepRow,
-          stepCount,
-          state: JSON.stringify(input),
-          result,
-          rule: typeof rule === 'string' ? rule : JSON.stringify(rule),
-          parseResult: {
-            lhs: leftSide,
-            rhs: rightSide,
-            rhsv: rightSideValue,
-            lhsv: leftSideValue,
-          },
-        });
-      }
-      return false;
+
+      // console.log('parser.rule:', rule, parser.expressionToValue(rule));
+
+      // const tokens = rule.split(whitespacePattern);
+      // // TODO: Change to split on operator. 1 at a time
+      // let [leftSide, operator, ...rightSideItems] = tokens;
+      // let rightSide = rightSideItems.join(' '); // Warning: This may be a string with quotes.
+      // let rightSideParsed: any = undefined;
+
+      // if (tokens.length >= 2) {
+      //   // To support math expressions, check right-side
+      //   // rightSideParsed = whitespacePattern.test(rightSide)
+      //   //   ? parser.expressionToValue(rightSide)
+      //   //   : extractValueOrLiteral(input, rightSide, stepRow, stepCount);
+      //   rightSideParsed = parser.expressionToValue(rightSide);
+      // }
+      // if (tokens.length === 1) {
+      //   // TODO: Convert to new parser here!?
+      //   let result = undefined;
+      //   try {
+      //     result = extractValueOrLiteral(
+      //       input,
+      //       tokens[0],
+      //       stepRow,
+      //       stepCount,
+      //       ignoreMissingKeys
+      //     );
+      //   } catch (error) {
+      //     result = parser.expressionToValue(rule);
+      //   }
+      //   results.lastValue = result;
+
+      //   return result as any;
+      // }
+      // if (!operator || !leftSide || !rightSide)
+      //   throw Error(`Rule ${name} has an invalid rule. 3 parts required.`);
+
+      // let leftSideValue = extractValueOrLiteral(
+      //   input,
+      //   leftSide,
+      //   stepRow,
+      //   stepCount,
+      //   true
+      // );
+      // let rightSideValue = rightSideParsed; // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
+      // if (operator in ConditionalOperators) {
+      //   let result = ConditionalOperators[
+      //     operator as keyof typeof ConditionalOperators
+      //   ](leftSideValue, rightSideValue);
+      //   logTrace(result);
+      //   results.lastValue = result;
+      //   return result;
+      // } else if (operator in ModifierOperators) {
+      //   leftSideValue = extractValueOrNumber(input, leftSide, true);
+      //   rightSideValue = extractValueOrNumber(input, rightSide);
+      //   let result = ModifierOperators[
+      //     operator as keyof typeof ModifierOperators
+      //   ](leftSideValue, rightSideValue);
+      //   logTrace(result);
+      //   results.lastValue = result;
+      //   return result;
+      // } else if (operator in AssignmentOperators) {
+      //   leftSideValue = extractValueOrNumber(input, leftSide, true);
+      //   // rightSideValue = extractValueOrNumber(input, rightSide);
+      //   rightSideValue = rightSideValue as number;
+      //   switch (operator) {
+      //     case '+=':
+      //       leftSideValue += rightSideValue;
+      //       break;
+      //     case '-=':
+      //       leftSideValue -= rightSideValue;
+      //       break;
+      //     case '*=':
+      //       leftSideValue *= rightSideValue;
+      //       break;
+      //     case '/=':
+      //       leftSideValue /= rightSideValue;
+      //       break;
+      //     case '**=':
+      //       leftSideValue **= rightSideValue;
+      //       break;
+      //     case '%=':
+      //       leftSideValue %= rightSideValue;
+      //       break;
+      //     case '||=':
+      //       leftSideValue ||= rightSideValue;
+      //       break;
+      //     case '??=':
+      //       leftSideValue ??= rightSideValue;
+      //       break;
+      //     default:
+      //       throw Error(`Rule ${name} has an invalid assignment operator.`);
+      //   }
+      //   let result = set(input, leftSide, leftSideValue);
+
+      //   logTrace(result);
+      //   results.lastValue = leftSideValue;
+      //   return leftSideValue;
+      // } else if (operator === '=') {
+      //   leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide, stepRow, stepCount);
+      //   // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
+      //   // rightSideValue = extractValueOrLiteral(input, rightSide, stepRow, stepCount);
+      //   if (typeof leftSideValue !== 'string')
+      //     throw Error(
+      //       `Rule ${name} has an invalid rule. Left side must be a string.`
+      //     );
+      //   let result = set(input, leftSideValue, rightSideValue);
+      //   logTrace(result);
+      //   results.lastValue = leftSideValue;
+      //   return leftSideValue;
+      // }
+      // function logTrace(result: any) {
+      //   trace.push({
+      //     name: `${name}`,
+      //     operator,
+      //     runtime: performance.now() - startTime,
+      //     stepRow,
+      //     stepCount,
+      //     state: JSON.stringify(input),
+      //     result,
+      //     rule: typeof rule === 'string' ? rule : JSON.stringify(rule),
+      //     parseResult: {
+      //       lhs: leftSide,
+      //       rhs: rightSide,
+      //       rhsv: rightSideValue,
+      //       lhsv: leftSideValue,
+      //     },
+      //   });
+      // }
+      // return false;
     }
 
     function extractValueOrNumber(
@@ -291,6 +373,9 @@ function arrayify<T>(items: T | T[]): T[] {
   if (!Array.isArray(items)) return [items];
   return items;
 }
+/*
+input['DATEISO("10m")']
+*/
 
 export function extractValueOrLiteral<
   TInput extends {
@@ -303,16 +388,18 @@ export function extractValueOrLiteral<
   stepCount?: number,
   ignoreMissingKeys?: boolean
 ) {
-  if (input[token]) return autoDetectType(input[token]);
-  if (token.includes('.') && get(input, token)) {
+  // if (input[token]) return autoDetectType(input[token]);
+  if (get(input, token)) {
     return autoDetectType(get(input, token));
   }
+
   if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
   if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
 
   // throw if we got an undefined key
-  if (!ignoreMissingKeys && token.length > 0)
+  if (!ignoreMissingKeys && token.length > 0) {
     throw new Error(`Undefined key: ${token}`);
+  }
   if (ignoreMissingKeys == true) return undefined;
   // @ts-ignore
   console.warn(
