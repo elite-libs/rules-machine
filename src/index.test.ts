@@ -8,7 +8,6 @@ describe('Assignment Operators', () => {
   test('should be able to assign a value to a variable', () => {
     const rulesFn = ruleFactory('amITheWalrus = true');
     expect(rulesFn({})).toMatchSnapshot();
-
   });
 });
 
@@ -138,14 +137,14 @@ describe('Logical', () => {
 
 describe('Custom Functions', () => {
   test('can use functions as expressions', () => {
-    const unMockDate = mockDateHelper(new Date(2020, 0, 20));
+    const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
     const rulesFn = ruleFactory('DATEISO("10m")');
     expect(rulesFn({})).toMatchSnapshot();
     unMockDate();
   });
 
-  test('can invoke date functions', () => {
-    const unMockDate = mockDateHelper(new Date(2020, 0, 20));
+  test.only('can invoke date functions', () => {
+    const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
     const rulesFn = ruleFactory(
       [
         { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },

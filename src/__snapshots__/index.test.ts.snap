@@ -8,7 +8,7 @@ exports[`Custom Functions can use CONTAINS array function 1`] = `Array []`;
 
 exports[`Custom Functions can use functional array helpers 1`] = `Array []`;
 
-exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T07:10:00.000Z"`;
+exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T00:10:00.000Z"`;
 
 exports[`Logical and/or can process 'and' rules 1`] = `Array []`;
 
