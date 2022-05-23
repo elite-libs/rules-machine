@@ -182,6 +182,7 @@ export function ruleFactory<
       | number
       | null
       | undefined
+      | {}
       | Array<string | boolean | number | null | undefined> {
       if (Array.isArray(rule) && typeof rule[0] === 'string')
         return rule.flatMap((rule) =>

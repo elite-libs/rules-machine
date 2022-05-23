@@ -28,7 +28,7 @@ export const ModifierOperators: Record<string, typeof add> = {
   '*': multiply,
   '/': divide,
 };
-export const AssignmentOperators = {
+export const AssignmentOperators: { [key: string]: (a: any, b: any) => any } = {
   '+=': add,
   '-=': subtract,
   '*=': multiply,
