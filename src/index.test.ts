@@ -203,7 +203,7 @@ describe('Custom Functions', () => {
   });
 });
 
-describe.only('Assignment Operators', () => {
+describe('Assignment Operators', () => {
   test('can process increment operator +=', () => {
     const rulesFn = ruleFactory([
       { if: 'price >= 100', then: 'discount += 20' },
@@ -226,6 +226,7 @@ describe.only('Assignment Operators', () => {
       { if: 'price >= 100', then: 'discount *= 5' },
       { return: 'discount' },
     ]);
+    expect(rulesFn({ price: 100, discount: 10 })).toBe(50);
   });
   test('divided by equals: /=', () => {
     const rulesFn = ruleFactory([
@@ -234,7 +235,7 @@ describe.only('Assignment Operators', () => {
     ]);
     expect(rulesFn({ price: 100, discount: 10 })).toBe(2);
   });
-  test('nullish coalescing equals handles null: ??=', () => {
+  test('nullish coalescing null: ??=', () => {
     const rulesFn = ruleFactory([
       { if: 'price >= 100', then: 'discount ??= 13' },
       { return: 'discount' },
@@ -242,46 +243,13 @@ describe.only('Assignment Operators', () => {
     expect(rulesFn({ price: 100, discount: null })).toBe(13);
   });
 
-  test.only('nullish coalescing equals handles falsy: ??=', () => {
+  test('nullish coalescing falsy: ??=', () => {
     const rulesFn = ruleFactory([
-      { if: 'price >= 100', then: 'discount ?= 13' },
+      { if: 'price >= 100', then: 'discount ??= 13' },
       { return: 'discount' },
     ]);
-    expect(rulesFn({ price: 100, discount: false })).toBe(false);
+    expect(rulesFn({ price: 100, discount: 0 })).toBe(0);
   });
-  //   test.todo('times equals', () => {
-  //     const rulesFn = ruleFactory(
-  //       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
-  //       { name: 'calculateDiscount', traceResults: true }
-  //     );
-  //     const input = { price: 100, discount: 10 };
-  //     const result = rulesFn(input);
-
-  //     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
-  //     expect(result.returnValue).toBe(30);
-  //   });
-  //   test.todo('divided by equals', () => {
-  //     const rulesFn = ruleFactory(
-  //       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
-  //       { name: 'calculateDiscount', traceResults: true }
-  //     );
-  //     const input = { price: 100, discount: 10 };
-  //     const result = rulesFn(input);
-
-  //     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
-  //     expect(result.returnValue).toBe(30);
-  //   });
-  //   test.todo('nullish equals', () => {
-  //     const rulesFn = ruleFactory(
-  //       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
-  //       { name: 'calculateDiscount', traceResults: true }
-  //     );
-  //     const input = { price: 100, discount: 10 };
-  //     const result = rulesFn(input);
-
-  //     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
-  //     expect(result.returnValue).toBe(30);
-  //   });
 });
 
 describe('Nested Rule Structures', () => {

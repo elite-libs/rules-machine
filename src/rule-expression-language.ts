@@ -17,12 +17,13 @@ import isNumberLodash from 'lodash/isNumber.js';
 import ms from 'ms';
 import { isNumber } from './utils/isNumber';
 import { toArray } from './utils/toArray';
+import moduleMethodTracer from './utils/moduleMethodTracer';
 
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
-export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '?='];
+export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
 // TODO: , '-=', '*=', '/=', '%='];
 /*
 '+='
@@ -55,15 +56,7 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
   '-=': (a, b) => num(a()) - num(b()),
   '*=': (a, b) => num(a()) * num(b()),
   '/=': (a, b) => num(a()) / num(b()),
-  '?=': (a, b) => {
-    throw new Error('?');
-    const A = a();
-    const B = b();
-    debugger;
-    console.log(A, B);
-    console.log(A || B);
-    return a() ?? b();
-  },
+  '??=': (a, b) => a() ?? b(),
   '==': (a, b) => a() === b(),
   '!=': (a, b) => a() !== b(),
   '<>': (a, b) => a() !== b(),
@@ -282,6 +275,7 @@ export const ruleExpressionLanguage = function (
   termSetter?: TermSetterFunction
 ): ExpressionParserOptions {
   const infixOps = getInfixOps(termDelegate);
+  // const infixOps = moduleMethodTracer(getInfixOps(termDelegate), console.log);
 
   const call = (name: string): Callable => {
     const upperName = name.toUpperCase();
@@ -731,6 +725,7 @@ export const ruleExpressionLanguage = function (
       '[',
       ']',
       '~',
+      '?',
     ],
     AMBIGUOUS: {
       '-': 'NEG',

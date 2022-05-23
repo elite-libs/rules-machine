@@ -1,9 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Assignment Operators can process increment operator += 1`] = `Array []`;
-
-exports[`Assignment Operators should be able to assign a value to a variable 1`] = `true`;
-
 exports[`Custom Functions can use CONTAINS array function 1`] = `Array []`;
 
 exports[`Custom Functions can use functional array helpers 1`] = `Array []`;
