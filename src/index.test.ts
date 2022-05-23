@@ -7,7 +7,14 @@ const omitRuntime = ({ runtime, ...keys }: any) => keys;
 describe('Assignment Operators', () => {
   test('should be able to assign a value to a variable', () => {
     const rulesFn = ruleFactory('amITheWalrus = true');
-    expect(rulesFn({})).toMatchSnapshot();
+    expect(rulesFn({})).toEqual({ amITheWalrus: true });
+  });
+  test('and return a variable by name', () => {
+    const rulesFn = ruleFactory([
+      'amITheWalrus = true',
+      { return: 'amITheWalrus' },
+    ]);
+    expect(rulesFn({})).toBe(true);
   });
 });
 
@@ -143,7 +150,7 @@ describe('Custom Functions', () => {
     unMockDate();
   });
 
-  test.only('can invoke date functions', () => {
+  test('can invoke date functions', () => {
     const unMockDate = mockDateHelper(new Date('2020-01-20T00:00:00.000Z'));
     const rulesFn = ruleFactory(
       [
