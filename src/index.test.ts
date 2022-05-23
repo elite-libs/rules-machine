@@ -11,10 +11,10 @@ describe('Assignment Operators', () => {
   });
   test('and return a variable by name', () => {
     const rulesFn = ruleFactory([
-      'amITheWalrus = true',
+      'amITheWalrus = foo + bar',
       { return: 'amITheWalrus' },
     ]);
-    expect(rulesFn({})).toBe(true);
+    expect(rulesFn({ foo: 1, bar: 2 })).toBe(3);
   });
 });
 
@@ -215,6 +215,10 @@ describe('Assignment Operators', () => {
     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
     expect(result.returnValue).toBe(30);
   });
+  test.todo('minus equals');
+  test.todo('times equals');
+  test.todo('divided by equals');
+  test.todo('nullish equals');
 });
 
 describe('Nested Rule Structures', () => {
