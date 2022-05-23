@@ -203,22 +203,85 @@ describe('Custom Functions', () => {
   });
 });
 
-describe('Assignment Operators', () => {
+describe.only('Assignment Operators', () => {
   test('can process increment operator +=', () => {
-    const rulesFn = ruleFactory(
-      [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
-      { name: 'calculateDiscount', traceResults: true }
-    );
-    const input = { price: 100, discount: 10 };
-    const result = rulesFn(input);
+    const rulesFn = ruleFactory([
+      { if: 'price >= 100', then: 'discount += 20' },
+      { return: 'discount' },
+    ]);
 
-    expect(result.trace.map(omitRuntime)).toMatchSnapshot();
-    expect(result.returnValue).toBe(30);
+    expect(rulesFn({ price: 100, discount: 10 })).toBe(30);
   });
-  test.todo('minus equals');
-  test.todo('times equals');
-  test.todo('divided by equals');
-  test.todo('nullish equals');
+  test('minus equals: -=', () => {
+    const rulesFn = ruleFactory([
+      { if: 'price >= 100', then: 'discount -= 5' },
+      { return: 'discount' },
+    ]);
+
+    expect(rulesFn({ price: 100, discount: 10 })).toBe(5);
+  });
+
+  test('times equals: *=', () => {
+    const rulesFn = ruleFactory([
+      { if: 'price >= 100', then: 'discount *= 5' },
+      { return: 'discount' },
+    ]);
+  });
+  test('divided by equals: /=', () => {
+    const rulesFn = ruleFactory([
+      { if: 'price >= 100', then: 'discount /= 5' },
+      { return: 'discount' },
+    ]);
+    expect(rulesFn({ price: 100, discount: 10 })).toBe(2);
+  });
+  test('nullish coalescing equals handles null: ??=', () => {
+    const rulesFn = ruleFactory([
+      { if: 'price >= 100', then: 'discount ??= 13' },
+      { return: 'discount' },
+    ]);
+    expect(rulesFn({ price: 100, discount: null })).toBe(13);
+  });
+
+  test.only('nullish coalescing equals handles falsy: ??=', () => {
+    const rulesFn = ruleFactory([
+      { if: 'price >= 100', then: 'discount ?= 13' },
+      { return: 'discount' },
+    ]);
+    expect(rulesFn({ price: 100, discount: false })).toBe(false);
+  });
+  //   test.todo('times equals', () => {
+  //     const rulesFn = ruleFactory(
+  //       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
+  //       { name: 'calculateDiscount', traceResults: true }
+  //     );
+  //     const input = { price: 100, discount: 10 };
+  //     const result = rulesFn(input);
+
+  //     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  //     expect(result.returnValue).toBe(30);
+  //   });
+  //   test.todo('divided by equals', () => {
+  //     const rulesFn = ruleFactory(
+  //       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
+  //       { name: 'calculateDiscount', traceResults: true }
+  //     );
+  //     const input = { price: 100, discount: 10 };
+  //     const result = rulesFn(input);
+
+  //     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  //     expect(result.returnValue).toBe(30);
+  //   });
+  //   test.todo('nullish equals', () => {
+  //     const rulesFn = ruleFactory(
+  //       [{ if: 'price >= 100', then: 'discount += 20' }, { return: 'discount' }],
+  //       { name: 'calculateDiscount', traceResults: true }
+  //     );
+  //     const input = { price: 100, discount: 10 };
+  //     const result = rulesFn(input);
+
+  //     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  //     expect(result.returnValue).toBe(30);
+  //   });
 });
 
 describe('Nested Rule Structures', () => {

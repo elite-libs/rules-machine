@@ -206,18 +206,11 @@ export function ruleFactory<
           const result = set(input, lhs, value);
           results.lastValue = value;
           traceSimple.push({ result, lhs, value });
-          console.log(
-            'TODO: log this diff!!!',
-            lhs,
-            value,
-            JSON.stringify(input)
-          );
           return input as any; // value???
         } else {
           const result = parser.expressionToValue(rule) as any;
           traceSimple.push({ result });
           results.lastValue = result;
-          console.log('TODO: log this result!!!', rule, result);
           return result;
         }
       } catch (e) {

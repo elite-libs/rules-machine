@@ -22,7 +22,7 @@ export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
-export const assignmentOperators = ['+=', '='];
+export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '?='];
 // TODO: , '-=', '*=', '/=', '%='];
 /*
 '+='
@@ -50,31 +50,20 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
     return args as ArgumentsArray;
   },
   '%': (a, b) => num(a()) % num(b()),
-  '+=': (a, b) => {
-    const token = a();
-    const value = b();
-    const resolvedToken =
-      typeof token === 'number'
-        ? token
-        : typeof token === 'string'
-        ? termDelegate(token)
-        : (undefined as never);
-    const resolvedValue =
-      typeof value === 'number' && isFinite(value)
-        ? value
-        : typeof value === 'string'
-        ? termDelegate(value)
-        : NaN;
-
-    if (isNumberLodash(resolvedToken) && isNumberLodash(resolvedValue)) {
-      return resolvedToken + resolvedValue;
-    } else {
-      throw new Error(
-        `Cannot apply += operation to expression: ${token} += ${value}`
-      );
-    }
-  },
   '=': (_, b) => b(),
+  '+=': (a, b) => num(a()) + num(b()),
+  '-=': (a, b) => num(a()) - num(b()),
+  '*=': (a, b) => num(a()) * num(b()),
+  '/=': (a, b) => num(a()) / num(b()),
+  '?=': (a, b) => {
+    throw new Error('?');
+    const A = a();
+    const B = b();
+    debugger;
+    console.log(A, B);
+    console.log(A || B);
+    return a() ?? b();
+  },
   '==': (a, b) => a() === b(),
   '!=': (a, b) => a() !== b(),
   '<>': (a, b) => a() !== b(),
