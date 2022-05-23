@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "rootDir": "src",
+    "rootDirs": ["src", "./"],
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -29,5 +29,5 @@
     "useUnknownInCatchVariables": false
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/node_modules", "**/.*/", "**/dist", "*.config.ts"]
+  "exclude": ["**/node_modules", "**/.*/", "**/dist"]
 }
