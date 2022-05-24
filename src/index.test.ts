@@ -1,7 +1,7 @@
 import { ruleFactory } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 
-const omitRuntime = ({ runtime, ...keys }: any) => keys;
+const omitRuntime = ({ runTime, startTime, ...keys }: any) => keys;
 
 describe('Assignment Operators', () => {
   test('should be able to assign a value to a variable', () => {
