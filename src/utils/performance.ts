@@ -1,3 +1,5 @@
+/* eslint-disable no-var */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 'use strict';
 
 // @license http://opensource.org/licenses/MIT
@@ -17,51 +19,18 @@ const performance = {
   },
 };
 
-// Ancient hack for Safari 6-8 support
-// if (!Date.now) {
-//   Date.now = function () {
-//     return new Date().getTime();
-//   };
-// }
+var window: any = typeof window !== 'undefined' ? window : {};
 
 void (async function() {
   if (window?.performance?.now) {
     performance.now = () => window.performance.now();
     return;
   }
-  // Check for node environment
   try {
+    // Check for node environment
     const perfHooks = await import('perf_hooks');
     performance.now = () => perfHooks.performance?.now();
   } catch (error) { /* ignore, couldn't import high-res timer */ }
-
-  // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
-  // @ts-ignore
-  window.performance = window?.performance || {};
-  if (
-    window?.performance?.timing.navigationStart &&
-    window?.performance?.mark &&
-    window?.performance?.clearMarks &&
-    window?.performance?.getEntriesByName
-  ) {
-    performance.now = function() {
-      window?.performance.clearMarks('__PERFORMANCE_NOW__');
-      window?.performance.mark('__PERFORMANCE_NOW__');
-      return window.performance.getEntriesByName('__PERFORMANCE_NOW__')[0]
-        .startTime;
-    };
-  } else if (!('now' in window.performance)) {
-    let nowOffset = Date.now();
-
-    if (
-      window.performance.timing?.navigationStart
-    )
-      nowOffset = window.performance.timing.navigationStart;
-
-    performance.now = function now() {
-      return Date.now() - nowOffset;
-    };
-  }
 })();
 
 export default performance;
