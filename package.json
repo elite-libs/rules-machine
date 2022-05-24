@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
@@ -26,7 +26,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "prepublishOnly": "yarn run build",
+    "prepublishOnly": "NODE_ENV=production yarn run build",
     "release:npm": "npm publish --access public --registry https://registry.npmjs.org/",
     "release:github": "npm publish --access public --registry https://npm.pkg.github.com/",
     "test": "yarn run build && jest",

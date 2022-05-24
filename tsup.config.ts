@@ -12,8 +12,6 @@ export default {
   platform: 'node',
   target: 'es2020',
   entry: ['src/index.ts'],
-  // entry: ["src/**/*.ts"],
-
   globalName: 'RulesMachine',
   clean: true,
   bundle: true,

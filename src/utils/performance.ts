@@ -25,9 +25,7 @@ const performance = {
 // }
 
 void (async function() {
-  // @ts-expect-error
   if (window?.performance?.now) {
-    // @ts-expect-error
     performance.now = () => window.performance.now();
     return;
   }
@@ -37,36 +35,27 @@ void (async function() {
     performance.now = () => perfHooks.performance?.now();
   } catch (error) { /* ignore, couldn't import high-res timer */ }
 
-  // @ts-expect-error
+  // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+  // @ts-ignore
   window.performance = window?.performance || {};
   if (
-    // @ts-expect-error
     window?.performance?.timing.navigationStart &&
-    // @ts-expect-error
     window?.performance?.mark &&
-    // @ts-expect-error
     window?.performance?.clearMarks &&
-    // @ts-expect-error
     window?.performance?.getEntriesByName
   ) {
     performance.now = function() {
-    // @ts-expect-error
       window?.performance.clearMarks('__PERFORMANCE_NOW__');
-      // @ts-expect-error
       window?.performance.mark('__PERFORMANCE_NOW__');
-      // @ts-expect-error
       return window.performance.getEntriesByName('__PERFORMANCE_NOW__')[0]
         .startTime;
     };
-    // @ts-expect-error
   } else if (!('now' in window.performance)) {
     let nowOffset = Date.now();
 
     if (
-    // @ts-expect-error
       window.performance.timing?.navigationStart
     )
-    // @ts-expect-error
       nowOffset = window.performance.timing.navigationStart;
 
     performance.now = function now() {

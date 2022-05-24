@@ -278,11 +278,3 @@ export type Rule =
     return: Rule
   }
   | Rule[];
-
-export type LogicalRule =
-  | {
-    and: Rule[]
-  }
-  | {
-    or: Rule[]
-  };
