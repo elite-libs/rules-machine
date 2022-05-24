@@ -5,7 +5,7 @@ import {
   Delegate,
   ExpressionThunk, ExpressionValue, isArgumentsArray,
 } from 'expressionparser/dist/ExpressionParser.js';
-import { toArray } from '../utils/toArray';
+import { toArray } from '../utils/utils';
 
 export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();

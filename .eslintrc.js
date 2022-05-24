@@ -2,10 +2,20 @@
  * @type {import('@typescript-eslint/utils').TSESLint.Linter.Config}
  */
 const config = {
+  env: {
+    node: true,
+  },
   extends: 'standard-with-typescript',
-
+  parser: '@typescript-eslint/parser',
+  ignorePatterns: [
+    'node_modules/',
+    'dist/',
+    'coverage/',
+  ],
   parserOptions: {
-    project: './tsconfig.json',
+    // sourceType: 'module',
+    tsconfigRootDir: __dirname,
+    project: ['./tsconfig.json'], // could be tsconfig.json too
   },
   rules: {
     curly: ['error', 'multi-or-nest', 'consistent'],

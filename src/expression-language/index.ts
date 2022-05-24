@@ -1,25 +1,40 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import {
-  ExpressionThunk,
-  TermDelegate,
-  InfixOps,
-  ExpressionValue,
-  ExpressionArray,
-  isArgumentsArray,
   ArgumentsArray,
+  ExpressionArray,
   ExpressionParserOptions,
-  TermTyper,
+  ExpressionThunk,
+  ExpressionValue,
+  InfixOps,
+  isArgumentsArray,
+  TermDelegate,
   TermType,
+  TermTyper,
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
-import { toArray } from 'src/utils/typeHelpers';
-import { num, evalArray, array, evalBool, obj, evalString, unpackArgs, dateParser, char, string, iterable, containsValues, objectContainsValues, omitProperties, filterValues } from './utils';
-// import moduleMethodTracer from './utils/moduleMethodTracer';
+import { toArray } from '../utils/utils';
+import {
+  array,
+  char,
+  containsValues,
+  dateParser,
+  evalArray,
+  evalBool,
+  evalString,
+  filterValues,
+  iterable,
+  num,
+  obj,
+  objectContainsValues,
+  omitProperties,
+  string,
+  unpackArgs,
+} from './utils';
 
+const hasOwnProperty = (obj: object, key: string) => Object.prototype.hasOwnProperty.call(obj, key);
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue
 }
-
-// type PrimativeTypes = string | number | boolean | null | undefined;
 
 export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
 /*
@@ -28,7 +43,6 @@ TODO: Look into additional modifier operators:
 - `**=`
 - `%=`
 - `||=`
-
 */
 
 const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
@@ -65,8 +79,6 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
   '^': (a, b) => Math.pow(num(a()), num(b())),
 });
 
-export const infixOperators = Object.keys(() => '');
-
 type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
@@ -81,12 +93,12 @@ export const ruleExpressionLanguage = function(
 
   const call = (name: string): Callable => {
     const upperName = name.toUpperCase();
-    if (Object.hasOwn(prefixOps, upperName)) {
+    if (hasOwnProperty(prefixOps, upperName)) {
       return (...args) => {
         args.isArgumentsArray = true;
         return prefixOps[upperName](() => args);
       };
-    } else if (Object.hasOwn(infixOps, upperName)) {
+    } else if (hasOwnProperty(infixOps, upperName)) {
       return (...args) => infixOps[upperName](args[0], args[1]);
     } else {
       throw new Error(`Unknown function: ${name}`);
@@ -131,7 +143,7 @@ export const ruleExpressionLanguage = function(
         return new Date(dateParser(dateArg)).toISOString();
 
       // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      return `UnknownDate(${dateArg})`;
+      return `UnknownDate(${dateArg?.valueOf()})`;
     },
     NOT: (arg) => !arg(),
     '!': (arg) => !arg(),
@@ -169,10 +181,8 @@ export const ruleExpressionLanguage = function(
       const thenStatement = arg2;
       const elseStatement = arg3;
 
-      if (condition())
-        return thenStatement();
-      else
-        return elseStatement();
+      if (condition()) return thenStatement();
+      else return elseStatement();
     },
 
     AVERAGE: (arg) => {
@@ -186,7 +196,10 @@ export const ruleExpressionLanguage = function(
     },
 
     SUM: (arg) =>
-      evalArray(arg(), num).reduce((prev: number, curr: ExpressionValue) => prev + num(curr), 0),
+      evalArray(arg(), num).reduce(
+        (prev: number, curr: ExpressionValue) => prev + num(curr),
+        0
+      ),
     CHAR: (arg) => String.fromCharCode(num(arg())),
     CODE: (arg) => char(arg()).charCodeAt(0),
 
@@ -236,10 +249,8 @@ export const ruleExpressionLanguage = function(
       const func = arg1();
       const arr = evalArray(arg2());
       return arr.map((val: ExpressionValue) => {
-        if (typeof func === 'function')
-          return () => func(val);
-        else
-          return call(string(func))(() => val);
+        if (typeof func === 'function') return () => func(val);
+        else return call(string(func))(() => val);
       });
     },
     REDUCE: (arg1, arg2, arg3) => {
@@ -248,18 +259,15 @@ export const ruleExpressionLanguage = function(
       const arr = evalArray(arg3());
       return arr.reduce((prev: ExpressionValue, curr: ExpressionValue) => {
         const args: ExpressionArray<ExpressionThunk> = [() => prev, () => curr];
-        if (typeof func === 'function')
-          return func(...args);
-        else
-          return call(string(func))(...args);
+        if (typeof func === 'function') return func(...args);
+        else return call(string(func))(...args);
       }, start);
     },
     RANGE: (arg1, arg2) => {
       const start = num(arg1());
       const limit = num(arg2());
       const result = [];
-      for (let i = start; i < limit; i++)
-        result.push(i);
+      for (let i = start; i < limit; i++) result.push(i);
 
       return result;
     },
@@ -272,8 +280,7 @@ export const ruleExpressionLanguage = function(
 
       if (arr1.length !== arr2.length)
         throw new Error('ZIP: Arrays are of different lengths');
-      else
-        return arr1.map((v1: ExpressionValue, i: number) => [v1, arr2[i]]);
+      else return arr1.map((v1: ExpressionValue, i: number) => [v1, arr2[i]]);
     },
     UNZIP: (arg1) => {
       const inputArr = evalArray(arg1());
@@ -325,13 +332,10 @@ export const ruleExpressionLanguage = function(
       const result: ExpressionArray<ExpressionValue> = [];
       arr.forEach((val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function')
-          isSatisfied = evalBool(func(val));
-        else
-          isSatisfied = evalBool(call(string(func))(() => val));
+        if (typeof func === 'function') isSatisfied = evalBool(func(val));
+        else isSatisfied = evalBool(call(string(func))(() => val));
 
-        if (isSatisfied)
-          result.push(val);
+        if (isSatisfied) result.push(val);
       });
 
       return result;
@@ -342,17 +346,14 @@ export const ruleExpressionLanguage = function(
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function')
-          isSatisfied = evalBool(func(val));
-        else
-          isSatisfied = evalBool(call(string(func))(() => val));
+        if (typeof func === 'function') isSatisfied = evalBool(func(val));
+        else isSatisfied = evalBool(call(string(func))(() => val));
 
         return isSatisfied;
       };
 
       let i = 0;
-      while (satisfaction(arr[i]) && i < arr.length)
-        i++;
+      while (satisfaction(arr[i]) && i < arr.length) i++;
 
       return arr.slice(0, i);
     },
@@ -362,17 +363,14 @@ export const ruleExpressionLanguage = function(
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function')
-          isSatisfied = evalBool(func(val));
-        else
-          isSatisfied = evalBool(call(string(func))(() => val));
+        if (typeof func === 'function') isSatisfied = evalBool(func(val));
+        else isSatisfied = evalBool(call(string(func))(() => val));
 
         return isSatisfied;
       };
 
       let i = 0;
-      while (satisfaction(arr[i]) && i < arr.length)
-        i++;
+      while (satisfaction(arr[i]) && i < arr.length) i++;
 
       return arr.slice(i);
     },

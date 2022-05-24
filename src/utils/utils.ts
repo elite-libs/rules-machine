@@ -1,4 +1,4 @@
-import { isObject } from 'lodash';
+import isObject from 'lodash/isObject.js';
 
 export function autoDetectType(
   value: any
@@ -34,9 +34,15 @@ export function toBoolean(value: any) {
   return value === 'true' || value === 'yes' || value === 'on';
 }
 
-export const toArray = <TInput>(input: TInput | TInput[]): TInput[] =>
-  Array.isArray(input) && typeof input !== 'string' ? input : [input];
+export function toArray<TInput>(input: TInput | TInput[]): TInput[] {
+  return Array.isArray(input) && typeof input !== 'string' ? input : [input];
+}
 
 export function isArray(input: unknown) {
   return Array.isArray(input) && typeof input !== 'string';
+}
+
+export function arrayify<T>(items: T | T[]): T[] {
+  if (!Array.isArray(items)) return [items];
+  return items;
 }
