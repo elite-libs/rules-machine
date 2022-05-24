@@ -1,4 +1,4 @@
-import { isObject } from 'lodash';
+import isObject from 'lodash/isObject.js';
 import omit from 'lodash/omit.js';
 import ms from 'ms';
 import {
