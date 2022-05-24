@@ -1,8 +1,7 @@
-// import { Rule, ruleFactory } from '../';
 import { ruleFactory } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 
-const omitRuntime = ({ runtime, ...keys }: any) => keys;
+const omitRuntime = ({ runTime, startTime, ...keys }: any) => keys;
 
 describe('Assignment Operators', () => {
   test('should be able to assign a value to a variable', () => {
@@ -27,7 +26,7 @@ describe('Logical', () => {
           { if: 'price >= 100', then: 'discount = 20' },
           { return: 'discount' },
         ],
-        { name: 'calculateDiscount', traceResults: true }
+        { trace: true }
       );
 
       const input = { price: 100 };
@@ -41,7 +40,7 @@ describe('Logical', () => {
     test("can process omitted 'else' rules", () => {
       const rulesFn = ruleFactory(
         [{ if: 'price >= 100', then: 'discount = 20' }, { return: 'discount' }],
-        { name: 'calculateDiscount', traceResults: true }
+        { trace: true }
       );
 
       const input = { price: 10 };
@@ -58,7 +57,7 @@ describe('Logical', () => {
           { if: 'user.employee == true', then: 'discount = 15' },
           { return: 'discount' },
         ],
-        { name: 'calculateDiscount', traceResults: true }
+        { trace: true }
       );
       const result = rulesFn({
         user: {
@@ -87,7 +86,7 @@ describe('Logical', () => {
           { if: 'price >= 100', then: 'discount = 20' },
           { return: 'discount' },
         ],
-        { name: 'calculateDiscount', traceResults: true }
+        { trace: true }
       );
       const input = { price: 35 };
       const result = rulesFn(input);
@@ -107,7 +106,7 @@ describe('Logical', () => {
           },
           { return: 'discount' },
         ],
-        { name: 'calculateDiscount', traceResults: true }
+        { trace: true }
       );
       const input = { price: 35, user: { isAdmin: true } };
       const result = rulesFn(input);
@@ -129,7 +128,7 @@ describe('Logical', () => {
           },
           { return: 'discount' },
         ],
-        { name: 'calculateDiscount', traceResults: true }
+        { trace: true }
       );
       const input = { price: 90, user: { isAdmin: true } };
       const result = rulesFn(input);
@@ -157,7 +156,7 @@ describe('Custom Functions', () => {
         { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },
         { return: 'inTenMinutes' },
       ],
-      { name: 'dateMath', traceResults: false }
+      { trace: false }
     );
 
     const input = { addToDate: '10m' };
@@ -173,7 +172,7 @@ describe('Custom Functions', () => {
         'availableCities = FILTER_VALUES(["London", "Milan"], cities)',
         { return: 'availableCities' },
       ],
-      { name: 'trace', traceResults: true }
+      { trace: true }
     );
 
     const input = {
@@ -188,8 +187,7 @@ describe('Custom Functions', () => {
 
   test('can use CONTAINS array function', () => {
     const rulesFn = ruleFactory(['hasLondon = CONTAINS("London", cities)'], {
-      name: 'trace',
-      traceResults: true,
+      trace: true,
     });
 
     const input = {
@@ -260,7 +258,7 @@ describe('Nested Rule Structures', () => {
         { if: 'price >= 100', then: 'discount = 20 * 4' },
         { return: 'discount' },
       ],
-      { name: 'calculateDiscount', traceResults: true }
+      { trace: true }
     );
 
     const input = { price: 100 };
@@ -277,8 +275,7 @@ describe('can use functional object helpers', () => {
     const rulesFn = ruleFactory(
       ['hasLondon = OBJECT_CONTAINS("London", cities)'],
       {
-        name: 'trace',
-        traceResults: true,
+        trace: true,
       }
     );
 
@@ -302,8 +299,7 @@ describe('can use functional object helpers', () => {
         { return: 'cities' },
       ],
       {
-        name: 'trace',
-        traceResults: true,
+        trace: true,
       }
     );
 

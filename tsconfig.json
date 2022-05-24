@@ -14,20 +14,20 @@
     "forceConsistentCasingInFileNames": true,
     // "isolatedModules": true,
     // "jsx": "preserve",
-    "lib": ["esnext", "DOM"],
-    "module": "ES2015",
+    // "lib": ["esnext"],
+    "module": "es2020",
     "moduleResolution": "node",
     // "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "rootDir": "src",
+    "rootDir": "./",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2019",
     "useUnknownInCatchVariables": false
   },
-  "include": ["**/*.ts"],
-  "exclude": ["**/node_modules", "**/.*/", "**/dist", "*.config.ts"]
+  "include": ["**/*.ts", "./.*.js"],
+  "exclude": ["**/node_modules", "__snapshots__", "**/dist"]
 }

@@ -1,90 +1,94 @@
 // import debug from 'debug';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
-import { isBoolean, isNumber, autoDetectType } from './utils';
-import {
-  AssignmentOperators,
-  ConditionalOperators,
-  ModifierOperators,
-} from './operators';
+import { isBoolean, isNumber, autoDetectType, arrayify } from './utils/utils';
 import performance from './utils/performance';
 import {
   assignmentOperators,
   ruleExpressionLanguage,
-} from './rule-expression-language';
+} from './expression-language';
 import { init } from 'expressionparser';
-import { escapeRegExp } from 'lodash';
+import { ExpressionValue } from 'expressionparser/dist/ExpressionParser';
 
 const trailingQuotes = /^('|").*('|")$/g;
-const whitespacePattern = /\s+/g;
 
-type RuleMachineOptions = {
-  name?: string;
-  traceResults?: boolean;
-  ignoreMissingKeys?: boolean;
-};
+const oneify = <TList>(value?: TList[] | TList) => value != null && Array.isArray(value) && value.length === 1 ? value[0] : value;
 
-type RulesTraceResults<
-  TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
-  } = any
-> = {
-  trace: RuleTrace[];
-  input: TInput;
-  returnValue: any;
-  lastValue: any;
+interface RuleMachineOptions {
+  trace?: boolean
+  ignoreMissingKeys?: boolean
+}
+
+interface TraceRow {
+  startTime?: number
+  runTime?: number
+
+  operation: string
+  rule?: Rule
+  result?: any
+  stepRow?: number
+  stepCount?: number
+  lhs?: string
+  value?: ExpressionValue
+  error?: any
 };
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
+    [k: string]: string | boolean | number | null | undefined | TInput
   } = any
 >(
   rules: Rule,
   options: RuleMachineOptions = {
-    name: 'rules.unnamed',
-    traceResults: false,
+    trace: false,
     ignoreMissingKeys: true,
   }
 ) {
-  if (typeof options === 'string') {
+  if (typeof options === 'string')
     options = { name: options } as RuleMachineOptions;
-  }
-  let {
-    name = 'rules.unnamed',
-    traceResults,
+
+  const {
+    trace,
     ignoreMissingKeys = true,
   } = options;
   // Validate, parse & load rules
   // Then return a function that takes an input object and returns a RuleTrace[]
   return function executeRulePipeline(input: TInput = {} as TInput) {
-    const trace: RuleTrace[] = [];
-    const traceSimple: any[] = [];
-    // input = cloneDeep(input);
+    const traceSimple: TraceRow[] = [];
+
+    function logTrace({ operation, rule, result, ...args }: TraceRow) {
+      if (trace) traceSimple.push({ operation, rule: oneify(rule), result: oneify(result), stepCount, stepRow, ...args });
+    }
+
     let stepRow = 0;
     let stepCount = 0;
     const results = {
-      trace,
       input,
+      trace: traceSimple,
       returnValue: undefined as any,
       lastValue: undefined as any,
     };
     const startTime = performance.now();
+    if (trace) logTrace({ operation: 'begin', startTime });
 
     const parser = init(ruleExpressionLanguage, (term: string) => {
       if (typeof term === 'string') {
-        const result =
-          extractValueOrLiteral(
-            input,
-            term,
-            stepRow,
-            stepCount,
-            ignoreMissingKeys
-          ) || get(input, term, undefined as any);
-        // console.log(`TERM: ${term} => ${result}`);
-        return result;
-        // return 42;
+        try {
+          const result =
+            extractValueOrLiteral(
+              input,
+              term,
+              stepRow,
+              stepCount,
+              ignoreMissingKeys
+            ) ?? get(input, term, undefined as any);
+          // console.log(`TERM: ${term} => ${result}`);
+          return result;
+        } catch (error) {
+          logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
+        }
       } else {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid term: ${term}`);
       }
     });
@@ -93,31 +97,33 @@ export function ruleFactory<
 
     for (const rule of rules) {
       if (
-        typeof rule === 'string' ||
-        (Array.isArray(rule) && typeof rule[0] === 'string')
-      ) {
-        if (typeof rule === 'string') {
-          results.lastValue = evaluateRule({ stepRow, input, rule });
-        } else {
-          results.lastValue = rule.map((rule) =>
-            evaluateRule({ stepRow, input, rule })
-          );
-        }
+        typeof rule === 'string') {
+        results.lastValue = evaluateRule({ stepRow, input, rule });
+        logTrace({ operation: 'ruleString', rule: rule, result: results.lastValue, stepRow });
+      } else if (Array.isArray(rule) && typeof rule[0] === 'string') {
+        results.lastValue = rule.map((rule) =>
+          evaluateRule({ stepRow, input, rule })
+        );
+        logTrace({ operation: 'ruleString[]', rule: rule, result: results.lastValue, stepRow });
       } else if ('if' in rule) {
         // NOTE: Add || and && operators here.
-        let conditionResult: boolean | undefined = undefined;
+        let conditionResult: boolean | undefined;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
           const results = and.map((rule) =>
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.every((result) => result);
+          logTrace({ operation: 'if.and', rule: and, result: conditionResult, stepRow });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = rule.if.or;
           const results = arrayify(or).map((rule) =>
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.some((result) => result);
+          logTrace({ operation: 'if.or', rule: or, result: conditionResult, stepRow });
+        } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
+          throw new Error('The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.');
         } else if (typeof rule.if === 'string') {
           conditionResult = Boolean(
             evaluateRule({
@@ -126,6 +132,7 @@ export function ruleFactory<
               rule: rule.if,
             })
           );
+          logTrace({ operation: 'if', rule: rule.if, result: conditionResult, stepRow });
         }
         if (
           conditionResult &&
@@ -136,6 +143,7 @@ export function ruleFactory<
             input,
             rule: rule.then,
           });
+          logTrace({ operation: 'if.then', rule: rule.then, result: conditionResult, stepRow });
         } else if (
           !conditionResult &&
           (typeof rule.else === 'string' || Array.isArray(rule.else))
@@ -145,9 +153,7 @@ export function ruleFactory<
             input,
             rule: rule.else,
           });
-        } else {
-          // console.error('Rule "' + JSON.stringify(rule) + '" has no "then" or "else"');
-          // throw Error(`Rule ${name} has an invalid if/else rule.`);
+          logTrace({ operation: 'if.else', rule: rule.else, result: conditionResult, stepRow });
         }
       } else if ('return' in rule) {
         const returnResult = evaluateRule({
@@ -157,14 +163,18 @@ export function ruleFactory<
           ignoreMissingKeys: true,
         });
         results.returnValue = returnResult;
+        logTrace({ operation: 'return', rule: rule.return, result: returnResult, stepRow });
+        break;
       }
       stepRow++;
     }
-    if (traceResults) {
+
+    if (trace) logTrace({ operation: 'complete', runTime: performance.now() - startTime, stepCount, stepRow });
+
+    if (trace)
       return results;
-    } else {
+    else
       return results.returnValue || results.lastValue;
-    }
 
     function evaluateRule({
       stepRow,
@@ -172,10 +182,10 @@ export function ruleFactory<
       rule,
       ignoreMissingKeys = false,
     }: {
-      stepRow: number;
-      input: TInput;
-      rule: string | string[] | Rule;
-      ignoreMissingKeys?: boolean;
+      stepRow: number
+      input: TInput
+      rule: string | string[] | Rule
+      ignoreMissingKeys?: boolean
     }):
       | string
       | boolean
@@ -184,10 +194,11 @@ export function ruleFactory<
       | undefined
       | {}
       | Array<string | boolean | number | null | undefined> {
-      if (Array.isArray(rule) && typeof rule[0] === 'string')
+      if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
           evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
         );
+      }
       if (typeof rule !== 'string')
         throw new Error('Nested rules not yet implemented.');
 
@@ -197,189 +208,35 @@ export function ruleFactory<
         const matchedOperator = assignmentOperators.find((op) =>
           rule.includes(` ${op} `)
         );
-        // const operatorPattern = matchedOperator ? new RegExp(escapeRegExp(` ${matchedOperator} `)) : / = /;
 
         if (matchedOperator) {
-          const [lhs, rhs] = rule
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const [lhs, _] = rule
             .split(matchedOperator, 2)
             .map((s) => s.trim());
           const value = parser.expressionToValue(rule);
           const result = set(input, lhs, value);
           results.lastValue = value;
-          traceSimple.push({ result, lhs, value });
+          logTrace({ operation: 'evalRule', result, rule, lhs, value });
           return input as any; // value???
         } else {
           const result = parser.expressionToValue(rule) as any;
-          traceSimple.push({ result });
+          logTrace({ operation: 'expression', result, rule });
           results.lastValue = result;
           return result;
         }
       } catch (e) {
-        traceSimple.push({ error: e.message });
+        logTrace({ operation: 'error', error: e.message });
         console.error('PARSER FAIL:', e);
         throw e;
       }
-
-      // console.log('parser.rule:', rule, parser.expressionToValue(rule));
-
-      // const tokens = rule.split(whitespacePattern);
-      // // TODO: Change to split on operator. 1 at a time
-      // let [leftSide, operator, ...rightSideItems] = tokens;
-      // let rightSide = rightSideItems.join(' '); // Warning: This may be a string with quotes.
-      // let rightSideParsed: any = undefined;
-
-      // if (tokens.length >= 2) {
-      //   // To support math expressions, check right-side
-      //   // rightSideParsed = whitespacePattern.test(rightSide)
-      //   //   ? parser.expressionToValue(rightSide)
-      //   //   : extractValueOrLiteral(input, rightSide, stepRow, stepCount);
-      //   rightSideParsed = parser.expressionToValue(rightSide);
-      // }
-      // if (tokens.length === 1) {
-      //   // TODO: Convert to new parser here!?
-      //   let result = undefined;
-      //   try {
-      //     result = extractValueOrLiteral(
-      //       input,
-      //       tokens[0],
-      //       stepRow,
-      //       stepCount,
-      //       ignoreMissingKeys
-      //     );
-      //   } catch (error) {
-      //     result = parser.expressionToValue(rule);
-      //   }
-      //   results.lastValue = result;
-
-      //   return result as any;
-      // }
-      // if (!operator || !leftSide || !rightSide)
-      //   throw Error(`Rule ${name} has an invalid rule. 3 parts required.`);
-
-      // let leftSideValue = extractValueOrLiteral(
-      //   input,
-      //   leftSide,
-      //   stepRow,
-      //   stepCount,
-      //   true
-      // );
-      // let rightSideValue = rightSideParsed; // extractValueOrLiteral(input, rightSide, stepRow, stepCount);
-      // if (operator in ConditionalOperators) {
-      //   let result = ConditionalOperators[
-      //     operator as keyof typeof ConditionalOperators
-      //   ](leftSideValue, rightSideValue);
-      //   logTrace(result);
-      //   results.lastValue = result;
-      //   return result;
-      // } else if (operator in ModifierOperators) {
-      //   leftSideValue = extractValueOrNumber(input, leftSide, true);
-      //   rightSideValue = extractValueOrNumber(input, rightSide);
-      //   let result = ModifierOperators[
-      //     operator as keyof typeof ModifierOperators
-      //   ](leftSideValue, rightSideValue);
-      //   logTrace(result);
-      //   results.lastValue = result;
-      //   return result;
-      // } else if (operator in AssignmentOperators) {
-      //   leftSideValue = extractValueOrNumber(input, leftSide, true);
-      //   // rightSideValue = extractValueOrNumber(input, rightSide);
-      //   rightSideValue = rightSideValue as number;
-      //   switch (operator) {
-      //     case '+=':
-      //       leftSideValue += rightSideValue;
-      //       break;
-      //     case '-=':
-      //       leftSideValue -= rightSideValue;
-      //       break;
-      //     case '*=':
-      //       leftSideValue *= rightSideValue;
-      //       break;
-      //     case '/=':
-      //       leftSideValue /= rightSideValue;
-      //       break;
-      //     case '**=':
-      //       leftSideValue **= rightSideValue;
-      //       break;
-      //     case '%=':
-      //       leftSideValue %= rightSideValue;
-      //       break;
-      //     case '||=':
-      //       leftSideValue ||= rightSideValue;
-      //       break;
-      //     case '??=':
-      //       leftSideValue ??= rightSideValue;
-      //       break;
-      //     default:
-      //       throw Error(`Rule ${name} has an invalid assignment operator.`);
-      //   }
-      //   let result = set(input, leftSide, leftSideValue);
-
-      //   logTrace(result);
-      //   results.lastValue = leftSideValue;
-      //   return leftSideValue;
-      // } else if (operator === '=') {
-      //   leftSideValue = leftSide; // extractValueOrLiteral(input, leftSide, stepRow, stepCount);
-      //   // TODO: Recursively evaluate rightSide/tokens if it contains more tokens to process.
-      //   // rightSideValue = extractValueOrLiteral(input, rightSide, stepRow, stepCount);
-      //   if (typeof leftSideValue !== 'string')
-      //     throw Error(
-      //       `Rule ${name} has an invalid rule. Left side must be a string.`
-      //     );
-      //   let result = set(input, leftSideValue, rightSideValue);
-      //   logTrace(result);
-      //   results.lastValue = leftSideValue;
-      //   return leftSideValue;
-      // }
-      // function logTrace(result: any) {
-      //   trace.push({
-      //     name: `${name}`,
-      //     operator,
-      //     runtime: performance.now() - startTime,
-      //     stepRow,
-      //     stepCount,
-      //     state: JSON.stringify(input),
-      //     result,
-      //     rule: typeof rule === 'string' ? rule : JSON.stringify(rule),
-      //     parseResult: {
-      //       lhs: leftSide,
-      //       rhs: rightSide,
-      //       rhsv: rightSideValue,
-      //       lhsv: leftSideValue,
-      //     },
-      //   });
-      // }
-      // return false;
-    }
-
-    function extractValueOrNumber(
-      input: TInput,
-      token: string,
-      ignoreMissingKeys?: boolean
-    ): number {
-      const val = extractValueOrLiteral(
-        input,
-        token,
-        stepRow,
-        stepCount,
-        ignoreMissingKeys
-      );
-      if (typeof val === 'number') return val;
-      return parseFloat(`${val}`);
     }
   };
 }
 
-function arrayify<T>(items: T | T[]): T[] {
-  if (!Array.isArray(items)) return [items];
-  return items;
-}
-/*
-input['DATEISO("10m")']
-*/
-
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
+    [k: string]: string | boolean | number | null | undefined | TInput
   } = any
 >(
   input: TInput,
@@ -388,62 +245,36 @@ export function extractValueOrLiteral<
   stepCount?: number,
   ignoreMissingKeys?: boolean
 ) {
-  // if (input[token]) return autoDetectType(input[token]);
-  if (get(input, token)) {
-    return autoDetectType(get(input, token));
-  }
+  const value = get(input, token);
+  if (value)
+    return autoDetectType(value);
 
   if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
   if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
 
   // throw if we got an undefined key
-  if (!ignoreMissingKeys && token.length > 0) {
+  if (!ignoreMissingKeys && token.length > 0)
     throw new Error(`Undefined key: ${token}`);
-  }
-  if (ignoreMissingKeys == true) return undefined;
-  // @ts-ignore
-  console.warn(
-    `Unrecognized token in rule expression (${stepRow}, ${stepCount}):`,
-    token
-  );
+
+  if (ignoreMissingKeys) return undefined;
+  throw Error(`Unrecognized token in rule expression ${token} (${stepRow}, ${stepCount})`);
   // if we have a string key and don't find it in the input, assume it's undefined.
-  return undefined;
 }
 
 export type Rule =
   | string
   | {
-      if: Rule;
-      then: Rule;
-      else?: Rule;
-    }
+    if: Rule
+    then: Rule
+    else?: Rule
+  }
   | {
-      and: Rule[];
-    }
+    and: Rule[]
+  }
   | {
-      or: Rule[];
-    }
+    or: Rule[]
+  }
   | {
-      return: Rule;
-    }
+    return: Rule
+  }
   | Rule[];
-
-export type LogicalRule =
-  | {
-      and: Rule[];
-    }
-  | {
-      or: Rule[];
-    };
-
-export interface RuleTrace {
-  name: string;
-  rule: string;
-  operator: string;
-  stepRow: number;
-  stepCount: number;
-  runtime: number;
-  parseResult: any;
-  state?: string;
-  result?: any;
-}

@@ -24,47 +24,44 @@ const performance = {
 //   };
 // }
 
-// (async function () {
-//   // @ts-ignore
-//   if (window?.performance?.now) {
-//     performance.now = () => window.performance.now();
-//     return;
-//   }
-//   // Check for node environment
-//   try {
-//     const perf_hooks = await import('perf_hooks');
-//     performance.now = () => perf_hooks.performance.now();
-//   } catch (error) {/* ignore, couldn't import high-res timer */}
+void (async function() {
+  if (window?.performance?.now) {
+    performance.now = () => window.performance.now();
+    return;
+  }
+  // Check for node environment
+  try {
+    const perfHooks = await import('perf_hooks');
+    performance.now = () => perfHooks.performance?.now();
+  } catch (error) { /* ignore, couldn't import high-res timer */ }
 
-//   window.performance = window.performance || {};
+  // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+  // @ts-ignore
+  window.performance = window?.performance || {};
+  if (
+    window?.performance?.timing.navigationStart &&
+    window?.performance?.mark &&
+    window?.performance?.clearMarks &&
+    window?.performance?.getEntriesByName
+  ) {
+    performance.now = function() {
+      window?.performance.clearMarks('__PERFORMANCE_NOW__');
+      window?.performance.mark('__PERFORMANCE_NOW__');
+      return window.performance.getEntriesByName('__PERFORMANCE_NOW__')[0]
+        .startTime;
+    };
+  } else if (!('now' in window.performance)) {
+    let nowOffset = Date.now();
 
-//   if (
-//     window.performance.timing &&
-//     window.performance.timing.navigationStart &&
-//     window.performance.mark &&
-//     window.performance.clearMarks &&
-//     window.performance.getEntriesByName
-//   ) {
-//     performance.now = function () {
-//       window.performance.clearMarks('__PERFORMANCE_NOW__');
-//       window.performance.mark('__PERFORMANCE_NOW__');
-//       return window.performance.getEntriesByName('__PERFORMANCE_NOW__')[0]
-//         .startTime;
-//     };
-//   } else if ('now' in window.performance === false) {
-//     var nowOffset = Date.now();
+    if (
+      window.performance.timing?.navigationStart
+    )
+      nowOffset = window.performance.timing.navigationStart;
 
-//     if (
-//       window.performance.timing &&
-//       window.performance.timing.navigationStart
-//     ) {
-//       nowOffset = window.performance.timing.navigationStart;
-//     }
-
-//     performance.now = function now() {
-//       return Date.now() - nowOffset;
-//     };
-//   }
-// })();
+    performance.now = function now() {
+      return Date.now() - nowOffset;
+    };
+  }
+})();
 
 export default performance;
