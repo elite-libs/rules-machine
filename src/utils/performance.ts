@@ -24,47 +24,55 @@ const performance = {
 //   };
 // }
 
-// (async function () {
-//   // @ts-ignore
-//   if (window?.performance?.now) {
-//     performance.now = () => window.performance.now();
-//     return;
-//   }
-//   // Check for node environment
-//   try {
-//     const perf_hooks = await import('perf_hooks');
-//     performance.now = () => perf_hooks.performance.now();
-//   } catch (error) {/* ignore, couldn't import high-res timer */}
+void (async function() {
+  // @ts-expect-error
+  if (window?.performance?.now) {
+    // @ts-expect-error
+    performance.now = () => window.performance.now();
+    return;
+  }
+  // Check for node environment
+  try {
+    const perfHooks = await import('perf_hooks');
+    performance.now = () => perfHooks.performance?.now();
+  } catch (error) { /* ignore, couldn't import high-res timer */ }
 
-//   window.performance = window.performance || {};
+  // @ts-expect-error
+  window.performance = window?.performance || {};
+  if (
+    // @ts-expect-error
+    window?.performance?.timing.navigationStart &&
+    // @ts-expect-error
+    window?.performance?.mark &&
+    // @ts-expect-error
+    window?.performance?.clearMarks &&
+    // @ts-expect-error
+    window?.performance?.getEntriesByName
+  ) {
+    performance.now = function() {
+    // @ts-expect-error
+      window?.performance.clearMarks('__PERFORMANCE_NOW__');
+      // @ts-expect-error
+      window?.performance.mark('__PERFORMANCE_NOW__');
+      // @ts-expect-error
+      return window.performance.getEntriesByName('__PERFORMANCE_NOW__')[0]
+        .startTime;
+    };
+    // @ts-expect-error
+  } else if (!('now' in window.performance)) {
+    let nowOffset = Date.now();
 
-//   if (
-//     window.performance.timing &&
-//     window.performance.timing.navigationStart &&
-//     window.performance.mark &&
-//     window.performance.clearMarks &&
-//     window.performance.getEntriesByName
-//   ) {
-//     performance.now = function () {
-//       window.performance.clearMarks('__PERFORMANCE_NOW__');
-//       window.performance.mark('__PERFORMANCE_NOW__');
-//       return window.performance.getEntriesByName('__PERFORMANCE_NOW__')[0]
-//         .startTime;
-//     };
-//   } else if ('now' in window.performance === false) {
-//     var nowOffset = Date.now();
+    if (
+    // @ts-expect-error
+      window.performance.timing?.navigationStart
+    )
+    // @ts-expect-error
+      nowOffset = window.performance.timing.navigationStart;
 
-//     if (
-//       window.performance.timing &&
-//       window.performance.timing.navigationStart
-//     ) {
-//       nowOffset = window.performance.timing.navigationStart;
-//     }
-
-//     performance.now = function now() {
-//       return Date.now() - nowOffset;
-//     };
-//   }
-// })();
+    performance.now = function now() {
+      return Date.now() - nowOffset;
+    };
+  }
+})();
 
 export default performance;

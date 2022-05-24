@@ -286,15 +286,3 @@ export type LogicalRule =
   | {
     or: Rule[]
   };
-
-export interface RuleTrace {
-  name: string
-  rule: string
-  operator: string
-  stepRow: number
-  stepCount: number
-  runtime: number
-  parseResult: any
-  state?: string
-  result?: any
-}
