@@ -1,4 +1,8 @@
+/* eslint-disable no-var */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 'use strict';
+
+var window: any = typeof window !== 'undefined' ? window : {};
 
 // @license http://opensource.org/licenses/MIT
 // copyright Paul Irish 2015
