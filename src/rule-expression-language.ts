@@ -11,13 +11,68 @@ import {
   TermTyper,
   TermType,
 } from 'expressionparser/dist/ExpressionParser.js';
+import { isObject } from 'lodash';
 import get from 'lodash/get.js';
+import omit from 'lodash/omit.js';
+import set from 'lodash/set.js';
+import isNumberLodash from 'lodash/isNumber.js';
 import ms from 'ms';
+import { isNumber } from './utils/isNumber';
 import { toArray } from './utils/toArray';
+import moduleMethodTracer from './utils/moduleMethodTracer';
 
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
+
+export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
+// TODO: , '-=', '*=', '/=', '%='];
+/*
+'+='
+'-='
+'*='
+'/='
+'??='
+'**='
+'%='
+'||='
+*/
+
+const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
+  '+': (a, b) => num(a()) + num(b()),
+  '-': (a, b) => num(a()) - num(b()),
+  '*': (a, b) => num(a()) * num(b()),
+  '/': (a, b) => num(a()) / num(b()),
+  ',': (a, b): ArgumentsArray => {
+    const aVal = a();
+    const aArr: ExpressionArray<ExpressionValue> = isArgumentsArray(aVal)
+      ? aVal
+      : [() => aVal];
+    const args: ExpressionArray<ExpressionValue> = aArr.concat([b]);
+    args.isArgumentsArray = true;
+    return args as ArgumentsArray;
+  },
+  '%': (a, b) => num(a()) % num(b()),
+  '=': (_, b) => b(),
+  '+=': (a, b) => num(a()) + num(b()),
+  '-=': (a, b) => num(a()) - num(b()),
+  '*=': (a, b) => num(a()) * num(b()),
+  '/=': (a, b) => num(a()) / num(b()),
+  '??=': (a, b) => a() ?? b(),
+  '==': (a, b) => a() === b(),
+  '!=': (a, b) => a() !== b(),
+  '<>': (a, b) => a() !== b(),
+  '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
+  '>': (a, b) => a() > b(),
+  '<': (a, b) => a() < b(),
+  '>=': (a, b) => a() >= b(),
+  '<=': (a, b) => a() <= b(),
+  AND: (a, b) => a() && b(),
+  OR: (a, b) => a() || b(),
+  '^': (a, b) => Math.pow(num(a()), num(b())),
+});
+
+export const infixOperators = Object.keys(() => '');
 
 const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();
@@ -80,13 +135,8 @@ const bool = (value: ExpressionValue) => {
 const evalBool = (value: ExpressionValue): boolean => {
   let result;
 
-  while (typeof value === 'function' && value.length === 0) {
-    result = value();
-  }
-
-  if (!result) {
-    result = value;
-  }
+  while (typeof value === 'function' && value.length === 0) result = value();
+  if (!result) result = value;
 
   return bool(result);
 };
@@ -166,6 +216,25 @@ const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   return data.some((val) => matches.includes(val));
 };
 
+const objectContainsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+  const matches = toArray(arg1());
+  const data = arg2();
+  return Object.keys(data).some((val) => matches.includes(val));
+};
+
+const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+  const matches = toArray(arg1()) as [];
+  const data = arg2();
+  if (!isObject(data)) {
+    throw new Error(
+      `OMIT expects object for second argument, ${typeof data} ${JSON.stringify(
+        data
+      )}`
+    );
+  }
+  return omit(data, matches);
+};
+
 const iterable = (result: ExpressionValue) => {
   if (!Array.isArray(result) && typeof result !== 'string') {
     throw new Error(
@@ -226,6 +295,9 @@ export const ruleExpressionLanguage = function (
   termTypeDelegate?: TermTyper,
   termSetter?: TermSetterFunction
 ): ExpressionParserOptions {
+  const infixOps = getInfixOps(termDelegate);
+  // const infixOps = moduleMethodTracer(getInfixOps(termDelegate), console.log);
+
   const call = (name: string): Callable => {
     const upperName = name.toUpperCase();
     if (prefixOps.hasOwnProperty(upperName)) {
@@ -238,44 +310,6 @@ export const ruleExpressionLanguage = function (
     } else {
       throw new Error(`Unknown function: ${name}`);
     }
-  };
-
-  const infixOps: InfixOps = {
-    '+': (a, b) => num(a()) + num(b()),
-    '-': (a, b) => num(a()) - num(b()),
-    '*': (a, b) => num(a()) * num(b()),
-    '/': (a, b) => num(a()) / num(b()),
-    ',': (a, b): ArgumentsArray => {
-      const aVal = a();
-      const aArr: ExpressionArray<ExpressionValue> = isArgumentsArray(aVal)
-        ? aVal
-        : [() => aVal];
-      const args: ExpressionArray<ExpressionValue> = aArr.concat([b]);
-      args.isArgumentsArray = true;
-      return args as ArgumentsArray;
-    },
-    '%': (a, b) => num(a()) % num(b()),
-    // "=": (a, b) => {
-    //   const term = a();
-    //   const result = b();
-    //   if (termSetter) {
-    //     termSetter(term, result);
-    //   } else {
-    //     throw Error(``)
-    //   }
-    // },
-    '=': (a, b) => a() === b(),
-    '==': (a, b) => a() === b(),
-    '!=': (a, b) => a() !== b(),
-    '<>': (a, b) => a() !== b(),
-    '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
-    '>': (a, b) => a() > b(),
-    '<': (a, b) => a() < b(),
-    '>=': (a, b) => a() >= b(),
-    '<=': (a, b) => a() <= b(),
-    AND: (a, b) => a() && b(),
-    OR: (a, b) => a() || b(),
-    '^': (a, b) => Math.pow(num(a()), num(b())),
   };
 
   const prefixOps: FunctionOps = {
@@ -586,6 +620,8 @@ export const ruleExpressionLanguage = function (
      */
     CONTAINS: containsValues,
     INCLUDES: containsValues,
+    OBJECT_CONTAINS: objectContainsValues,
+    OMIT: omitProperties,
     /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.
      *
@@ -712,6 +748,7 @@ export const ruleExpressionLanguage = function (
       '[',
       ']',
       '~',
+      '?',
     ],
     AMBIGUOUS: {
       '-': 'NEG',
@@ -726,7 +763,7 @@ export const ruleExpressionLanguage = function (
     termDelegate: function (term: string) {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
-        switch (term) {
+        switch (term.toUpperCase()) {
           case 'E':
             return Math.E;
           case 'LN2':
@@ -769,7 +806,7 @@ export const ruleExpressionLanguage = function (
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {
-        switch (term) {
+        switch (term.toUpperCase()) {
           case 'E':
             return 'number';
           case 'LN2':
