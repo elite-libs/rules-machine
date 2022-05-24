@@ -22,4 +22,5 @@ jobs:
           cache: 'yarn'
       - run: yarn config set workspaces-experimental true
       - run: yarn
+      - run: yarn format
       - run: yarn test
