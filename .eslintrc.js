@@ -8,6 +8,7 @@ const config = {
     project: './tsconfig.json',
   },
   rules: {
+    curly: ['error', 'multi-or-nest', 'consistent'],
     semi: 'off',
     '@typescript-eslint/semi': ['error', 'always'],
     'comma-dangle': [
@@ -39,14 +40,14 @@ const config = {
     // note you must disable the base rule as it can report incorrect errors
     quotes: 'off',
     '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      {
+        checksConditionals: true,
+        checksVoidReturn: true,
+      },
+    ],
   },
-  '@typescript-eslint/no-misused-promises': [
-    'error',
-    {
-      checksConditionals: true,
-      checksVoidReturn: true,
-    },
-  ],
 };
 
 module.exports = config;

@@ -1,5 +1,4 @@
 import {
-  Delegate,
   ExpressionThunk,
   TermDelegate,
   InfixOps,
@@ -11,31 +10,25 @@ import {
   TermTyper,
   TermType,
 } from 'expressionparser/dist/ExpressionParser.js';
-import { isObject } from 'lodash';
 import get from 'lodash/get.js';
-import omit from 'lodash/omit.js';
-import set from 'lodash/set.js';
-import isNumberLodash from 'lodash/isNumber.js';
-import ms from 'ms';
-import { isNumber } from './utils/isNumber';
-import { toArray } from './utils/toArray';
-import moduleMethodTracer from './utils/moduleMethodTracer';
+import { toArray } from 'src/utils/typeHelpers';
+import { num, evalArray, array, evalBool, obj, evalString, unpackArgs, dateParser, char, string, iterable, containsValues, objectContainsValues, omitProperties, filterValues } from './utils';
+// import moduleMethodTracer from './utils/moduleMethodTracer';
 
 export interface FunctionOps {
-  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
+  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue
 }
 
+// type PrimativeTypes = string | number | boolean | null | undefined;
+
 export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
-// TODO: , '-=', '*=', '/=', '%='];
 /*
-'+='
-'-='
-'*='
-'/='
-'??='
-'**='
-'%='
-'||='
+TODO: Look into additional modifier operators:
+
+- `**=`
+- `%=`
+- `||=`
+
 */
 
 const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
@@ -74,223 +67,11 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
 
 export const infixOperators = Object.keys(() => '');
 
-const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
-  const result = expr();
-
-  if (!isArgumentsArray(result)) {
-    if (f.length > 1) {
-      throw new Error(
-        `Too few arguments. Expected ${f.length}, found 1 (${JSON.stringify(
-          result
-        )})`
-      );
-    }
-    return f(() => result);
-  } else if (result.length === f.length || f.length === 0) {
-    return f.apply(null, result);
-  } else {
-    throw new Error(`Incorrect number of arguments. Expected ${f.length}`);
-  }
-};
-
-const num = (result: ExpressionValue) => {
-  if (typeof result !== 'number') {
-    throw new Error(
-      `Expected number, found: ${typeof result} ${JSON.stringify(result)}`
-    );
-  }
-
-  return result;
-};
-
-const array = (result: ExpressionValue) => {
-  if (!Array.isArray(result)) {
-    throw new Error(
-      `Expected array, found: ${typeof result} ${JSON.stringify(result)}`
-    );
-  }
-
-  result = unpackArray([...result]);
-  if (isArgumentsArray(result)) {
-    throw new Error(`Expected array, found: arguments`);
-  }
-
-  return result;
-};
-
-const unpackArray = <TInput extends unknown[]>(
-  thunks: TInput | ExpressionThunk[]
-) => thunks.map((thunk) => (typeof thunk === 'function' ? thunk() : thunk));
-
-const bool = (value: ExpressionValue) => {
-  if (typeof value !== 'boolean') {
-    throw new Error(
-      `Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`
-    );
-  }
-
-  return value;
-};
-
-const evalBool = (value: ExpressionValue): boolean => {
-  let result;
-
-  while (typeof value === 'function' && value.length === 0) result = value();
-  if (!result) result = value;
-
-  return bool(result);
-};
-
-const evalString = (value: ExpressionValue) => {
-  let result;
-  if (typeof value === 'function' && value.length === 0) {
-    result = value();
-  } else {
-    result = value;
-  }
-
-  return string(result);
-};
-
-const evalArray = (
-  arr: ExpressionValue,
-  typeCheck?: (value: ExpressionValue) => ExpressionValue
-) => {
-  return toArray(arr).map((value) => {
-    let result;
-    if (typeof value === 'function' && value.length === 0) {
-      result = value();
-    } else {
-      result = value;
-    }
-
-    if (typeCheck) {
-      try {
-        result = typeCheck(result);
-      } catch (err) {
-        throw new Error(`In array; ${err.message}`);
-      }
-    }
-
-    return result;
-  });
-};
-
-const obj = (obj: ExpressionValue) => {
-  if (typeof obj !== 'object' || obj === null) {
-    throw new Error(
-      `Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`
-    );
-  } else if (Array.isArray(obj)) {
-    throw new Error(`Expected object, found array`);
-  }
-
-  return obj;
-};
-
-const isCSV = (s: unknown) =>
-  !!(typeof s != null && typeof s === 'string' && /.+,.+/.test(`${s}`));
-const toCSV = (s: string) => s.split(',');
-
-/**
- *
- * FILTER_VALUES will ONLY INCLUDE values that are in the 1st argument.
- *
- * ```js
- * FILTER_VALUES([1 ,3], [1, 2, 3, 4, 5])
- * //-> [2, 4, 5]
- *
- * FILTER_VALUES(1, [1, 2, 3, 4, 5])
- * //-> [2, 3, 4, 5]
- * ```
- */
-const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
-  const includeValues = toArray(arg1());
-  const data = toArray(arg2());
-  return data.filter((val) => !includeValues.includes(val));
-};
-
-const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
-  const matches = toArray(arg1());
-  const data = evalArray(arg2());
-  return data.some((val) => matches.includes(val));
-};
-
-const objectContainsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
-  const matches = toArray(arg1());
-  const data = arg2();
-  return Object.keys(data).some((val) => matches.includes(val));
-};
-
-const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
-  const matches = toArray(arg1()) as [];
-  const data = arg2();
-  if (!isObject(data)) {
-    throw new Error(
-      `OMIT expects object for second argument, ${typeof data} ${JSON.stringify(
-        data
-      )}`
-    );
-  }
-  return omit(data, matches);
-};
-
-const iterable = (result: ExpressionValue) => {
-  if (!Array.isArray(result) && typeof result !== 'string') {
-    throw new Error(
-      `Expected array or string, found: ${typeof result} ${JSON.stringify(
-        result
-      )}`
-    );
-  }
-
-  return result;
-};
-
-const string = (result: ExpressionValue) => {
-  if (typeof result !== 'string') {
-    throw new Error(
-      `Expected string, found: ${typeof result} ${JSON.stringify(result)}`
-    );
-  }
-
-  return result;
-};
-
-const char = (result: ExpressionValue) => {
-  if (typeof result !== 'string' || result.length !== 1) {
-    throw new Error(
-      `Expected char, found: ${typeof result} ${JSON.stringify(result)}`
-    );
-  }
-
-  return result;
-};
-
-const dateParser = (
-  arg: ExpressionThunk | string | number
-): number | string => {
-  const dateArg = typeof arg === 'function' ? arg() : arg;
-
-  if (typeof dateArg === 'string' && dateArg.length < 6) {
-    // possible date duration expression
-    const duration = ms(dateArg);
-    const d = new Date(Date.now() + duration);
-    // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
-    return d.getTime();
-  }
-  if (typeof dateArg === 'string' || typeof dateArg === 'number') {
-    const d = new Date(dateArg);
-    return d.getTime();
-  }
-  return `UnknownDate(${dateArg})`;
-};
-
 type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
 
-export const ruleExpressionLanguage = function (
+export const ruleExpressionLanguage = function(
   termDelegate: TermDelegate,
   termTypeDelegate?: TermTyper,
   termSetter?: TermSetterFunction
@@ -300,12 +81,12 @@ export const ruleExpressionLanguage = function (
 
   const call = (name: string): Callable => {
     const upperName = name.toUpperCase();
-    if (prefixOps.hasOwnProperty(upperName)) {
+    if (Object.hasOwn(prefixOps, upperName)) {
       return (...args) => {
         args.isArgumentsArray = true;
         return prefixOps[upperName](() => args);
       };
-    } else if (infixOps.hasOwnProperty(upperName)) {
+    } else if (Object.hasOwn(infixOps, upperName)) {
       return (...args) => infixOps[upperName](args[0], args[1]);
     } else {
       throw new Error(`Unknown function: ${name}`);
@@ -321,9 +102,9 @@ export const ruleExpressionLanguage = function (
     MOD: (a, b) => num(a()) % num(b()),
     ISPRIME: (arg) => {
       const val = num(arg());
-      for (let i = 2, s = Math.sqrt(val); i <= s; i++) {
+      for (let i = 2, s = Math.sqrt(val); i <= s; i++)
         if (val % i === 0) return false;
-      }
+
       return val !== 1;
     },
     GCD: (arg1, arg2) => {
@@ -332,7 +113,7 @@ export const ruleExpressionLanguage = function (
       a = Math.abs(a);
       b = Math.abs(b);
       if (b > a) {
-        var temp = a;
+        const temp = a;
         a = b;
         b = temp;
       }
@@ -346,9 +127,10 @@ export const ruleExpressionLanguage = function (
     DATE: dateParser,
     DATEISO: (arg) => {
       const dateArg = arg();
-      if (typeof dateArg === 'string' || typeof dateArg === 'number') {
+      if (typeof dateArg === 'string' || typeof dateArg === 'number')
         return new Date(dateParser(dateArg)).toISOString();
-      }
+
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       return `UnknownDate(${dateArg})`;
     },
     NOT: (arg) => !arg(),
@@ -387,31 +169,30 @@ export const ruleExpressionLanguage = function (
       const thenStatement = arg2;
       const elseStatement = arg3;
 
-      if (condition()) {
+      if (condition())
         return thenStatement();
-      } else {
+      else
         return elseStatement();
-      }
     },
 
     AVERAGE: (arg) => {
       const arr = evalArray(arg());
 
       const sum = arr.reduce(
-        (prev: number, curr): number => prev + num(curr),
+        (prev: number, curr: ExpressionValue): number => prev + num(curr),
         0
       );
       return num(sum) / arr.length;
     },
 
     SUM: (arg) =>
-      evalArray(arg(), num).reduce((prev: number, curr) => prev + num(curr), 0),
+      evalArray(arg(), num).reduce((prev: number, curr: ExpressionValue) => prev + num(curr), 0),
     CHAR: (arg) => String.fromCharCode(num(arg())),
     CODE: (arg) => char(arg()).charCodeAt(0),
 
-    DEC2BIN: (arg) => arg().toString(2),
-    DEC2HEX: (arg) => arg().toString(16),
-    DEC2STR: (arg) => arg().toString(10),
+    DEC2BIN: (arg) => Number.parseInt(string(arg())).toString(2),
+    DEC2HEX: (arg) => Number.parseInt(string(arg())).toString(16),
+    DEC2STR: (arg) => Number.parseInt(string(arg())).toString(10),
     BIN2DEC: (arg) => Number.parseInt(string(arg()), 2),
     HEX2DEC: (arg) => Number.parseInt(string(arg()), 16),
     STR2DEC: (arg) => Number.parseInt(string(arg()), 10),
@@ -420,17 +201,17 @@ export const ruleExpressionLanguage = function (
 
     MIN: (arg) =>
       evalArray(arg()).reduce(
-        (prev: number, curr) => Math.min(prev, num(curr)),
+        (prev: number, curr: ExpressionValue) => Math.min(prev, num(curr)),
         Number.POSITIVE_INFINITY
       ),
     MAX: (arg) =>
       evalArray(arg()).reduce(
-        (prev: number, curr) => Math.max(prev, num(curr)),
+        (prev: number, curr: ExpressionValue) => Math.max(prev, num(curr)),
         Number.NEGATIVE_INFINITY
       ),
     SORT: (arg) => {
       const arr = array(arg()).slice();
-      arr.sort();
+      arr.sort((a, b) => num(a) - num(b));
       return arr;
     },
     REVERSE: (arg) => {
@@ -454,34 +235,32 @@ export const ruleExpressionLanguage = function (
     MAP: (arg1, arg2) => {
       const func = arg1();
       const arr = evalArray(arg2());
-      return arr.map((val) => {
-        if (typeof func === 'function') {
+      return arr.map((val: ExpressionValue) => {
+        if (typeof func === 'function')
           return () => func(val);
-        } else {
+        else
           return call(string(func))(() => val);
-        }
       });
     },
     REDUCE: (arg1, arg2, arg3) => {
       const func = arg1();
       const start = arg2();
       const arr = evalArray(arg3());
-      return arr.reduce((prev, curr) => {
+      return arr.reduce((prev: ExpressionValue, curr: ExpressionValue) => {
         const args: ExpressionArray<ExpressionThunk> = [() => prev, () => curr];
-        if (typeof func === 'function') {
+        if (typeof func === 'function')
           return func(...args);
-        } else {
+        else
           return call(string(func))(...args);
-        }
       }, start);
     },
     RANGE: (arg1, arg2) => {
       const start = num(arg1());
       const limit = num(arg2());
       const result = [];
-      for (let i = start; i < limit; i++) {
+      for (let i = start; i < limit; i++)
         result.push(i);
-      }
+
       return result;
     },
     UPPER: (arg) => string(arg()).toUpperCase(),
@@ -491,16 +270,15 @@ export const ruleExpressionLanguage = function (
       const arr1 = evalArray(arg1());
       const arr2 = evalArray(arg2());
 
-      if (arr1.length !== arr2.length) {
+      if (arr1.length !== arr2.length)
         throw new Error('ZIP: Arrays are of different lengths');
-      } else {
-        return arr1.map((v1, i) => [v1, arr2[i]]);
-      }
+      else
+        return arr1.map((v1: ExpressionValue, i: number) => [v1, arr2[i]]);
     },
     UNZIP: (arg1) => {
       const inputArr = evalArray(arg1());
-      const arr1 = inputArr.map((item) => array(item)[0]);
-      const arr2 = inputArr.map((item) => array(item)[1]);
+      const arr1 = inputArr.map((item: ExpressionValue) => array(item)[0]);
+      const arr2 = inputArr.map((item: ExpressionValue) => array(item)[1]);
       return [arr1, arr2];
     },
     TAKE: (arg1, arg2) => {
@@ -545,17 +323,15 @@ export const ruleExpressionLanguage = function (
       const func = arg1();
       const arr = evalArray(arg2());
       const result: ExpressionArray<ExpressionValue> = [];
-      arr.forEach((val) => {
+      arr.forEach((val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function') {
+        if (typeof func === 'function')
           isSatisfied = evalBool(func(val));
-        } else {
+        else
           isSatisfied = evalBool(call(string(func))(() => val));
-        }
 
-        if (isSatisfied) {
+        if (isSatisfied)
           result.push(val);
-        }
       });
 
       return result;
@@ -566,19 +342,17 @@ export const ruleExpressionLanguage = function (
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function') {
+        if (typeof func === 'function')
           isSatisfied = evalBool(func(val));
-        } else {
+        else
           isSatisfied = evalBool(call(string(func))(() => val));
-        }
 
         return isSatisfied;
       };
 
       let i = 0;
-      while (satisfaction(arr[i]) && i < arr.length) {
+      while (satisfaction(arr[i]) && i < arr.length)
         i++;
-      }
 
       return arr.slice(0, i);
     },
@@ -588,19 +362,17 @@ export const ruleExpressionLanguage = function (
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function') {
+        if (typeof func === 'function')
           isSatisfied = evalBool(func(val));
-        } else {
+        else
           isSatisfied = evalBool(call(string(func))(() => val));
-        }
 
         return isSatisfied;
       };
 
       let i = 0;
-      while (satisfaction(arr[i]) && i < arr.length) {
+      while (satisfaction(arr[i]) && i < arr.length)
         i++;
-      }
 
       return arr.slice(i);
     },
@@ -640,7 +412,7 @@ export const ruleExpressionLanguage = function (
       const removeValues = toArray(arg1());
       const data = evalArray(arg2());
 
-      return data.filter((val) => removeValues.includes(val) === false);
+      return data.filter((val: ExpressionValue) => !removeValues.includes(val));
     },
     FILTER_VALUES: filterValues,
     INCLUDES_VALUES: filterValues,
@@ -662,7 +434,7 @@ export const ruleExpressionLanguage = function (
       const arr2 = evalArray(arg2());
       const result: { [key: string]: ExpressionValue } = {};
 
-      arr1.forEach((v1, i) => {
+      arr1.forEach((v1: ExpressionValue, i: number) => {
         const key = string(v1);
         result[key] = arr2[i];
       });
@@ -673,11 +445,10 @@ export const ruleExpressionLanguage = function (
       const arr = evalArray(arg1());
       const result: { [key: string]: ExpressionValue } = {};
 
-      arr.forEach((item) => {
+      arr.forEach((item: ExpressionValue) => {
         const kvPair = array(item);
-        if (kvPair.length !== 2) {
-          throw new Error(`UNZIPDICT: Expected sub-array of length 2`);
-        }
+        if (kvPair.length !== 2)
+          throw new Error('UNZIPDICT: Expected sub-array of length 2');
 
         const [key, value] = kvPair;
 
@@ -706,7 +477,7 @@ export const ruleExpressionLanguage = function (
   // Except for the ARRAY constructor
   Object.keys(prefixOps).forEach((key) => {
     if (key !== 'ARRAY') {
-      // @ts-ignore
+      // @ts-expect-error
       prefixOps[key] = unpackArgs(prefixOps[key]);
     }
   });
@@ -759,8 +530,8 @@ export const ruleExpressionLanguage = function (
         CLOSE: ']',
       },
     },
-    // @ts-ignore
-    termDelegate: function (term: string) {
+    // @ts-expect-error
+    termDelegate: function(term: string) {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
@@ -802,7 +573,7 @@ export const ruleExpressionLanguage = function (
       }
     },
 
-    termTyper: function (term: string): TermType {
+    termTyper: function(term: string): TermType {
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {
