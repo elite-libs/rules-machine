@@ -10,13 +10,14 @@ import {
   TermDelegate,
   TermType,
   TermTyper,
-} from 'expressionparser/dist/ExpressionParser.js';
-import get from 'lodash/get.js';
-import { toArray } from '../utils/utils';
+} from "expressionparser/dist/ExpressionParser.js";
+import get from "lodash/get.js";
+import { toArray } from "../utils/utils";
 import {
   array,
   char,
   containsValues,
+  countObjectKeys,
   dateParser,
   evalArray,
   evalBool,
@@ -29,14 +30,15 @@ import {
   omitProperties,
   string,
   unpackArgs,
-} from './utils';
+} from "./utils";
 
-const hasOwnProperty = (obj: object, key: string) => Object.prototype.hasOwnProperty.call(obj, key);
+const hasOwnProperty = (obj: object, key: string) =>
+  Object.prototype.hasOwnProperty.call(obj, key);
 export interface FunctionOps {
-  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue
+  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
-export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
+export const assignmentOperators = ["=", "+=", "-=", "*=", "/=", "??="];
 /*
 TODO: Look into additional modifier operators:
 
@@ -46,11 +48,11 @@ TODO: Look into additional modifier operators:
 */
 
 const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
-  '+': (a, b) => num(a()) + num(b()),
-  '-': (a, b) => num(a()) - num(b()),
-  '*': (a, b) => num(a()) * num(b()),
-  '/': (a, b) => num(a()) / num(b()),
-  ',': (a, b): ArgumentsArray => {
+  "+": (a, b) => num(a()) + num(b()),
+  "-": (a, b) => num(a()) - num(b()),
+  "*": (a, b) => num(a()) * num(b()),
+  "/": (a, b) => num(a()) / num(b()),
+  ",": (a, b): ArgumentsArray => {
     const aVal = a();
     const aArr: ExpressionArray<ExpressionValue> = isArgumentsArray(aVal)
       ? aVal
@@ -59,31 +61,31 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
     args.isArgumentsArray = true;
     return args as ArgumentsArray;
   },
-  '%': (a, b) => num(a()) % num(b()),
-  '=': (_, b) => b(),
-  '+=': (a, b) => num(a()) + num(b()),
-  '-=': (a, b) => num(a()) - num(b()),
-  '*=': (a, b) => num(a()) * num(b()),
-  '/=': (a, b) => num(a()) / num(b()),
-  '??=': (a, b) => a() ?? b(),
-  '==': (a, b) => a() === b(),
-  '!=': (a, b) => a() !== b(),
-  '<>': (a, b) => a() !== b(),
-  '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
-  '>': (a, b) => a() > b(),
-  '<': (a, b) => a() < b(),
-  '>=': (a, b) => a() >= b(),
-  '<=': (a, b) => a() <= b(),
+  "%": (a, b) => num(a()) % num(b()),
+  "=": (_, b) => b(),
+  "+=": (a, b) => num(a()) + num(b()),
+  "-=": (a, b) => num(a()) - num(b()),
+  "*=": (a, b) => num(a()) * num(b()),
+  "/=": (a, b) => num(a()) / num(b()),
+  "??=": (a, b) => a() ?? b(),
+  "==": (a, b) => a() === b(),
+  "!=": (a, b) => a() !== b(),
+  "<>": (a, b) => a() !== b(),
+  "~=": (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
+  ">": (a, b) => a() > b(),
+  "<": (a, b) => a() < b(),
+  ">=": (a, b) => a() >= b(),
+  "<=": (a, b) => a() <= b(),
   AND: (a, b) => a() && b(),
   OR: (a, b) => a() || b(),
-  '^': (a, b) => Math.pow(num(a()), num(b())),
+  "^": (a, b) => Math.pow(num(a()), num(b())),
 });
 
 type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
 
-export const ruleExpressionLanguage = function(
+export const ruleExpressionLanguage = function (
   termDelegate: TermDelegate,
   termTypeDelegate?: TermTyper,
   termSetter?: TermSetterFunction
@@ -139,14 +141,14 @@ export const ruleExpressionLanguage = function(
     DATE: dateParser,
     DATEISO: (arg) => {
       const dateArg = arg();
-      if (typeof dateArg === 'string' || typeof dateArg === 'number')
+      if (typeof dateArg === "string" || typeof dateArg === "number")
         return new Date(dateParser(dateArg)).toISOString();
 
       // eslint-disable-next-line @typescript-eslint/no-base-to-string
       return `UnknownDate(${dateArg?.valueOf()})`;
     },
     NOT: (arg) => !arg(),
-    '!': (arg) => !arg(),
+    "!": (arg) => !arg(),
     ABS: (arg) => Math.abs(num(arg())),
     ACOS: (arg) => Math.acos(num(arg())),
     ACOSH: (arg) => Math.acosh(num(arg())),
@@ -237,11 +239,11 @@ export const ruleExpressionLanguage = function(
       return iterable(arg()).length;
     },
     JOIN: (arg1, arg2) => evalArray(arg2()).join(string(arg1())),
-    STRING: (arg) => evalArray(arg()).join(''),
+    STRING: (arg) => evalArray(arg()).join(""),
     SPLIT: (arg1, arg2) => string(arg2()).split(string(arg1())),
     CHARARRAY: (arg) => {
       const str = string(arg());
-      return str.split('');
+      return str.split("");
     },
     ARRAY: (arg) => array(arg()),
     ISNAN: (arg) => isNaN(num(arg())),
@@ -249,7 +251,7 @@ export const ruleExpressionLanguage = function(
       const func = arg1();
       const arr = evalArray(arg2());
       return arr.map((val: ExpressionValue) => {
-        if (typeof func === 'function') return () => func(val);
+        if (typeof func === "function") return () => func(val);
         else return call(string(func))(() => val);
       });
     },
@@ -259,7 +261,7 @@ export const ruleExpressionLanguage = function(
       const arr = evalArray(arg3());
       return arr.reduce((prev: ExpressionValue, curr: ExpressionValue) => {
         const args: ExpressionArray<ExpressionThunk> = [() => prev, () => curr];
-        if (typeof func === 'function') return func(...args);
+        if (typeof func === "function") return func(...args);
         else return call(string(func))(...args);
       }, start);
     },
@@ -279,7 +281,7 @@ export const ruleExpressionLanguage = function(
       const arr2 = evalArray(arg2());
 
       if (arr1.length !== arr2.length)
-        throw new Error('ZIP: Arrays are of different lengths');
+        throw new Error("ZIP: Arrays are of different lengths");
       else return arr1.map((v1: ExpressionValue, i: number) => [v1, arr2[i]]);
     },
     UNZIP: (arg1) => {
@@ -332,7 +334,7 @@ export const ruleExpressionLanguage = function(
       const result: ExpressionArray<ExpressionValue> = [];
       arr.forEach((val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function') isSatisfied = evalBool(func(val));
+        if (typeof func === "function") isSatisfied = evalBool(func(val));
         else isSatisfied = evalBool(call(string(func))(() => val));
 
         if (isSatisfied) result.push(val);
@@ -346,7 +348,7 @@ export const ruleExpressionLanguage = function(
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function') isSatisfied = evalBool(func(val));
+        if (typeof func === "function") isSatisfied = evalBool(func(val));
         else isSatisfied = evalBool(call(string(func))(() => val));
 
         return isSatisfied;
@@ -363,7 +365,7 @@ export const ruleExpressionLanguage = function(
 
       const satisfaction = (val: ExpressionValue) => {
         let isSatisfied;
-        if (typeof func === 'function') isSatisfied = evalBool(func(val));
+        if (typeof func === "function") isSatisfied = evalBool(func(val));
         else isSatisfied = evalBool(call(string(func))(() => val));
 
         return isSatisfied;
@@ -391,6 +393,7 @@ export const ruleExpressionLanguage = function(
     CONTAINS: containsValues,
     INCLUDES: containsValues,
     OBJECT_CONTAINS: objectContainsValues,
+    COUNT_KEYS: countObjectKeys,
     OMIT: omitProperties,
     /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.
@@ -446,7 +449,7 @@ export const ruleExpressionLanguage = function(
       arr.forEach((item: ExpressionValue) => {
         const kvPair = array(item);
         if (kvPair.length !== 2)
-          throw new Error('UNZIPDICT: Expected sub-array of length 2');
+          throw new Error("UNZIPDICT: Expected sub-array of length 2");
 
         const [key, value] = kvPair;
 
@@ -474,94 +477,94 @@ export const ruleExpressionLanguage = function(
   // Ensure arguments are unpacked accordingly
   // Except for the ARRAY constructor
   Object.keys(prefixOps).forEach((key) => {
-    if (key !== 'ARRAY') {
+    if (key !== "ARRAY") {
       // @ts-expect-error
       prefixOps[key] = unpackArgs(prefixOps[key]);
     }
   });
 
   return {
-    ESCAPE_CHAR: '\\',
+    ESCAPE_CHAR: "\\",
     INFIX_OPS: infixOps,
     PREFIX_OPS: prefixOps,
     PRECEDENCE: [
       Object.keys(prefixOps),
-      ['^'],
-      ['*', '/', '%', 'MOD'],
-      ['+', '-'],
-      ['<', '>', '<=', '>='],
-      ['=', '!=', '<>', '~='],
-      ['AND', 'OR'],
-      [','],
+      ["^"],
+      ["*", "/", "%", "MOD"],
+      ["+", "-"],
+      ["<", ">", "<=", ">="],
+      ["=", "!=", "<>", "~="],
+      ["AND", "OR"],
+      [","],
     ],
     LITERAL_OPEN: '"',
     LITERAL_CLOSE: '"',
-    GROUP_OPEN: '(',
-    GROUP_CLOSE: ')',
-    SEPARATOR: ' ',
+    GROUP_OPEN: "(",
+    GROUP_CLOSE: ")",
+    SEPARATOR: " ",
     SYMBOLS: [
-      '^',
-      '*',
-      '/',
-      '%',
-      '+',
-      '-',
-      '<',
-      '>',
-      '=',
-      '!',
-      ',',
+      "^",
+      "*",
+      "/",
+      "%",
+      "+",
+      "-",
+      "<",
+      ">",
+      "=",
+      "!",
+      ",",
       '"',
-      '(',
-      ')',
-      '[',
-      ']',
-      '~',
-      '?',
+      "(",
+      ")",
+      "[",
+      "]",
+      "~",
+      "?",
     ],
     AMBIGUOUS: {
-      '-': 'NEG',
+      "-": "NEG",
     },
     SURROUNDING: {
       ARRAY: {
-        OPEN: '[',
-        CLOSE: ']',
+        OPEN: "[",
+        CLOSE: "]",
       },
     },
     // @ts-expect-error
-    termDelegate: function(term: string) {
+    termDelegate: function (term: string) {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
-          case 'E':
+          case "E":
             return Math.E;
-          case 'LN2':
+          case "LN2":
             return Math.LN2;
-          case 'LN10':
+          case "LN10":
             return Math.LN10;
-          case 'LOG2E':
+          case "LOG2E":
             return Math.LOG2E;
-          case 'LOG10E':
+          case "LOG10E":
             return Math.LOG10E;
-          case 'PI':
+          case "PI":
             return Math.PI;
-          case 'SQRTHALF':
+          case "SQRTHALF":
             return Math.SQRT1_2;
-          case 'SQRT2':
+          case "SQRT2":
             return Math.SQRT2;
-          case 'FALSE':
+          case "FALSE":
             return false;
-          case 'TRUE':
+          case "TRUE":
             return true;
-          case 'EMPTY':
+          case "EMPTY":
             return [];
-          case 'EMPTYDICT':
+          case "EMPTYDICT":
             return {};
-          case 'INFINITY':
+          case "INFINITY":
             return Number.POSITIVE_INFINITY;
-          case 'EPSILON':
+          case "EPSILON":
             return Number.EPSILON;
-          case 'UNDEFINED':
+          case "UNDEFINED":
             return undefined;
           default:
             return termDelegate(term);
@@ -571,42 +574,42 @@ export const ruleExpressionLanguage = function(
       }
     },
 
-    termTyper: function(term: string): TermType {
+    termTyper: function (term: string): TermType {
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
-          case 'E':
-            return 'number';
-          case 'LN2':
-            return 'number';
-          case 'LN10':
-            return 'number';
-          case 'LOG2E':
-            return 'number';
-          case 'LOG10E':
-            return 'number';
-          case 'PI':
-            return 'number';
-          case 'SQRTHALF':
-            return 'number';
-          case 'SQRT2':
-            return 'number';
-          case 'FALSE':
-            return 'boolean';
-          case 'TRUE':
-            return 'boolean';
-          case 'EMPTY':
-            return 'array';
-          case 'INFINITY':
-            return 'number';
-          case 'EPSILON':
-            return 'number';
+          case "E":
+            return "number";
+          case "LN2":
+            return "number";
+          case "LN10":
+            return "number";
+          case "LOG2E":
+            return "number";
+          case "LOG10E":
+            return "number";
+          case "PI":
+            return "number";
+          case "SQRTHALF":
+            return "number";
+          case "SQRT2":
+            return "number";
+          case "FALSE":
+            return "boolean";
+          case "TRUE":
+            return "boolean";
+          case "EMPTY":
+            return "array";
+          case "INFINITY":
+            return "number";
+          case "EPSILON":
+            return "number";
           default:
-            return termTypeDelegate ? termTypeDelegate(term) : 'unknown';
+            return termTypeDelegate ? termTypeDelegate(term) : "unknown";
         }
       } else {
-        return 'number';
+        return "number";
       }
     },
 

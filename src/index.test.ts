@@ -172,7 +172,7 @@ describe("Custom Functions", () => {
         'today = DATE(DATEISO("0d"))',
         'tomorrow = DATE(DATEISO("1d"))',
         {
-          if: "tomorrow < today",
+          if: "tomorrow > today",
           then: "return tomorrow - today",
           else: "return 0",
         },
@@ -289,12 +289,7 @@ describe("Nested Rule Structures", () => {
 
 describe("can use functional object helpers", () => {
   test("OBJECT_CONTAINS", () => {
-    const rulesFn = ruleFactory(
-      ['hasLondon = OBJECT_CONTAINS("London", cities)'],
-      {
-        trace: true,
-      }
-    );
+    const rulesFn = ruleFactory('return OBJECT_CONTAINS("London", cities)');
 
     const hasLondonInput = {
       cities: { Denver: true, London: true, LA: true },
@@ -302,42 +297,28 @@ describe("can use functional object helpers", () => {
     const hasTaipeiInput = {
       cities: { Denver: true, Taipei: true, LA: true },
     };
-    const withLondon = rulesFn(hasLondonInput);
-    const withoutLondon = rulesFn(hasTaipeiInput);
 
-    expect(withLondon.input?.hasLondon).toBe(true);
-    expect(withoutLondon.input?.hasLondon).toBe(false);
+    expect(rulesFn(hasLondonInput)).toBe(true);
+    expect(rulesFn(hasTaipeiInput)).toBe(false);
+  });
+
+  test("COUNT_KEYS", () => {
+    const rulesFn = ruleFactory("return COUNT_KEYS(cities)");
+    const input = {
+      cities: { Denver: true, London: true, LA: true },
+    };
+
+    expect(rulesFn(input)).toBe(3);
   });
 
   test("OMIT", () => {
-    const rulesFn = ruleFactory(
-      [
-        { if: "usaOnly == true", then: 'cities = OMIT("London", cities)' },
-        { return: "cities" },
-      ],
-      {
-        trace: true,
-      }
-    );
-
-    const hasLondonInput = {
+    const rulesFn = ruleFactory('return OMIT("London", cities)');
+    const input = {
       cities: { Denver: true, London: true, LA: true },
-      usaOnly: true,
     };
-    const hasTaipeiInput = {
-      cities: { Denver: true, Taipei: true, LA: true },
-      usaOnly: true,
-    };
-    const withLondon = rulesFn(hasLondonInput);
-    const withoutLondon = rulesFn(hasTaipeiInput);
 
-    expect(withLondon.returnValue).toStrictEqual({
+    expect(rulesFn(input)).toStrictEqual({
       Denver: true,
-      LA: true,
-    });
-    expect(withoutLondon.returnValue).toStrictEqual({
-      Denver: true,
-      Taipei: true,
       LA: true,
     });
   });

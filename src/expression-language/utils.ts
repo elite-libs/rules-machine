@@ -1,11 +1,13 @@
-import isObject from 'lodash/isObject.js';
-import omit from 'lodash/omit.js';
-import ms from 'ms';
+import isObject from "lodash/isObject.js";
+import omit from "lodash/omit.js";
+import ms from "ms";
 import {
   Delegate,
-  ExpressionThunk, ExpressionValue, isArgumentsArray,
-} from 'expressionparser/dist/ExpressionParser.js';
-import { toArray } from '../utils/utils';
+  ExpressionThunk,
+  ExpressionValue,
+  isArgumentsArray,
+} from "expressionparser/dist/ExpressionParser.js";
+import { toArray } from "../utils/utils";
 
 export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();
@@ -26,7 +28,7 @@ export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   }
 };
 export const num = (result: ExpressionValue) => {
-  if (typeof result !== 'number') {
+  if (typeof result !== "number") {
     throw new Error(
       `Expected number, found: ${typeof result} ${JSON.stringify(result)}`
     );
@@ -43,15 +45,15 @@ export const array = (result: ExpressionValue) => {
 
   result = unpackArray([...result]);
   if (isArgumentsArray(result))
-    throw new Error('Expected array, found: arguments');
+    throw new Error("Expected array, found: arguments");
 
   return result;
 };
 const unpackArray = <TInput extends unknown[]>(
   thunks: TInput | ExpressionThunk[]
-) => thunks.map((thunk) => (typeof thunk === 'function' ? thunk() : thunk));
+) => thunks.map((thunk) => (typeof thunk === "function" ? thunk() : thunk));
 const bool = (value: ExpressionValue) => {
-  if (typeof value !== 'boolean') {
+  if (typeof value !== "boolean") {
     throw new Error(
       `Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`
     );
@@ -62,20 +64,15 @@ const bool = (value: ExpressionValue) => {
 export const evalBool = (value: ExpressionValue): boolean => {
   let result;
 
-  while (typeof value === 'function' && value.length === 0)
-    value = value();
-  if (!result)
-    result = value;
+  while (typeof value === "function" && value.length === 0) value = value();
+  if (!result) result = value;
 
   return bool(result);
 };
 export const evalString = (value: ExpressionValue) => {
   let result;
-  if (typeof value === 'function' && value.length === 0)
-    result = value();
-
-  else
-    result = value;
+  if (typeof value === "function" && value.length === 0) result = value();
+  else result = value;
 
   return string(result);
 };
@@ -86,11 +83,8 @@ export const evalArray = (
 ) => {
   return toArray(arr).map((value) => {
     let result;
-    if (typeof value === 'function' && value.length === 0)
-      result = value();
-
-    else
-      result = value;
+    if (typeof value === "function" && value.length === 0) result = value();
+    else result = value;
 
     if (typeCheck) {
       try {
@@ -104,12 +98,12 @@ export const evalArray = (
   });
 };
 export const obj = (obj: ExpressionValue) => {
-  if (typeof obj !== 'object' || obj === null) {
+  if (typeof obj !== "object" || obj === null) {
     throw new Error(
       `Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`
     );
   } else if (Array.isArray(obj)) {
-    throw new Error('Expected object, found array');
+    throw new Error("Expected object, found array");
   }
 
   return obj;
@@ -132,17 +126,29 @@ export const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   const data = toArray(arg2());
   return data.filter((val) => !includeValues.includes(val));
 };
-export const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+export const containsValues = (
+  arg1: ExpressionThunk,
+  arg2: ExpressionThunk
+) => {
   const matches = toArray(arg1());
   const data = evalArray(arg2());
   return data.some((val) => matches.includes(val));
 };
-export const objectContainsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+export const objectContainsValues = (
+  arg1: ExpressionThunk,
+  arg2: ExpressionThunk
+) => {
   const matches = toArray(arg1());
   const data = arg2();
   return Object.keys(data).some((val) => matches.includes(val));
 };
-export const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+export const countObjectKeys = (arg1: ExpressionThunk) => {
+  return Object.keys(arg1()).length;
+};
+export const omitProperties = (
+  arg1: ExpressionThunk,
+  arg2: ExpressionThunk
+) => {
   const matches = toArray(arg1()) as [];
   const data = arg2();
   if (!isObject(data)) {
@@ -155,7 +161,7 @@ export const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => 
   return omit(data, matches);
 };
 export const iterable = (result: ExpressionValue) => {
-  if (!Array.isArray(result) && typeof result !== 'string') {
+  if (!Array.isArray(result) && typeof result !== "string") {
     throw new Error(
       `Expected array or string, found: ${typeof result} ${JSON.stringify(
         result
@@ -167,7 +173,7 @@ export const iterable = (result: ExpressionValue) => {
 };
 
 export const string = (result: ExpressionValue) => {
-  if (typeof result !== 'string') {
+  if (typeof result !== "string") {
     throw new Error(
       `Expected string, found: ${typeof result} ${JSON.stringify(result)}`
     );
@@ -176,7 +182,7 @@ export const string = (result: ExpressionValue) => {
   return result;
 };
 export const char = (result: ExpressionValue) => {
-  if (typeof result !== 'string' || result.length !== 1) {
+  if (typeof result !== "string" || result.length !== 1) {
     throw new Error(
       `Expected char, found: ${typeof result} ${JSON.stringify(result)}`
     );
@@ -188,16 +194,16 @@ export const char = (result: ExpressionValue) => {
 export const dateParser = (
   arg: ExpressionThunk | string | number
 ): number | string => {
-  const dateArg = typeof arg === 'function' ? arg() : arg;
+  const dateArg = typeof arg === "function" ? arg() : arg;
 
-  if (typeof dateArg === 'string' && dateArg.length < 6) {
+  if (typeof dateArg === "string" && dateArg.length < 6) {
     // possible date duration expression
     const duration = ms(dateArg);
     const d = new Date(Date.now() + duration);
     // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
     return d.getTime();
   }
-  if (typeof dateArg === 'string' || typeof dateArg === 'number') {
+  if (typeof dateArg === "string" || typeof dateArg === "number") {
     const d = new Date(dateArg);
     return d.getTime();
   }
