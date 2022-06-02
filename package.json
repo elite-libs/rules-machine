@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.4.3",
+  "version": "1.4.5",
   "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
@@ -9,7 +9,7 @@
     "url": "git://github.com/elite-libs/rules-machine.git"
   },
   "source": "./src/index.ts",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -17,9 +17,9 @@
       "import": "./dist/index.mjs",
       "node": "./dist/index.cjs"
     },
-    "./index.js": "./dist/index.js",
-    "./index.cjs": "./dist/index.cjs",
-    "./index.mjs": "./dist/index.mjs"
+    "./dist/index.js": "./dist/index.js",
+    "./dist/index.cjs": "./dist/index.cjs",
+    "./dist/index.mjs": "./dist/index.mjs"
   },
   "private": false,
   "packageManager": "yarn@1.10.0",
