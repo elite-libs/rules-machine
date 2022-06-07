@@ -2,8 +2,10 @@ import isObject from 'lodash/isObject.js';
 import omit from 'lodash/omit.js';
 import ms from 'ms';
 import {
-  Delegate,
-  ExpressionThunk, ExpressionValue, isArgumentsArray,
+  isArgumentsArray,
+} from 'expressionparser/dist/ExpressionParser.js';
+import type {
+  Delegate, ExpressionThunk, ExpressionValue,
 } from 'expressionparser/dist/ExpressionParser.js';
 import { toArray } from '../utils/utils';
 
