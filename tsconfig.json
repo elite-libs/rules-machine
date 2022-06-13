@@ -15,7 +15,7 @@
     // "isolatedModules": true,
     // "jsx": "preserve",
     // "lib": ["esnext"],
-    "module": "es2020",
+    "module": "esnext",
     "moduleResolution": "node",
     // "noEmit": true,
     "noFallthroughCasesInSwitch": true,

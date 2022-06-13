@@ -6,6 +6,8 @@ const env: 'production' | 'development' =
   process.env.NODE_ENV === 'production' ? 'production' : 'development';
 const isProd = env === 'production';
 
+const singleBundleFile = process.env.BUNDLE_ALL != null;
+
 export default {
   format,
   outDir: 'dist',
@@ -18,7 +20,8 @@ export default {
   dts: true,
   metafile: true,
   minify: isProd,
-  skipNodeModulesBundle: false,
+  skipNodeModulesBundle: singleBundleFile,
   sourcemap: true,
   // splitting: false,//
+  noExternal: [/lodash\/.*/, 'ms', /expressionparser\/.*/],
 } as Options;
