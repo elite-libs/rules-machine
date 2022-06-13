@@ -2,10 +2,10 @@ import isObject from 'lodash/isObject.js';
 import omit from 'lodash/omit.js';
 import ms from 'ms';
 import {
+  Delegate,
+  ExpressionThunk,
+  ExpressionValue,
   isArgumentsArray,
-} from 'expressionparser/dist/ExpressionParser.js';
-import type {
-  Delegate, ExpressionThunk, ExpressionValue,
 } from 'expressionparser/dist/ExpressionParser.js';
 import { toArray } from '../utils/utils';
 
@@ -64,20 +64,15 @@ const bool = (value: ExpressionValue) => {
 export const evalBool = (value: ExpressionValue): boolean => {
   let result;
 
-  while (typeof value === 'function' && value.length === 0)
-    value = value();
-  if (!result)
-    result = value;
+  while (typeof value === 'function' && value.length === 0) value = value();
+  if (!result) result = value;
 
   return bool(result);
 };
 export const evalString = (value: ExpressionValue) => {
   let result;
-  if (typeof value === 'function' && value.length === 0)
-    result = value();
-
-  else
-    result = value;
+  if (typeof value === 'function' && value.length === 0) result = value();
+  else result = value;
 
   return string(result);
 };
@@ -88,11 +83,8 @@ export const evalArray = (
 ) => {
   return toArray(arr).map((value) => {
     let result;
-    if (typeof value === 'function' && value.length === 0)
-      result = value();
-
-    else
-      result = value;
+    if (typeof value === 'function' && value.length === 0) result = value();
+    else result = value;
 
     if (typeCheck) {
       try {
@@ -134,17 +126,29 @@ export const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
   const data = toArray(arg2());
   return data.filter((val) => !includeValues.includes(val));
 };
-export const containsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+export const containsValues = (
+  arg1: ExpressionThunk,
+  arg2: ExpressionThunk
+) => {
   const matches = toArray(arg1());
   const data = evalArray(arg2());
   return data.some((val) => matches.includes(val));
 };
-export const objectContainsValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+export const objectContainsValues = (
+  arg1: ExpressionThunk,
+  arg2: ExpressionThunk
+) => {
   const matches = toArray(arg1());
   const data = arg2();
   return Object.keys(data).some((val) => matches.includes(val));
 };
-export const omitProperties = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
+export const countObjectKeys = (arg1: ExpressionThunk) => {
+  return Object.keys(arg1()).length;
+};
+export const omitProperties = (
+  arg1: ExpressionThunk,
+  arg2: ExpressionThunk
+) => {
   const matches = toArray(arg1()) as [];
   const data = arg2();
   if (!isObject(data)) {

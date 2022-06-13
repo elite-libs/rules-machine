@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
@@ -65,7 +65,8 @@
     "jest": "26.x.x",
     "ts-jest": "26.x.x",
     "ts-node": "^10.7.0",
-    "tsup": "^5.12.6"
+    "tsup": "^5.12.6",
+    "typescript": "4.4.4"
   },
   "dependencies": {
     "debug": "^4.3.3",
