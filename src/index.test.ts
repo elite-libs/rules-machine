@@ -8,6 +8,10 @@ describe('Assignment Operators', () => {
     const rulesFn = ruleFactory('amITheWalrus = true');
     expect(rulesFn({})).toEqual({ amITheWalrus: true });
   });
+  test('should be able to add a key to input', () => {
+    const rulesFn = ruleFactory('iAmTheWalrus = true');
+    expect(rulesFn({ walrus: true })).toEqual({ iAmTheWalrus: true, walrus: true });
+  });
   test('and return a variable by name', () => {
     const rulesFn = ruleFactory([
       'amITheWalrus = foo + bar',
