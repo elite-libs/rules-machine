@@ -25,6 +25,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
+    "strictNullChecks": true,
+    "noErrorTruncation": true,
     "target": "ES2019",
     "useUnknownInCatchVariables": false
   },
