@@ -424,8 +424,9 @@ fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
 
 ## TODO
 
-- [ ] Web app to test & build rules.
-- [ ] **Return result by default, make trace and metadata opt-in via options.**
+- [ ] [Web app to test & build rules.](https://github.com/elite-libs/rules-machine/issues/29)
+- [ ] [Design async data injection mechanism](https://github.com/elite-libs/rules-machine/issues/28)
+- [x] ~~Return result by default, make trace and metadata opt-in via options.~~
 - [x] Add arithmetic & function support to expression parser.
   - Over 80 builtin functions supported.
 - [x] Publish modules for CJS, ESM, AMD, UMD. (Using parcel.)

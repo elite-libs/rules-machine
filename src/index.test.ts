@@ -184,8 +184,8 @@ describe('Custom Functions', () => {
       { trace: false }
     );
     const result = rulesFn({});
-    // one millisecond difference locally vs CI
-    const isOneDay = result === 86400000 || result === 86400001;
+    // allow for slow systems to run tests (allows event loop lag of 100ms, which shouldn't be exceeded under normal circumstances.)
+    const isOneDay = result >= 86_400_000 && result <= (86_400_000 + 1000);
     expect(isOneDay).toBe(true);
   });
 
