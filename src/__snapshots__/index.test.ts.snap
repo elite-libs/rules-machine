@@ -29,7 +29,7 @@ Array [
     "value": true,
   },
   Object {
-    "input": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
+    "currentState": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
     "operation": "ruleString",
     "result": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
     "rule": "hasLondon = CONTAINS(\\"London\\", cities)",
@@ -37,9 +37,9 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
+    "currentState": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
+    "lastValue": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
     "operation": "complete",
-    "returnValue": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"hasLondon\\":true}",
     "rule": undefined,
     "stepCount": 1,
     "stepRow": 1,
@@ -79,7 +79,7 @@ Array [
     ],
   },
   Object {
-    "input": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
+    "currentState": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
     "operation": "ruleString",
     "result": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
     "rule": "availableCities = FILTER_VALUES([\\"London\\", \\"Milan\\"], cities)",
@@ -108,7 +108,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
+    "currentState": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
     "operation": "return",
     "result": "[\\"Denver\\",\\"LA\\"]",
     "rule": "availableCities",
@@ -116,9 +116,9 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
+    "currentState": "{\\"cities\\":[\\"Denver\\",\\"London\\",\\"LA\\"],\\"onlyUSA\\":true,\\"availableCities\\":[\\"Denver\\",\\"LA\\"]}",
+    "lastValue": "[\\"Denver\\",\\"LA\\"]",
     "operation": "complete",
-    "returnValue": "[\\"Denver\\",\\"LA\\"]",
     "rule": undefined,
     "stepCount": 2,
     "stepRow": 1,
@@ -127,6 +127,104 @@ Array [
 `;
 
 exports[`Custom Functions can use functions as expressions 1`] = `"2020-01-20T00:10:00.000Z"`;
+
+exports[`Edge cases should not lose input when conditional does match 1`] = `
+Array [
+  Object {
+    "operation": "begin",
+    "rule": undefined,
+  },
+  Object {
+    "key": "input",
+    "operation": "key.lookup",
+    "rule": undefined,
+    "stepCount": 1,
+    "stepRow": 0,
+    "value": 42,
+  },
+  Object {
+    "operation": "expression",
+    "result": true,
+    "rule": "input == 42",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "currentState": "{\\"input\\":42}",
+    "operation": "if",
+    "result": true,
+    "rule": "input == 42",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "lhs": "doSet",
+    "operation": "evalRule",
+    "previous": undefined,
+    "result": "{\\"input\\":42,\\"doSet\\":9999}",
+    "rule": "doSet = 9999",
+    "stepCount": 2,
+    "stepRow": 0,
+    "value": 9999,
+  },
+  Object {
+    "currentState": "{\\"input\\":42,\\"doSet\\":9999}",
+    "operation": "if.then",
+    "result": true,
+    "rule": "doSet = 9999",
+    "stepCount": 2,
+    "stepRow": 0,
+  },
+  Object {
+    "currentState": "{\\"input\\":42,\\"doSet\\":9999}",
+    "lastValue": "{\\"input\\":42,\\"doSet\\":9999}",
+    "operation": "complete",
+    "rule": undefined,
+    "stepCount": 2,
+    "stepRow": 1,
+  },
+]
+`;
+
+exports[`Edge cases should not lose input when conditional does not match 1`] = `
+Array [
+  Object {
+    "operation": "begin",
+    "rule": undefined,
+  },
+  Object {
+    "key": "undefinedKey",
+    "operation": "key.lookup",
+    "rule": undefined,
+    "stepCount": 1,
+    "stepRow": 0,
+    "value": undefined,
+  },
+  Object {
+    "operation": "expression",
+    "result": false,
+    "rule": "undefinedKey == false",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "currentState": "{\\"input\\":42}",
+    "operation": "if",
+    "result": false,
+    "rule": "undefinedKey == false",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
+    "currentState": "{\\"input\\":42}",
+    "lastValue": "{\\"input\\":42}",
+    "operation": "complete",
+    "rule": undefined,
+    "stepCount": 1,
+    "stepRow": 1,
+  },
+]
+`;
 
 exports[`Logical and/or can process 'and' rules 1`] = `
 Array [
@@ -165,7 +263,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"price\\":35}",
+    "currentState": "{\\"price\\":35}",
     "operation": "if.and",
     "result": true,
     "rule": Array [
@@ -186,7 +284,7 @@ Array [
     "value": 5,
   },
   Object {
-    "input": "{\\"price\\":35,\\"discount\\":5}",
+    "currentState": "{\\"price\\":35,\\"discount\\":5}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 5",
@@ -209,7 +307,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":35,\\"discount\\":5}",
+    "currentState": "{\\"price\\":35,\\"discount\\":5}",
     "operation": "if",
     "result": false,
     "rule": "price >= 100",
@@ -232,7 +330,7 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":35,\\"discount\\":5}",
+    "currentState": "{\\"price\\":35,\\"discount\\":5}",
     "operation": "return",
     "result": 5,
     "rule": "discount",
@@ -240,9 +338,9 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":35,\\"discount\\":5}",
+    "currentState": "{\\"price\\":35,\\"discount\\":5}",
+    "lastValue": 5,
     "operation": "complete",
-    "returnValue": 5,
     "rule": undefined,
     "stepCount": 5,
     "stepRow": 2,
@@ -272,7 +370,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true}}",
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true}}",
     "operation": "if",
     "result": true,
     "rule": "price <= 100",
@@ -290,7 +388,7 @@ Array [
     "value": 5,
   },
   Object {
-    "input": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 5",
@@ -328,7 +426,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
     "operation": "if.or",
     "result": true,
     "rule": Array [
@@ -349,7 +447,7 @@ Array [
     "value": 20,
   },
   Object {
-    "input": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 20",
@@ -372,7 +470,7 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
     "operation": "return",
     "result": 20,
     "rule": "discount",
@@ -380,9 +478,9 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
+    "lastValue": 20,
     "operation": "complete",
-    "returnValue": 20,
     "rule": undefined,
     "stepCount": 6,
     "stepRow": 2,
@@ -412,7 +510,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true}}",
+    "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true}}",
     "operation": "if",
     "result": true,
     "rule": "price <= 100",
@@ -440,7 +538,7 @@ Array [
     "value": true,
   },
   Object {
-    "input": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
+    "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
     "operation": "if.then",
     "result": true,
     "rule": Array [
@@ -481,7 +579,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
+    "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
     "operation": "if.and",
     "result": false,
     "rule": Array [
@@ -507,7 +605,7 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
+    "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
     "operation": "return",
     "result": 5,
     "rule": "discount",
@@ -515,9 +613,9 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
+    "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
+    "lastValue": 5,
     "operation": "complete",
-    "returnValue": 5,
     "rule": undefined,
     "stepCount": 6,
     "stepRow": 2,
@@ -547,7 +645,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"price\\":100}",
+    "currentState": "{\\"price\\":100}",
     "operation": "if",
     "result": true,
     "rule": "price >= 25",
@@ -565,7 +663,7 @@ Array [
     "value": 5,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":5}",
+    "currentState": "{\\"price\\":100,\\"discount\\":5}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 5",
@@ -588,7 +686,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":5}",
+    "currentState": "{\\"price\\":100,\\"discount\\":5}",
     "operation": "if",
     "result": true,
     "rule": "price >= 100",
@@ -606,7 +704,7 @@ Array [
     "value": 20,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":20}",
+    "currentState": "{\\"price\\":100,\\"discount\\":20}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 20",
@@ -629,7 +727,7 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":20}",
+    "currentState": "{\\"price\\":100,\\"discount\\":20}",
     "operation": "return",
     "result": 20,
     "rule": "discount",
@@ -637,9 +735,9 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":20}",
+    "currentState": "{\\"price\\":100,\\"discount\\":20}",
+    "lastValue": 20,
     "operation": "complete",
-    "returnValue": 20,
     "rule": undefined,
     "stepCount": 5,
     "stepRow": 2,
@@ -669,7 +767,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"price\\":10}",
+    "currentState": "{\\"price\\":10}",
     "operation": "if",
     "result": false,
     "rule": "price >= 100",
@@ -692,7 +790,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":10}",
+    "currentState": "{\\"price\\":10}",
     "operation": "return",
     "result": undefined,
     "rule": "discount",
@@ -700,9 +798,9 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":10}",
+    "currentState": "{\\"price\\":10}",
+    "lastValue": undefined,
     "operation": "complete",
-    "returnValue": undefined,
     "rule": undefined,
     "stepCount": 2,
     "stepRow": 1,
@@ -732,7 +830,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100}}",
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100}}",
     "operation": "if",
     "result": true,
     "rule": "user.plan == \\"premium\\"",
@@ -750,7 +848,7 @@ Array [
     "value": 15,
   },
   Object {
-    "input": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 15",
@@ -773,7 +871,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
     "operation": "if",
     "result": true,
     "rule": "user.employee == true",
@@ -791,7 +889,7 @@ Array [
     "value": 15,
   },
   Object {
-    "input": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 15",
@@ -814,7 +912,7 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
     "operation": "return",
     "result": 15,
     "rule": "discount",
@@ -822,9 +920,9 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "lastValue": 15,
     "operation": "complete",
-    "returnValue": 15,
     "rule": undefined,
     "stepCount": 5,
     "stepRow": 2,
@@ -854,7 +952,7 @@ Array [
     "stepRow": 0,
   },
   Object {
-    "input": "{\\"price\\":100}",
+    "currentState": "{\\"price\\":100}",
     "operation": "if",
     "result": true,
     "rule": "price >= 25",
@@ -872,7 +970,7 @@ Array [
     "value": 10,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":10}",
+    "currentState": "{\\"price\\":100,\\"discount\\":10}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 5 * 2",
@@ -895,7 +993,7 @@ Array [
     "stepRow": 1,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":10}",
+    "currentState": "{\\"price\\":100,\\"discount\\":10}",
     "operation": "if",
     "result": true,
     "rule": "price >= 100",
@@ -913,7 +1011,7 @@ Array [
     "value": 80,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":80}",
+    "currentState": "{\\"price\\":100,\\"discount\\":80}",
     "operation": "if.then",
     "result": true,
     "rule": "discount = 20 * 4",
@@ -936,7 +1034,7 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":80}",
+    "currentState": "{\\"price\\":100,\\"discount\\":80}",
     "operation": "return",
     "result": 80,
     "rule": "discount",
@@ -944,9 +1042,9 @@ Array [
     "stepRow": 2,
   },
   Object {
-    "input": "{\\"price\\":100,\\"discount\\":80}",
+    "currentState": "{\\"price\\":100,\\"discount\\":80}",
+    "lastValue": 80,
     "operation": "complete",
-    "returnValue": 80,
     "rule": undefined,
     "stepCount": 5,
     "stepRow": 2,

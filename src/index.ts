@@ -42,7 +42,7 @@ export function ruleFactory<
   } = any
 >(
   rules: Rule,
-  options: RuleMachineOptions = {
+  options: RuleMachineOptions | undefined = {
     trace: false,
     ignoreMissingKeys: true,
   }
@@ -68,11 +68,13 @@ export function ruleFactory<
     const results = {
       input,
       trace: traceSimple,
-      returnValue: undefined as any,
-      lastValue: undefined as any,
+      lastValue: input as any,
+      returnValue: input as any,
     };
 
-    const getReturnValue = () => results.returnValue ?? results.lastValue;
+    // Note: previously used more complex logic here
+    // TODO: refactor & remove the `getReturnValue()` function
+    const getReturnValue = () => results.lastValue;
 
     const startTime = performance.now();
     if (trace) logTrace({ operation: 'begin', startTime });
@@ -106,14 +108,15 @@ export function ruleFactory<
       if (
         typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
-        if (trace) logTrace({ operation: 'ruleString', rule: rule, result: serialize(results.lastValue), input: serialize(input), stepRow, stepCount });
+        if (trace) logTrace({ operation: 'ruleString', rule: rule, result: serialize(results.lastValue), currentState: serialize(input), stepRow, stepCount });
       } else if (Array.isArray(rule) && typeof rule[0] === 'string') {
         results.lastValue = rule.map((rule) =>
           evaluateRule({ stepRow, input, rule })
         );
-        if (trace) logTrace({ operation: 'ruleString[]', rule: rule, result: serialize(results.lastValue), input: serialize(input), stepRow, stepCount });
+        if (trace) logTrace({ operation: 'ruleString[]', rule: rule, result: serialize(results.lastValue), currentState: serialize(input), stepRow, stepCount });
       } else if ('if' in rule) {
-        // NOTE: Add || and && operators here.
+        results.lastValue = input; // set the current state to the input object.
+
         let conditionResult: boolean | undefined;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
@@ -121,14 +124,14 @@ export function ruleFactory<
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.every((result) => result);
-          if (trace) logTrace({ operation: 'if.and', rule: and, result: serialize(conditionResult), input: serialize(input), stepRow, stepCount });
+          if (trace) logTrace({ operation: 'if.and', rule: and, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = rule.if.or;
           const results = arrayify(or).map((rule) =>
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.some((result) => result);
-          if (trace) logTrace({ operation: 'if.or', rule: or, result: serialize(conditionResult), input: serialize(input), stepRow, stepCount });
+          if (trace) logTrace({ operation: 'if.or', rule: or, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
           throw new Error('The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.');
         } else if (typeof rule.if === 'string') {
@@ -139,8 +142,9 @@ export function ruleFactory<
               rule: rule.if,
             })
           );
-          if (trace) logTrace({ operation: 'if', rule: rule.if, result: serialize(conditionResult), input: serialize(input), stepRow, stepCount });
+          if (trace) logTrace({ operation: 'if', rule: rule.if, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         }
+        // Now check the condition result
         if (
           conditionResult &&
           (typeof rule.then === 'string' || Array.isArray(rule.then))
@@ -150,7 +154,7 @@ export function ruleFactory<
             input,
             rule: rule.then,
           });
-          if (trace) logTrace({ operation: 'if.then', rule: rule.then, result: serialize(conditionResult), input: serialize(input), stepRow, stepCount });
+          if (trace) logTrace({ operation: 'if.then', rule: rule.then, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         } else if (
           !conditionResult &&
           (typeof rule.else === 'string' || Array.isArray(rule.else))
@@ -160,7 +164,9 @@ export function ruleFactory<
             input,
             rule: rule.else,
           });
-          if (trace) logTrace({ operation: 'if.else', rule: rule.else, result: serialize(conditionResult), input: serialize(input), stepRow, stepCount });
+          if (trace) logTrace({ operation: 'if.else', rule: rule.else, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
+        } else {
+          results.lastValue = input;
         }
       } else if ('return' in rule) {
         const returnResult = evaluateRule({
@@ -169,20 +175,23 @@ export function ruleFactory<
           rule: rule.return,
           ignoreMissingKeys: true,
         });
+        results.lastValue = returnResult;
         results.returnValue = returnResult;
-        if (trace) logTrace({ operation: 'return', rule: rule.return, result: serialize(returnResult), input: serialize(input), stepRow, stepCount });
+        if (trace) logTrace({ operation: 'return', rule: rule.return, result: serialize(returnResult), currentState: serialize(input), stepRow, stepCount });
         break;
       }
       stepRow++;
     }
 
-    if (trace) logTrace({ operation: 'complete', runTime: performance.now() - startTime, stepCount, input: serialize(input), stepRow, returnValue: serialize(getReturnValue()) });
+    if (trace) logTrace({ operation: 'complete', runTime: performance.now() - startTime, stepCount, currentState: serialize(input), stepRow, lastValue: serialize(getReturnValue()) });
 
-    if (trace)
+    if (trace) {
+      // @ts-expect-error: todo: fix this, add proper type for Result
+      results.runTime = performance.now() - startTime;
       return results;
-    else
+    } else {
       return getReturnValue();
-
+    }
     function evaluateRule({
       stepRow,
       input,
