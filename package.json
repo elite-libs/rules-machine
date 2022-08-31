@@ -1,7 +1,7 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.4.8",
-  "description": "A JSON-based Rules Engine. Serialize business logic into JSON to manage complexity & model larger workflows.",
+  "version": "1.4.9",
+  "description": "📐 A fast serializable logical Rules Engine.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
   "repository": {
@@ -13,15 +13,6 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/index.global.js",
   "types": "./dist/index.d.ts",
-  "//  exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "node": "./dist/index.cjs"
-    },
-    "./dist/index.js": "./dist/index.js",
-    "./dist/index.cjs": "./dist/index.cjs",
-    "./dist/index.mjs": "./dist/index.mjs"
-  },
   "private": false,
   "packageManager": "yarn@1.10.0",
   "engineStrict": true,
@@ -40,6 +31,8 @@
     "format": "eslint --fix ."
   },
   "keywords": [
+    "elite-libs",
+    "elitelibs",
     "Rules Engine",
     "JSON Rules Engine",
     "JSON Rules",

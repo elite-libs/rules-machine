@@ -8,11 +8,12 @@ import {
   ruleExpressionLanguage,
 } from './expression-language';
 import { init } from 'expressionparser';
-import { ExpressionValue } from 'expressionparser/dist/ExpressionParser';
+import { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
 
 const trailingQuotes = /^('|").*('|")$/g;
 
-const oneify = <TList>(value?: TList[] | TList) => value != null && Array.isArray(value) && value.length === 1 ? value[0] : value;
+// const oneify = <TList>(value?: TList[] | TList) => value != null && Array.isArray(value) && value.length === 1 ? value[0] : value;
+const serialize = (data: unknown) => data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
   trace?: boolean
@@ -25,12 +26,14 @@ interface TraceRow {
 
   operation: string
   rule?: Rule
+  input?: any
   result?: any
   stepRow?: number
   stepCount?: number
   lhs?: string
   value?: ExpressionValue
   error?: any
+  [key: string]: unknown
 };
 
 export function ruleFactory<
@@ -39,7 +42,7 @@ export function ruleFactory<
   } = any
 >(
   rules: Rule,
-  options: RuleMachineOptions = {
+  options: RuleMachineOptions | undefined = {
     trace: false,
     ignoreMissingKeys: true,
   }
@@ -56,8 +59,8 @@ export function ruleFactory<
   return function executeRulePipeline(input: TInput = {} as TInput) {
     const traceSimple: TraceRow[] = [];
 
-    function logTrace({ operation, rule, result, ...args }: TraceRow) {
-      if (trace) traceSimple.push({ operation, rule: oneify(rule), result: oneify(result), stepCount, stepRow, ...args });
+    function logTrace({ operation, rule, ...args }: TraceRow) {
+      if (trace) traceSimple.push({ operation, rule, ...args });
     }
 
     let stepRow = 0;
@@ -65,9 +68,14 @@ export function ruleFactory<
     const results = {
       input,
       trace: traceSimple,
-      returnValue: undefined as any,
-      lastValue: undefined as any,
+      lastValue: input as any,
+      returnValue: input as any,
     };
+
+    // Note: previously used more complex logic here
+    // TODO: refactor & remove the `getReturnValue()` function
+    const getReturnValue = () => results.lastValue;
+
     const startTime = performance.now();
     if (trace) logTrace({ operation: 'begin', startTime });
 
@@ -83,9 +91,10 @@ export function ruleFactory<
               ignoreMissingKeys
             ) ?? get(input, term, undefined as any);
           // console.log(`TERM: ${term} => ${result}`);
+          if (trace) logTrace({ operation: 'key.lookup', key: term, value: result, stepRow, stepCount });
           return result;
         } catch (error) {
-          logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
+          if (trace) logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
         }
       } else {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -99,14 +108,15 @@ export function ruleFactory<
       if (
         typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
-        logTrace({ operation: 'ruleString', rule: rule, result: results.lastValue, stepRow });
+        if (trace) logTrace({ operation: 'ruleString', rule: rule, result: serialize(results.lastValue), currentState: serialize(input), stepRow, stepCount });
       } else if (Array.isArray(rule) && typeof rule[0] === 'string') {
         results.lastValue = rule.map((rule) =>
           evaluateRule({ stepRow, input, rule })
         );
-        logTrace({ operation: 'ruleString[]', rule: rule, result: results.lastValue, stepRow });
+        if (trace) logTrace({ operation: 'ruleString[]', rule: rule, result: serialize(results.lastValue), currentState: serialize(input), stepRow, stepCount });
       } else if ('if' in rule) {
-        // NOTE: Add || and && operators here.
+        results.lastValue = input; // set the current state to the input object.
+
         let conditionResult: boolean | undefined;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
@@ -114,14 +124,14 @@ export function ruleFactory<
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.every((result) => result);
-          logTrace({ operation: 'if.and', rule: and, result: conditionResult, stepRow });
+          if (trace) logTrace({ operation: 'if.and', rule: and, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = rule.if.or;
           const results = arrayify(or).map((rule) =>
             evaluateRule({ stepRow, input, rule })
           );
           conditionResult = results.some((result) => result);
-          logTrace({ operation: 'if.or', rule: or, result: conditionResult, stepRow });
+          if (trace) logTrace({ operation: 'if.or', rule: or, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
           throw new Error('The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.');
         } else if (typeof rule.if === 'string') {
@@ -132,8 +142,9 @@ export function ruleFactory<
               rule: rule.if,
             })
           );
-          logTrace({ operation: 'if', rule: rule.if, result: conditionResult, stepRow });
+          if (trace) logTrace({ operation: 'if', rule: rule.if, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         }
+        // Now check the condition result
         if (
           conditionResult &&
           (typeof rule.then === 'string' || Array.isArray(rule.then))
@@ -143,7 +154,7 @@ export function ruleFactory<
             input,
             rule: rule.then,
           });
-          logTrace({ operation: 'if.then', rule: rule.then, result: conditionResult, stepRow });
+          if (trace) logTrace({ operation: 'if.then', rule: rule.then, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
         } else if (
           !conditionResult &&
           (typeof rule.else === 'string' || Array.isArray(rule.else))
@@ -153,7 +164,9 @@ export function ruleFactory<
             input,
             rule: rule.else,
           });
-          logTrace({ operation: 'if.else', rule: rule.else, result: conditionResult, stepRow });
+          if (trace) logTrace({ operation: 'if.else', rule: rule.else, result: serialize(conditionResult), currentState: serialize(input), stepRow, stepCount });
+        } else {
+          results.lastValue = input;
         }
       } else if ('return' in rule) {
         const returnResult = evaluateRule({
@@ -162,20 +175,23 @@ export function ruleFactory<
           rule: rule.return,
           ignoreMissingKeys: true,
         });
+        results.lastValue = returnResult;
         results.returnValue = returnResult;
-        logTrace({ operation: 'return', rule: rule.return, result: returnResult, stepRow });
+        if (trace) logTrace({ operation: 'return', rule: rule.return, result: serialize(returnResult), currentState: serialize(input), stepRow, stepCount });
         break;
       }
       stepRow++;
     }
 
-    if (trace) logTrace({ operation: 'complete', runTime: performance.now() - startTime, stepCount, stepRow });
+    if (trace) logTrace({ operation: 'complete', runTime: performance.now() - startTime, stepCount, currentState: serialize(input), stepRow, lastValue: serialize(getReturnValue()) });
 
-    if (trace)
+    if (trace) {
+      // @ts-expect-error: todo: fix this, add proper type for Result
+      results.runTime = performance.now() - startTime;
       return results;
-    else
-      return results.returnValue || results.lastValue;
-
+    } else {
+      return getReturnValue();
+    }
     function evaluateRule({
       stepRow,
       input,
@@ -215,18 +231,19 @@ export function ruleFactory<
             .split(matchedOperator, 2)
             .map((s) => s.trim());
           const value = parser.expressionToValue(rule);
+          const previous = get(input, lhs);
           const result = set(input, lhs, value);
           results.lastValue = value;
-          logTrace({ operation: 'evalRule', result, rule, lhs, value });
+          if (trace) logTrace({ operation: 'evalRule', result: serialize(result), rule, lhs, value, previous: serialize(previous), stepRow, stepCount });
           return input as any; // value???
         } else {
           const result = parser.expressionToValue(rule) as any;
-          logTrace({ operation: 'expression', result, rule });
+          if (trace) logTrace({ operation: 'expression', result, rule, stepRow, stepCount });
           results.lastValue = result;
           return result;
         }
       } catch (e) {
-        logTrace({ operation: 'error', error: e.message });
+        if (trace) logTrace({ operation: 'error', error: e.message });
         console.error('PARSER FAIL:', e);
         throw e;
       }
