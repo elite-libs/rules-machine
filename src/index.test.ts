@@ -329,3 +329,47 @@ describe('can use functional object helpers', () => {
     });
   });
 });
+
+describe('Edge cases', () => {
+  test('should not lose input when rules are missing', () => {
+    const rulesFn = ruleFactory([]);
+    expect(rulesFn({ input: 42 })).toEqual({ input: 42 });
+  });
+  test('should not lose input when conditional does not match', () => {
+    const rulesFn = ruleFactory([
+      {
+        if: 'undefinedKey == false',
+        then: 'neverSet = 9999',
+      },
+    ], { trace: true });
+
+    const result = rulesFn({ input: 42 });
+    // expect(result.returnValue).toEqual({ input: 42 });
+    expect(result.lastValue).toEqual({ input: 42 });
+    expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  });
+  test('should not lose input when conditional does match', () => {
+    const rulesFn = ruleFactory([
+      {
+        if: 'input == 42',
+        then: 'doSet = 9999',
+      },
+    ], { trace: true });
+
+    const result = rulesFn({ input: 42 });
+    expect(result.lastValue).toEqual({ input: 42, doSet: 9999 });
+    expect(result.trace.map(omitRuntime)).toMatchSnapshot();
+  });
+  test('should not lose input when conditional does not match and using a return object', () => {
+    const rulesFn = ruleFactory([
+      {
+        if: 'undefinedKey == true',
+        then: 'neverSet = 9999',
+      },
+      { return: 'input' },
+    ], { trace: true });
+    const result = rulesFn({ input: 42 });
+    expect(result.returnValue).toEqual(42);
+    expect(result.lastValue).toEqual(42);
+  });
+});
