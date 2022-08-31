@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.4.9",
+  "version": "1.4.91",
   "description": "📐 A fast serializable logical Rules Engine.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
