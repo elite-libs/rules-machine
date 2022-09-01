@@ -151,12 +151,13 @@ import { ruleFactory } from '@elite-libs/rules-machine';
 const fishRhyme = ruleFactory([
   { if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
   { if: 'fish == "redFish"', then: 'fish = "blueFish"' },
+  { return: 'fish' }
 ]);
 // Equivalent to:
 // if (fish == "oneFish") fish = "twoFish"
 // if (fish == "redFish") fish = "blueFish"
 
-fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
+fishRhyme({ fish: 'oneFish' }); // 'twoFish'
 ```
 
 ## Examples
