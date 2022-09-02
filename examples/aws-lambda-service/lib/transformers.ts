@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { mapValues, get, set } from 'lodash';
-import { RuleMapping } from './types';
+import { get, set, isString, isBoolean, isObjectLike, isArray } from 'lodash';
+import { RuleMapping, FieldKeyMapping, FieldPath } from './types';
 
 /**
  *
@@ -28,12 +28,25 @@ import { RuleMapping } from './types';
  * @param input
  * @returns
  */
-
 export function inputAdapter<TInput = unknown>(
-  inputMap: RuleMapping['inputMap'],
-  input: TInput
-) {
-  return mapValues(inputMap, (lookupKey: string) => get(input, lookupKey));
+  inputMap: FieldKeyMapping,
+  input: TInput,
+): FieldKeyMapping {
+  if (isArray(input)) input.map((key: string) => get(input, key));
+
+  return Object
+    .fromEntries(Object.entries<FieldKeyMapping | FieldPath>(inputMap)
+      .map(([key, value]) => ([
+        key,
+        isString(value)
+          ? get(input, value)
+          : isBoolean(value)
+            ? get(input, key)
+            : isObjectLike(value)
+              ? inputAdapter(value, input)
+              : undefined]
+      )
+      ));
 }
 
 /**
@@ -54,13 +67,12 @@ export function outputAdapter<
   inputSource: TInput,
   targetOutput: TOutput
 ) {
-  if (typeof keyMapping === 'string')
-    keyMapping = { [keyMapping]: true };
+  if (typeof keyMapping === 'string') keyMapping = { [keyMapping]: true };
   return Object.entries(keyMapping!).reduce((output, [toKey, fromKey]) => {
     set(
       output,
       toKey,
-      fromKey === true ? inputSource : get(inputSource, fromKey)
+      fromKey === true ? inputSource : typeof fromKey === 'string' ? get(inputSource, fromKey) : undefined
     );
     return output;
   }, targetOutput);

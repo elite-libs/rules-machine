@@ -1,6 +1,7 @@
 import type { Rule } from '@elite-libs/rules-machine';
 
-export type FieldKeyMapping = Record<string, string | true>;
+export type FieldPath = string | true;
+export interface FieldKeyMapping { [key: string]: FieldPath | FieldKeyMapping }
 
 /**
  * An associated set of rules & their needed input values.
