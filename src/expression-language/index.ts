@@ -17,6 +17,7 @@ import {
   array,
   char,
   containsValues,
+  countObjectKeys,
   dateParser,
   evalArray,
   evalBool,
@@ -31,7 +32,8 @@ import {
   unpackArgs,
 } from './utils';
 
-const hasOwnProperty = (obj: object, key: string) => Object.prototype.hasOwnProperty.call(obj, key);
+const hasOwnProperty = (obj: object, key: string) =>
+  Object.prototype.hasOwnProperty.call(obj, key);
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue
 }
@@ -391,6 +393,7 @@ export const ruleExpressionLanguage = function(
     CONTAINS: containsValues,
     INCLUDES: containsValues,
     OBJECT_CONTAINS: objectContainsValues,
+    COUNT_KEYS: countObjectKeys,
     OMIT: omitProperties,
     /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.

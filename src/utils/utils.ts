@@ -24,14 +24,14 @@ export function toNumber(value: string | number): number {
 }
 
 export function isBoolean(value: string): boolean {
-  return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(
+  return ['true', 'false', 'yes', 'no', 'on', 'off', '0', '1'].includes(
     `${value}`.toLowerCase()
   );
 }
 
 export function toBoolean(value: any) {
-  value = value.toString().toLowerCase();
-  return value === 'true' || value === 'yes' || value === 'on';
+  value = `${value}`.toString().toLowerCase();
+  return value === 'true' || value === 'yes' || value === 'on' || value === '1';
 }
 
 export function toArray<TInput>(input: TInput | TInput[]): TInput[] {
