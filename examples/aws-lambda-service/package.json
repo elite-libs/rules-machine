@@ -1,0 +1,23 @@
+{
+  "name": "rules-machine-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.102",
+    "esbuild": "^0.15.5",
+    "serverless": "^3.22.0",
+    "serverless-esbuild": "^1.32.8",
+    "serverless-offline": "^9.2.6"
+  },
+  "dependencies": {
+    "@elite-libs/rules-machine": "^1.4.7",
+    "aws-lambda": "^1.0.7"
+  }
+}
