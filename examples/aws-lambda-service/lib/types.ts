@@ -1,7 +1,9 @@
 import type { Rule } from '@elite-libs/rules-machine';
 
 export type FieldPath = string | true;
-export interface FieldKeyMapping { [key: string]: FieldPath | FieldKeyMapping }
+export interface FieldKeyMapping {
+  [key: string]: FieldPath | FieldKeyMapping
+}
 
 /**
  * An associated set of rules & their needed input values.
@@ -32,5 +34,5 @@ export interface RuleMapping {
 
 export type RulesCallback = <TOutput = unknown>(
   input: Readonly<object>,
-  skipDataMapping?: boolean,
+  skipDataMapping?: boolean
 ) => TOutput;

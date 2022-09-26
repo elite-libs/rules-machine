@@ -45,7 +45,7 @@ function convertRuleMapping({
 }: RuleMapping): RulesCallback {
   return <TOutput = unknown>(
     input: object,
-    skipDataMapping = false,
+    skipDataMapping = false
   ): TOutput => {
     const processInputArgs = (inputArgs: object) =>
       skipDataMapping ? inputArgs : inputAdapter(inputMap, inputArgs);
@@ -58,7 +58,7 @@ function convertRuleMapping({
       processInputArgs,
       // @ts-expect-error
       ruleFactory(rules),
-      tap(applyOutputUpdates),
+      tap(applyOutputUpdates)
     )(input) as unknown as TOutput;
   };
 }

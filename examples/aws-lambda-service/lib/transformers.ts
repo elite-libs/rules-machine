@@ -30,13 +30,13 @@ import { RuleMapping, FieldKeyMapping, FieldPath } from './types';
  */
 export function inputAdapter<TInput = unknown>(
   inputMap: FieldKeyMapping,
-  input: TInput,
+  input: TInput
 ): FieldKeyMapping {
   if (isArray(input)) input.map((key: string) => get(input, key));
 
-  return Object
-    .fromEntries(Object.entries<FieldKeyMapping | FieldPath>(inputMap)
-      .map(([key, value]) => ([
+  return Object.fromEntries(
+    Object.entries<FieldKeyMapping | FieldPath>(inputMap).map(
+      ([key, value]) => [
         key,
         isString(value)
           ? get(input, value)
@@ -44,9 +44,10 @@ export function inputAdapter<TInput = unknown>(
             ? get(input, key)
             : isObjectLike(value)
               ? inputAdapter(value, input)
-              : undefined]
-      )
-      ));
+              : undefined,
+      ]
+    )
+  );
 }
 
 /**
@@ -72,7 +73,11 @@ export function outputAdapter<
     set(
       output,
       toKey,
-      fromKey === true ? inputSource : typeof fromKey === 'string' ? get(inputSource, fromKey) : undefined
+      fromKey === true
+        ? inputSource
+        : typeof fromKey === 'string'
+          ? get(inputSource, fromKey)
+          : undefined
     );
     return output;
   }, targetOutput);

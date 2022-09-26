@@ -2,16 +2,13 @@
  * @type {import('@typescript-eslint/utils').TSESLint.Linter.Config}
  */
 const config = {
+  root: true,
   env: {
     node: true,
   },
   extends: 'standard-with-typescript',
   parser: '@typescript-eslint/parser',
-  ignorePatterns: [
-    'node_modules/',
-    'dist/',
-    'coverage/',
-  ],
+  ignorePatterns: ['node_modules/', 'dist/', 'coverage/'],
   parserOptions: {
     // sourceType: 'module',
     tsconfigRootDir: __dirname,
@@ -48,7 +45,7 @@ const config = {
       },
     ],
     // note you must disable the base rule as it can report incorrect errors
-    quotes: 'off',
+    quotes: ['error', 'single', { avoidEscape: true }],
     '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
     '@typescript-eslint/no-misused-promises': [
       'error',

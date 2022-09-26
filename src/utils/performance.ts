@@ -30,7 +30,9 @@ void (async function() {
     // Check for node environment
     const perfHooks = await import('perf_hooks');
     performance.now = () => perfHooks.performance?.now();
-  } catch (error) { /* ignore, couldn't import high-res timer */ }
+  } catch (error) {
+    /* ignore, couldn't import high-res timer */
+  }
 })();
 
 export default performance;

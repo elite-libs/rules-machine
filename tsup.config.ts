@@ -8,7 +8,9 @@ const env: 'production' | 'development' =
 const isProd = env === 'production';
 
 const singleBundleFile = toBoolean(process.env.BUNDLE_ALL);
-const inlinePackagePatterns = singleBundleFile ? [/lodash\/.*/, 'ms', /expressionparser\/.*/] : [];
+const inlinePackagePatterns = singleBundleFile
+  ? [/lodash\/.*/, 'ms', /expressionparser\/.*/]
+  : [];
 
 export default <Options>{
   format,

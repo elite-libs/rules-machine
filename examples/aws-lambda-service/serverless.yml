@@ -2,7 +2,7 @@
 service: rules-machine-service
 useDotEnv: true
 
-frameworkVersion: '3'
+frameworkVersion: "3"
 provider:
   name: aws
   deploymentMethod: direct
@@ -25,5 +25,4 @@ functions:
           path: /{namedRule}
           method: post
           # cors: true
-      - httpApi: '*'
-
+      - httpApi: "*"

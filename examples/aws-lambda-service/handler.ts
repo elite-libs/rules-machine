@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/quotes */
-import { Handler, APIGatewayProxyResult, APIGatewayProxyEventV2WithRequestContext, Context } from 'aws-lambda';
+import {
+  Handler,
+  APIGatewayProxyResult,
+  APIGatewayProxyEventV2WithRequestContext,
+  Context,
+} from 'aws-lambda';
 import { rulesMachineFactory } from './lib';
 import { RulesCallback } from './lib/types';
 import appRules from './rules/app-rules';
@@ -20,7 +25,9 @@ APIGatewayProxyResult
   const ruleName = pathParameters?.namedRule;
   if (!ruleName || !ruleNames.includes(ruleName)) {
     return {
-      body: `Invalid rule name: ${ruleName}. Valid rule names are:<br/>\n/${ruleNames.join(', /')}`,
+      body: `Invalid rule name: ${ruleName}. Valid rule names are:<br/>\n/${ruleNames.join(
+        ', /'
+      )}`,
       statusCode: 400,
       headers: { 'content-type': 'text/html', 'cache-control': 'no-cache' },
     };
@@ -57,7 +64,9 @@ const helpInfo = () => ({
   </head>
   <body>
     <h1>Welcome to a Rules Service</h1>
-    <p>Try POST to the following endpoints:<br/>\n/${Object.keys(rulesMachine).join('<br/>\n/')}
+    <p>Try POST to the following endpoints:<br/>\n/${Object.keys(
+      rulesMachine
+    ).join('<br/>\n/')}
     </p>
    </body>
   </html>`,
@@ -66,8 +75,8 @@ const helpInfo = () => ({
 });
 
 const checkPayload = (body: unknown) => {
-  if (!body) throw Error(`No body provided`);
-  if (typeof body !== 'string') throw Error(`Body is not a string`);
-  if (body.length > 10_000) throw Error(`Body exceeded 10,000 characters`);
+  if (!body) throw Error('No body provided');
+  if (typeof body !== 'string') throw Error('Body is not a string');
+  if (body.length > 10_000) throw Error('Body exceeded 10,000 characters');
   return true;
 };

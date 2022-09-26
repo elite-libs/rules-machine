@@ -7,8 +7,7 @@ export default function mockDateHelper(targetDate: Date | string | number) {
     constructor(...args: unknown[]) {
       // @ts-expect-error
       super(...args);
-      if (args.length === 0)
-        return currentDate;
+      if (args.length === 0) return currentDate;
 
       // @ts-expect-error
       return new RealDate(...args);

@@ -22,13 +22,6 @@
     "noErrorTruncation": true,
     "useUnknownInCatchVariables": false
   },
-  "include": [
-    "**/*.ts",
-    "./.*.js"
-  ],
-  "exclude": [
-    "**/node_modules",
-    "__snapshots__",
-    "**/dist"
-  ]
+  "include": ["**/*.ts", "./.*.js"],
+  "exclude": ["**/node_modules", "__snapshots__", "**/dist"]
 }
