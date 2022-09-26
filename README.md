@@ -389,6 +389,9 @@ fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
 1. DEC2STR() - `DEC2STR('42')` => `42`
 1. HEX2DEC() - `HEX2DEC("F")` => `15`
 1. STR2DEC() - `STR2DEC('42')` => `42`
+1. STRING_CONTAINS() - `STRING_CONTAINS("lo wo", "hello world")` => `true`, note: this function does not currently accept regular expressions
+1. STRING_ENDS_WITH() - `STRING_ENDS_WITH("rld", "hello world")` => `true`, note: this function does not currently accept regular expressions
+1. STRING_STARTS_WITH() - `STRING_STARTS_WITH("hell", "hello world")` => `true`, note: this function does not currently accept regular expressions
 
 #### Math Functions: Advanced
 
