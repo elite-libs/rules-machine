@@ -17,6 +17,7 @@ import {
   array,
   char,
   containsValues,
+  countObjectKeys,
   dateParser,
   evalArray,
   evalBool,
@@ -397,6 +398,7 @@ export const ruleExpressionLanguage = function (
     CONTAINS: containsValues,
     INCLUDES: containsValues,
     OBJECT_CONTAINS: objectContainsValues,
+    COUNT_KEYS: countObjectKeys,
     OMIT: omitProperties,
     /**
      * REMOVE_VALUES will remove all values matching the item(s) in the 1st argument from the 2nd argument array.

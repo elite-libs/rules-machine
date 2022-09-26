@@ -146,7 +146,7 @@ npm install @elite-libs/rules-machine
 ## Usage
 
 ```ts
-import { ruleFactory } from '@elite-libs/rules-machine';
+import { ruleFactory } from "@elite-libs/rules-machine";
 
 const fishRhyme = ruleFactory([
   { if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
@@ -156,7 +156,7 @@ const fishRhyme = ruleFactory([
 // if (fish == "oneFish") fish = "twoFish"
 // if (fish == "redFish") fish = "blueFish"
 
-fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
+fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
 ```
 
 ## Examples
@@ -372,6 +372,9 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 1. KEYS() - `KEYS(DICT(["a", "b"], [1, 4]))` => `['a', 'b']`
 1. VALUES() - `VALUES(DICT(["a", "b"], [1, 4]))` => `[1, 4]`
 1. UNZIP() - `UNZIP([[1, 2], [3, 4]])` => `[[1, 3], [2, 4]]`
+1. CONTAINS() - `CONTAINS("x", {x: 1})` => `true`
+1. COUNT_KEYS() - `COUNT_KEYS({x: 1})` => `1`
+1. OMIT() - `OMIT("x", {x: 1})` => `{}`
 
 #### String Functions
 
@@ -421,8 +424,9 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 
 ## TODO
 
-- [ ] Web app to test & build rules.
-- [ ] **Return result by default, make trace and metadata opt-in via options.**
+- [ ] [Web app to test & build rules.](https://github.com/elite-libs/rules-machine/issues/29)
+- [ ] [Design async data injection mechanism](https://github.com/elite-libs/rules-machine/issues/28)
+- [x] ~~Return result by default, make trace and metadata opt-in via options.~~
 - [x] Add arithmetic & function support to expression parser.
   - Over 80 builtin functions supported.
 - [x] Publish modules for CJS, ESM, AMD, UMD. (Using parcel.)

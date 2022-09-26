@@ -1,0 +1,29 @@
+# TODO: change to your service name:
+service: rules-machine-service
+useDotEnv: true
+
+frameworkVersion: '3'
+provider:
+  name: aws
+  deploymentMethod: direct
+  runtime: nodejs16.x
+  stage: ${opt:stage, env:STAGE_NAME, 'beta'}
+  region: us-west-1
+  architecture: arm64
+  memorySize: 512
+  timeout: 10
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+functions:
+  rules:
+    handler: handler.rules
+    events:
+      - httpApi:
+          path: /{namedRule}
+          method: post
+          # cors: true
+      - httpApi: '*'
+
