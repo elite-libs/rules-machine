@@ -263,8 +263,7 @@ export function extractValueOrLiteral<
   ignoreMissingKeys?: boolean
 ) {
   const value = get(input, token);
-  if (value)
-    return autoDetectType(value);
+  if (value) return value;
 
   if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
   if (isNumber(token) || isBoolean(token)) return autoDetectType(token);
