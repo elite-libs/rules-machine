@@ -8,6 +8,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 .DS_Store
+*.lock
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
