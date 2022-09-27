@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "📐 A fast serializable logical Rules Engine.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
@@ -21,13 +21,12 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "prepublishOnly": "NODE_ENV=production BUNDLE_ALL=true yarn run build",
+    "build": "npx rimraf ./dist/* && ./scripts/build.sh",
+    "prepublishOnly": "NODE_ENV=production yarn run build && jest",
     "release:npm": "npm publish --access public --registry https://registry.npmjs.org/",
     "release:github": "npm publish --access public --registry https://npm.pkg.github.com/",
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
-    "build": "npx rimraf ./dist/* && yarn run build:bundle",
-    "build:bundle": "./scripts/build.sh",
     "format": "eslint --fix ."
   },
   "keywords": [
