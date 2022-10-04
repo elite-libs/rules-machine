@@ -17,29 +17,29 @@ const serialize = (data: unknown) =>
   data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
-  trace?: boolean
-  ignoreMissingKeys?: boolean
+  trace?: boolean;
+  ignoreMissingKeys?: boolean;
 }
 
 interface TraceRow {
-  startTime?: number
-  runTime?: number
+  startTime?: number;
+  runTime?: number;
 
-  operation: string
-  rule?: Rule
-  input?: any
-  result?: any
-  stepRow?: number
-  stepCount?: number
-  lhs?: string
-  value?: ExpressionValue
-  error?: any
-  [key: string]: unknown
+  operation: string;
+  rule?: Rule;
+  input?: any;
+  result?: any;
+  stepRow?: number;
+  stepCount?: number;
+  lhs?: string;
+  value?: ExpressionValue;
+  error?: any;
+  [key: string]: unknown;
 }
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   rules: Rule,
@@ -151,10 +151,19 @@ export function ruleFactory<
         let conditionResult: boolean | undefined;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
-          const results = and.map((rule) =>
-            evaluateRule({ stepRow, input, rule })
-          );
-          conditionResult = results.every((result) => result);
+          // @ts-expect-error
+          conditionResult = and.reduce((bool, rule) => {
+            if (bool) {
+              const result = evaluateRule({
+                stepRow,
+                input,
+                rule,
+              });
+              return bool && result;
+            } else {
+              return bool;
+            }
+          }, true);
           if (trace) {
             logTrace({
               operation: 'if.and',
@@ -294,10 +303,10 @@ export function ruleFactory<
       rule,
       ignoreMissingKeys = false,
     }: {
-      stepRow: number
-      input: TInput
-      rule: string | string[] | Rule
-      ignoreMissingKeys?: boolean
+      stepRow: number;
+      input: TInput;
+      rule: string | string[] | Rule;
+      ignoreMissingKeys?: boolean;
     }):
       | string
       | boolean
@@ -366,7 +375,7 @@ export function ruleFactory<
 
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   input: TInput,
@@ -395,17 +404,17 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-    if: Rule
-    then: Rule
-    else?: Rule
-  }
+      if: Rule;
+      then: Rule;
+      else?: Rule;
+    }
   | {
-    and: Rule[]
-  }
+      and: Rule[];
+    }
   | {
-    or: Rule[]
-  }
+      or: Rule[];
+    }
   | {
-    return: Rule
-  }
+      return: Rule;
+    }
   | Rule[];
