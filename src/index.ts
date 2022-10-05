@@ -148,22 +148,18 @@ export function ruleFactory<
       } else if ('if' in rule) {
         results.lastValue = input; // set the current state to the input object.
 
-        let conditionResult: boolean | undefined;
+        let conditionResult: boolean | undefined | null;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
-          // @ts-expect-error
-          conditionResult = and.reduce((bool, rule) => {
-            if (bool) {
-              const result = evaluateRule({
-                stepRow,
-                input,
-                rule,
-              });
-              return bool && result;
-            } else {
-              return bool;
-            }
-          }, true);
+          for (const rule of and) {
+            // @ts-expect-error
+            conditionResult = evaluateRule({
+              stepRow,
+              input,
+              rule,
+            });
+            if (!conditionResult) break;
+          }
           if (trace) {
             logTrace({
               operation: 'if.and',
@@ -175,11 +171,16 @@ export function ruleFactory<
             });
           }
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
-          const or = rule.if.or;
-          const results = arrayify(or).map((rule) =>
-            evaluateRule({ stepRow, input, rule })
-          );
-          conditionResult = results.some((result) => result);
+          const or = arrayify(rule.if.or);
+          for (const rule of or) {
+            // @ts-expect-error
+            conditionResult = evaluateRule({
+              stepRow,
+              input,
+              rule,
+            });
+            if (conditionResult) break;
+          }
           if (trace) {
             logTrace({
               operation: 'if.or',
