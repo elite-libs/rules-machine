@@ -146,7 +146,7 @@ npm install @elite-libs/rules-machine
 ## Usage
 
 ```ts
-import { ruleFactory } from "@elite-libs/rules-machine";
+import { ruleFactory } from '@elite-libs/rules-machine';
 
 const fishRhyme = ruleFactory([
   { if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
@@ -156,7 +156,7 @@ const fishRhyme = ruleFactory([
 // if (fish == "oneFish") fish = "twoFish"
 // if (fish == "redFish") fish = "blueFish"
 
-fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
+fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 ```
 
 ## Examples
@@ -418,6 +418,11 @@ fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
 1. LN()
 1. LOG()
 1. LOG2()
+
+#### Utility
+
+1. THROW() - Will throw an error. Expects a string. Cannot be (ab)used for flow control **_yet_**.
+   `THROW("my error") => PARSER FAIL: Error: my error`
 
 ## More Reading & Related Projects
 
