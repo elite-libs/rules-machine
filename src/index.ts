@@ -148,11 +148,10 @@ export function ruleFactory<
       } else if ('if' in rule) {
         results.lastValue = input; // set the current state to the input object.
 
-        let conditionResult: boolean | undefined | null;
+        let conditionResult: RuleResult;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
           for (const rule of and) {
-            // @ts-expect-error
             conditionResult = evaluateRule({
               stepRow,
               input,
@@ -173,7 +172,6 @@ export function ruleFactory<
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = arrayify(rule.if.or);
           for (const rule of or) {
-            // @ts-expect-error
             conditionResult = evaluateRule({
               stepRow,
               input,
@@ -298,6 +296,16 @@ export function ruleFactory<
     } else {
       return getReturnValue();
     }
+
+    type RuleResult =
+      | string
+      | boolean
+      | number
+      | null
+      | undefined
+      | {}
+      | Array<string | boolean | number | null | undefined>;
+
     function evaluateRule({
       stepRow,
       input,
@@ -308,14 +316,7 @@ export function ruleFactory<
       input: TInput;
       rule: string | string[] | Rule;
       ignoreMissingKeys?: boolean;
-    }):
-      | string
-      | boolean
-      | number
-      | null
-      | undefined
-      | {}
-      | Array<string | boolean | number | null | undefined> {
+    }): RuleResult {
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
           evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
