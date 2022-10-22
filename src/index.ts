@@ -286,7 +286,23 @@ export function ruleFactory<
             });
           }
         } catch (e) {
-          console.log(e);
+          const catchResult = evaluateRule({
+            stepRow,
+            input,
+            rule: rule.catch,
+            ignoreMissingKeys: true,
+          });
+          results.lastValue = catchResult;
+          if (trace) {
+            logTrace({
+              operation: 'catch',
+              rule: rule.catch,
+              result: serialize(catchResult),
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
+          }
         }
       }
       stepRow++;

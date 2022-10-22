@@ -276,7 +276,7 @@ describe('Assignment Operators', () => {
   });
 });
 
-describe.only('Nested Rule Structures', () => {
+describe('Nested Rule Structures', () => {
   test('can process complex rule expressions', () => {
     const rulesFn = ruleFactory(
       [
@@ -365,6 +365,31 @@ describe('can use functional object helpers', () => {
       Denver: true,
       LA: true,
     });
+  });
+});
+
+describe('can throw', () => {
+  it('should throw an error', () => {
+    expect(ruleFactory('THROW "my error"')).toThrow();
+  });
+});
+
+describe('try/catch', () => {
+  it('should execute try block', () => {
+    const rule = [
+      { try: 'status = "Success"', catch: 'status = "Failure"' },
+      { return: 'status' },
+    ];
+
+    expect(ruleFactory(rule)()).toBe('Success');
+  });
+  it('should execute catch block on error', () => {
+    const rule = [
+      { try: 'THROW "error test"', catch: 'status = "Failure"' },
+      { return: 'status' },
+    ];
+
+    expect(ruleFactory(rule)()).toBe('Failure');
   });
 });
 

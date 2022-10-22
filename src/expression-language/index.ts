@@ -35,7 +35,7 @@ import {
 const hasOwnProperty = (obj: object, key: string) =>
   Object.prototype.hasOwnProperty.call(obj, key);
 export interface FunctionOps {
-  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue
+  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
 export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
@@ -85,7 +85,7 @@ type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
 
-export const ruleExpressionLanguage = function(
+export const ruleExpressionLanguage = function (
   termDelegate: TermDelegate,
   termTypeDelegate?: TermTyper,
   termSetter?: TermSetterFunction
@@ -477,6 +477,9 @@ export const ruleExpressionLanguage = function(
         .sort()
         .map((key) => inputObj[key]);
     },
+    THROW: (arg1) => {
+      throw new Error(string(arg1()));
+    },
   };
 
   // Ensure arguments are unpacked accordingly
@@ -537,7 +540,7 @@ export const ruleExpressionLanguage = function(
       },
     },
     // @ts-expect-error
-    termDelegate: function(term: string) {
+    termDelegate: function (term: string) {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
@@ -579,7 +582,7 @@ export const ruleExpressionLanguage = function(
       }
     },
 
-    termTyper: function(term: string): TermType {
+    termTyper: function (term: string): TermType {
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {
