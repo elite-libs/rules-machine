@@ -146,7 +146,7 @@ npm install @elite-libs/rules-machine
 ## Usage
 
 ```ts
-import { ruleFactory } from "@elite-libs/rules-machine";
+import { ruleFactory } from '@elite-libs/rules-machine';
 
 const fishRhyme = ruleFactory([
   { if: 'fish == "oneFish"', then: 'fish = "twoFish"' },
@@ -156,7 +156,7 @@ const fishRhyme = ruleFactory([
 // if (fish == "oneFish") fish = "twoFish"
 // if (fish == "redFish") fish = "blueFish"
 
-fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
+fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 ```
 
 ## Examples
@@ -300,8 +300,8 @@ fishyRhyme({ fish: "oneFish" }); // {fish: 'twoFish'}
 1. `/`
 1. `^`
 1. `~=`
-1. `AND`
-1. `OR`
+1. `AND` - this does not short circuit if the first operand is false, but the object form does.
+1. `OR` - this does not short circuit if the first operand is true, but the object form does.
 
 ### Functions
 
