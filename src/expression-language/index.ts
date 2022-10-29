@@ -477,6 +477,9 @@ export const ruleExpressionLanguage = function(
         .sort()
         .map((key) => inputObj[key]);
     },
+    THROW: (arg1) => {
+      throw new Error(string(arg1()));
+    },
   };
 
   // Ensure arguments are unpacked accordingly
