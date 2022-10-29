@@ -306,13 +306,14 @@ export function ruleFactory<
       rule: string | string[] | Rule
       ignoreMissingKeys?: boolean
     }): RuleResult {
+      // checking only the first rule seems unsafe
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
           evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
         );
       }
       if (typeof rule !== 'string')
-        throw new Error('Nested rules not yet implemented.');
+        throw new Error('Nesting is not enabled for this rule type.');
 
       stepCount++;
 
@@ -391,18 +392,25 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-    if: Rule
+    if: And | Or | string
     then: Rule
     else?: Rule
   }
   | {
-    and: Rule[]
+    and: And
   }
   | {
-    or: Rule[]
+    or: Or
   }
   | {
-    return: Rule
+    return: string[]
   }
   | { try: Rule, catch: Rule }
   | Rule[];
+
+interface And {
+  and: string[]
+}
+interface Or {
+  or: string[]
+}
