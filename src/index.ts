@@ -247,7 +247,7 @@ export function ruleFactory<
         } catch (e) {
           logTrace({
             operation: 'catch',
-            rule: { try: rule.try, catch: rule.catch },
+            rule: rule.catch,
             currentState: serialize(input),
             stepRow,
             stepCount,
