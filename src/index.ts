@@ -236,35 +236,23 @@ export function ruleFactory<
         });
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw BREAK;
-      } else if ('try' in rule) {
+      } else if ('try' in rule && 'catch' in rule) {
         try {
-          const tryResult = evaluateRule({
-            stepRow,
-            input,
-            rule: rule.try,
-            ignoreMissingKeys: true,
-          });
-          results.lastValue = tryResult;
+          handleRule(rule.try);
           logTrace({
             operation: 'try',
             rule: rule.try,
-            result: serialize(tryResult),
+            result: serialize(results.lastValue),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
         } catch (e) {
-          const catchResult = evaluateRule({
-            stepRow,
-            input,
-            rule: rule.catch,
-            ignoreMissingKeys: true,
-          });
-          results.lastValue = catchResult;
+          handleRule(rule.catch);
           logTrace({
             operation: 'catch',
             rule: rule.catch,
-            result: serialize(catchResult),
+            result: serialize(results.lastValue),
             currentState: serialize(input),
             stepRow,
             stepCount,

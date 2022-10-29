@@ -32,4 +32,21 @@ describe('nested rules', () => {
     ];
     expect(ruleFactory(rules)()).toBe('success');
   });
+
+  it('should process nested try/catch', () => {
+    const rules = [
+      'result = "fail"',
+      {
+        if: 'false == true',
+        then: 'result = "never"',
+        else: {
+          if: 'false == true',
+          then: 'result = "never"',
+          else: 'result = "success"',
+        },
+      },
+      { return: 'result' },
+    ];
+    expect(ruleFactory(rules)()).toBe('success');
+  });
 });
