@@ -17,29 +17,29 @@ const serialize = (data: unknown) =>
   data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
-  trace?: boolean;
-  ignoreMissingKeys?: boolean;
+  trace?: boolean
+  ignoreMissingKeys?: boolean
 }
 
 interface TraceRow {
-  startTime?: number;
-  runTime?: number;
+  startTime?: number
+  runTime?: number
 
-  operation: string;
-  rule?: Rule;
-  input?: any;
-  result?: any;
-  stepRow?: number;
-  stepCount?: number;
-  lhs?: string;
-  value?: ExpressionValue;
-  error?: any;
-  [key: string]: unknown;
+  operation: string
+  rule?: Rule
+  input?: any
+  result?: any
+  stepRow?: number
+  stepCount?: number
+  lhs?: string
+  value?: ExpressionValue
+  error?: any
+  [key: string]: unknown
 }
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
+    [k: string]: string | boolean | number | null | undefined | TInput
   } = any
 >(
   rules: Rule,
@@ -195,25 +195,23 @@ export function ruleFactory<
         }
         // Now check the condition result
         if (conditionResult && rule.then) {
-          results.lastValue = handleRule(rule.then);
           logTrace({
             operation: 'if.then',
             rule: rule.then,
-            result: serialize(conditionResult),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.then);
         } else if (!conditionResult && rule.else) {
-          results.lastValue = handleRule(rule.else);
           logTrace({
             operation: 'if.else',
             rule: rule.else,
-            result: serialize(conditionResult),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.else);
         } else {
           results.lastValue = input;
         }
@@ -238,25 +236,23 @@ export function ruleFactory<
         throw BREAK;
       } else if ('try' in rule && 'catch' in rule) {
         try {
-          handleRule(rule.try);
           logTrace({
             operation: 'try',
             rule: rule.try,
-            result: serialize(results.lastValue),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.try);
         } catch (e) {
-          handleRule(rule.catch);
           logTrace({
             operation: 'catch',
             rule: { try: rule.try, catch: rule.catch },
-            result: serialize(results.lastValue),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.catch);
         }
       }
     };
@@ -305,10 +301,10 @@ export function ruleFactory<
       rule,
       ignoreMissingKeys = false,
     }: {
-      stepRow: number;
-      input: TInput;
-      rule: string | string[] | Rule;
-      ignoreMissingKeys?: boolean;
+      stepRow: number
+      input: TInput
+      rule: string | string[] | Rule
+      ignoreMissingKeys?: boolean
     }): RuleResult {
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
@@ -366,7 +362,7 @@ export function ruleFactory<
 
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
+    [k: string]: string | boolean | number | null | undefined | TInput
   } = any
 >(
   input: TInput,
@@ -395,18 +391,18 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-      if: Rule;
-      then: Rule;
-      else?: Rule;
-    }
+    if: Rule
+    then: Rule
+    else?: Rule
+  }
   | {
-      and: Rule[];
-    }
+    and: Rule[]
+  }
   | {
-      or: Rule[];
-    }
+    or: Rule[]
+  }
   | {
-      return: Rule;
-    }
-  | { try: Rule; catch: Rule }
+    return: Rule
+  }
+  | { try: Rule, catch: Rule }
   | Rule[];

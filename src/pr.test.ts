@@ -57,7 +57,7 @@ describe('nested rules', () => {
     expect(ruleFactory(rules)()).toBe('success');
   });
 
-  it.only('should process deeply nested rules', () => {
+  it('should process deeply nested rules', () => {
     const rules = [
       'result = "fail"',
       {
