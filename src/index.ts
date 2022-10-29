@@ -75,44 +75,36 @@ export function ruleFactory<
     const getReturnValue = () => results.lastValue;
 
     const startTime = performance.now();
-    if (trace) logTrace({ operation: 'begin', startTime });
+    logTrace({ operation: 'begin', startTime });
 
     const parser = init(ruleExpressionLanguage, (term: string) => {
-      if (typeof term === 'string') {
-        try {
-          const result =
-            extractValueOrLiteral(
-              input,
-              term,
-              stepRow,
-              stepCount,
-              ignoreMissingKeys
-            ) ?? get(input, term, undefined as any);
-          // console.log(`TERM: ${term} => ${result}`);
-          if (trace) {
-            logTrace({
-              operation: 'key.lookup',
-              key: term,
-              value: result,
-              stepRow,
-              stepCount,
-            });
-          }
-          return result;
-        } catch (error) {
-          if (trace) {
-            logTrace({
-              operation: 'error',
-              error,
-              rule: term,
-              stepRow,
-              stepCount,
-            });
-          }
-        }
-      } else {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        throw new Error(`Invalid term: ${term}`);
+      if (typeof term !== 'string') throw new Error(`Invalid term: ${term}`);
+      try {
+        const result =
+          extractValueOrLiteral(
+            input,
+            term,
+            stepRow,
+            stepCount,
+            ignoreMissingKeys
+          ) ?? get(input, term, undefined as any);
+        // console.log(`TERM: ${term} => ${result}`);
+        logTrace({
+          operation: 'key.lookup',
+          key: term,
+          value: result,
+          stepRow,
+          stepCount,
+        });
+        return result;
+      } catch (error) {
+        logTrace({
+          operation: 'error',
+          error,
+          rule: term,
+          stepRow,
+          stepCount,
+        });
       }
     });
 
@@ -121,30 +113,26 @@ export function ruleFactory<
     for (const rule of rules) {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
-        if (trace) {
-          logTrace({
-            operation: 'ruleString',
-            rule: rule,
-            result: serialize(results.lastValue),
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
-        }
+        logTrace({
+          operation: 'ruleString',
+          rule: rule,
+          result: serialize(results.lastValue),
+          currentState: serialize(input),
+          stepRow,
+          stepCount,
+        });
       } else if (Array.isArray(rule) && typeof rule[0] === 'string') {
         results.lastValue = rule.map((rule) =>
           evaluateRule({ stepRow, input, rule })
         );
-        if (trace) {
-          logTrace({
-            operation: 'ruleString[]',
-            rule: rule,
-            result: serialize(results.lastValue),
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
-        }
+        logTrace({
+          operation: 'ruleString[]',
+          rule: rule,
+          result: serialize(results.lastValue),
+          currentState: serialize(input),
+          stepRow,
+          stepCount,
+        });
       } else if ('if' in rule) {
         results.lastValue = input; // set the current state to the input object.
 
@@ -159,16 +147,14 @@ export function ruleFactory<
             });
             if (!conditionResult) break;
           }
-          if (trace) {
-            logTrace({
-              operation: 'if.and',
-              rule: and,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'if.and',
+            rule: and,
+            result: serialize(conditionResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = arrayify(rule.if.or);
           for (const rule of or) {
@@ -179,16 +165,14 @@ export function ruleFactory<
             });
             if (conditionResult) break;
           }
-          if (trace) {
-            logTrace({
-              operation: 'if.or',
-              rule: or,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'if.or',
+            rule: or,
+            result: serialize(conditionResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
           throw new Error(
             'The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.'
@@ -201,16 +185,14 @@ export function ruleFactory<
               rule: rule.if,
             })
           );
-          if (trace) {
-            logTrace({
-              operation: 'if',
-              rule: rule.if,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'if',
+            rule: rule.if,
+            result: serialize(conditionResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         }
         // Now check the condition result
         if (
@@ -222,16 +204,14 @@ export function ruleFactory<
             input,
             rule: rule.then,
           });
-          if (trace) {
-            logTrace({
-              operation: 'if.then',
-              rule: rule.then,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'if.then',
+            rule: rule.then,
+            result: serialize(conditionResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         } else if (
           !conditionResult &&
           (typeof rule.else === 'string' || Array.isArray(rule.else))
@@ -241,16 +221,14 @@ export function ruleFactory<
             input,
             rule: rule.else,
           });
-          if (trace) {
-            logTrace({
-              operation: 'if.else',
-              rule: rule.else,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'if.else',
+            rule: rule.else,
+            result: serialize(conditionResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         } else {
           results.lastValue = input;
         }
@@ -263,16 +241,14 @@ export function ruleFactory<
         });
         results.lastValue = returnResult;
         results.returnValue = returnResult;
-        if (trace) {
-          logTrace({
-            operation: 'return',
-            rule: rule.return,
-            result: serialize(returnResult),
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
-        }
+        logTrace({
+          operation: 'return',
+          rule: rule.return,
+          result: serialize(returnResult),
+          currentState: serialize(input),
+          stepRow,
+          stepCount,
+        });
         break;
       } else if ('try' in rule) {
         try {
@@ -283,16 +259,14 @@ export function ruleFactory<
             ignoreMissingKeys: true,
           });
           results.lastValue = tryResult;
-          if (trace) {
-            logTrace({
-              operation: 'try',
-              rule: rule.try,
-              result: serialize(tryResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'try',
+            rule: rule.try,
+            result: serialize(tryResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         } catch (e) {
           const catchResult = evaluateRule({
             stepRow,
@@ -301,31 +275,27 @@ export function ruleFactory<
             ignoreMissingKeys: true,
           });
           results.lastValue = catchResult;
-          if (trace) {
-            logTrace({
-              operation: 'catch',
-              rule: rule.catch,
-              result: serialize(catchResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'catch',
+            rule: rule.catch,
+            result: serialize(catchResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         }
       }
       stepRow++;
     }
 
-    if (trace) {
-      logTrace({
-        operation: 'complete',
-        runTime: performance.now() - startTime,
-        stepCount,
-        currentState: serialize(input),
-        stepRow,
-        lastValue: serialize(getReturnValue()),
-      });
-    }
+    logTrace({
+      operation: 'complete',
+      runTime: performance.now() - startTime,
+      stepCount,
+      currentState: serialize(input),
+      stepRow,
+      lastValue: serialize(getReturnValue()),
+    });
 
     if (trace) {
       // @ts-expect-error: todo: fix this, add proper type for Result
@@ -377,35 +347,31 @@ export function ruleFactory<
           const previous = get(input, lhs);
           const result = set(input, lhs, value);
           results.lastValue = value;
-          if (trace) {
-            logTrace({
-              operation: 'evalRule',
-              result: serialize(result),
-              rule,
-              lhs,
-              value,
-              previous: serialize(previous),
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'evalRule',
+            result: serialize(result),
+            rule,
+            lhs,
+            value,
+            previous: serialize(previous),
+            stepRow,
+            stepCount,
+          });
           return input as any; // value???
         } else {
           const result = parser.expressionToValue(rule) as any;
-          if (trace) {
-            logTrace({
-              operation: 'expression',
-              result,
-              rule,
-              stepRow,
-              stepCount,
-            });
-          }
+          logTrace({
+            operation: 'expression',
+            result,
+            rule,
+            stepRow,
+            stepCount,
+          });
           results.lastValue = result;
           return result;
         }
       } catch (e) {
-        if (trace) logTrace({ operation: 'error', error: e.message });
+        logTrace({ operation: 'error', error: e.message });
         console.error('PARSER FAIL:', e);
         throw e;
       }
