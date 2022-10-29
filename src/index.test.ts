@@ -103,6 +103,16 @@ describe('Logical', () => {
       expect(result.input.discount).toBe(5);
     });
 
+    test('"and" object rule should short circuit', () => {
+      const rules = [
+        { if: { and: ['foo', 'bar = 42'] }, then: '1' },
+        { return: 'bar' },
+      ];
+
+      expect(ruleFactory(rules)({ foo: false })).toBe(undefined);
+      expect(ruleFactory(rules)({ foo: true })).toBe(42);
+    });
+
     test("can process 'or' rules", () => {
       const rulesFn = ruleFactory(
         [
@@ -122,6 +132,17 @@ describe('Logical', () => {
       expect(result.returnValue).toBe(20);
       expect(result.input.discount).toBe(20);
     });
+
+    test('"or" object rule should short circuit', () => {
+      const rules = [
+        { if: { or: ['foo', 'bar = 42'] }, then: '1' },
+        { return: 'bar' },
+      ];
+
+      expect(ruleFactory(rules)({ foo: false })).toBe(42);
+      expect(ruleFactory(rules)({ foo: true })).toBe(undefined);
+    });
+
     test('can process nested logical rule arrays', () => {
       const rulesFn = ruleFactory(
         [

@@ -17,29 +17,29 @@ const serialize = (data: unknown) =>
   data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
-  trace?: boolean
-  ignoreMissingKeys?: boolean
+  trace?: boolean;
+  ignoreMissingKeys?: boolean;
 }
 
 interface TraceRow {
-  startTime?: number
-  runTime?: number
+  startTime?: number;
+  runTime?: number;
 
-  operation: string
-  rule?: Rule
-  input?: any
-  result?: any
-  stepRow?: number
-  stepCount?: number
-  lhs?: string
-  value?: ExpressionValue
-  error?: any
-  [key: string]: unknown
+  operation: string;
+  rule?: Rule;
+  input?: any;
+  result?: any;
+  stepRow?: number;
+  stepCount?: number;
+  lhs?: string;
+  value?: ExpressionValue;
+  error?: any;
+  [key: string]: unknown;
 }
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   rules: Rule,
@@ -148,13 +148,17 @@ export function ruleFactory<
       } else if ('if' in rule) {
         results.lastValue = input; // set the current state to the input object.
 
-        let conditionResult: boolean | undefined;
+        let conditionResult: RuleResult;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = arrayify(rule.if.and);
-          const results = and.map((rule) =>
-            evaluateRule({ stepRow, input, rule })
-          );
-          conditionResult = results.every((result) => result);
+          for (const rule of and) {
+            conditionResult = evaluateRule({
+              stepRow,
+              input,
+              rule,
+            });
+            if (!conditionResult) break;
+          }
           if (trace) {
             logTrace({
               operation: 'if.and',
@@ -166,11 +170,15 @@ export function ruleFactory<
             });
           }
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
-          const or = rule.if.or;
-          const results = arrayify(or).map((rule) =>
-            evaluateRule({ stepRow, input, rule })
-          );
-          conditionResult = results.some((result) => result);
+          const or = arrayify(rule.if.or);
+          for (const rule of or) {
+            conditionResult = evaluateRule({
+              stepRow,
+              input,
+              rule,
+            });
+            if (conditionResult) break;
+          }
           if (trace) {
             logTrace({
               operation: 'if.or',
@@ -326,24 +334,27 @@ export function ruleFactory<
     } else {
       return getReturnValue();
     }
-    function evaluateRule({
-      stepRow,
-      input,
-      rule,
-      ignoreMissingKeys = false,
-    }: {
-      stepRow: number
-      input: TInput
-      rule: string | string[] | Rule
-      ignoreMissingKeys?: boolean
-    }):
+
+    type RuleResult =
       | string
       | boolean
       | number
       | null
       | undefined
       | {}
-      | Array<string | boolean | number | null | undefined> {
+      | Array<string | boolean | number | null | undefined>;
+
+    function evaluateRule({
+      stepRow,
+      input,
+      rule,
+      ignoreMissingKeys = false,
+    }: {
+      stepRow: number;
+      input: TInput;
+      rule: string | string[] | Rule;
+      ignoreMissingKeys?: boolean;
+    }): RuleResult {
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
           evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
@@ -404,7 +415,7 @@ export function ruleFactory<
 
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   input: TInput,
@@ -433,18 +444,20 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-    if: Rule
-    then: Rule
-    else?: Rule
-  }
+      if: Rule;
+      then: Rule;
+      else?: Rule;
+    }
   | {
-    and: Rule[]
-  }
+      and: Rule[];
+    }
   | {
-    or: Rule[]
-  }
+      or: Rule[];
+    }
   | {
     return: Rule
   }
   | { try: Rule, catch: Rule }
+      return: Rule;
+    }
   | Rule[];
