@@ -63,6 +63,7 @@ export function ruleFactory<
 
     let stepRow = 0;
     let stepCount = 0;
+    const BREAK = 'BREAK';
     const results = {
       input,
       trace: traceSimple,
@@ -108,9 +109,7 @@ export function ruleFactory<
       }
     });
 
-    rules = arrayify(rules);
-
-    for (const rule of rules) {
+    const handleRule = (rule: Rule) => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
         logTrace({
@@ -249,7 +248,8 @@ export function ruleFactory<
           stepRow,
           stepCount,
         });
-        break;
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
+        throw BREAK;
       } else if ('try' in rule) {
         try {
           const tryResult = evaluateRule({
@@ -284,6 +284,17 @@ export function ruleFactory<
             stepCount,
           });
         }
+      }
+    };
+
+    rules = arrayify(rules);
+
+    for (const rule of rules) {
+      try {
+        handleRule(rule);
+      } catch (e) {
+        if (e !== BREAK) throw e;
+        break;
       }
       stepRow++;
     }
