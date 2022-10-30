@@ -403,7 +403,7 @@ export type Rule =
     or: Or
   }
   | {
-    return: string[]
+    return: string | string[]
   }
   | { try: Rule, catch: Rule }
   | Rule[];
