@@ -109,6 +109,7 @@ export function ruleFactory<
       }
     });
 
+    // TODo: return value here
     const handleRule = (rule: Rule) => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
@@ -120,9 +121,12 @@ export function ruleFactory<
           stepRow,
           stepCount,
         });
-      } else if (Array.isArray(rule) && typeof rule[0] === 'string') {
+      } else if (Array.isArray(rule)) {
         results.lastValue = rule.map((rule) =>
-          evaluateRule({ stepRow, input, rule })
+          // this alloms nested arrays of rules
+          typeof rule === 'string'
+            ? evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
+            : handleRule(rule)
         );
         logTrace({
           operation: 'ruleString[]',
@@ -234,6 +238,25 @@ export function ruleFactory<
         });
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw BREAK;
+      } else if ('map' in rule && 'run' in rule) {
+        logTrace({
+          operation: 'map',
+          rule: { map: rule.map, run: rule.run },
+          currentState: serialize(input),
+          stepRow,
+          stepCount,
+        });
+        // @ts-expect-error
+        const mapped = input[rule.map].map((item, index) => {
+          // @ts-expect-error
+          input.ITER = { item, index };
+          handleRule(rule.run);
+          return results.lastValue;
+        });
+        if ('set' in rule) {
+          // @ts-expect-error
+          input[rule.set] = mapped;
+        }
       } else if ('try' in rule && 'catch' in rule) {
         try {
           logTrace({
@@ -255,6 +278,7 @@ export function ruleFactory<
           handleRule(rule.catch);
         }
       }
+      return results.lastValue;
     };
 
     rules = arrayify(rules);
@@ -405,6 +429,7 @@ export type Rule =
   | {
     return: string | string[]
   }
+  | { map: string, run: Rule }
   | { try: Rule, catch: Rule }
   | Rule[];
 

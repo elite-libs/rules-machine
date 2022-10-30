@@ -423,16 +423,20 @@ export const ruleExpressionLanguage = function(
     FILTER_VALUES: filterValues,
     INCLUDES_VALUES: filterValues,
     GET: (arg1, arg2) => {
-      const key = string(arg1());
+      // this needs to accept a string or number
+      const key = arg1();
       const inputObj = obj(arg2());
 
+      // @ts-expect-error
       return get(inputObj, key);
     },
     PUT: (arg1, arg2, arg3) => {
-      const key = string(arg1());
+      // this needs to accept a string or number
+      const key = arg1();
       const value = arg2();
       const inputObj = obj(arg3());
 
+      // @ts-expect-error
       return Object.assign({}, inputObj, { [key]: value });
     },
     DICT: (arg1, arg2) => {

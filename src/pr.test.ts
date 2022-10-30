@@ -1,91 +1,42 @@
 import { ruleFactory } from './index';
 
-describe('nested rules', () => {
-  it('should process nested then', () => {
-    const rules = [
-      'result = "fail"',
-      {
-        if: 'true == true',
-        then: {
-          if: 'true == true',
-          then: 'result = "success"',
-        },
-      },
-      { return: 'result' },
-    ];
-    expect(ruleFactory(rules)()).toBe('success');
-  });
-
-  it('should process nested else', () => {
-    const rules = [
-      'result = "fail"',
-      {
-        if: 'false == true',
-        then: 'result = "never"',
-        else: {
-          if: 'false == true',
-          then: 'result = "never"',
-          else: 'result = "success"',
-        },
-      },
-      { return: 'result' },
-    ];
-    expect(ruleFactory(rules)()).toBe('success');
-  });
-
-  it('should process nested try', () => {
-    const rules = [
-      'result = "fail"',
-      {
-        try: { try: 'result = "success"', catch: 'result = "never"' },
-        catch: 'result = "never"',
-      },
-      { return: 'result' },
-    ];
-    expect(ruleFactory(rules)()).toBe('success');
-  });
-
-  it('should process nested catch', () => {
-    const rules = [
-      'result = "fail"',
-      {
-        try: 'THROW "error"',
-        catch: { try: 'THROW "error"', catch: 'result = "success"' },
-      },
-      { return: 'result' },
-    ];
-    expect(ruleFactory(rules)()).toBe('success');
-  });
-
-  it('should process deeply nested rules', () => {
-    const rules = [
-      'result = "fail"',
-      {
-        try: {
-          if: 'true == true',
-          then: {
-            if: 'true == true',
-            then: {
-              if: 'false == true',
-              then: 'result = "never"',
-              else: 'throw "error"',
+describe('array method object syntax', () => {
+  describe('map', () => {
+    it('execute', () => {
+      const rules = [
+        'idList = [12, 34, 56]',
+        {
+          map: 'idList',
+          run: [
+            {
+              if: 'GET(ITER.item, userScore) < 0',
+              then: 'userScore = PUT(ITER.item, 0, userScore)',
             },
-          },
+            'scoreById = PUT(ITER.item, GET(ITER.item, userScore), scoreById)',
+          ],
         },
-        catch: {
-          if: 'true == true',
-          then: {
-            if: 'true == true',
-            then: {
-              if: 'false == true',
-              then: 'result = "never"',
-              else: 'result = "success"',
-            },
-          },
+        { return: 'scoreById' },
+      ];
+      const userScore = { 12: 99.9, 34: 100.1, 56: -42.0 };
+      const scoreById = {};
+      expect(ruleFactory(rules)({ userScore, scoreById })).toEqual({
+        12: 99.9,
+        34: 100.1,
+        56: 0,
+      });
+    });
+
+    it('should set mapped array', () => {
+      const rules = [
+        {
+          map: 'itemList',
+          run: 'ITER.item.id',
+          set: 'idList',
         },
-      },
-      { return: 'result' },
-    ];
-    expect(ruleFactory(rules)()).toBe('success');
+        { return: 'idList' },
+      ];
+      const itemList = [{ id: 12 }, { id: 34 }, { id: 56 }];
+      expect(ruleFactory(rules)({ itemList })).toEqual([12, 34, 56]);
+    });
   });
 });
