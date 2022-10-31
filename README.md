@@ -281,7 +281,30 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 
 </details>
 
-## All Operators & Functions
+## Structural Object Methods, Operators & Functions
+
+### Structural Object Methods
+
+1. `if/then` - see examples above
+1. `try/catch` - Execute string rule from `try`, on error run string rule in catch.
+
+```
+[
+  { try: 'THROW "error"', catch: 'status = "Failure"' },
+  { return: 'status' }, // returns "Failure"
+]
+```
+
+3. `return` - Ends rule execution and returns value
+
+```
+[
+  {
+    return: '"blue"', // returns "blue"
+  },
+  { return: '"green"' }, // is not executed
+]
+```
 
 ### Builtin Operators
 
