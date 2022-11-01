@@ -209,7 +209,7 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 ]
 ```
 
-### Example Rule: Multiple Conditional, Nested Rules
+### Example Rule: Multiple Conditional
 
 ```json
 [
@@ -281,12 +281,46 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 
 </details>
 
+### Example Rule: Nested Rules
+
+```json
+[
+  {
+    "if": "user.isAdmin == true",
+    "then": "discount = 20",
+    "else": {
+      "if": "price <= 100",
+      "then": "discount = 5",
+      "else": "discount = 10"
+    }
+  },
+  {
+    "return": "discount"
+  }
+]
+```
+
+<details>
+<summary>Show YAML</summary>
+
+```yaml
+- if: user.isAdmin == true
+  then: discount = 20
+  else:
+    if: price <= 100
+    then: discount = 5
+    else: discount = 10
+- return: discount
+```
+
+</details>
+
 ## Structural Object Methods, Operators & Functions
 
 ### Structural Object Methods
 
-1. `if/then` - see examples above
-1. `try/catch` - Execute string rule from `try`, on error run string rule in catch.
+1. `if/then` - see examples above. Nesting supported.
+1. `try/catch` - Execute string rule from `try`, on error run string rule in catch. Nesting supported.
 
 ```
 [
