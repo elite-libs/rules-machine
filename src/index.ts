@@ -396,12 +396,8 @@ export type Rule =
     then: Rule
     else?: Rule
   }
-  | {
-    and: And
-  }
-  | {
-    or: Or
-  }
+  | And
+  | Or
   | {
     return: string | string[]
   }
