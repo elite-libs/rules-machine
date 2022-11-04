@@ -10,10 +10,10 @@ Granular rules are defined separately. They are imported by name into `app-hooks
 
 ```ts
 // `./src/app-hooks.ts`
-import { ruleFactory } from "@elite-libs/rules-machine";
+import { ruleFactory } from '@elite-libs/rules-machine';
 // Import plain old rule objects
-import { userRules } from "./rules/users";
-import { rewardsRules } from "./rules/rewards";
+import { userRules } from './rules/users';
+import { rewardsRules } from './rules/rewards';
 
 export const appHooks = {
   onUserRegister: ruleFactory([
@@ -32,7 +32,7 @@ Here's where we use our app-level functions (`registerUser`, `calculateCartDisco
 
 ```ts
 // `./src/users/index.ts`
-import appHooks from "./src/app-hooks";
+import appHooks from './src/app-hooks';
 
 const { onUserRegister, getDiscountPercent } = appHooks;
 
@@ -70,7 +70,7 @@ export const userRules: Record<string, Rule[]> = {
    * }
    * ```
    */
-  applyNewUserPromotion: ["user.rewardsBalance = 500"],
+  applyNewUserPromotion: ['user.rewardsBalance = 500'],
   applyFreeTrial: ["user.subscriptionExpires = DATEISO('+1 month')"],
 };
 
@@ -80,14 +80,14 @@ export const rewardsRules: Record<string, Rule[]> = {
    * convertRewardsToPercentDiscount determines a user's `discountPercent`.
    */
   convertRewardsToPercentDiscount: [
-    { if: "user.rewardsBalance >= 1000", then: "discountPercent = 0.05" },
-    { if: "user.rewardsBalance >= 250", then: "discountPercent = 0.02" },
+    { if: 'user.rewardsBalance >= 1000', then: 'discountPercent = 0.05' },
+    { if: 'user.rewardsBalance >= 250', then: 'discountPercent = 0.02' },
     {
-      if: "user.rewardsBalance >= 100",
-      then: "discountPercent = 0.01",
-      else: "discountPercent = 0",
+      if: 'user.rewardsBalance >= 100',
+      then: 'discountPercent = 0.01',
+      else: 'discountPercent = 0',
     },
-    { return: "discountPercent" },
+    { return: 'discountPercent' },
   ],
 };
 ````

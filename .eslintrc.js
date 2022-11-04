@@ -6,7 +6,7 @@ const config = {
   env: {
     node: true,
   },
-  extends: 'standard-with-typescript',
+  extends: ['standard-with-typescript', 'prettier'],
   parser: '@typescript-eslint/parser',
   ignorePatterns: ['node_modules/', 'dist/', 'coverage/'],
   parserOptions: {
@@ -15,22 +15,8 @@ const config = {
     project: ['./tsconfig.json'], // could be tsconfig.json too
   },
   rules: {
-    curly: ['error', 'multi-or-nest', 'consistent'],
-    semi: 'off',
-    '@typescript-eslint/semi': ['error', 'always'],
-    'comma-dangle': [
-      'error',
-      {
-        arrays: 'always-multiline',
-        objects: 'always-multiline',
-        imports: 'always-multiline',
-        exports: 'always-multiline',
-        functions: 'only-multiline',
-      },
-    ],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/space-before-function-paren': ['error', 'never'],
     '@typescript-eslint/consistent-type-assertions': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
     '@typescript-eslint/no-non-null-assertion': 'warn',
@@ -44,9 +30,14 @@ const config = {
         allowRegExp: true,
       },
     ],
-    // note you must disable the base rule as it can report incorrect errors
-    quotes: ['error', 'single', { avoidEscape: true }],
-    '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
+    '@typescript-eslint/no-floating-promises': [
+      'error',
+      {
+        ignoreVoid: true,
+        ignoreIIFE: true,
+      },
+    ],
+
     '@typescript-eslint/no-misused-promises': [
       'error',
       {

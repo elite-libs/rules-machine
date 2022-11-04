@@ -17,36 +17,36 @@ const serialize = (data: unknown) =>
   data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
-  trace?: boolean
-  ignoreMissingKeys?: boolean
+  trace?: boolean;
+  ignoreMissingKeys?: boolean;
 }
 
 interface TraceRow {
-  startTime?: number
-  runTime?: number
+  startTime?: number;
+  runTime?: number;
 
-  operation: string
-  rule?: Rule
-  input?: any
-  result?: any
-  stepRow?: number
-  stepCount?: number
-  lhs?: string
-  value?: ExpressionValue
-  error?: any
-  [key: string]: unknown
+  operation: string;
+  rule?: Rule;
+  input?: any;
+  result?: any;
+  stepRow?: number;
+  stepCount?: number;
+  lhs?: string;
+  value?: ExpressionValue;
+  error?: any;
+  [key: string]: unknown;
 }
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
-  } = any
+    [k: string]: string | boolean | number | null | undefined | TInput;
+  } = any,
 >(
   rules: Rule,
   options: RuleMachineOptions | undefined = {
     trace: false,
     ignoreMissingKeys: true,
-  }
+  },
 ) {
   if (typeof options === 'string')
     options = { name: options } as RuleMachineOptions;
@@ -79,6 +79,7 @@ export function ruleFactory<
     logTrace({ operation: 'begin', startTime });
 
     const parser = init(ruleExpressionLanguage, (term: string) => {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       if (typeof term !== 'string') throw new Error(`Invalid term: ${term}`);
       try {
         const result =
@@ -87,7 +88,7 @@ export function ruleFactory<
             term,
             stepRow,
             stepCount,
-            ignoreMissingKeys
+            ignoreMissingKeys,
           ) ?? get(input, term, undefined as any);
         // console.log(`TERM: ${term} => ${result}`);
         logTrace({
@@ -115,7 +116,7 @@ export function ruleFactory<
         results.lastValue = evaluateRule({ stepRow, input, rule });
         logTrace({
           operation: 'ruleString',
-          rule: rule,
+          rule,
           result: serialize(results.lastValue),
           currentState: serialize(input),
           stepRow,
@@ -126,11 +127,11 @@ export function ruleFactory<
           // this alloms nested arrays of rules
           typeof rule === 'string'
             ? evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
-            : handleRule(rule)
+            : handleRule(rule),
         );
         logTrace({
           operation: 'ruleString[]',
-          rule: rule,
+          rule,
           result: serialize(results.lastValue),
           currentState: serialize(input),
           stepRow,
@@ -178,7 +179,7 @@ export function ruleFactory<
           });
         } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
           throw new Error(
-            'The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.'
+            'The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.',
           );
         } else if (typeof rule.if === 'string') {
           conditionResult = Boolean(
@@ -186,7 +187,7 @@ export function ruleFactory<
               stepRow,
               input,
               rule: rule.if,
-            })
+            }),
           );
           logTrace({
             operation: 'if',
@@ -325,15 +326,15 @@ export function ruleFactory<
       rule,
       ignoreMissingKeys = false,
     }: {
-      stepRow: number
-      input: TInput
-      rule: string | string[] | Rule
-      ignoreMissingKeys?: boolean
+      stepRow: number;
+      input: TInput;
+      rule: string | string[] | Rule;
+      ignoreMissingKeys?: boolean;
     }): RuleResult {
       // checking only the first rule seems unsafe
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
-          evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
+          evaluateRule({ stepRow, input, rule, ignoreMissingKeys }),
         );
       }
       if (typeof rule !== 'string')
@@ -343,7 +344,7 @@ export function ruleFactory<
 
       try {
         const matchedOperator = assignmentOperators.find((op) =>
-          rule.includes(` ${op} `)
+          rule.includes(` ${op} `),
         );
 
         if (matchedOperator) {
@@ -377,8 +378,14 @@ export function ruleFactory<
           return result;
         }
       } catch (e) {
-        logTrace({ operation: 'error', error: e.message });
-        console.error('PARSER FAIL:', e);
+        logTrace({
+          operation: 'error',
+          error: e.message,
+          rule,
+          stepRow,
+          stepCount,
+        });
+        if (e.name !== 'UserError') console.error('UNEXPECTED ERROR:', e);
         throw e;
       }
     }
@@ -387,14 +394,14 @@ export function ruleFactory<
 
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
-  } = any
+    [k: string]: string | boolean | number | null | undefined | TInput;
+  } = any,
 >(
   input: TInput,
   token: string,
   stepRow?: number,
   stepCount?: number,
-  ignoreMissingKeys?: boolean
+  ignoreMissingKeys?: boolean,
 ) {
   const value = get(input, token);
   if (value) return value;
@@ -408,7 +415,7 @@ export function extractValueOrLiteral<
 
   if (ignoreMissingKeys) return undefined;
   throw Error(
-    `Unrecognized token in rule expression ${token} (${stepRow}, ${stepCount})`
+    `Unrecognized token in rule expression ${token} (${stepRow}, ${stepCount})`,
   );
   // if we have a string key and don't find it in the input, assume it's undefined.
 }
@@ -416,26 +423,26 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-    if: And | Or | string
-    then: Rule
-    else?: Rule
-  }
+      if: And | Or | string;
+      then: Rule;
+      else?: Rule;
+    }
   | {
-    and: And
-  }
+      and: And;
+    }
   | {
-    or: Or
-  }
+      or: Or;
+    }
   | {
-    return: string | string[]
-  }
-  | { map: string, run: Rule }
-  | { try: Rule, catch: Rule }
+      return: string | string[];
+    }
+  | { map: string; run: Rule }
+  | { try: Rule; catch: Rule }
   | Rule[];
 
 interface And {
-  and: string[]
+  and: string[];
 }
 interface Or {
-  or: string[]
+  or: string[];
 }

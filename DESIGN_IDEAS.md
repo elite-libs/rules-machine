@@ -63,9 +63,9 @@ Scenario: Determine customer discount: `if price >= 100 then discount = 20, else
 
 ```ts
 [
-  { if: "price >= 25", then: "discount = 5" },
-  { if: "price >= 100", then: "discount = 20" },
-  { return: "discount" },
+  { if: 'price >= 25', then: 'discount = 5' },
+  { if: 'price >= 100', then: 'discount = 20' },
+  { return: 'discount' },
 ];
 ```
 
@@ -81,7 +81,7 @@ ifElse(condition, thenLogic, elseLogic);
 - Con: More complicated & error-prone parsing
 
 ```ts
-["if (price >= 25) discount = 5", "if (price >= 100) discount = 20"];
+['if (price >= 25) discount = 5', 'if (price >= 100) discount = 20'];
 ```
 
 ### Option 3: Reference Style: JSON-Rules-Engine (Microsoft)
@@ -93,22 +93,22 @@ let microsoftRule = {
   conditions: {
     all: [
       {
-        fact: "account-information",
-        operator: "equal",
-        value: "microsoft",
-        path: "$.company", // access the 'company' property of "account-information"
+        fact: 'account-information',
+        operator: 'equal',
+        value: 'microsoft',
+        path: '$.company', // access the 'company' property of "account-information"
       },
       {
-        fact: "account-information",
-        operator: "in",
-        value: ["active", "paid-leave"], // 'status' can be active or paid-leave
-        path: "$.status", // access the 'status' property of "account-information"
+        fact: 'account-information',
+        operator: 'in',
+        value: ['active', 'paid-leave'], // 'status' can be active or paid-leave
+        path: '$.status', // access the 'status' property of "account-information"
       },
       {
-        fact: "account-information",
-        operator: "contains", // the 'ptoDaysTaken' property (an array) must contain '2016-12-25'
-        value: "2016-12-25",
-        path: "$.ptoDaysTaken", // access the 'ptoDaysTaken' property of "account-information"
+        fact: 'account-information',
+        operator: 'contains', // the 'ptoDaysTaken' property (an array) must contain '2016-12-25'
+        value: '2016-12-25',
+        path: '$.ptoDaysTaken', // access the 'ptoDaysTaken' property of "account-information"
       },
     ],
   },

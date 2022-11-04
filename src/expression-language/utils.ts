@@ -8,29 +8,30 @@ import {
   isArgumentsArray,
 } from 'expressionparser/dist/ExpressionParser.js';
 import { toArray } from '../utils/utils';
+import { UserError } from '../utils/errors';
 
 export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();
 
   if (!isArgumentsArray(result)) {
     if (f.length > 1) {
-      throw new Error(
+      throw new UserError(
         `Too few arguments. Expected ${f.length}, found 1 (${JSON.stringify(
-          result
-        )})`
+          result,
+        )})`,
       );
     }
     return f(() => result);
   } else if (result.length === f.length || f.length === 0) {
     return f.apply(null, result);
   } else {
-    throw new Error(`Incorrect number of arguments. Expected ${f.length}`);
+    throw new UserError(`Incorrect number of arguments. Expected ${f.length}`);
   }
 };
 export const num = (result: ExpressionValue) => {
   if (typeof result !== 'number') {
-    throw new Error(
-      `Expected number, found: ${typeof result} ${JSON.stringify(result)}`
+    throw new UserError(
+      `Expected number, found: ${typeof result} ${JSON.stringify(result)}`,
     );
   }
 
@@ -38,24 +39,24 @@ export const num = (result: ExpressionValue) => {
 };
 export const array = (result: ExpressionValue) => {
   if (!Array.isArray(result)) {
-    throw new Error(
-      `Expected array, found: ${typeof result} ${JSON.stringify(result)}`
+    throw new UserError(
+      `Expected array, found: ${typeof result} ${JSON.stringify(result)}`,
     );
   }
 
   result = unpackArray([...result]);
   if (isArgumentsArray(result))
-    throw new Error('Expected array, found: arguments');
+    throw new UserError('Expected array, found: arguments');
 
   return result;
 };
 const unpackArray = <TInput extends unknown[]>(
-  thunks: TInput | ExpressionThunk[]
+  thunks: TInput | ExpressionThunk[],
 ) => thunks.map((thunk) => (typeof thunk === 'function' ? thunk() : thunk));
 const bool = (value: ExpressionValue) => {
   if (typeof value !== 'boolean') {
-    throw new Error(
-      `Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`
+    throw new UserError(
+      `Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`,
     );
   }
 
@@ -79,7 +80,7 @@ export const evalString = (value: ExpressionValue) => {
 
 export const evalArray = (
   arr: ExpressionValue,
-  typeCheck?: (value: ExpressionValue) => ExpressionValue
+  typeCheck?: (value: ExpressionValue) => ExpressionValue,
 ) => {
   return toArray(arr).map((value) => {
     let result;
@@ -90,7 +91,7 @@ export const evalArray = (
       try {
         result = typeCheck(result);
       } catch (err) {
-        throw new Error(`In array; ${err.message}`);
+        throw new UserError(`In array; ${err.message}`);
       }
     }
 
@@ -99,11 +100,11 @@ export const evalArray = (
 };
 export const obj = (obj: ExpressionValue) => {
   if (typeof obj !== 'object' || obj === null) {
-    throw new Error(
-      `Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`
+    throw new UserError(
+      `Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`,
     );
   } else if (Array.isArray(obj)) {
-    throw new Error('Expected object, found array');
+    throw new UserError('Expected object, found array');
   }
 
   return obj;
@@ -128,7 +129,7 @@ export const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
 };
 export const containsValues = (
   arg1: ExpressionThunk,
-  arg2: ExpressionThunk
+  arg2: ExpressionThunk,
 ) => {
   const matches = toArray(arg1());
   const data = evalArray(arg2());
@@ -136,7 +137,7 @@ export const containsValues = (
 };
 export const objectContainsValues = (
   arg1: ExpressionThunk,
-  arg2: ExpressionThunk
+  arg2: ExpressionThunk,
 ) => {
   const matches = toArray(arg1());
   const data = arg2();
@@ -147,25 +148,25 @@ export const countObjectKeys = (arg1: ExpressionThunk) => {
 };
 export const omitProperties = (
   arg1: ExpressionThunk,
-  arg2: ExpressionThunk
+  arg2: ExpressionThunk,
 ) => {
   const matches = toArray(arg1()) as [];
   const data = arg2();
   if (!isObject(data)) {
-    throw new Error(
+    throw new UserError(
       `OMIT expects object for second argument, ${typeof data} ${JSON.stringify(
-        data
-      )}`
+        data,
+      )}`,
     );
   }
   return omit(data, matches);
 };
 export const iterable = (result: ExpressionValue) => {
   if (!Array.isArray(result) && typeof result !== 'string') {
-    throw new Error(
+    throw new UserError(
       `Expected array or string, found: ${typeof result} ${JSON.stringify(
-        result
-      )}`
+        result,
+      )}`,
     );
   }
 
@@ -174,8 +175,8 @@ export const iterable = (result: ExpressionValue) => {
 
 export const string = (result: ExpressionValue) => {
   if (typeof result !== 'string') {
-    throw new Error(
-      `Expected string, found: ${typeof result} ${JSON.stringify(result)}`
+    throw new UserError(
+      `Expected string, found: ${typeof result} ${JSON.stringify(result)}`,
     );
   }
 
@@ -183,8 +184,8 @@ export const string = (result: ExpressionValue) => {
 };
 export const char = (result: ExpressionValue) => {
   if (typeof result !== 'string' || result.length !== 1) {
-    throw new Error(
-      `Expected char, found: ${typeof result} ${JSON.stringify(result)}`
+    throw new UserError(
+      `Expected char, found: ${typeof result} ${JSON.stringify(result)}`,
     );
   }
 
@@ -192,7 +193,7 @@ export const char = (result: ExpressionValue) => {
 };
 
 export const dateParser = (
-  arg: ExpressionThunk | string | number
+  arg: ExpressionThunk | string | number,
 ): number | string => {
   const dateArg = typeof arg === 'function' ? arg() : arg;
 

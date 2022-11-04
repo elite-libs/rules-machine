@@ -15,9 +15,9 @@ const rulesMachine: Record<keyof typeof appRules, RulesCallback> =
 const ruleNames = Object.keys(rulesMachine);
 
 export const rules: Handler<
-APIGatewayProxyEventV2WithRequestContext<Context>,
-APIGatewayProxyResult
-> = async(event) => {
+  APIGatewayProxyEventV2WithRequestContext<Context>,
+  APIGatewayProxyResult
+> = async (event) => {
   const { body, pathParameters, rawPath } = event;
   if (rawPath.length <= 1) return helpInfo();
   if (!checkPayload(body)) return { statusCode: 400, body: 'Invalid body' };
@@ -26,7 +26,7 @@ APIGatewayProxyResult
   if (!ruleName || !ruleNames.includes(ruleName)) {
     return {
       body: `Invalid rule name: ${ruleName}. Valid rule names are:<br/>\n/${ruleNames.join(
-        ', /'
+        ', /',
       )}`,
       statusCode: 400,
       headers: { 'content-type': 'text/html', 'cache-control': 'no-cache' },
@@ -65,7 +65,7 @@ const helpInfo = () => ({
   <body>
     <h1>Welcome to a Rules Service</h1>
     <p>Try POST to the following endpoints:<br/>\n/${Object.keys(
-      rulesMachine
+      rulesMachine,
     ).join('<br/>\n/')}
     </p>
    </body>

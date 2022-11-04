@@ -21,7 +21,7 @@ const performance = {
 
 var window: any = typeof window !== 'undefined' ? window : {};
 
-void (async function() {
+void (async function () {
   if (window?.performance?.now) {
     performance.now = () => window.performance.now();
     return;

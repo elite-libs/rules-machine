@@ -12,6 +12,7 @@ import {
   TermTyper,
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
+import { UserError } from '../utils/errors';
 import { toArray } from '../utils/utils';
 import {
   array,
@@ -35,7 +36,7 @@ import {
 const hasOwnProperty = (obj: object, key: string) =>
   Object.prototype.hasOwnProperty.call(obj, key);
 export interface FunctionOps {
-  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue
+  [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
 
 export const assignmentOperators = ['=', '+=', '-=', '*=', '/=', '??='];
@@ -85,10 +86,10 @@ type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
 
-export const ruleExpressionLanguage = function(
+export const ruleExpressionLanguage = function (
   termDelegate: TermDelegate,
   termTypeDelegate?: TermTyper,
-  termSetter?: TermSetterFunction
+  termSetter?: TermSetterFunction,
 ): ExpressionParserOptions {
   const infixOps = getInfixOps(termDelegate);
   // const infixOps = moduleMethodTracer(getInfixOps(termDelegate), console.log);
@@ -192,7 +193,7 @@ export const ruleExpressionLanguage = function(
 
       const sum = arr.reduce(
         (prev: number, curr: ExpressionValue): number => prev + num(curr),
-        0
+        0,
       );
       return num(sum) / arr.length;
     },
@@ -200,7 +201,7 @@ export const ruleExpressionLanguage = function(
     SUM: (arg) =>
       evalArray(arg(), num).reduce(
         (prev: number, curr: ExpressionValue) => prev + num(curr),
-        0
+        0,
       ),
     CHAR: (arg) => String.fromCharCode(num(arg())),
     CODE: (arg) => char(arg()).charCodeAt(0),
@@ -217,12 +218,12 @@ export const ruleExpressionLanguage = function(
     MIN: (arg) =>
       evalArray(arg()).reduce(
         (prev: number, curr: ExpressionValue) => Math.min(prev, num(curr)),
-        Number.POSITIVE_INFINITY
+        Number.POSITIVE_INFINITY,
       ),
     MAX: (arg) =>
       evalArray(arg()).reduce(
         (prev: number, curr: ExpressionValue) => Math.max(prev, num(curr)),
-        Number.NEGATIVE_INFINITY
+        Number.NEGATIVE_INFINITY,
       ),
     SORT: (arg) => {
       const arr = array(arg()).slice();
@@ -482,7 +483,7 @@ export const ruleExpressionLanguage = function(
         .map((key) => inputObj[key]);
     },
     THROW: (arg1) => {
-      throw new Error(string(arg1()));
+      throw new UserError(string(arg1()));
     },
   };
 
@@ -544,7 +545,7 @@ export const ruleExpressionLanguage = function(
       },
     },
     // @ts-expect-error
-    termDelegate: function(term: string) {
+    termDelegate: function (term: string) {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
@@ -586,7 +587,7 @@ export const ruleExpressionLanguage = function(
       }
     },
 
-    termTyper: function(term: string): TermType {
+    termTyper: function (term: string): TermType {
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {

@@ -1,7 +1,7 @@
 import isObject from 'lodash/isObject.js';
 
 export function autoDetectType(
-  value: any
+  value: any,
 ): any[] | string | boolean | number | null | {} {
   if (value == null) return null;
   if (isBoolean(value)) return toBoolean(value);
@@ -19,13 +19,13 @@ export function toNumber(value: string | number): number {
   return typeof value === 'number'
     ? value
     : /^[0-9]+$/.test(value)
-      ? parseInt(value, 10)
-      : parseFloat(value);
+    ? parseInt(value, 10)
+    : parseFloat(value);
 }
 
 export function isBoolean(value: string): boolean {
   return ['true', 'false', 'yes', 'no', 'on', 'off', '0', '1'].includes(
-    `${value}`.toLowerCase()
+    `${value}`.toLowerCase(),
   );
 }
 

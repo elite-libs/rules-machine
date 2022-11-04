@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "📐 A fast serializable logical Rules Engine.",
   "type": "commonjs",
   "homepage": "https://github.com/elite-libs/rules-machine",
@@ -14,10 +14,10 @@
   "browser": "./dist/index.global.js",
   "types": "./dist/index.d.ts",
   "private": false,
-  "packageManager": "yarn@1.10.0",
+  "packageManager": "yarn@1.22.17",
   "engineStrict": true,
   "engines": {
-    "yarn": ">=1.10.0",
+    "yarn": ">=1.22.17",
     "node": ">=12.0.0"
   },
   "scripts": {
@@ -27,7 +27,8 @@
     "release:github": "npm publish --access public --registry https://npm.pkg.github.com/",
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
-    "format": "eslint --fix ."
+    "lint": "eslint .",
+    "format": "prettier --write '**/*.{js,ts,tsx,css,scss,md}'"
   },
   "keywords": [
     "elite-libs",
@@ -47,20 +48,22 @@
     "@types/jest": "26.x.x",
     "@types/lodash": "^4.14.178",
     "@types/node": "^14.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.0.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "@typescript-eslint/utils": "^5.38.1",
-    "eslint": "^7.12.1",
-    "eslint-config-standard-with-typescript": "^21.0.1",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@typescript-eslint/utils": "^5.42.0",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.4.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.0.0",
+    "eslint-plugin-promise": "^6.1.1",
     "jest": "26.x.x",
+    "prettier": "^2.7.1",
     "ts-jest": "26.x.x",
     "ts-node": "^10.9.1",
-    "tsup": "^6.2.3",
-    "typescript": "4.8.3"
+    "tsup": "^6.4.0",
+    "typescript": "4.8.4"
   },
   "dependencies": {
     "debug": "^4.3.3",

@@ -2,7 +2,7 @@ import type { Rule } from '@elite-libs/rules-machine';
 
 export type FieldPath = string | true;
 export interface FieldKeyMapping {
-  [key: string]: FieldPath | FieldKeyMapping
+  [key: string]: FieldPath | FieldKeyMapping;
 }
 
 /**
@@ -12,11 +12,11 @@ export interface RuleMapping {
   /**
    * A object, array or string describing a set of logical `Rule`'s
    */
-  rules: Readonly<Rule>
+  rules: Readonly<Rule>;
   /**
    * A map of input keys to their key paths from the input object.
    */
-  inputMap?: FieldKeyMapping
+  inputMap?: FieldKeyMapping;
   /**
    * Values merged to the output of the rules.
    *
@@ -29,10 +29,10 @@ export interface RuleMapping {
    *
    * When outputMap is a string, it's treated as a destination path for the entire rules output.
    */
-  outputMap?: string | FieldKeyMapping
+  outputMap?: string | FieldKeyMapping;
 }
 
 export type RulesCallback = <TOutput = unknown>(
   input: Readonly<object>,
-  skipDataMapping?: boolean
+  skipDataMapping?: boolean,
 ) => TOutput;

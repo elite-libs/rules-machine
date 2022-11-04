@@ -33,7 +33,7 @@ describe('Logical', () => {
           { if: 'price >= 100', then: 'discount = 20' },
           { return: 'discount' },
         ],
-        { trace: true }
+        { trace: true },
       );
 
       const input = { price: 100 };
@@ -47,7 +47,7 @@ describe('Logical', () => {
     test("can process omitted 'else' rules", () => {
       const rulesFn = ruleFactory(
         [{ if: 'price >= 100', then: 'discount = 20' }, { return: 'discount' }],
-        { trace: true }
+        { trace: true },
       );
 
       const input = { price: 10 };
@@ -64,7 +64,7 @@ describe('Logical', () => {
           { if: 'user.employee == true', then: 'discount = 15' },
           { return: 'discount' },
         ],
-        { trace: true }
+        { trace: true },
       );
       const result = rulesFn({
         user: {
@@ -93,7 +93,7 @@ describe('Logical', () => {
           { if: 'price >= 100', then: 'discount = 20' },
           { return: 'discount' },
         ],
-        { trace: true }
+        { trace: true },
       );
       const input = { price: 35 };
       const result = rulesFn(input);
@@ -123,7 +123,7 @@ describe('Logical', () => {
           },
           { return: 'discount' },
         ],
-        { trace: true }
+        { trace: true },
       );
       const input = { price: 35, user: { isAdmin: true } };
       const result = rulesFn(input);
@@ -156,7 +156,7 @@ describe('Logical', () => {
           },
           { return: 'discount' },
         ],
-        { trace: true }
+        { trace: true },
       );
       const input = { price: 90, user: { isAdmin: true } };
       const result = rulesFn(input);
@@ -184,7 +184,7 @@ describe('Custom Functions', () => {
         { if: '3 >= 1', then: 'inTenMinutes = DATEISO("10m")' },
         { return: 'inTenMinutes' },
       ],
-      { trace: false }
+      { trace: false },
     );
 
     const input = { addToDate: '10m' };
@@ -205,7 +205,7 @@ describe('Custom Functions', () => {
           else: 'return 0',
         },
       ],
-      { trace: false }
+      { trace: false },
     );
     const result = rulesFn({});
     // allow for slow systems to run tests (allows event loop lag of 100ms, which shouldn't be exceeded under normal circumstances.)
@@ -219,7 +219,7 @@ describe('Custom Functions', () => {
         'availableCities = FILTER_VALUES(["London", "Milan"], cities)',
         { return: 'availableCities' },
       ],
-      { trace: true }
+      { trace: true },
     );
 
     const input = {
@@ -305,7 +305,7 @@ describe('Nested Rule Structures', () => {
         { if: 'price >= 100', then: 'discount = 20 * 4' },
         { return: 'discount' },
       ],
-      { trace: true }
+      { trace: true },
     );
 
     const input = { price: 100 };
@@ -391,7 +391,7 @@ describe('can use functional object helpers', () => {
 
 describe('can throw', () => {
   it('should throw an error', () => {
-    expect(ruleFactory('THROW "my error"')).toThrow();
+    expect(() => ruleFactory('THROW "my error"')()).toThrow();
   });
 });
 
@@ -427,7 +427,7 @@ describe('Edge cases', () => {
           then: 'neverSet = 9999',
         },
       ],
-      { trace: true }
+      { trace: true },
     );
 
     const result = rulesFn({ input: 42 });
@@ -443,7 +443,7 @@ describe('Edge cases', () => {
           then: 'doSet = 9999',
         },
       ],
-      { trace: true }
+      { trace: true },
     );
 
     const result = rulesFn({ input: 42 });
@@ -459,7 +459,7 @@ describe('Edge cases', () => {
         },
         { return: 'input' },
       ],
-      { trace: true }
+      { trace: true },
     );
     const result = rulesFn({ input: 42 });
     expect(result.returnValue).toEqual(42);
