@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   rootDir: '.',
   preset: 'ts-jest',
   verbose: true,
+  collectCoverage: true,
   // testPathIgnorePatterns: ["node_modules", "dist"],
   testPathIgnorePatterns: ['dist'],
   resetMocks: true,

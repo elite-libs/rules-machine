@@ -9,10 +9,10 @@ describe('array method object syntax', () => {
           map: 'idList',
           run: [
             {
-              if: 'GET(ITER.item, userScore) < 0',
-              then: 'userScore = PUT(ITER.item, 0, userScore)',
+              if: 'GET($item, userScore) < 0',
+              then: 'userScore = PUT($item, 0, userScore)',
             },
-            'scoreById = PUT(ITER.item, GET(ITER.item, userScore), scoreById)',
+            'scoreById = PUT($item, GET($item, userScore), scoreById)',
           ],
         },
         { return: 'scoreById' },
@@ -30,7 +30,7 @@ describe('array method object syntax', () => {
       const rules = [
         {
           map: 'itemList',
-          run: 'ITER.item.id',
+          run: '$item.id',
           set: 'idList',
         },
         { return: 'idList' },
@@ -38,5 +38,33 @@ describe('array method object syntax', () => {
       const itemList = [{ id: 12 }, { id: 34 }, { id: 56 }];
       expect(ruleFactory(rules)({ itemList })).toEqual([12, 34, 56]);
     });
+
+    it('should throw on invalid array', () => {
+      const rules = [
+        {
+          map: 'notAnArray',
+          run: '$item.id',
+        },
+        { return: 'idList' },
+      ];
+      expect(() => ruleFactory(rules)()).toThrow();
+    });
+
   });
+  
+  // describe('reduce', () => {
+
+  //   it('should handle reduce', () => {
+  //     const doubleList = ruleFactory([
+  //       {
+  //         reduce: 'list',
+  //         run: '$item * 2',
+  //         set: 'results',
+  //       },
+  //       { return: 'results' }
+  //     ])
+  //     doubleList([1, 2, 3, 4]);
+  //   });
+
+  // });
 });

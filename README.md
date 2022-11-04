@@ -16,33 +16,26 @@
 
 **Table of Content**
 
-- [Rules Machine](#rules-machine)
-  - [What's a `Rules Machine`?](#whats-a-rules-machine)
-    - [Goals](#goals)
-    - [Key Terms](#key-terms)
-    - [Finding Opportunities for Rules](#finding-opportunities-for-rules)
-  - [Why Rules Engines?](#why-rules-engines)
-    - [Pros](#pros)
-    - [Cons](#cons)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [Examples](#examples)
-    - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
-    - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
-    - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
-    - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
-  - [All Operators & Functions](#all-operators--functions)
-    - [Builtin Operators](#builtin-operators)
-    - [Functions](#functions)
-      - [Extended Methods](#extended-methods)
-      - [Utility Functions](#utility-functions)
-      - [Math Functions: Core](#math-functions-core)
-      - [Array Functions](#array-functions)
-      - [Object Functions](#object-functions)
-      - [String Functions](#string-functions)
-      - [Math Functions: Advanced](#math-functions-advanced)
-  - [More Reading & Related Projects](#more-reading--related-projects)
-  - [TODO](#todo)
+- [What's a `Rules Machine`?](#whats-a-rules-machine)
+  - [Goals](#goals)
+  - [Key Terms](#key-terms)
+  - [Finding Opportunities for Rules](#finding-opportunities-for-rules)
+- [Why Rules Engines?](#why-rules-engines)
+  - [Pros](#pros)
+  - [Cons](#cons)
+- [Install](#install)
+- [Usage](#usage)
+- [Examples](#examples)
+  - [Example Rule: Apply Either $5 or $10 Discount](#example-rule-apply-either-5-or-10-discount)
+  - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
+  - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
+  - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
+- [Structural Object Methods, Operators & Functions](#structural-object-methods-operators--functions)
+  - [Structural Expressions](#structural-expressions)
+  - [Builtin Operators](#builtin-operators)
+  - [Functions](#functions)
+- [More Reading & Related Projects](#more-reading--related-projects)
+- [TODO](#todo)
 
 ## What's a `Rules Machine`?
 
@@ -283,25 +276,54 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 
 ## Structural Object Methods, Operators & Functions
 
-### Structural Object Methods
+### Structural Expressions
 
-1. `if/then` - see examples above
-1. `try/catch` - Execute string rule from `try`, on error run string rule in catch.
+#### `map`
 
+#### `reduce`
+
+```js
+const doubleList = ruleFactory([
+  {
+    reduce: 'list',
+    run: '$item * 2',
+    set: 'results',
+  },
+  { return: 'results' }
+])
+doubleList([1, 2, 3, 4]);
+// [2, 4, 6, 8]
 ```
+
+#### `if/then`
+
+See examples above.
+
+#### `and/or`
+
+See examples above.
+
+#### `try/catch`
+
+Execute string rule from `try`. Handle errors in the `catch` expression.
+
+```js
 [
-  { try: 'THROW "error"', catch: 'status = "Failure"' },
+  { 
+    try: 'THROW "error"',
+    catch: 'status = "Failure"',
+  },
   { return: 'status' }, // returns "Failure"
 ]
 ```
 
-3. `return` - Ends rule execution and returns value
+#### `return`
 
-```
+Ends rule execution, returning the specified value.
+
+```js
 [
-  {
-    return: '"blue"', // returns "blue"
-  },
+  { return: '"blue"' }, // returns "blue"
   { return: '"green"' }, // is not executed
 ]
 ```

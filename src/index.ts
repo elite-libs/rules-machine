@@ -9,6 +9,7 @@ import {
 } from './expression-language';
 import { init } from 'expressionparser';
 import { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
+import { UserError } from './utils/errors';
 
 const trailingQuotes = /^('|").*('|")$/g;
 
@@ -178,7 +179,7 @@ export function ruleFactory<
             stepCount,
           });
         } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
-          throw new Error(
+          throw new UserError(
             'The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.',
           );
         } else if (typeof rule.if === 'string') {
@@ -247,10 +248,11 @@ export function ruleFactory<
           stepRow,
           stepCount,
         });
-        // @ts-expect-error
-        const mapped = input[rule.map].map((item, index) => {
-          // @ts-expect-error
-          input.ITER = { item, index };
+        const data = get(input, rule.map);
+        if (data == null) throw new UserError(`No data found at '${rule.map}'`);
+        if (!Array.isArray(data)) throw new UserError(`Data at '${rule.map}' is not an array`);
+        const mapped = arrayify(data).map((item, index) => {
+          Object.assign(input, {$item: item, $index: index, $array: data });
           handleRule(rule.run);
           return results.lastValue;
         });
@@ -338,7 +340,7 @@ export function ruleFactory<
         );
       }
       if (typeof rule !== 'string')
-        throw new Error('Nesting is not enabled for this rule type.');
+        throw new UserError(`Nesting is not enabled for this rule type: ${JSON.stringify(rule)}`);
 
       stepCount++;
 
@@ -427,12 +429,8 @@ export type Rule =
       then: Rule;
       else?: Rule;
     }
-  | {
-      and: And;
-    }
-  | {
-      or: Or;
-    }
+  | And
+  | Or
   | {
       return: string | string[];
     }
