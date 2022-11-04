@@ -253,7 +253,7 @@ export function ruleFactory<
             stepCount,
           });
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        throw BREAK;
+        return BREAK;
       } else if (isArrayRule(rule) && 'run' in rule) {
         const arrayRule =
           'map' in rule
@@ -333,10 +333,19 @@ export function ruleFactory<
 
     for (const rule of rules) {
       try {
-        handleRule(rule);
+        const ruleResult = handleRule(rule);
+        if (ruleResult === BREAK) break;
       } catch (e) {
-        if (e !== BREAK) throw e;
-        break;
+        logTrace({
+          operation: 'error',
+          runTime: performance.now() - startTime,
+          stepCount,
+          currentState: serialize(input),
+          stepRow,
+          lastValue: e?.message,
+        });
+        throw e;
+        
       }
       stepRow++;
     }
