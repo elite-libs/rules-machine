@@ -345,7 +345,6 @@ export function ruleFactory<
           lastValue: e?.message,
         });
         throw e;
-        
       }
       stepRow++;
     }
@@ -527,7 +526,6 @@ interface AndRule {
 interface OrRule {
   or: string[];
 }
-
 interface MapRule {
   map: string;
   run: Rule;
