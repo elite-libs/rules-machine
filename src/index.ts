@@ -1,7 +1,7 @@
 // import debug from 'debug';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
-import { isBoolean, isNumber, autoDetectType, arrayify } from './utils/utils';
+import { isBoolean, isNumber, autoDetectType, toArray } from './utils/utils';
 import performance from './utils/performance';
 import {
   assignmentOperators,
@@ -151,7 +151,7 @@ export function ruleFactory<
 
         let conditionResult: RuleResult;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
-          const and = arrayify(rule.if.and);
+          const and = toArray(rule.if.and);
           for (const rule of and) {
             conditionResult = evaluateRule({
               stepRow,
@@ -170,7 +170,7 @@ export function ruleFactory<
               stepCount,
             });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
-          const or = arrayify(rule.if.or);
+          const or = toArray(rule.if.or);
           for (const rule of or) {
             conditionResult = evaluateRule({
               stepRow,
@@ -294,7 +294,7 @@ export function ruleFactory<
           throw new UserError(`No data found at '${arrayRule}'`);
         if (!Array.isArray(data))
           throw new UserError(`Data at '${arrayRule}' is not an array`);
-        const arrayResult = arrayMethod.call(arrayify(data), (item, index) => {
+        const arrayResult = arrayMethod.call(toArray(data), (item, index) => {
           Object.assign(input, { $item: item, $index: index, $array: data });
           handleRule(rule.run);
           return results.lastValue;
@@ -329,7 +329,7 @@ export function ruleFactory<
       return results.lastValue;
     };
 
-    rules = arrayify(rules);
+    rules = toArray(rules);
 
     for (const rule of rules) {
       try {

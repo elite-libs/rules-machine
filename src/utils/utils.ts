@@ -41,8 +41,3 @@ export function toArray<TInput>(input: TInput | TInput[]): TInput[] {
 export function isArray(input: unknown) {
   return Array.isArray(input) && typeof input !== 'string';
 }
-
-export function arrayify<T>(items: T | T[]): T[] {
-  if (!Array.isArray(items)) return [items];
-  return items;
-}
