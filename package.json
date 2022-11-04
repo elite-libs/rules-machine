@@ -28,7 +28,7 @@
     "test": "yarn run build && jest",
     "test:coverage": "yarn run build && jest --coverage",
     "lint": "eslint .",
-    "format": "prettier --write '**/*.{js,ts,tsx,css,scss,md}'"
+    "format": "prettier --write '**/*.{js,ts,tsx,css,scss}'"
   },
   "keywords": [
     "elite-libs",

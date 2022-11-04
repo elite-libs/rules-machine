@@ -39,9 +39,8 @@ interface TraceRow {
 }
 
 const arrayMethods = ['map', 'filter', 'every', 'some', 'find'] as const;
-const isArrayRule = (data: object) => Object
-  .keys(data)
-  .some(key => key in arrayMethods);
+const isArrayRule = (data: object) =>
+  Object.keys(data).some((key) => key in arrayMethods);
 
 export function ruleFactory<
   TInput extends {
@@ -122,14 +121,15 @@ export function ruleFactory<
     const handleRule = (rule: Rule) => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
-        if (trace) logTrace({
-          operation: 'ruleString',
-          rule,
-          result: serialize(results.lastValue),
-          currentState: serialize(input),
-          stepRow,
-          stepCount,
-        });
+        if (trace)
+          logTrace({
+            operation: 'ruleString',
+            rule,
+            result: serialize(results.lastValue),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
       } else if (Array.isArray(rule)) {
         results.lastValue = rule.map((rule) =>
           // this alloms nested arrays of rules
@@ -137,14 +137,15 @@ export function ruleFactory<
             ? evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
             : handleRule(rule),
         );
-        if (trace) logTrace({
-          operation: 'ruleString[]',
-          rule,
-          result: serialize(results.lastValue),
-          currentState: serialize(input),
-          stepRow,
-          stepCount,
-        });
+        if (trace)
+          logTrace({
+            operation: 'ruleString[]',
+            rule,
+            result: serialize(results.lastValue),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
       } else if ('if' in rule) {
         results.lastValue = input; // set the current state to the input object.
 
@@ -159,14 +160,15 @@ export function ruleFactory<
             });
             if (!conditionResult) break;
           }
-          if (trace) logTrace({
-            operation: 'if.and',
-            rule: and,
-            result: serialize(conditionResult),
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'if.and',
+              rule: and,
+              result: serialize(conditionResult),
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = arrayify(rule.if.or);
           for (const rule of or) {
@@ -177,14 +179,15 @@ export function ruleFactory<
             });
             if (conditionResult) break;
           }
-          if (trace) logTrace({
-            operation: 'if.or',
-            rule: or,
-            result: serialize(conditionResult),
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'if.or',
+              rule: or,
+              result: serialize(conditionResult),
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
         } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
           throw new UserError(
             'The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.',
@@ -197,33 +200,36 @@ export function ruleFactory<
               rule: rule.if,
             }),
           );
-          if (trace) logTrace({
-            operation: 'if',
-            rule: rule.if,
-            result: serialize(conditionResult),
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'if',
+              rule: rule.if,
+              result: serialize(conditionResult),
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
         }
         // Now check the condition result
         if (conditionResult && rule.then) {
-          if (trace) logTrace({
-            operation: 'if.then',
-            rule: rule.then,
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'if.then',
+              rule: rule.then,
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
           handleRule(rule.then);
         } else if (!conditionResult && rule.else) {
-          if (trace) logTrace({
-            operation: 'if.else',
-            rule: rule.else,
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'if.else',
+              rule: rule.else,
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
           handleRule(rule.else);
         } else {
           results.lastValue = input;
@@ -237,50 +243,59 @@ export function ruleFactory<
         });
         results.lastValue = returnResult;
         results.returnValue = returnResult;
-        if (trace) logTrace({
-          operation: 'return',
-          rule: rule.return,
-          result: serialize(returnResult),
-          currentState: serialize(input),
-          stepRow,
-          stepCount,
-        });
+        if (trace)
+          logTrace({
+            operation: 'return',
+            rule: rule.return,
+            result: serialize(returnResult),
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw BREAK;
       } else if (isArrayRule(rule) && 'run' in rule) {
-        const arrayRule = 'map' in rule
-          ? rule.map
-          : 'filter' in rule
+        const arrayRule =
+          'map' in rule
+            ? rule.map
+            : 'filter' in rule
             ? rule.filter
             : 'every' in rule
             ? rule.every
             : 'some' in rule
             ? rule.some
             : rule.find;
-        const arrayOperator = Object.keys(rule).find(key => key in arrayMethods);
-        if (!arrayOperator) throw new Error(`Invalid array rule: ${JSON.stringify(rule)}`);
-        const arrayMethod = 'map' in rule
-        ? Array.prototype.map
-        : 'filter' in rule
-          ? Array.prototype.filter
-          : 'every' in rule
-          ? Array.prototype.every
-          : 'some' in rule
-          ? Array.prototype.some
-          : Array.prototype.find;
+        const arrayOperator = Object.keys(rule).find(
+          (key) => key in arrayMethods,
+        );
+        if (!arrayOperator)
+          throw new Error(`Invalid array rule: ${JSON.stringify(rule)}`);
+        const arrayMethod =
+          'map' in rule
+            ? Array.prototype.map
+            : 'filter' in rule
+            ? Array.prototype.filter
+            : 'every' in rule
+            ? Array.prototype.every
+            : 'some' in rule
+            ? Array.prototype.some
+            : Array.prototype.find;
 
-        if (trace) logTrace({
-          operation: `${arrayOperator}`,
-          rule,
-          currentState: serialize(input),
-          stepRow,
-          stepCount,
-        });
+        if (trace)
+          logTrace({
+            operation: `${arrayOperator}`,
+            rule,
+            currentState: serialize(input),
+            stepRow,
+            stepCount,
+          });
         const data = get(input, arrayRule);
-        if (data == null) throw new UserError(`No data found at '${arrayRule}'`);
-        if (!Array.isArray(data)) throw new UserError(`Data at '${arrayRule}' is not an array`);
+        if (data == null)
+          throw new UserError(`No data found at '${arrayRule}'`);
+        if (!Array.isArray(data))
+          throw new UserError(`Data at '${arrayRule}' is not an array`);
         const arrayResult = arrayMethod.call(arrayify(data), (item, index) => {
-          Object.assign(input, {$item: item, $index: index, $array: data });
+          Object.assign(input, { $item: item, $index: index, $array: data });
           handleRule(rule.run);
           return results.lastValue;
         });
@@ -291,13 +306,14 @@ export function ruleFactory<
         }
       } else if ('try' in rule && 'catch' in rule) {
         try {
-          if (trace) logTrace({
-            operation: 'try',
-            rule: rule.try,
-            currentState: serialize(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'try',
+              rule: rule.try,
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
           handleRule(rule.try);
         } catch (e) {
           logTrace({
@@ -369,7 +385,9 @@ export function ruleFactory<
         );
       }
       if (typeof rule !== 'string')
-        throw new UserError(`Nesting is not enabled for this rule type: ${JSON.stringify(rule)}`);
+        throw new UserError(
+          `Nesting is not enabled for this rule type: ${JSON.stringify(rule)}`,
+        );
 
       stepCount++;
 
@@ -453,10 +471,25 @@ export function extractValueOrLiteral<
 
 function checkInvalidKeys<TInput extends object>(data: TInput) {
   const arrayFields = ['$item', '$index', '$array'];
-  const dangerousKeys = ['__proto__', 'prototype', 'constructor', 'toString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable'];
-  const unsafeKeys = Object.keys(data).filter((key) => dangerousKeys.includes(key));
-  if (unsafeKeys.length > 0) throw new UserError(`Unsafe keys found in input: ${unsafeKeys.join(', ')}`);
-  if (arrayFields.some((key) => key in data)) throw new UserError(`Input contains reserved field name: ${arrayFields.join(', ')}`);
+  const dangerousKeys = [
+    '__proto__',
+    'prototype',
+    'constructor',
+    'toString',
+    'valueOf',
+    'hasOwnProperty',
+    'isPrototypeOf',
+    'propertyIsEnumerable',
+  ];
+  const unsafeKeys = Object.keys(data).filter((key) =>
+    dangerousKeys.includes(key),
+  );
+  if (unsafeKeys.length > 0)
+    throw new UserError(`Unsafe keys found in input: ${unsafeKeys.join(', ')}`);
+  if (arrayFields.some((key) => key in data))
+    throw new UserError(
+      `Input contains reserved field name: ${arrayFields.join(', ')}`,
+    );
   return data;
 }
 
@@ -486,10 +519,35 @@ interface OrRule {
   or: string[];
 }
 
-interface MapRule { map: string; run: Rule; set?: string }
-interface FilterRule { filter: string; run: Rule; set?: string }
-interface EveryRule { every: string; run: Rule; set?: string }
-interface SomeRule { some: string; run: Rule; set?: string }
-interface FindRule { find: string; run: Rule; set?: string }
-interface ReturnRule { return: string }
-interface TryCatchRule { try: Rule; catch: Rule }
+interface MapRule {
+  map: string;
+  run: Rule;
+  set?: string;
+}
+interface FilterRule {
+  filter: string;
+  run: Rule;
+  set?: string;
+}
+interface EveryRule {
+  every: string;
+  run: Rule;
+  set?: string;
+}
+interface SomeRule {
+  some: string;
+  run: Rule;
+  set?: string;
+}
+interface FindRule {
+  find: string;
+  run: Rule;
+  set?: string;
+}
+interface ReturnRule {
+  return: string;
+}
+interface TryCatchRule {
+  try: Rule;
+  catch: Rule;
+}

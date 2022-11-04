@@ -4,7 +4,11 @@ export class UserError extends Error {
     super(message);
     // this.stack = debugMode ? this.stack : '';
   }
-  
+
+  get stack() {
+    return '';
+  }
+
   toString() {
     return this.message;
   }

@@ -49,9 +49,8 @@ describe('Array Operators', () => {
       ];
       expect(() => ruleFactory(rules)()).toThrow();
     });
-
   });
-  
+
   describe('filter', () => {
     it('can .filter()', () => {
       const multiplesOfThree = ruleFactory([
@@ -60,9 +59,9 @@ describe('Array Operators', () => {
           run: '$item % 3 == 0',
           set: 'results',
         },
-        { return: 'results' }
+        { return: 'results' },
       ]);
-      expect(multiplesOfThree({list: [1, 2, 3, 4]})).toEqual([3]);
+      expect(multiplesOfThree({ list: [1, 2, 3, 4] })).toEqual([3]);
     });
   });
 
@@ -74,12 +73,11 @@ describe('Array Operators', () => {
           run: '$item % 3 == 0',
           set: 'results',
         },
-        { return: 'results' }
+        { return: 'results' },
       ]);
-      expect(getFirstMultipleOfThree({list: [1, 2, 3, 4]})).toEqual(3);
-      expect(getFirstMultipleOfThree({list: [2, 3, 4]})).toEqual(3);
-      expect(getFirstMultipleOfThree({list: [4]})).toBeUndefined();
-
+      expect(getFirstMultipleOfThree({ list: [1, 2, 3, 4] })).toEqual(3);
+      expect(getFirstMultipleOfThree({ list: [2, 3, 4] })).toEqual(3);
+      expect(getFirstMultipleOfThree({ list: [4] })).toBeUndefined();
     });
   });
 
@@ -91,10 +89,12 @@ describe('Array Operators', () => {
           run: '$item % 3 == 0',
           set: 'results',
         },
-        { return: 'results' }
+        { return: 'results' },
       ]);
-      expect(isEveryNumberMultipleOfThree({list: [3, 6, 9]})).toEqual(true);
-      expect(isEveryNumberMultipleOfThree({list: [3, 6, 9, 10]})).toEqual(false);
+      expect(isEveryNumberMultipleOfThree({ list: [3, 6, 9] })).toEqual(true);
+      expect(isEveryNumberMultipleOfThree({ list: [3, 6, 9, 10] })).toEqual(
+        false,
+      );
     });
   });
 
@@ -106,20 +106,22 @@ describe('Array Operators', () => {
           run: '2 % $item == 0',
           set: 'results',
         },
-        { return: 'results' }
+        { return: 'results' },
       ]);
-      expect(hasEvenNumbers({list: [2, 4]})).toEqual(true);
-      expect(hasEvenNumbers({list: [2, 4, 5]})).toEqual(true);
-      expect(hasEvenNumbers({list: [5]})).toEqual(false);
+      expect(hasEvenNumbers({ list: [2, 4] })).toEqual(true);
+      expect(hasEvenNumbers({ list: [2, 4, 5] })).toEqual(true);
+      expect(hasEvenNumbers({ list: [5] })).toEqual(false);
     });
   });
 
   describe('input validation', () => {
     it('should throw on restricted input fields', () => {
       // valueOf is a restricted field
-      expect(() => ruleFactory(['$index'])({valueOf: () => 420})).toThrow();
+      expect(() => ruleFactory(['$index'])({ valueOf: () => 420 })).toThrow();
       // $index is a restricted field
-      expect(() => ruleFactory(['$index'])({$item: {}, $index: 99})).toThrow();
+      expect(() =>
+        ruleFactory(['$index'])({ $item: {}, $index: 99 }),
+      ).toThrow();
     });
   });
 });
