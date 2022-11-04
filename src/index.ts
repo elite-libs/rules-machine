@@ -38,6 +38,11 @@ interface TraceRow {
   [key: string]: unknown;
 }
 
+const arrayMethods = ['map', 'filter', 'every', 'some', 'find'] as const;
+const isArrayRule = (data: object) => Object
+  .keys(data)
+  .some(key => key in arrayMethods);
+
 export function ruleFactory<
   TInput extends {
     [k: string]: string | boolean | number | null | undefined | TInput;
@@ -71,6 +76,8 @@ export function ruleFactory<
       lastValue: input as any,
       returnValue: input as any,
     };
+
+    checkInvalidKeys(input);
 
     // Note: previously used more complex logic here
     // TODO: refactor & remove the `getReturnValue()` function
@@ -115,7 +122,7 @@ export function ruleFactory<
     const handleRule = (rule: Rule) => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
-        logTrace({
+        if (trace) logTrace({
           operation: 'ruleString',
           rule,
           result: serialize(results.lastValue),
@@ -130,7 +137,7 @@ export function ruleFactory<
             ? evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
             : handleRule(rule),
         );
-        logTrace({
+        if (trace) logTrace({
           operation: 'ruleString[]',
           rule,
           result: serialize(results.lastValue),
@@ -152,7 +159,7 @@ export function ruleFactory<
             });
             if (!conditionResult) break;
           }
-          logTrace({
+          if (trace) logTrace({
             operation: 'if.and',
             rule: and,
             result: serialize(conditionResult),
@@ -170,7 +177,7 @@ export function ruleFactory<
             });
             if (conditionResult) break;
           }
-          logTrace({
+          if (trace) logTrace({
             operation: 'if.or',
             rule: or,
             result: serialize(conditionResult),
@@ -190,7 +197,7 @@ export function ruleFactory<
               rule: rule.if,
             }),
           );
-          logTrace({
+          if (trace) logTrace({
             operation: 'if',
             rule: rule.if,
             result: serialize(conditionResult),
@@ -201,7 +208,7 @@ export function ruleFactory<
         }
         // Now check the condition result
         if (conditionResult && rule.then) {
-          logTrace({
+          if (trace) logTrace({
             operation: 'if.then',
             rule: rule.then,
             currentState: serialize(input),
@@ -210,7 +217,7 @@ export function ruleFactory<
           });
           handleRule(rule.then);
         } else if (!conditionResult && rule.else) {
-          logTrace({
+          if (trace) logTrace({
             operation: 'if.else',
             rule: rule.else,
             currentState: serialize(input),
@@ -230,7 +237,7 @@ export function ruleFactory<
         });
         results.lastValue = returnResult;
         results.returnValue = returnResult;
-        logTrace({
+        if (trace) logTrace({
           operation: 'return',
           rule: rule.return,
           result: serialize(returnResult),
@@ -240,29 +247,51 @@ export function ruleFactory<
         });
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw BREAK;
-      } else if ('map' in rule && 'run' in rule) {
-        logTrace({
-          operation: 'map',
-          rule: { map: rule.map, run: rule.run },
+      } else if (isArrayRule(rule) && 'run' in rule) {
+        const arrayRule = 'map' in rule
+          ? rule.map
+          : 'filter' in rule
+            ? rule.filter
+            : 'every' in rule
+            ? rule.every
+            : 'some' in rule
+            ? rule.some
+            : rule.find;
+        const arrayOperator = Object.keys(rule).find(key => key in arrayMethods);
+        if (!arrayOperator) throw new Error(`Invalid array rule: ${JSON.stringify(rule)}`);
+        const arrayMethod = 'map' in rule
+        ? Array.prototype.map
+        : 'filter' in rule
+          ? Array.prototype.filter
+          : 'every' in rule
+          ? Array.prototype.every
+          : 'some' in rule
+          ? Array.prototype.some
+          : Array.prototype.find;
+
+        if (trace) logTrace({
+          operation: `${arrayOperator}`,
+          rule,
           currentState: serialize(input),
           stepRow,
           stepCount,
         });
-        const data = get(input, rule.map);
-        if (data == null) throw new UserError(`No data found at '${rule.map}'`);
-        if (!Array.isArray(data)) throw new UserError(`Data at '${rule.map}' is not an array`);
-        const mapped = arrayify(data).map((item, index) => {
+        const data = get(input, arrayRule);
+        if (data == null) throw new UserError(`No data found at '${arrayRule}'`);
+        if (!Array.isArray(data)) throw new UserError(`Data at '${arrayRule}' is not an array`);
+        const arrayResult = arrayMethod.call(arrayify(data), (item, index) => {
           Object.assign(input, {$item: item, $index: index, $array: data });
           handleRule(rule.run);
           return results.lastValue;
         });
+        results.lastValue = arrayResult;
         if ('set' in rule) {
           // @ts-expect-error
-          input[rule.set] = mapped;
+          set(input, rule.set, arrayResult);
         }
       } else if ('try' in rule && 'catch' in rule) {
         try {
-          logTrace({
+          if (trace) logTrace({
             operation: 'try',
             rule: rule.try,
             currentState: serialize(input),
@@ -422,25 +451,45 @@ export function extractValueOrLiteral<
   // if we have a string key and don't find it in the input, assume it's undefined.
 }
 
+function checkInvalidKeys<TInput extends object>(data: TInput) {
+  const arrayFields = ['$item', '$index', '$array'];
+  const dangerousKeys = ['__proto__', 'prototype', 'constructor', 'toString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable'];
+  const unsafeKeys = Object.keys(data).filter((key) => dangerousKeys.includes(key));
+  if (unsafeKeys.length > 0) throw new UserError(`Unsafe keys found in input: ${unsafeKeys.join(', ')}`);
+  if (arrayFields.some((key) => key in data)) throw new UserError(`Input contains reserved field name: ${arrayFields.join(', ')}`);
+  return data;
+}
+
 export type Rule =
   | string
-  | {
-      if: And | Or | string;
-      then: Rule;
-      else?: Rule;
-    }
-  | And
-  | Or
-  | {
-      return: string | string[];
-    }
-  | { map: string; run: Rule }
-  | { try: Rule; catch: Rule }
+  | LogicalRule
+  | AndRule
+  | OrRule
+  | EveryRule
+  | SomeRule
+  | FindRule
+  | MapRule
+  | FilterRule
+  | ReturnRule
+  | TryCatchRule
   | Rule[];
 
-interface And {
+interface LogicalRule {
+  if: AndRule | OrRule | string;
+  then: Rule;
+  else?: Rule;
+}
+interface AndRule {
   and: string[];
 }
-interface Or {
+interface OrRule {
   or: string[];
 }
+
+interface MapRule { map: string; run: Rule; set?: string }
+interface FilterRule { filter: string; run: Rule; set?: string }
+interface EveryRule { every: string; run: Rule; set?: string }
+interface SomeRule { some: string; run: Rule; set?: string }
+interface FindRule { find: string; run: Rule; set?: string }
+interface ReturnRule { return: string }
+interface TryCatchRule { try: Rule; catch: Rule }

@@ -30,8 +30,8 @@
   - [Example Rule: Apply $15 Discount if Employee, or Premium Customer](#example-rule-apply-15-discount-if-employee-or-premium-customer)
   - [Example Rule: Multiple Conditional, Nested Rules](#example-rule-multiple-conditional-nested-rules)
   - [Example Rule: Use variable between rules](#example-rule-use-variable-between-rules)
-- [Structural Object Methods, Operators & Functions](#structural-object-methods-operators--functions)
-  - [Structural Expressions](#structural-expressions)
+- [Rules API](#rules-api)
+  - [Array Expressions](#array-expressions)
   - [Builtin Operators](#builtin-operators)
   - [Functions](#functions)
 - [More Reading & Related Projects](#more-reading--related-projects)
@@ -52,10 +52,6 @@ It's a fast, general purpose [`JSON Rules Engine`](https://martinfowler.com/blik
 - **Modeling workflows** - model your business logic as a series of readable steps.
   - Help non-dev stakeholders (QA, Product) understand critical logic.
   - Simply formatting JSON Rules sheds light on both hierarchy & steps.
-
-<!-- Designed to prioritize simplicity, limited operations, security - no access to runtime (`eval`/`new Func`).
-
- in one flavor or another, whether you realize it or not. In fact this sort of rough design is built into everything from [GitHub Actions](#reference-gh-actions), [VS Code Keybindings config](https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-rules), [Ansible Playbooks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#basic-conditionals-with-when), [Helm templates](https://helm.sh/docs/chart_template_guide/control_structures/), [Datree](https://hub.datree.io/basic-examples#c6-example-1) and so many more. -->
 
 ### Key Terms
 
@@ -274,34 +270,123 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 
 </details>
 
-## Structural Object Methods, Operators & Functions
+## Rules API
 
-### Structural Expressions
+### Array Expressions
 
 #### `map`
-
-#### `reduce`
 
 ```js
 const doubleList = ruleFactory([
   {
-    reduce: 'list',
+    map: 'list',
     run: '$item * 2',
+    set: 'list',
+  },
+]);
+doubleList({ list: [1, 2, 3, 4] });
+// [2, 4, 6, 8]
+```
+
+#### `filter`
+
+```js
+const multiplesOfThree = ruleFactory([
+  {
+    filter: 'list',
+    run: '$item % 3 == 0',
     set: 'results',
   },
   { return: 'results' }
-])
-doubleList([1, 2, 3, 4]);
-// [2, 4, 6, 8]
+]);
+multiplesOfThree({ list: [1, 2, 3, 4] });
+// [3]
+```
+
+#### `find`
+
+```ts
+const getFirstMultipleOfThree = ruleFactory([
+  {
+    find: 'list',
+    run: '$item % 3 == 0',
+    set: 'results',
+  },
+  { return: 'results' }
+]);
+getFirstMultipleOfThree({list: [1, 2, 3, 4]})
+// 3
+getFirstMultipleOfThree({list: [9, 3, 4]})
+// 9
+getFirstMultipleOfThree({list: [99]})
+// undefined
+```
+
+#### `every`
+
+```ts
+const isEveryNumberMultipleOfThree = ruleFactory([
+  {
+    every: 'list',
+    run: '$item % 3 == 0',
+    set: 'results',
+  },
+  { return: 'results' }
+]);
+isEveryNumberMultipleOfThree({list: [3, 6, 9]})
+// true
+isEveryNumberMultipleOfThree({list: [3, 6, 9, 10]})
+// false
+```
+
+#### `some`
+
+```ts
+const hasEvenNumbers = ruleFactory([
+  {
+    some: 'list',
+    run: '2 % $item == 0',
+    set: 'results',
+  },
+  { return: 'results' }
+]);
+hasEvenNumbers({list: [2, 4]})
+// true
+hasEvenNumbers({list: [2, 4, 5]})
+// true
+hasEvenNumbers({list: [5]})
+// false
 ```
 
 #### `if/then`
 
-See examples above.
+```ts
+const calculateDiscount = ruleFactory([
+  {"if": {"and": ["price >= 25", "price <= 50"]}, "then": "discount = 5"},
+  {"if": "price > 50", "then": "discount = 10"},
+  {"return": "discount"}
+]);
+calculateDiscount({price: 40, discount: 0})
+// 5
+calculateDiscount({price: 60, discount: 0})
+// 10
+```
 
 #### `and/or`
 
-See examples above.
+```ts
+const isScoreValid = ruleFactory({
+  "if": {"and": ["score > 0", "score <= 100"]},
+  "then": "valid = true",
+  "else": "valid = false",
+})
+isScoreValid({score: 10})
+// { score: 10, valid: true }}
+isScoreValid({score: -10})
+// { score: 10, valid: false }}
+isScoreValid({score: 101})
+// { score: 10, valid: false }}
+```
 
 #### `try/catch`
 
@@ -482,16 +567,16 @@ Ends rule execution, returning the specified value.
 - [x] ~~Return result by default, make trace and metadata opt-in via options.~~
 - [x] Add arithmetic & function support to expression parser.
   - Over 80 builtin functions supported.
-- [x] Publish modules for CJS, ESM, AMD, UMD. (Using parcel.)
-- [ ] misc: Structured Type validation.
+- [x] Publish modules for CJS, ESM, AMD, UMD.
+- [x] misc: Structured Type validation.
 - [x] security: NEVER use `eval`/`Function('...')` parsing.
 - [x] misc: Simplify TS, making `Rule[]` the sole recursive type.
 - [x] misc: Use reduced JS syntax, scope.
 - [x] misc: Use single object for input and output. (Doesn't mutate input.)
 - [x] misc: Add support for multiple boolean expressions. (see: `{"and": []}` `{"or": []}`).
 - [x] misc: Rules are serializable, and can be shared.
+- [x] rule type: `{"try": "rules", "catch": {"return": "error"}}`
 - [ ] rule type: `{"run": Rule[] | Rule | "ruleSetName"}`
-- [ ] rule type: `{"throw": "error message"}`
 - [ ] rule type: `{"log": "rule/value expression"}`
 - [ ] rule type: `{"set": "newVar = value"}`
-- [ ] Disallow input keys that can cause weirdness: `undefined`, `valueOf`, `toString`, `__proto__`, `constructor`.
+- [x] Disallow input keys that can cause weirdness: `undefined`, `valueOf`, `toString`, `__proto__`, `constructor`.
