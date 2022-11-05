@@ -17,29 +17,29 @@ const serialize = (data: unknown) =>
   data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
-  trace?: boolean
-  ignoreMissingKeys?: boolean
+  trace?: boolean;
+  ignoreMissingKeys?: boolean;
 }
 
 interface TraceRow {
-  startTime?: number
-  runTime?: number
+  startTime?: number;
+  runTime?: number;
 
-  operation: string
-  rule?: Rule
-  input?: any
-  result?: any
-  stepRow?: number
-  stepCount?: number
-  lhs?: string
-  value?: ExpressionValue
-  error?: any
-  [key: string]: unknown
+  operation: string;
+  rule?: Rule;
+  input?: any;
+  result?: any;
+  stepRow?: number;
+  stepCount?: number;
+  lhs?: string;
+  value?: ExpressionValue;
+  error?: any;
+  [key: string]: unknown;
 }
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   rules: Rule,
@@ -63,6 +63,7 @@ export function ruleFactory<
 
     let stepRow = 0;
     let stepCount = 0;
+    const BREAK = 'BREAK';
     const results = {
       input,
       trace: traceSimple,
@@ -108,9 +109,7 @@ export function ruleFactory<
       }
     });
 
-    rules = arrayify(rules);
-
-    for (const rule of rules) {
+    const handleRule = (rule: Rule) => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
         logTrace({
@@ -195,40 +194,24 @@ export function ruleFactory<
           });
         }
         // Now check the condition result
-        if (
-          conditionResult &&
-          (typeof rule.then === 'string' || Array.isArray(rule.then))
-        ) {
-          results.lastValue = evaluateRule({
-            stepRow,
-            input,
-            rule: rule.then,
-          });
+        if (conditionResult && rule.then) {
           logTrace({
             operation: 'if.then',
             rule: rule.then,
-            result: serialize(conditionResult),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
-        } else if (
-          !conditionResult &&
-          (typeof rule.else === 'string' || Array.isArray(rule.else))
-        ) {
-          results.lastValue = evaluateRule({
-            stepRow,
-            input,
-            rule: rule.else,
-          });
+          handleRule(rule.then);
+        } else if (!conditionResult && rule.else) {
           logTrace({
             operation: 'if.else',
             rule: rule.else,
-            result: serialize(conditionResult),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.else);
         } else {
           results.lastValue = input;
         }
@@ -249,42 +232,35 @@ export function ruleFactory<
           stepRow,
           stepCount,
         });
-        break;
-      } else if ('try' in rule) {
+        return BREAK;
+      } else if ('try' in rule && 'catch' in rule) {
         try {
-          const tryResult = evaluateRule({
-            stepRow,
-            input,
-            rule: rule.try,
-            ignoreMissingKeys: true,
-          });
-          results.lastValue = tryResult;
           logTrace({
             operation: 'try',
             rule: rule.try,
-            result: serialize(tryResult),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.try);
         } catch (e) {
-          const catchResult = evaluateRule({
-            stepRow,
-            input,
-            rule: rule.catch,
-            ignoreMissingKeys: true,
-          });
-          results.lastValue = catchResult;
           logTrace({
             operation: 'catch',
             rule: rule.catch,
-            result: serialize(catchResult),
             currentState: serialize(input),
             stepRow,
             stepCount,
           });
+          handleRule(rule.catch);
         }
       }
+    };
+
+    rules = arrayify(rules);
+
+    for (const rule of rules) {
+      const result = handleRule(rule);
+      if (result === BREAK) break;
       stepRow++;
     }
 
@@ -320,18 +296,19 @@ export function ruleFactory<
       rule,
       ignoreMissingKeys = false,
     }: {
-      stepRow: number
-      input: TInput
-      rule: string | string[] | Rule
-      ignoreMissingKeys?: boolean
+      stepRow: number;
+      input: TInput;
+      rule: string | string[] | Rule;
+      ignoreMissingKeys?: boolean;
     }): RuleResult {
+      // checking only the first rule seems unsafe
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
         return rule.flatMap((rule) =>
           evaluateRule({ stepRow, input, rule, ignoreMissingKeys })
         );
       }
       if (typeof rule !== 'string')
-        throw new Error('Nested rules not yet implemented.');
+        throw new Error('Nesting is not enabled for this rule type.');
 
       stepCount++;
 
@@ -381,7 +358,7 @@ export function ruleFactory<
 
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   input: TInput,
@@ -410,18 +387,21 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-    if: Rule
-    then: Rule
-    else?: Rule
-  }
+      if: And | Or | string;
+      then: Rule;
+      else?: Rule;
+    }
+  | And
+  | Or
   | {
-    and: Rule[]
-  }
-  | {
-    or: Rule[]
-  }
-  | {
-    return: Rule
-  }
-  | { try: Rule, catch: Rule }
+      return: string | string[];
+    }
+  | { try: Rule; catch: Rule }
   | Rule[];
+
+interface And {
+  and: string[];
+}
+interface Or {
+  or: string[];
+}

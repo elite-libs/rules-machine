@@ -158,6 +158,13 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"input\\":42}",
+    "operation": "if.then",
+    "rule": "doSet = 9999",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "doSet",
     "operation": "evalRule",
     "previous": undefined,
@@ -169,8 +176,8 @@ Array [
   },
   Object {
     "currentState": "{\\"input\\":42,\\"doSet\\":9999}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"input\\":42,\\"doSet\\":9999}",
     "rule": "doSet = 9999",
     "stepCount": 2,
     "stepRow": 0,
@@ -274,6 +281,13 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"price\\":35}",
+    "operation": "if.then",
+    "rule": "discount = 5",
+    "stepCount": 2,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": undefined,
@@ -285,8 +299,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":35,\\"discount\\":5}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":35,\\"discount\\":5}",
     "rule": "discount = 5",
     "stepCount": 3,
     "stepRow": 0,
@@ -378,6 +392,13 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true}}",
+    "operation": "if.then",
+    "rule": "discount = 5",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": undefined,
@@ -389,8 +410,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
     "rule": "discount = 5",
     "stepCount": 2,
     "stepRow": 0,
@@ -437,6 +458,13 @@ Array [
     "stepRow": 1,
   },
   Object {
+    "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":5}",
+    "operation": "if.then",
+    "rule": "discount = 20",
+    "stepCount": 4,
+    "stepRow": 1,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": 5,
@@ -448,8 +476,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":35,\\"user\\":{\\"isAdmin\\":true},\\"discount\\":20}",
     "rule": "discount = 20",
     "stepCount": 5,
     "stepRow": 1,
@@ -518,6 +546,16 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true}}",
+    "operation": "if.then",
+    "rule": Array [
+      "discount = 5",
+      "user.discountApplied = true",
+    ],
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": undefined,
@@ -539,8 +577,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString[]",
+    "result": "[{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5},{\\"price\\":90,\\"user\\":{\\"isAdmin\\":true,\\"discountApplied\\":true},\\"discount\\":5}]",
     "rule": Array [
       "discount = 5",
       "user.discountApplied = true",
@@ -653,6 +691,13 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"price\\":100}",
+    "operation": "if.then",
+    "rule": "discount = 5",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": undefined,
@@ -664,8 +709,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":100,\\"discount\\":5}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":100,\\"discount\\":5}",
     "rule": "discount = 5",
     "stepCount": 2,
     "stepRow": 0,
@@ -694,6 +739,13 @@ Array [
     "stepRow": 1,
   },
   Object {
+    "currentState": "{\\"price\\":100,\\"discount\\":5}",
+    "operation": "if.then",
+    "rule": "discount = 20",
+    "stepCount": 3,
+    "stepRow": 1,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": 5,
@@ -705,8 +757,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":100,\\"discount\\":20}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":100,\\"discount\\":20}",
     "rule": "discount = 20",
     "stepCount": 4,
     "stepRow": 1,
@@ -838,6 +890,13 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100}}",
+    "operation": "if.then",
+    "rule": "discount = 15",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": undefined,
@@ -849,8 +908,8 @@ Array [
   },
   Object {
     "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
     "rule": "discount = 15",
     "stepCount": 2,
     "stepRow": 0,
@@ -879,6 +938,13 @@ Array [
     "stepRow": 1,
   },
   Object {
+    "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
+    "operation": "if.then",
+    "rule": "discount = 15",
+    "stepCount": 3,
+    "stepRow": 1,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": 15,
@@ -890,8 +956,8 @@ Array [
   },
   Object {
     "currentState": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"user\\":{\\"plan\\":\\"premium\\",\\"employee\\":true},\\"config\\":{\\"maxDiscount\\":10},\\"shoppingCart\\":{\\"discount\\":1,\\"total\\":100},\\"discount\\":15}",
     "rule": "discount = 15",
     "stepCount": 4,
     "stepRow": 1,
@@ -960,6 +1026,13 @@ Array [
     "stepRow": 0,
   },
   Object {
+    "currentState": "{\\"price\\":100}",
+    "operation": "if.then",
+    "rule": "discount = 5 * 2",
+    "stepCount": 1,
+    "stepRow": 0,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": undefined,
@@ -971,8 +1044,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":100,\\"discount\\":10}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":100,\\"discount\\":10}",
     "rule": "discount = 5 * 2",
     "stepCount": 2,
     "stepRow": 0,
@@ -1001,6 +1074,13 @@ Array [
     "stepRow": 1,
   },
   Object {
+    "currentState": "{\\"price\\":100,\\"discount\\":10}",
+    "operation": "if.then",
+    "rule": "discount = 20 * 4",
+    "stepCount": 3,
+    "stepRow": 1,
+  },
+  Object {
     "lhs": "discount",
     "operation": "evalRule",
     "previous": 10,
@@ -1012,8 +1092,8 @@ Array [
   },
   Object {
     "currentState": "{\\"price\\":100,\\"discount\\":80}",
-    "operation": "if.then",
-    "result": true,
+    "operation": "ruleString",
+    "result": "{\\"price\\":100,\\"discount\\":80}",
     "rule": "discount = 20 * 4",
     "stepCount": 4,
     "stepRow": 1,
