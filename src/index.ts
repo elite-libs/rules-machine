@@ -17,29 +17,29 @@ const serialize = (data: unknown) =>
   data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
 
 interface RuleMachineOptions {
-  trace?: boolean
-  ignoreMissingKeys?: boolean
+  trace?: boolean;
+  ignoreMissingKeys?: boolean;
 }
 
 interface TraceRow {
-  startTime?: number
-  runTime?: number
+  startTime?: number;
+  runTime?: number;
 
-  operation: string
-  rule?: Rule
-  input?: any
-  result?: any
-  stepRow?: number
-  stepCount?: number
-  lhs?: string
-  value?: ExpressionValue
-  error?: any
-  [key: string]: unknown
+  operation: string;
+  rule?: Rule;
+  input?: any;
+  result?: any;
+  stepRow?: number;
+  stepCount?: number;
+  lhs?: string;
+  value?: ExpressionValue;
+  error?: any;
+  [key: string]: unknown;
 }
 
 export function ruleFactory<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   rules: Rule,
@@ -232,8 +232,7 @@ export function ruleFactory<
           stepRow,
           stepCount,
         });
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        throw BREAK;
+        return BREAK;
       } else if ('try' in rule && 'catch' in rule) {
         try {
           logTrace({
@@ -260,12 +259,8 @@ export function ruleFactory<
     rules = arrayify(rules);
 
     for (const rule of rules) {
-      try {
-        handleRule(rule);
-      } catch (e) {
-        if (e !== BREAK) throw e;
-        break;
-      }
+      const result = handleRule(rule);
+      if (result === BREAK) break;
       stepRow++;
     }
 
@@ -301,10 +296,10 @@ export function ruleFactory<
       rule,
       ignoreMissingKeys = false,
     }: {
-      stepRow: number
-      input: TInput
-      rule: string | string[] | Rule
-      ignoreMissingKeys?: boolean
+      stepRow: number;
+      input: TInput;
+      rule: string | string[] | Rule;
+      ignoreMissingKeys?: boolean;
     }): RuleResult {
       // checking only the first rule seems unsafe
       if (Array.isArray(rule) && typeof rule[0] === 'string') {
@@ -363,7 +358,7 @@ export function ruleFactory<
 
 export function extractValueOrLiteral<
   TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput
+    [k: string]: string | boolean | number | null | undefined | TInput;
   } = any
 >(
   input: TInput,
@@ -392,21 +387,21 @@ export function extractValueOrLiteral<
 export type Rule =
   | string
   | {
-    if: And | Or | string
-    then: Rule
-    else?: Rule
-  }
+      if: And | Or | string;
+      then: Rule;
+      else?: Rule;
+    }
   | And
   | Or
   | {
-    return: string | string[]
-  }
-  | { try: Rule, catch: Rule }
+      return: string | string[];
+    }
+  | { try: Rule; catch: Rule }
   | Rule[];
 
 interface And {
-  and: string[]
+  and: string[];
 }
 interface Or {
-  or: string[]
+  or: string[];
 }
