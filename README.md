@@ -198,7 +198,7 @@ fishyRhyme({ fish: 'oneFish' }); // {fish: 'twoFish'}
 ]
 ```
 
-### Example Rule: Multiple Conditional, Nested Rules
+### Example Rule: Multiple Conditional
 
 ```json
 [

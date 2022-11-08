@@ -117,7 +117,6 @@ export function ruleFactory<
       }
     });
 
-    // TODo: return value here
     const handleRule = (rule: Rule) => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
