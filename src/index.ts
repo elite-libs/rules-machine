@@ -295,8 +295,32 @@ export function ruleFactory<
           throw new UserError(`Data at '${arrayRule}' is not an array`);
         const arrayResult = arrayMethod.call(toArray(data), (item, index) => {
           Object.assign(input, { $item: item, $index: index, $array: data });
+
+                  let conditionResult: RuleResult;
+        if (arrayMethod === Array.prototype.filter && typeof rule.run === 'object' && 'and' in rule.run) {
+          const and = toArray(rule.run.and);
+          for (const rule of and) {
+            conditionResult = evaluateRule({
+              stepRow,
+              input,
+              rule,
+            });
+            if (!conditionResult) break;
+          }
+          if (trace)
+            logTrace({
+              operation: 'if.and',
+              rule: and,
+              result: serialize(conditionResult),
+              currentState: serialize(input),
+              stepRow,
+              stepCount,
+            });
+        } else {
           handleRule(rule.run);
-          return results.lastValue;
+          conditionResult = results.lastValue;
+        }
+          return conditionResult;
         });
         results.lastValue = arrayResult;
         if ('set' in rule) {
