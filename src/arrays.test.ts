@@ -63,6 +63,36 @@ describe('Array Operators', () => {
       ]);
       expect(multiplesOfThree({ list: [1, 2, 3, 4] })).toEqual([3]);
     });
+
+    it('can .filter() with multiple conditions', () => {
+      const context = {
+        list: [
+          {
+            name: 'Foo',
+            age: 30,
+          },
+          {
+            name: 'Bar',
+            age: 20,
+          },
+        ],
+        isBaz: true,
+      };
+
+      const getMultiConditionalResult = ruleFactory([
+        {
+          filter: 'list',
+          run: {
+            and: ['isBaz == true', '$item.name == "Foo"', '$item.age == 30'],
+          },
+          set: 'results',
+        },
+
+        { return: 'results' },
+      ]);
+
+      expect(getMultiConditionalResult(context).length).toEqual(1);
+    });
   });
 
   describe('find', () => {
