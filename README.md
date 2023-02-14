@@ -359,7 +359,7 @@ const isEveryNumberMultipleOfThree = ruleFactory([
     run: '$item % 3 == 0',
     set: 'results',
   },
-   { return: 'results' }
+  { return: 'results' }
 ]);
 isEveryNumberMultipleOfThree({list: [3, 6, 9]})
 // true
@@ -376,7 +376,7 @@ const hasEvenNumbers = ruleFactory([
     run: '2 % $item == 0',
     set: 'results',
   },
-    { return: 'results' }
+  { return: 'results' }
 ]);
 hasEvenNumbers({list: [2, 4]})
 // true
