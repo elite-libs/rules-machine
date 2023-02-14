@@ -65,44 +65,40 @@ describe('Array Operators', () => {
     });
 
     it('can .filter() with multiple AND conditions', () => {
-      const context = {
-        list: ['Foo', 'Bar', 'Baz', 'Foo'],
-        isBaz: true,
-      };
-
-      const getMultiConditionalResult = ruleFactory([
+      const evensButGreaterThanTwo = ruleFactory([
         {
           filter: 'list',
-          run: {
-            and: ['isBaz == true', '$item.length == 3', '$item == "Foo"'],
-          },
+          run: { and: ['$item % 2 == 0', '$item > 2'] },
           set: 'results',
         },
-
         { return: 'results' },
       ]);
 
-      expect(getMultiConditionalResult(context)).toEqual(['Foo', 'Foo']);
+      expect(evensButGreaterThanTwo({ list: [1, 2, 3, 4] })).toEqual([4]);
+      expect(evensButGreaterThanTwo({ list: [4, 5, 6, 7] })).toEqual([4, 6]);
+      expect(evensButGreaterThanTwo({ list: [-1, -2, 0, 10, 20] })).toEqual([
+        10, 20,
+      ]);
     });
 
     it('can .filter() with multiple OR conditions', () => {
-      const context = {
-        list: ['Foo', 'Bar', 'Baz'],
-      };
-
-      const getMultiConditionalResult = ruleFactory([
+      const multiplesOfThreeOrZero = ruleFactory([
         {
           filter: 'list',
-          run: {
-            or: ['$item == "Bar"', '$item == "Baz"'],
-          },
+          run: { or: ['$item % 3 == 0', '$item === 0'] },
           set: 'results',
         },
-
         { return: 'results' },
       ]);
 
-      expect(getMultiConditionalResult(context)).toEqual(['Bar', 'Baz']);
+      expect(multiplesOfThreeOrZero({ list: [0, 1, 2, 3, 4] })).toEqual([0, 3]);
+      expect(multiplesOfThreeOrZero({ list: [0, 5, 6, 7, 8] })).toEqual([0, 6]);
+      expect(multiplesOfThreeOrZero({ list: [3, 6, 30, 60] })).toEqual([
+        3, 6, 30, 60,
+      ]);
+      expect(multiplesOfThreeOrZero({ list: [33, -30, 0] })).toEqual([
+        33, -30, 0,
+      ]);
     });
   });
 
