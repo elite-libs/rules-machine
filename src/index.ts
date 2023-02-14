@@ -296,6 +296,7 @@ export function ruleFactory<
         const arrayResult = arrayMethod.call(toArray(data), (item, index) => {
           Object.assign(input, { $item: item, $index: index, $array: data });
 
+          // additional logic for array operations
           let conditionResult: RuleResult;
           if (
             arrayMethod === Array.prototype.filter &&
@@ -315,6 +316,29 @@ export function ruleFactory<
               logTrace({
                 operation: 'run.and',
                 rule: and,
+                result: serialize(conditionResult),
+                currentState: serialize(input),
+                stepRow,
+                stepCount,
+              });
+          } else if (
+            arrayMethod === Array.prototype.filter &&
+            typeof rule.run === 'object' &&
+            'or' in rule.run
+          ) {
+            const or = toArray(rule.run.or);
+            for (const rule of or) {
+              conditionResult = evaluateRule({
+                stepRow,
+                input,
+                rule,
+              });
+              if (conditionResult) break;
+            }
+            if (trace)
+              logTrace({
+                operation: 'or.and',
+                rule: or,
                 result: serialize(conditionResult),
                 currentState: serialize(input),
                 stepRow,

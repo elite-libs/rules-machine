@@ -64,18 +64,9 @@ describe('Array Operators', () => {
       expect(multiplesOfThree({ list: [1, 2, 3, 4] })).toEqual([3]);
     });
 
-    it('can .filter() with multiple conditions', () => {
+    it('can .filter() with multiple AND conditions', () => {
       const context = {
-        list: [
-          {
-            name: 'Foo',
-            age: 30,
-          },
-          {
-            name: 'Bar',
-            age: 20,
-          },
-        ],
+        list: ['Foo', 'Bar', 'Baz', 'Foo'],
         isBaz: true,
       };
 
@@ -83,7 +74,7 @@ describe('Array Operators', () => {
         {
           filter: 'list',
           run: {
-            and: ['isBaz == true', '$item.name == "Foo"', '$item.age == 30'],
+            and: ['isBaz == true', '$item.length == 3', '$item == "Foo"'],
           },
           set: 'results',
         },
@@ -91,7 +82,27 @@ describe('Array Operators', () => {
         { return: 'results' },
       ]);
 
-      expect(getMultiConditionalResult(context).length).toEqual(1);
+      expect(getMultiConditionalResult(context)).toEqual(['Foo', 'Foo']);
+    });
+
+    it('can .filter() with multiple OR conditions', () => {
+      const context = {
+        list: ['Foo', 'Bar', 'Baz'],
+      };
+
+      const getMultiConditionalResult = ruleFactory([
+        {
+          filter: 'list',
+          run: {
+            or: ['$item == "Bar"', '$item == "Baz"'],
+          },
+          set: 'results',
+        },
+
+        { return: 'results' },
+      ]);
+
+      expect(getMultiConditionalResult(context)).toEqual(['Bar', 'Baz']);
     });
   });
 
