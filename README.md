@@ -297,7 +297,7 @@ const multiplesOfThree = ruleFactory([
     run: '$item % 3 == 0',
     set: 'results',
   },
-  { return: 'results' },
+  { return: 'results' }
 ]);
 multiplesOfThree({ list: [1, 2, 3, 4] });
 // [3]
@@ -340,13 +340,13 @@ const getFirstMultipleOfThree = ruleFactory([
     run: '$item % 3 == 0',
     set: 'results',
   },
-  { return: 'results' },
+  { return: 'results' }
 ]);
-getFirstMultipleOfThree({ list: [1, 2, 3, 4] });
+getFirstMultipleOfThree({list: [1, 2, 3, 4]})
 // 3
-getFirstMultipleOfThree({ list: [9, 3, 4] });
+getFirstMultipleOfThree({list: [9, 3, 4]})
 // 9
-getFirstMultipleOfThree({ list: [99] });
+getFirstMultipleOfThree({list: [99]})
 // undefined
 ```
 
@@ -359,11 +359,11 @@ const isEveryNumberMultipleOfThree = ruleFactory([
     run: '$item % 3 == 0',
     set: 'results',
   },
-  { return: 'results' },
+   { return: 'results' }
 ]);
-isEveryNumberMultipleOfThree({ list: [3, 6, 9] });
+isEveryNumberMultipleOfThree({list: [3, 6, 9]})
 // true
-isEveryNumberMultipleOfThree({ list: [3, 6, 9, 10] });
+isEveryNumberMultipleOfThree({list: [3, 6, 9, 10]})
 // false
 ```
 
@@ -376,13 +376,13 @@ const hasEvenNumbers = ruleFactory([
     run: '2 % $item == 0',
     set: 'results',
   },
-  { return: 'results' },
+    { return: 'results' }
 ]);
-hasEvenNumbers({ list: [2, 4] });
+hasEvenNumbers({list: [2, 4]})
 // true
-hasEvenNumbers({ list: [2, 4, 5] });
+hasEvenNumbers({list: [2, 4, 5]})
 // true
-hasEvenNumbers({ list: [5] });
+hasEvenNumbers({list: [5]})
 // false
 ```
 
@@ -390,13 +390,13 @@ hasEvenNumbers({ list: [5] });
 
 ```ts
 const calculateDiscount = ruleFactory([
-  { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
-  { if: 'price > 50', then: 'discount = 10' },
-  { return: 'discount' },
+  {"if": {"and": ["price >= 25", "price <= 50"]}, "then": "discount = 5"},
+  {"if": "price > 50", "then": "discount = 10"},
+  {"return": "discount"}
 ]);
-calculateDiscount({ price: 40, discount: 0 });
+calculateDiscount({price: 40, discount: 0})
 // 5
-calculateDiscount({ price: 60, discount: 0 });
+calculateDiscount({price: 60, discount: 0})
 // 10
 ```
 
@@ -404,15 +404,15 @@ calculateDiscount({ price: 60, discount: 0 });
 
 ```ts
 const isScoreValid = ruleFactory({
-  if: { and: ['score > 0', 'score <= 100'] },
-  then: 'valid = true',
-  else: 'valid = false',
-});
-isScoreValid({ score: 10 });
+  "if": {"and": ["score > 0", "score <= 100"]},
+  "then": "valid = true",
+  "else": "valid = false",
+})
+isScoreValid({score: 10})
 // { score: 10, valid: true }}
-isScoreValid({ score: -10 });
+isScoreValid({score: -10})
 // { score: 10, valid: false }}
-isScoreValid({ score: 101 });
+isScoreValid({score: 101})
 // { score: 10, valid: false }}
 ```
 
@@ -422,12 +422,12 @@ Execute string rule from `try`. Handle errors in the `catch` expression.
 
 ```js
 [
-  {
+  { 
     try: 'THROW "error"',
     catch: 'status = "Failure"',
   },
   { return: 'status' }, // returns "Failure"
-];
+]
 ```
 
 #### `return`
@@ -438,7 +438,7 @@ Ends rule execution, returning the specified value.
 [
   { return: '"blue"' }, // returns "blue"
   { return: '"green"' }, // is not executed
-];
+]
 ```
 
 ### Builtin Operators
