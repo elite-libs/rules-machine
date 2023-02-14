@@ -295,7 +295,6 @@ export function ruleFactory<
           throw new UserError(`Data at '${arrayRule}' is not an array`);
         const arrayResult = arrayMethod.call(toArray(data), (item, index) => {
           Object.assign(input, { $item: item, $index: index, $array: data });
-
           // additional logic for array operations
           let conditionResult: RuleResult;
           if (
