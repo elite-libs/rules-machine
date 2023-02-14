@@ -313,7 +313,7 @@ export function ruleFactory<
             }
             if (trace)
               logTrace({
-                operation: 'if.and',
+                operation: 'run.and',
                 rule: and,
                 result: serialize(conditionResult),
                 currentState: serialize(input),
