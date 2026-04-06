@@ -23,10 +23,10 @@ export function toNumber(value: string | number): number {
     : parseFloat(value);
 }
 
+const boolExpressions = ['true', 'false', 'yes', 'no', 'on', 'off', '0', '1'] as const;
+
 export function isBoolean(value: string): boolean {
-  return ['true', 'false', 'yes', 'no', 'on', 'off', '0', '1'].includes(
-    `${value}`.toLowerCase(),
-  );
+  return `${value}`.toLowerCase() in boolExpressions;
 }
 
 export function toBoolean(value: any) {
