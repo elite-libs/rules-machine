@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/quotes */
-import {
+import type {
   Handler,
   APIGatewayProxyResult,
   APIGatewayProxyEventV2WithRequestContext,
   Context,
 } from 'aws-lambda';
 import { rulesMachineFactory } from './lib';
-import { RulesCallback } from './lib/types';
+import type { RulesCallback } from './lib/types';
 import appRules from './rules/app-rules';
 
 const rulesMachine: Record<keyof typeof appRules, RulesCallback> =
@@ -17,7 +17,7 @@ const ruleNames = Object.keys(rulesMachine);
 export const rules: Handler<
   APIGatewayProxyEventV2WithRequestContext<Context>,
   APIGatewayProxyResult
-> = async (event) => {
+> = async (event: APIGatewayProxyEventV2WithRequestContext<Context>) => {
   const { body, pathParameters, rawPath } = event;
   if (rawPath.length <= 1) return helpInfo();
   if (!checkPayload(body)) return { statusCode: 400, body: 'Invalid body' };
@@ -42,7 +42,7 @@ export const rules: Handler<
   } catch (error) {
     console.error(error);
     return {
-      body: `Error running rule: ${ruleName}. Error: ${error.message}`,
+      body: `Error running rule: ${ruleName}. Error: ${error instanceof Error ? error.message : String(error)}`,
       statusCode: 500,
     };
   }

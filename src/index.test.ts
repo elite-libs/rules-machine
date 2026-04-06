@@ -1,8 +1,12 @@
 import { describe, expect, test, it } from 'vitest';
-import { ruleFactory } from './index';
+import { ruleFactory, type ExecutionResult } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 
-const omitRuntime = ({ runTime, startTime, ...keys }: any) => keys;
+const omitRuntime = ({
+  runTime,
+  startTime,
+  ...keys
+}: Record<string, unknown>) => keys;
 
 describe('Assignment Operators', () => {
   test('should be able to assign a value to a variable', () => {
@@ -38,7 +42,9 @@ describe('Logical', () => {
       );
 
       const input = { price: 100 };
-      const result = rulesFn(input);
+      const result = rulesFn(input) as ExecutionResult<typeof input> & {
+        input: typeof input & { discount: number };
+      };
 
       expect(result.trace.map(omitRuntime)).toMatchSnapshot();
       expect(result.returnValue).toBe(20);
@@ -52,7 +58,7 @@ describe('Logical', () => {
       );
 
       const input = { price: 10 };
-      const result = rulesFn(input);
+      const result = rulesFn(input) as ExecutionResult<typeof input>;
 
       expect(result.trace.map(omitRuntime)).toMatchSnapshot();
       expect(result.returnValue).toBe(undefined);
@@ -67,7 +73,7 @@ describe('Logical', () => {
         ],
         { trace: true },
       );
-      const result = rulesFn({
+      const input = {
         user: {
           plan: 'premium',
           employee: true,
@@ -79,7 +85,10 @@ describe('Logical', () => {
           discount: 1,
           total: 100,
         },
-      });
+      };
+      const result = rulesFn(input) as ExecutionResult<typeof input> & {
+        input: typeof input & { discount: number };
+      };
 
       expect(result.trace.map(omitRuntime)).toMatchSnapshot();
       expect(result.returnValue).toBe(15);
@@ -97,7 +106,9 @@ describe('Logical', () => {
         { trace: true },
       );
       const input = { price: 35 };
-      const result = rulesFn(input);
+      const result = rulesFn(input) as ExecutionResult<typeof input> & {
+        input: typeof input & { discount: number };
+      };
 
       expect(result.trace.map(omitRuntime)).toMatchSnapshot();
       expect(result.returnValue).toBe(5);
@@ -127,7 +138,9 @@ describe('Logical', () => {
         { trace: true },
       );
       const input = { price: 35, user: { isAdmin: true } };
-      const result = rulesFn(input);
+      const result = rulesFn(input) as ExecutionResult<typeof input> & {
+        input: typeof input & { discount: number };
+      };
 
       expect(result.trace.map(omitRuntime)).toMatchSnapshot();
       expect(result.returnValue).toBe(20);
@@ -160,12 +173,17 @@ describe('Logical', () => {
         { trace: true },
       );
       const input = { price: 90, user: { isAdmin: true } };
-      const result = rulesFn(input);
+      const result = rulesFn(input) as ExecutionResult<typeof input> & {
+        input: typeof input & {
+          discount: number;
+          user: typeof input.user & { discountApplied: boolean };
+        };
+      };
 
       expect(result.trace.map(omitRuntime)).toMatchSnapshot();
       expect(result.returnValue).toBe(5);
       expect(result.input.discount).toBe(5);
-      expect(result.input.user?.discountApplied).toBe(true);
+      expect(result.input.user.discountApplied).toBe(true);
     });
   });
 });
@@ -210,7 +228,9 @@ describe('Custom Functions', () => {
     );
     const result = rulesFn({});
     // allow for slow systems to run tests (allows event loop lag of 100ms, which shouldn't be exceeded under normal circumstances.)
-    const isOneDay = result >= 86_400_000 && result <= 86_400_000 + 1000;
+    const isOneDay =
+      (result as number) >= 86_400_000 &&
+      (result as number) <= 86_400_000 + 1000;
     expect(isOneDay).toBe(true);
   });
 
@@ -227,7 +247,7 @@ describe('Custom Functions', () => {
       cities: ['Denver', 'London', 'LA'],
       onlyUSA: true,
     };
-    const result = rulesFn(input);
+    const result = rulesFn(input) as ExecutionResult<typeof input>;
 
     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
     expect(result.returnValue).toStrictEqual(['Denver', 'LA']);
@@ -242,10 +262,12 @@ describe('Custom Functions', () => {
       cities: ['Denver', 'London', 'LA'],
       onlyUSA: true,
     };
-    const result = rulesFn(input);
+    const result = rulesFn(input) as ExecutionResult<typeof input> & {
+      input: typeof input & { hasLondon: boolean };
+    };
 
     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
-    expect(result.input?.hasLondon).toBe(true);
+    expect(result.input.hasLondon).toBe(true);
   });
 });
 
@@ -310,7 +332,9 @@ describe('Nested Rule Structures', () => {
     );
 
     const input = { price: 100 };
-    const result = rulesFn(input);
+    const result = rulesFn(input) as ExecutionResult<typeof input> & {
+      input: typeof input & { discount: number };
+    };
 
     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
     expect(result.input.discount).toBe(80);
@@ -489,7 +513,7 @@ describe('Edge cases', () => {
       { trace: true },
     );
 
-    const result = rulesFn({ input: 42 });
+    const result = rulesFn({ input: 42 }) as ExecutionResult<{ input: number }>;
     // expect(result.returnValue).toEqual({ input: 42 });
     expect(result.lastValue).toEqual({ input: 42 });
     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
@@ -505,7 +529,9 @@ describe('Edge cases', () => {
       { trace: true },
     );
 
-    const result = rulesFn({ input: 42 });
+    const result = rulesFn({ input: 42 }) as ExecutionResult<{
+      input: number;
+    }> & { lastValue: { input: number; doSet: number } };
     expect(result.lastValue).toEqual({ input: 42, doSet: 9999 });
     expect(result.trace.map(omitRuntime)).toMatchSnapshot();
   });
@@ -520,7 +546,9 @@ describe('Edge cases', () => {
       ],
       { trace: true },
     );
-    const result = rulesFn({ input: 42 });
+    const result = rulesFn({ input: 42 }) as ExecutionResult<{
+      input: number;
+    }> & { returnValue: number; lastValue: number };
     expect(result.returnValue).toEqual(42);
     expect(result.lastValue).toEqual(42);
   });

@@ -14,7 +14,6 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "rootDir": "./",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -22,6 +21,6 @@
     "noErrorTruncation": true,
     "useUnknownInCatchVariables": false
   },
-  "include": ["**/*.ts", "./.*.js"],
+  "include": ["**/*.ts", "./.*.js", "../../src/**/*.ts"],
   "exclude": ["**/node_modules", "__snapshots__", "**/dist"]
 }

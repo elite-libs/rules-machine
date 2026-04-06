@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { get, set, isString, isBoolean, isObjectLike, isArray } from 'lodash';
-import { RuleMapping, FieldKeyMapping, FieldPath } from './types';
+import type { RuleMapping, FieldKeyMapping, FieldPath } from './types';
 
 /**
  *
@@ -41,10 +40,10 @@ export function inputAdapter<TInput = unknown>(
         isString(value)
           ? get(input, value)
           : isBoolean(value)
-          ? get(input, key)
-          : isObjectLike(value)
-          ? inputAdapter(value, input)
-          : undefined,
+            ? get(input, key)
+            : isObjectLike(value)
+              ? inputAdapter(value, input)
+              : undefined,
       ],
     ),
   );
@@ -76,8 +75,8 @@ export function outputAdapter<
       fromKey === true
         ? inputSource
         : typeof fromKey === 'string'
-        ? get(inputSource, fromKey)
-        : undefined,
+          ? get(inputSource, fromKey)
+          : undefined,
     );
     return output;
   }, targetOutput);

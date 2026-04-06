@@ -1,4 +1,4 @@
-import { RuleMapping } from '../lib/types';
+import type { RuleMapping } from '../lib/types';
 
 const appRules: Readonly<Record<string, RuleMapping>> = {
   getDiscount: {

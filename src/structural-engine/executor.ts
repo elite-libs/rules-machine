@@ -62,28 +62,31 @@ export interface ExecutionResult<TInput> {
  * all string expression evaluation is delegated to the injected
  * `ExpressionEngine`.
  */
-export interface RuleExecutor<TInput extends object = any> {
-  execute(rules: Rule, input?: TInput): unknown | ExecutionResult<TInput>;
+export interface RuleExecutor<TInput extends object> {
+  execute<TReturn = unknown>(
+    rules: Rule,
+    input?: TInput,
+  ): TReturn | ExecutionResult<TInput>;
 }
 
 /**
  * Factory: build a `RuleExecutor` bound to the given `ExpressionEngine` and
  * execution options.
  */
-export function createRuleExecutor<
-  TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
-  } = any,
->(
+type MutableInput = {
+  [k: string]: string | boolean | number | null | undefined | MutableInput;
+};
+
+export function createRuleExecutor<TInput extends Record<string, unknown>>(
   expressionEngine: ExpressionEngine,
   options: ExecutorOptions = { trace: false, ignoreMissingKeys: true },
 ): RuleExecutor<TInput> {
   const { trace, ignoreMissingKeys = true } = options;
 
-  function execute(
+  function execute<TReturn = unknown>(
     rules: Rule,
     input: TInput = {} as TInput,
-  ): unknown | ExecutionResult<TInput> {
+  ): TReturn | ExecutionResult<TInput> {
     const traceSimple: TraceRow[] = [];
 
     function logTrace({ operation, rule, ...args }: TraceRow) {
@@ -109,16 +112,17 @@ export function createRuleExecutor<
     logTrace({ operation: 'begin', startTime });
 
     // Build a term resolver that closes over the mutable `input` reference.
+    const mutableInput = input as MutableInput;
     const termResolver = (term: string): ExpressionValue => {
       try {
         const result =
           extractValueOrLiteral(
-            input,
+            mutableInput,
             term,
             stepRow,
             stepCount,
             ignoreMissingKeys,
-          ) ?? get(input, term, undefined as unknown as ExpressionValue);
+          ) ?? get(mutableInput, term, undefined as unknown as ExpressionValue);
         logTrace({
           operation: 'key.lookup',
           key: term,
@@ -468,10 +472,10 @@ export function createRuleExecutor<
 
     if (trace) {
       results.runTime = performance.now() - startTime;
-      return results;
+      return results as TReturn | ExecutionResult<TInput>;
     }
 
-    return getReturnValue();
+    return getReturnValue() as TReturn;
   }
 
   return { execute };
@@ -479,11 +483,7 @@ export function createRuleExecutor<
 
 // ─── Utility (also exported for use in index.ts) ─────────────────────────────
 
-export function extractValueOrLiteral<
-  TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
-  } = any,
->(
+export function extractValueOrLiteral<TInput extends Record<string, unknown>>(
   input: TInput,
   token: string,
   stepRow?: number,

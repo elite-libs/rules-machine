@@ -1,6 +1,7 @@
 import { createExpressionEngine } from './expression-engine/engine';
 import { createRuleExecutor } from './structural-engine/executor';
 import type { Rule } from './structural-engine/types';
+import type { ExecutionResult } from './structural-engine/executor';
 
 export { extractValueOrLiteral } from './structural-engine/executor';
 export type { Rule } from './structural-engine/types';
@@ -21,24 +22,19 @@ interface RuleMachineOptions {
   ignoreMissingKeys?: boolean;
 }
 
-export function ruleFactory<
-  TInput extends {
-    [k: string]: string | boolean | number | null | undefined | TInput;
-  } = any,
->(
+export function ruleFactory<TInput extends Record<string, unknown>>(
   rules: Rule,
-  options: RuleMachineOptions | undefined = {
+  options: RuleMachineOptions = {
     trace: false,
     ignoreMissingKeys: true,
   },
 ) {
-  if (typeof options === 'string')
-    options = { name: options } as RuleMachineOptions;
-
   const expressionEngine = createExpressionEngine();
   const executor = createRuleExecutor<TInput>(expressionEngine, options);
 
-  return function executeRulePipeline(input: TInput = {} as TInput) {
-    return executor.execute(rules, input);
+  return function executeRulePipeline<TReturn = unknown>(
+    input: TInput = {} as TInput,
+  ): TReturn | ExecutionResult<TInput> {
+    return executor.execute<TReturn>(rules, input);
   };
 }

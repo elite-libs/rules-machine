@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-param-reassign */
-import { ruleFactory } from '@elite-libs/rules-machine';
+import { ruleFactory, type Rule } from '../../../src/index';
 import { mapValues, flow } from 'lodash';
 import { tap } from 'lodash/fp';
 import { inputAdapter, outputAdapter } from './transformers';
-import { RuleMapping, RulesCallback } from './types';
+import type { RuleMapping, RulesCallback } from './types';
 
 /**
  *
@@ -39,7 +38,7 @@ export function rulesMachineFactory(ruleSet: Record<string, RuleMapping>) {
 }
 
 function convertRuleMapping({
-  inputMap,
+  inputMap = {},
   outputMap,
   rules,
 }: RuleMapping): RulesCallback {
@@ -49,14 +48,14 @@ function convertRuleMapping({
   ): TOutput => {
     const processInputArgs = (inputArgs: object) =>
       skipDataMapping ? inputArgs : inputAdapter(inputMap, inputArgs);
-    const applyOutputUpdates = (result: any) => {
+    const applyOutputUpdates = (result: unknown) => {
       if (!skipDataMapping && outputMap)
-        outputAdapter(outputMap, result, input);
+        outputAdapter(outputMap, result as Record<string, unknown>, input);
     };
 
     return flow(
       processInputArgs,
-      ruleFactory(rules),
+      ruleFactory(rules as Rule),
       tap(applyOutputUpdates),
     )(input) as unknown as TOutput;
   };

@@ -1,4 +1,4 @@
-import type { Rule } from '@elite-libs/rules-machine';
+import type { Rule } from '../../../src/index';
 
 export type FieldPath = string | true;
 export interface FieldKeyMapping {
