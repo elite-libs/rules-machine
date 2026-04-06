@@ -1,8 +1,8 @@
 // import debug from 'debug';
+import { performance } from 'perf_hooks';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
 import { isBoolean, isNumber, autoDetectType, toArray } from './utils/utils';
-import performance from './utils/performance';
 import {
   assignmentOperators,
   ruleExpressionLanguage,
