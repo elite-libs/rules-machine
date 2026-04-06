@@ -2,9 +2,9 @@ import isObject from 'lodash/isObject.js';
 import omit from 'lodash/omit.js';
 import ms from 'ms';
 import {
-  Delegate,
-  ExpressionThunk,
-  ExpressionValue,
+  type Delegate,
+  type ExpressionThunk,
+  type ExpressionValue,
   isArgumentsArray,
 } from 'expressionparser/dist/ExpressionParser.js';
 import { toArray } from '../utils/utils';
@@ -91,7 +91,9 @@ export const evalArray = (
       try {
         result = typeCheck(result);
       } catch (err) {
-        throw new UserError(`In array; ${err.message}`);
+        throw new UserError(
+          `In array; ${err instanceof Error ? err.message : String(err)}`,
+        );
       }
     }
 
@@ -199,7 +201,7 @@ export const dateParser = (
 
   if (typeof dateArg === 'string' && dateArg.length < 6) {
     // possible date duration expression
-    const duration = ms(dateArg);
+    const duration = ms(dateArg as string) ?? 0;
     const d = new Date(Date.now() + duration);
     // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
     return d.getTime();

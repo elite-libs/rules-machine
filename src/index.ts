@@ -8,7 +8,7 @@ import {
   ruleExpressionLanguage,
 } from './expression-language';
 import { init } from 'expressionparser';
-import { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
+import type { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
 import { UserError } from './utils/errors';
 
 const trailingQuotes = /^('|").*('|")$/g;
@@ -151,13 +151,15 @@ export function ruleFactory<
         let conditionResult: RuleResult;
         if (typeof rule.if === 'object' && 'and' in rule.if) {
           const and = toArray(rule.if.and);
-          for (const rule of and) {
-            conditionResult = evaluateRule({
-              stepRow,
-              input,
-              rule,
-            });
-            if (!conditionResult) break;
+          for (const ruleItem of and) {
+            if (typeof ruleItem === 'string') {
+              conditionResult = evaluateRule({
+                stepRow,
+                input,
+                rule: ruleItem,
+              });
+              if (!conditionResult) break;
+            }
           }
           if (trace)
             logTrace({
@@ -170,13 +172,15 @@ export function ruleFactory<
             });
         } else if (typeof rule.if === 'object' && 'or' in rule.if) {
           const or = toArray(rule.if.or);
-          for (const rule of or) {
-            conditionResult = evaluateRule({
-              stepRow,
-              input,
-              rule,
-            });
-            if (conditionResult) break;
+          for (const ruleItem of or) {
+            if (typeof ruleItem === 'string') {
+              conditionResult = evaluateRule({
+                stepRow,
+                input,
+                rule: ruleItem,
+              });
+              if (conditionResult) break;
+            }
           }
           if (trace)
             logTrace({
@@ -258,12 +262,12 @@ export function ruleFactory<
           'map' in rule
             ? rule.map
             : 'filter' in rule
-            ? rule.filter
-            : 'every' in rule
-            ? rule.every
-            : 'some' in rule
-            ? rule.some
-            : rule.find;
+              ? rule.filter
+              : 'every' in rule
+                ? rule.every
+                : 'some' in rule
+                  ? rule.some
+                  : rule.find;
         const arrayOperator = Object.keys(rule).find(
           (key) => key in arrayMethods,
         );
@@ -273,12 +277,12 @@ export function ruleFactory<
           'map' in rule
             ? Array.prototype.map
             : 'filter' in rule
-            ? Array.prototype.filter
-            : 'every' in rule
-            ? Array.prototype.every
-            : 'some' in rule
-            ? Array.prototype.some
-            : Array.prototype.find;
+              ? Array.prototype.filter
+              : 'every' in rule
+                ? Array.prototype.every
+                : 'some' in rule
+                  ? Array.prototype.some
+                  : Array.prototype.find;
 
         if (trace)
           logTrace({
@@ -341,7 +345,7 @@ export function ruleFactory<
           stepCount,
           currentState: serialize(input),
           stepRow,
-          lastValue: e?.message,
+          lastValue: e instanceof Error ? e.message : String(e),
         });
         throw e;
       }
@@ -436,12 +440,13 @@ export function ruleFactory<
       } catch (e) {
         logTrace({
           operation: 'error',
-          error: e.message,
+          error: e instanceof Error ? e.message : String(e),
           rule,
           stepRow,
           stepCount,
         });
-        if (e.name !== 'UserError') console.error('UNEXPECTED ERROR:', e);
+        if (e instanceof Error && e.name !== 'UserError')
+          console.error('UNEXPECTED ERROR:', e);
         throw e;
       }
     }
@@ -520,10 +525,10 @@ interface LogicalRule {
   else?: Rule;
 }
 interface AndRule {
-  and: string[];
+  and: (string | AndRule | OrRule)[];
 }
 interface OrRule {
-  or: string[];
+  or: (string | AndRule | OrRule)[];
 }
 interface MapRule {
   map: string;

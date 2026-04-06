@@ -1,3 +1,4 @@
+import { describe, expect, test, it } from 'vitest';
 import { ruleFactory } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 

@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import {
-  ArgumentsArray,
-  ExpressionArray,
-  ExpressionParserOptions,
-  ExpressionThunk,
-  ExpressionValue,
-  InfixOps,
+  type ArgumentsArray,
+  type ExpressionArray,
+  type ExpressionParserOptions,
+  type ExpressionThunk,
+  type ExpressionValue,
+  type InfixOps,
   isArgumentsArray,
-  TermDelegate,
-  TermType,
-  TermTyper,
+  type TermDelegate,
+  type TermType,
+  type TermTyper,
 } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
 import { UserError } from '../utils/errors';
@@ -462,7 +462,9 @@ export const ruleExpressionLanguage = function (
         try {
           result[evalString(key)] = value;
         } catch (err) {
-          throw new Error(`UNZIPDICT keys; ${err.message}`);
+          throw new Error(
+            `UNZIPDICT keys; ${err instanceof Error ? err.message : String(err)}`,
+          );
         }
       });
 

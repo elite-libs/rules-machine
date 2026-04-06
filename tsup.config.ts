@@ -1,38 +1,23 @@
 import { toBoolean } from './src/utils/utils';
-import type { Format, Options } from 'tsup';
+import { defineConfig } from 'tsup';
 
-const format: Format[] = ['cjs', 'esm', 'iife'];
-
-const env: 'production' | 'development' =
-  process.env.NODE_ENV === 'production' ? 'production' : 'development';
-const isProd = env === 'production';
-
-const singleBundleFile = toBoolean(process.env.BUNDLE_ALL);
-const inlinePackagePatterns = singleBundleFile
-  ? [/lodash\/.*/, 'ms', /expressionparser\/.*/]
-  : [];
-
-export default <Options>{
-  format,
+export default defineConfig({
+  format: ['cjs', 'esm', 'iife'],
   outDir: 'dist',
   platform: 'node',
-  target: 'node14',
+  target: 'node24',
   entry: ['src/index.ts'],
   globalName: 'RulesMachine',
   clean: true,
   bundle: true,
   metafile: true,
-  minify: isProd,
-  resolve: true,
+  minify: process.env.NODE_ENV === 'production',
   dts: {
-    resolve: true,
-    // build types for `src/index.ts` only
-    // otherwise `Options` will not be exported by `tsup`, not sure how this happens, probably a bug in rollup-plugin-dts
     entry: './src/index.ts',
   },
-
-  skipNodeModulesBundle: singleBundleFile,
+  skipNodeModulesBundle: !toBoolean(process.env.BUNDLE_ALL),
   sourcemap: true,
-  // splitting: false,//
-  noExternal: inlinePackagePatterns,
-};
+  noExternal: toBoolean(process.env.BUNDLE_ALL)
+    ? [/lodash/, 'ms', /expressionparser/]
+    : [],
+});

@@ -4,20 +4,11 @@
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "baseUrl": ".",
-
     "declaration": true,
-    // "declarationMap": true,
-    // "declarationDir": "./dist/types",
-
     "esModuleInterop": true,
-    // "extendedDiagnostics": true,
     "forceConsistentCasingInFileNames": true,
-    // "isolatedModules": true,
-    // "jsx": "preserve",
-    // "lib": ["esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    // "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
     "resolveJsonModule": true,
@@ -27,8 +18,9 @@
     "strict": true,
     "strictNullChecks": true,
     "noErrorTruncation": true,
-    "target": "ES2020",
-    "useUnknownInCatchVariables": false
+    "target": "ES2022",
+    "verbatimModuleSyntax": true,
+    "noEmit": true
   },
   "include": ["**/*.ts", "./.*.js"],
   "exclude": ["**/node_modules", "__snapshots__", "**/dist"]
