@@ -31,7 +31,7 @@ import {
   omitProperties,
   string,
   unpackArgs,
-} from './utils';
+} from './language-utils';
 
 const hasOwnProperty = (obj: object, key: string) =>
   Object.prototype.hasOwnProperty.call(obj, key);
@@ -339,7 +339,7 @@ export const ruleExpressionLanguage = function (
       const arr = evalArray(arg2());
       const result: ExpressionArray<ExpressionValue> = [];
       arr.forEach((val: ExpressionValue) => {
-        let isSatisfied;
+        let isSatisfied: boolean;
         if (typeof func === 'function') isSatisfied = evalBool(func(val));
         else isSatisfied = evalBool(call(string(func))(() => val));
 
@@ -353,7 +353,7 @@ export const ruleExpressionLanguage = function (
       const arr = evalArray(arg2());
 
       const satisfaction = (val: ExpressionValue) => {
-        let isSatisfied;
+        let isSatisfied: boolean;
         if (typeof func === 'function') isSatisfied = evalBool(func(val));
         else isSatisfied = evalBool(call(string(func))(() => val));
 
@@ -370,7 +370,7 @@ export const ruleExpressionLanguage = function (
       const arr = evalArray(arg2());
 
       const satisfaction = (val: ExpressionValue) => {
-        let isSatisfied;
+        let isSatisfied: boolean;
         if (typeof func === 'function') isSatisfied = evalBool(func(val));
         else isSatisfied = evalBool(call(string(func))(() => val));
 

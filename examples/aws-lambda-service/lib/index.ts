@@ -56,7 +56,6 @@ function convertRuleMapping({
 
     return flow(
       processInputArgs,
-      // @ts-expect-error
       ruleFactory(rules),
       tap(applyOutputUpdates),
     )(input) as unknown as TOutput;

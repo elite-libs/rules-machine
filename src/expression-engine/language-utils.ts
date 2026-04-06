@@ -63,7 +63,8 @@ const bool = (value: ExpressionValue) => {
   return value;
 };
 export const evalBool = (value: ExpressionValue): boolean => {
-  let result;
+  // eslint-disable-next-line prefer-const
+  let result: ExpressionValue = false as ExpressionValue;
 
   while (typeof value === 'function' && value.length === 0) value = value();
   if (!result) result = value;
@@ -71,7 +72,7 @@ export const evalBool = (value: ExpressionValue): boolean => {
   return bool(result);
 };
 export const evalString = (value: ExpressionValue) => {
-  let result;
+  let result: ExpressionValue;
   if (typeof value === 'function' && value.length === 0) result = value();
   else result = value;
 
@@ -83,7 +84,7 @@ export const evalArray = (
   typeCheck?: (value: ExpressionValue) => ExpressionValue,
 ) => {
   return toArray(arr).map((value) => {
-    let result;
+    let result: ExpressionValue;
     if (typeof value === 'function' && value.length === 0) result = value();
     else result = value;
 
@@ -201,7 +202,7 @@ export const dateParser = (
 
   if (typeof dateArg === 'string' && dateArg.length < 6) {
     // possible date duration expression
-    const duration = ms(dateArg as string) ?? 0;
+    const duration = (ms as (value: string) => number)(dateArg) ?? 0;
     const d = new Date(Date.now() + duration);
     // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
     return d.getTime();
