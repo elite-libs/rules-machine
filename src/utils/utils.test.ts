@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import {
   autoDetectType,
-  isNumber,
-  toNumber,
-  isBoolean,
-  toBoolean,
-  toArray,
   isArray,
+  isBoolean,
+  isNumber,
+  toArray,
+  toBoolean,
+  toNumber,
 } from './utils';
 
 describe('autoDetectType', () => {

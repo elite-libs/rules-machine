@@ -1,12 +1,12 @@
-export type { ruleFactory, Rule } from './index';
 export type {
-  ExpressionEngine,
   CompiledExpression,
+  ExpressionEngine,
   TermResolver,
 } from './expression-engine/engine';
+export type { Rule, ruleFactory } from './index';
 export type {
-  RuleExecutor,
-  ExecutorOptions,
   ExecutionResult,
+  ExecutorOptions,
+  RuleExecutor,
   TraceRow,
 } from './structural-engine/executor';

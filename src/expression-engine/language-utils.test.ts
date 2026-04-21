@@ -1,23 +1,23 @@
-import { describe, expect, test, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
+import { UserError } from '../utils/errors';
 import {
-  unpackArgs,
-  num,
   array,
+  char,
+  containsValues,
+  countObjectKeys,
+  dateParser,
+  evalArray,
   evalBool,
   evalString,
-  evalArray,
-  obj,
   filterValues,
-  containsValues,
-  objectContainsValues,
-  countObjectKeys,
-  omitProperties,
   iterable,
+  num,
+  obj,
+  objectContainsValues,
+  omitProperties,
   string,
-  char,
-  dateParser,
+  unpackArgs,
 } from './language-utils';
-import { UserError } from '../utils/errors';
 
 describe('unpackArgs', () => {
   test('should call function with single argument when result is not array', () => {
@@ -157,7 +157,7 @@ describe('evalArray', () => {
   });
 
   test('should wrap typeCheck errors in UserError', () => {
-    const typeCheck = (val: any) => {
+    const typeCheck = (_val: any) => {
       throw new Error('Custom error');
     };
     expect(() => evalArray([1, 2], typeCheck)).toThrow(UserError);

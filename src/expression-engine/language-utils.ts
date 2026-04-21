@@ -1,14 +1,14 @@
-import isObject from 'lodash/isObject.js';
-import omit from 'lodash/omit.js';
-import ms from 'ms';
 import {
   type Delegate,
   type ExpressionThunk,
   type ExpressionValue,
   isArgumentsArray,
 } from 'expressionparser/dist/ExpressionParser.js';
-import { toArray } from '../utils/utils';
+import isObject from 'lodash/isObject.js';
+import omit from 'lodash/omit.js';
+import ms from 'ms';
 import { UserError } from '../utils/errors';
+import { toArray } from '../utils/utils';
 
 export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();

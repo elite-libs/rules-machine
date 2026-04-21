@@ -26,10 +26,15 @@
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noShadowRestrictedNames": "off"
+        "noShadowRestrictedNames": "off",
+        "noThenProperty": "warn"
       },
       "complexity": {
         "noUselessFragments": "off"
+      },
+      "correctness": {
+        "noConstructorReturn": "warn",
+        "noUnusedImports": "warn"
       }
     }
   },

@@ -1,5 +1,5 @@
-import { describe, expect, test, it } from 'vitest';
-import { ruleFactory, type ExecutionResult } from './index';
+import { describe, expect, it, test } from 'vitest';
+import { type ExecutionResult, ruleFactory } from './index';
 import mockDateHelper from './utils/mockDateHelper';
 
 const omitRuntime = ({

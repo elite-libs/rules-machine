@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/quotes */
 import type {
-  Handler,
-  APIGatewayProxyResult,
   APIGatewayProxyEventV2WithRequestContext,
+  APIGatewayProxyResult,
   Context,
+  Handler,
 } from 'aws-lambda';
 import { rulesMachineFactory } from './lib';
 import type { RulesCallback } from './lib/types';

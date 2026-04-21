@@ -10,7 +10,7 @@ export default function mockDateHelper(targetDate: Date | string | number) {
       if (args.length === 0) return currentDate;
 
       // @ts-expect-error
-      return new RealDate(...args);
+      new RealDate(...args);
     }
 
     static now = () => currentDate.getTime();

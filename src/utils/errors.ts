@@ -1,6 +1,6 @@
 export class UserError extends Error {
   name = 'UserError';
-  constructor(message: string, debugMode = true) {
+  constructor(message: string, _debugMode = true) {
     super(message);
     // this.stack = debugMode ? this.stack : '';
   }

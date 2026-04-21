@@ -33,8 +33,7 @@ import {
   unpackArgs,
 } from './language-utils';
 
-const hasOwnProperty = (obj: object, key: string) =>
-  Object.prototype.hasOwnProperty.call(obj, key);
+const hasOwnProperty = (obj: object, key: string) => Object.hasOwn(obj, key);
 export interface FunctionOps {
   [op: string]: (...args: ExpressionThunk[]) => ExpressionValue;
 }
@@ -48,7 +47,7 @@ TODO: Look into additional modifier operators:
 - `||=`
 */
 
-const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
+const getInfixOps = (_termDelegate: TermDelegate): InfixOps => ({
   '+': (a, b) => num(a()) + num(b()),
   '-': (a, b) => num(a()) - num(b()),
   '*': (a, b) => num(a()) * num(b()),
@@ -79,18 +78,18 @@ const getInfixOps = (termDelegate: TermDelegate): InfixOps => ({
   '<=': (a, b) => a() <= b(),
   AND: (a, b) => a() && b(),
   OR: (a, b) => a() || b(),
-  '^': (a, b) => Math.pow(num(a()), num(b())),
+  '^': (a, b) => num(a()) ** num(b()),
 });
 
 type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
 
 type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
 
-export const ruleExpressionLanguage = function (
+export const ruleExpressionLanguage = (
   termDelegate: TermDelegate,
   termTypeDelegate?: TermTyper,
-  termSetter?: TermSetterFunction,
-): ExpressionParserOptions {
+  _termSetter?: TermSetterFunction,
+): ExpressionParserOptions => {
   const infixOps = getInfixOps(termDelegate);
   // const infixOps = moduleMethodTracer(getInfixOps(termDelegate), console.log);
 
@@ -206,9 +205,9 @@ export const ruleExpressionLanguage = function (
     CHAR: (arg) => String.fromCharCode(num(arg())),
     CODE: (arg) => char(arg()).charCodeAt(0),
 
-    DEC2BIN: (arg) => Number.parseInt(string(arg())).toString(2),
-    DEC2HEX: (arg) => Number.parseInt(string(arg())).toString(16),
-    DEC2STR: (arg) => Number.parseInt(string(arg())).toString(10),
+    DEC2BIN: (arg) => Number.parseInt(string(arg()), 10).toString(2),
+    DEC2HEX: (arg) => Number.parseInt(string(arg()), 10).toString(16),
+    DEC2STR: (arg) => Number.parseInt(string(arg()), 10).toString(10),
     BIN2DEC: (arg) => Number.parseInt(string(arg()), 2),
     HEX2DEC: (arg) => Number.parseInt(string(arg()), 16),
     STR2DEC: (arg) => Number.parseInt(string(arg()), 10),
@@ -252,7 +251,7 @@ export const ruleExpressionLanguage = function (
       return str.split('');
     },
     ARRAY: (arg) => array(arg()),
-    ISNAN: (arg) => isNaN(num(arg())),
+    ISNAN: (arg) => Number.isNaN(num(arg())),
     MAP: (arg1, arg2) => {
       const func = arg1();
       const arr = evalArray(arg2());
@@ -543,7 +542,7 @@ export const ruleExpressionLanguage = function (
       },
     },
     // @ts-expect-error
-    termDelegate: function (term: string) {
+    termDelegate: (term: string) => {
       const numVal = parseFloat(term);
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
@@ -585,7 +584,7 @@ export const ruleExpressionLanguage = function (
       }
     },
 
-    termTyper: function (term: string): TermType {
+    termTyper: (term: string): TermType => {
       const numVal = parseFloat(term);
 
       if (Number.isNaN(numVal)) {

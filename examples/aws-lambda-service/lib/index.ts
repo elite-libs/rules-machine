@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { ruleFactory, type Rule } from '../../../src/index';
-import { mapValues, flow } from 'lodash';
+
+import { flow, mapValues } from 'lodash';
 import { tap } from 'lodash/fp';
+import { type Rule, ruleFactory } from '../../../src/index';
 import { inputAdapter, outputAdapter } from './transformers';
 import type { RuleMapping, RulesCallback } from './types';
 

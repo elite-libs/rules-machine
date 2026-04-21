@@ -1,21 +1,21 @@
 import { createExpressionEngine } from './expression-engine/engine';
+import type { ExecutionResult } from './structural-engine/executor';
 import { createRuleExecutor } from './structural-engine/executor';
 import type { Rule } from './structural-engine/types';
-import type { ExecutionResult } from './structural-engine/executor';
 
-export { extractValueOrLiteral } from './structural-engine/executor';
-export type { Rule } from './structural-engine/types';
 export type {
-  ExpressionEngine,
   CompiledExpression,
+  ExpressionEngine,
   TermResolver,
 } from './expression-engine/engine';
 export type {
-  RuleExecutor,
-  ExecutorOptions,
   ExecutionResult,
+  ExecutorOptions,
+  RuleExecutor,
   TraceRow,
 } from './structural-engine/executor';
+export { extractValueOrLiteral } from './structural-engine/executor';
+export type { Rule } from './structural-engine/types';
 
 interface RuleMachineOptions {
   trace?: boolean;

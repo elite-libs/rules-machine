@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import { ruleFactory } from '../index';
-import { UserError } from '../utils/errors';
 
 describe('Executor edge cases', () => {
   test('should handle nested array rules properly', () => {

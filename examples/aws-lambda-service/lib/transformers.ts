@@ -1,5 +1,5 @@
-import { get, set, isString, isBoolean, isObjectLike, isArray } from 'lodash';
-import type { RuleMapping, FieldKeyMapping, FieldPath } from './types';
+import { get, isArray, isBoolean, isObjectLike, isString, set } from 'lodash';
+import type { FieldKeyMapping, FieldPath, RuleMapping } from './types';
 
 /**
  *

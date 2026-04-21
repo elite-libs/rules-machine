@@ -1,12 +1,11 @@
-import { performance } from 'perf_hooks';
+import { performance } from 'node:perf_hooks';
+import type { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
 import get from 'lodash/get.js';
 import set from 'lodash/set.js';
-import type { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
 import type { ExpressionEngine } from '../expression-engine/engine';
-import { toArray } from '../utils/utils';
-import { isBoolean, isNumber, autoDetectType } from '../utils/utils';
 import { UserError } from '../utils/errors';
-import type { Rule, AndRule, OrRule } from './types';
+import { autoDetectType, isBoolean, isNumber, toArray } from '../utils/utils';
+import type { AndRule, OrRule, Rule } from './types';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
