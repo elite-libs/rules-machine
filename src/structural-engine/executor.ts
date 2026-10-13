@@ -1,18 +1,33 @@
-import { performance } from 'node:perf_hooks';
 import type { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
-import get from 'lodash/get.js';
-import set from 'lodash/set.js';
 import type { ExpressionEngine } from '../expression-engine/engine';
 import { UserError } from '../utils/errors';
-import { autoDetectType, isBoolean, isNumber, toArray } from '../utils/utils';
+import { getOwnPath as get, setOwnPath as set } from '../utils/paths';
+import { toArray } from '../utils/utils';
 import type { AndRule, OrRule, Rule } from './types';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-const trailingQuotes = /^('|").*('|")$/g;
+const trailingQuotes = /^(['"])([\s\S]*)\1$/;
 
-const serialize = (data: unknown) =>
-  data !== null && typeof data === 'object' ? JSON.stringify(data) : data;
+const serialize = (data: unknown) => {
+  if (data === null || typeof data !== 'object')
+    return typeof data === 'bigint' ? String(data) : data;
+  const ancestors: object[] = [];
+  try {
+    return JSON.stringify(data, function (_key, value) {
+      if (typeof value === 'bigint') return String(value);
+      if (value !== null && typeof value === 'object') {
+        while (ancestors.length && ancestors[ancestors.length - 1] !== this)
+          ancestors.pop();
+        if (ancestors.includes(value)) return '[Circular]';
+        ancestors.push(value);
+      }
+      return value;
+    });
+  } catch {
+    return '[Unserializable]';
+  }
+};
 
 const arrayMethods = ['map', 'filter', 'every', 'some', 'find'] as const;
 const isArrayRule = (data: object) =>
@@ -86,7 +101,9 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
     rules: Rule,
     input: TInput = {} as TInput,
   ): TReturn | ExecutionResult<TInput> {
+    validateRule(rules);
     const traceSimple: TraceRow[] = [];
+    const snapshot = trace ? serialize : (_data: unknown) => undefined;
 
     function logTrace({ operation, rule, ...args }: TraceRow) {
       if (trace) traceSimple.push({ operation, rule, ...args });
@@ -94,7 +111,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
 
     let stepRow = 0;
     let stepCount = 0;
-    const BREAK = 'BREAK';
+    const BREAK = Symbol('return');
 
     const results: ExecutionResult<TInput> = {
       input,
@@ -114,14 +131,13 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
     const mutableInput = input as MutableInput;
     const termResolver = (term: string): ExpressionValue => {
       try {
-        const result =
-          extractValueOrLiteral(
-            mutableInput,
-            term,
-            stepRow,
-            stepCount,
-            ignoreMissingKeys,
-          ) ?? get(mutableInput, term, undefined as unknown as ExpressionValue);
+        const result = extractValueOrLiteral(
+          mutableInput,
+          term,
+          stepRow,
+          stepCount,
+          ignoreMissingKeys,
+        );
         logTrace({
           operation: 'key.lookup',
           key: term,
@@ -138,6 +154,20 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
 
     // ── handleRule ───────────────────────────────────────────────────────────
 
+    const evaluateCondition = (
+      condition: string | AndRule | OrRule,
+    ): unknown => {
+      if (typeof condition === 'string')
+        return evaluateRule({ stepRow, input, rule: condition });
+      if ('and' in condition && Object.hasOwn(condition, 'and'))
+        return condition.and.every((child) =>
+          Boolean(evaluateCondition(child)),
+        );
+      return (condition as OrRule).or.some((child) =>
+        Boolean(evaluateCondition(child)),
+      );
+    };
+
     const handleRule = (rule: Rule): unknown => {
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
@@ -145,116 +175,85 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           logTrace({
             operation: 'ruleString',
             rule,
-            result: serialize(results.lastValue),
-            currentState: serialize(input),
+            result: snapshot(results.lastValue),
+            currentState: snapshot(input),
             stepRow,
             stepCount,
           });
       } else if (Array.isArray(rule)) {
-        results.lastValue = rule.map((r) =>
-          typeof r === 'string'
-            ? evaluateRule({ stepRow, input, rule: r, ignoreMissingKeys })
-            : handleRule(r),
-        );
+        const values: unknown[] = [];
+        for (const child of rule) {
+          const value =
+            typeof child === 'string'
+              ? evaluateRule({ stepRow, input, rule: child, ignoreMissingKeys })
+              : handleRule(child);
+          if (value === BREAK) return BREAK;
+          values.push(value);
+        }
+        results.lastValue = values;
         if (trace)
           logTrace({
             operation: 'ruleString[]',
             rule,
-            result: serialize(results.lastValue),
-            currentState: serialize(input),
+            result: snapshot(results.lastValue),
+            currentState: snapshot(input),
             stepRow,
             stepCount,
           });
-      } else if ('if' in rule) {
+      } else if ('if' in rule && Object.hasOwn(rule, 'if')) {
         results.lastValue = input;
 
-        let conditionResult: RuleResult;
+        const conditionResult = evaluateCondition(rule.if);
+        if (trace)
+          logTrace({
+            operation:
+              typeof rule.if === 'string'
+                ? 'if'
+                : 'and' in rule.if
+                  ? 'if.and'
+                  : 'if.or',
+            rule:
+              typeof rule.if === 'string'
+                ? rule.if
+                : 'and' in rule.if
+                  ? rule.if.and
+                  : rule.if.or,
+            result: snapshot(conditionResult),
+            currentState: snapshot(input),
+            stepRow,
+            stepCount,
+          });
 
-        if (typeof rule.if === 'object' && 'and' in rule.if) {
-          const and = toArray((rule.if as AndRule).and);
-          for (const ruleItem of and) {
-            if (typeof ruleItem === 'string') {
-              conditionResult = evaluateRule({
-                stepRow,
-                input,
-                rule: ruleItem,
-              });
-              if (!conditionResult) break;
-            }
-          }
-          if (trace)
-            logTrace({
-              operation: 'if.and',
-              rule: and,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-        } else if (typeof rule.if === 'object' && 'or' in rule.if) {
-          const or = toArray((rule.if as OrRule).or);
-          for (const ruleItem of or) {
-            if (typeof ruleItem === 'string') {
-              conditionResult = evaluateRule({
-                stepRow,
-                input,
-                rule: ruleItem,
-              });
-              if (conditionResult) break;
-            }
-          }
-          if (trace)
-            logTrace({
-              operation: 'if.or',
-              rule: or,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-        } else if (typeof rule.if !== 'string' && Array.isArray(rule.if)) {
-          throw new UserError(
-            'The `if` value must be a string or logical object (e.g. `{and/if: []}`.) Arrays are currently not supported.',
-          );
-        } else if (typeof rule.if === 'string') {
-          conditionResult = Boolean(
-            evaluateRule({ stepRow, input, rule: rule.if }),
-          );
-          if (trace)
-            logTrace({
-              operation: 'if',
-              rule: rule.if,
-              result: serialize(conditionResult),
-              currentState: serialize(input),
-              stepRow,
-              stepCount,
-            });
-        }
-
-        if (conditionResult && rule.then) {
+        if (conditionResult) {
           if (trace)
             logTrace({
               operation: 'if.then',
               rule: rule.then,
-              currentState: serialize(input),
+              currentState: snapshot(input),
               stepRow,
               stepCount,
             });
-          handleRule(rule.then);
-        } else if (!conditionResult && rule.else) {
+          if (handleRule(rule.then) === BREAK) return BREAK;
+        } else if (Object.hasOwn(rule, 'else')) {
           if (trace)
             logTrace({
               operation: 'if.else',
               rule: rule.else,
-              currentState: serialize(input),
+              currentState: snapshot(input),
               stepRow,
               stepCount,
             });
-          handleRule(rule.else);
+          if (rule.else !== undefined && handleRule(rule.else) === BREAK)
+            return BREAK;
         } else {
           results.lastValue = input;
         }
-      } else if ('return' in rule) {
+      } else if (
+        ('and' in rule && Object.hasOwn(rule, 'and')) ||
+        ('or' in rule && Object.hasOwn(rule, 'or'))
+      ) {
+        results.lastValue = evaluateCondition(rule);
+      } else if ('return' in rule && Object.hasOwn(rule, 'return')) {
         const returnResult = evaluateRule({
           stepRow,
           input,
@@ -267,8 +266,8 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           logTrace({
             operation: 'return',
             rule: rule.return,
-            result: serialize(returnResult),
-            currentState: serialize(input),
+            result: snapshot(returnResult),
+            currentState: snapshot(input),
             stepRow,
             stepCount,
           });
@@ -299,7 +298,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           logTrace({
             operation: arrayOperator,
             rule,
-            currentState: serialize(input),
+            currentState: snapshot(input),
             stepRow,
             stepCount,
           });
@@ -314,9 +313,27 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
         const arrayResult = arrayMethod.call(
           toArray(data),
           (item: unknown, index: number) => {
-            Object.assign(input, { $item: item, $index: index, $array: data });
-            handleRule(runRule);
-            return results.lastValue;
+            const contextKeys = ['$item', '$index', '$array'] as const;
+            const descriptors = contextKeys.map((key) =>
+              Object.getOwnPropertyDescriptor(input, key),
+            );
+            const previousReturnValue = results.returnValue;
+            try {
+              Object.assign(input, {
+                $item: item,
+                $index: index,
+                $array: data,
+              });
+              handleRule(runRule);
+              return results.lastValue;
+            } finally {
+              results.returnValue = previousReturnValue;
+              contextKeys.forEach((key, i) => {
+                const descriptor = descriptors[i];
+                if (descriptor) Object.defineProperty(input, key, descriptor);
+                else delete input[key];
+              });
+            }
           },
         );
         results.lastValue = arrayResult;
@@ -324,26 +341,30 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
         if ('set' in rule) {
           set(input, (rule as { set: string }).set, arrayResult);
         }
-      } else if ('try' in rule && 'catch' in rule) {
+      } else if (
+        'try' in rule &&
+        'catch' in rule &&
+        Object.hasOwn(rule, 'try')
+      ) {
         try {
           if (trace)
             logTrace({
               operation: 'try',
               rule: rule.try,
-              currentState: serialize(input),
+              currentState: snapshot(input),
               stepRow,
               stepCount,
             });
-          handleRule(rule.try);
+          if (handleRule(rule.try) === BREAK) return BREAK;
         } catch {
           logTrace({
             operation: 'catch',
             rule: rule.catch,
-            currentState: serialize(input),
+            currentState: snapshot(input),
             stepRow,
             stepCount,
           });
-          handleRule(rule.catch);
+          if (handleRule(rule.catch) === BREAK) return BREAK;
         }
       }
 
@@ -358,7 +379,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
       | number
       | null
       | undefined
-      | {}
+      | object
       | Array<string | boolean | number | null | undefined>;
 
     function evaluateRule({
@@ -393,18 +414,20 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
         const compiled = expressionEngine.compile(rule);
 
         if (compiled.assignmentOperator) {
-          const lhs = compiled.lhs!;
+          const lhs = compiled.lhs;
+          if (typeof lhs !== 'string')
+            throw new UserError('Assignment requires a left-hand input path');
           const value = expressionEngine.evaluate(compiled, termResolver);
           const previous = get(input, lhs);
           set(input, lhs, value);
           results.lastValue = value;
           logTrace({
             operation: 'evalRule',
-            result: serialize(input),
+            result: snapshot(input),
             rule,
             lhs,
             value,
-            previous: serialize(previous),
+            previous: snapshot(previous),
             stepRow,
             stepCount,
           });
@@ -451,7 +474,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           operation: 'error',
           runTime: performance.now() - startTime,
           stepCount,
-          currentState: serialize(input),
+          currentState: snapshot(input),
           stepRow,
           lastValue: e instanceof Error ? e.message : String(e),
         });
@@ -464,9 +487,9 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
       operation: 'complete',
       runTime: performance.now() - startTime,
       stepCount,
-      currentState: serialize(input),
+      currentState: snapshot(input),
       stepRow,
-      lastValue: serialize(getReturnValue()),
+      lastValue: snapshot(getReturnValue()),
     });
 
     if (trace) {
@@ -490,17 +513,20 @@ export function extractValueOrLiteral<TInput extends Record<string, unknown>>(
   ignoreMissingKeys?: boolean,
 ): ExpressionValue | undefined {
   const value = get(input, token);
-  if (value != null) return value as ExpressionValue;
+  if (value !== undefined) return value as ExpressionValue;
 
-  if (trailingQuotes.test(token)) return token.replace(trailingQuotes, '');
-  if (isNumber(token) || isBoolean(token))
-    return autoDetectType(token) as ExpressionValue;
+  const quoted = trailingQuotes.exec(token);
+  if (quoted) return quoted[2];
+  if (/^(true|false|yes|no|on|off)$/i.test(token))
+    return /^(true|yes|on)$/i.test(token);
+  if (/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(token))
+    return Number(token);
 
   if (!ignoreMissingKeys && token.length > 0)
-    throw new Error(`Undefined key: ${token}`);
+    throw new UserError(`Undefined key: ${token}`);
 
   if (ignoreMissingKeys) return undefined;
-  throw Error(
+  throw new UserError(
     `Unrecognized token in rule expression ${token} (${stepRow}, ${stepCount})`,
   );
 }
@@ -527,4 +553,83 @@ function checkInvalidKeys<TInput extends object>(data: TInput) {
       `Input contains reserved field name: ${arrayFields.join(', ')}`,
     );
   return data;
+}
+
+/** Validate the complete program before any input mutation occurs. */
+function validateRule(rules: Rule) {
+  const active = new WeakSet<object>();
+  let nodes = 0;
+  const fail = (message: string): never => {
+    throw new UserError(`Invalid rule: ${message}`);
+  };
+  const visit = (value: unknown, depth: number, logicalOnly = false): void => {
+    if (++nodes > 10_000) fail('maximum node count (10000) exceeded');
+    if (depth > 100) fail('maximum nesting depth (100) exceeded');
+    if (typeof value === 'string') return;
+    if (!value || typeof value !== 'object')
+      fail('expected a string or rule object');
+    const object = value as Record<string, unknown>;
+    if (active.has(object)) fail('cyclic rule structure');
+    active.add(object);
+    try {
+      if (Array.isArray(object)) {
+        if (logicalOnly)
+          fail(
+            'The `if` value must be a string or logical object; arrays are not supported',
+          );
+        for (const child of object) visit(child, depth + 1);
+        return;
+      }
+      const prototype = Object.getPrototypeOf(object);
+      if (prototype !== null && prototype !== Object.prototype)
+        fail('rule objects must have a plain or null prototype');
+      const keys = Object.keys(object);
+      const operators = keys.filter((key) =>
+        ['if', 'and', 'or', 'return', 'try', ...arrayMethods].includes(key),
+      );
+      if (operators.length !== 1)
+        fail('expected exactly one structural operator');
+      const operator = operators[0];
+      if (logicalOnly && operator !== 'and' && operator !== 'or')
+        fail('condition must be a string or logical object');
+      const allowed =
+        operator === 'if'
+          ? ['if', 'then', 'else']
+          : operator === 'try'
+            ? ['try', 'catch']
+            : (arrayMethods as readonly string[]).includes(operator)
+              ? [operator, 'run', 'set']
+              : [operator];
+      if (keys.some((key) => !allowed.includes(key)))
+        fail(`unexpected key in ${operator} rule`);
+      if (operator === 'and' || operator === 'or') {
+        if (!Array.isArray(object[operator]))
+          fail(`${operator} must be an array`);
+        for (const child of object[operator] as unknown[])
+          visit(child, depth + 1, true);
+      } else if (operator === 'if') {
+        visit(object.if, depth + 1, true);
+        if (!Object.hasOwn(object, 'then')) fail('if requires then');
+        visit(object.then, depth + 1);
+        if (Object.hasOwn(object, 'else')) visit(object.else, depth + 1);
+      } else if (operator === 'try') {
+        visit(object.try, depth + 1);
+        if (!Object.hasOwn(object, 'catch')) fail('try requires catch');
+        visit(object.catch, depth + 1);
+      } else if (operator === 'return') {
+        if (typeof object.return !== 'string')
+          fail('return must be a string expression');
+      } else {
+        if (typeof object[operator] !== 'string')
+          fail(`${operator} must be an input path`);
+        if (Object.hasOwn(object, 'set') && typeof object.set !== 'string')
+          fail('set must be an input path');
+        if (!Object.hasOwn(object, 'run')) fail(`${operator} requires run`);
+        visit(object.run, depth + 1);
+      }
+    } finally {
+      active.delete(object);
+    }
+  };
+  visit(rules, 0);
 }
