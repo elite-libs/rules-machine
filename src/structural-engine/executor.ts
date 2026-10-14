@@ -86,7 +86,7 @@ type MutableInput = {
   [k: string]: string | boolean | number | null | undefined | MutableInput;
 };
 
-export function createRuleExecutor<TInput extends Record<string, unknown>>(
+export function createRuleExecutor<TInput extends object>(
   expressionEngine: ExpressionEngine,
   options: ExecutorOptions = { trace: false, ignoreMissingKeys: true },
 ): RuleExecutor<TInput> {
@@ -332,7 +332,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
             contextKeys.forEach((key, i) => {
               const descriptor = descriptors[i];
               if (descriptor) Object.defineProperty(input, key, descriptor);
-              else delete input[key];
+              else delete (input as Record<string, unknown>)[key];
             });
           }
         };
@@ -555,7 +555,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
 
 // ─── Utility (also exported for use in index.ts) ─────────────────────────────
 
-export function extractValueOrLiteral<TInput extends Record<string, unknown>>(
+export function extractValueOrLiteral<TInput extends object>(
   input: TInput,
   token: string,
   stepRow?: number,

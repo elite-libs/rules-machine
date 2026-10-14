@@ -40,6 +40,10 @@ try {
     import { ruleFactory, createExpressionEngine, ResourceLimitError,
       type ExecutionResult, type RuleMachineOptions } from '@elite-libs/rules-machine';
     const plain: number = ruleFactory('1')<number>({});
+    interface Invoice { subtotal: number; customer: { tier: string } }
+    const typed: number = ruleFactory<Invoice>('subtotal')<number>({
+      subtotal: 42, customer: {tier: 'gold'},
+    });
     const traced: ExecutionResult<{x: number}> & {lastValue: number} =
       ruleFactory<{x: number}>('x', {trace: true})<number>({x: 1});
     const options: RuleMachineOptions = {trace: Math.random() > 0.5,
@@ -50,7 +54,7 @@ try {
     const error: Error = new ResourceLimitError('limited');
     // @ts-expect-error Traced results are not plain numeric results.
     const invalid: number = ruleFactory('1', {trace: true})<number>({});
-    void [plain, traced, dynamic, retainedBytes, error, invalid];
+    void [plain, typed, traced, dynamic, retainedBytes, error, invalid];
   `);
   execFileSync(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'),
     '--noEmit', '--strict', '--skipLibCheck', '--module', 'NodeNext',

@@ -45,24 +45,22 @@ export type DynamicRulePipeline<TInput> = <TReturn = unknown>(
   input?: TInput,
 ) => TReturn | ExecutionResult<TInput>;
 
-export function ruleFactory<
-  TInput extends Record<string, unknown> = Record<string, unknown>,
->(
+export function ruleFactory<TInput extends object = Record<string, unknown>>(
   rules: Rule,
   options: RuleMachineOptions & { trace: true },
 ): TracedRulePipeline<TInput>;
-export function ruleFactory<
-  TInput extends Record<string, unknown> = Record<string, unknown>,
->(
+export function ruleFactory<TInput extends object = Record<string, unknown>>(
   rules: Rule,
   options?: RuleMachineOptions & { trace?: false },
 ): RulePipeline<TInput>;
-export function ruleFactory<
-  TInput extends Record<string, unknown> = Record<string, unknown>,
->(rules: Rule, options: RuleMachineOptions): DynamicRulePipeline<TInput>;
-export function ruleFactory<
-  TInput extends Record<string, unknown> = Record<string, unknown>,
->(rules: Rule, options: RuleMachineOptions = {}): DynamicRulePipeline<TInput> {
+export function ruleFactory<TInput extends object = Record<string, unknown>>(
+  rules: Rule,
+  options: RuleMachineOptions,
+): DynamicRulePipeline<TInput>;
+export function ruleFactory<TInput extends object = Record<string, unknown>>(
+  rules: Rule,
+  options: RuleMachineOptions = {},
+): DynamicRulePipeline<TInput> {
   const expressionEngine = createExpressionEngine(options.expression);
   const executor = createRuleExecutor<TInput>(expressionEngine, options);
 
