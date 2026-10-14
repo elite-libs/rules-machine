@@ -127,3 +127,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+experiments/rusty-rules/target/
+performance/comparison/artifacts/
+performance/comparison/baseline/
+
+node_modules
