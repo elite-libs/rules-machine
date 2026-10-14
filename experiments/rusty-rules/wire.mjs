@@ -1,36 +1,85 @@
-/** Collision-free tagged-v1 tree wire. Dense arrays, own enumerable data only. */
-export function encode(value, active = new Set(), depth = 0) {
-  if (depth > 40) throw new TypeError('Wire value nesting exceeds 40');
-  if (value === undefined) return ['undefined'];
-  if (value === null) return ['null'];
-  if (typeof value === 'boolean') return ['boolean', value];
-  if (typeof value === 'number') return ['number', Number.isNaN(value) ? 'NaN' : value === Infinity ? 'Infinity' : value === -Infinity ? '-Infinity' : Object.is(value, -0) ? '-0' : value];
-  if (typeof value === 'string') {if(!value.isWellFormed())throw new TypeError('Lone UTF-16 surrogates are unsupported');return ['string', value];}
-  if (typeof value !== 'object') throw new TypeError('Wire accepts data values only');
-  if (active.has(value)) throw new TypeError('Cyclic values cannot cross the wire');
-  if (Object.getOwnPropertySymbols(value).length) throw new TypeError('Symbol properties are unsupported');
-  active.add(value);
-  try {
-    if (Array.isArray(value)) {
-      const out=[];
-      for(let i=0;i<value.length;i++) {
-        const descriptor=Object.getOwnPropertyDescriptor(value,String(i));
-        if(!descriptor||!('value' in descriptor))throw new TypeError('Sparse/accessor arrays are unsupported');
-        out.push(encode(descriptor.value,active,depth+1));
+import { types } from 'node:util';
+
+/** The worker's frame limit also bounds parent-side tree expansion. */
+export const MAX_WIRE_BYTES = 8 * 1024 * 1024;
+const MAX_WIRE_DEPTH = 40;
+
+function frameLimit() {
+  const error = new RangeError('Wire value exceeds conservative 8 MiB frame budget');
+  error.code = 'FRAME_LIMIT';
+  throw error;
+}
+function bounded(bytes) {
+  if (bytes > MAX_WIRE_BYTES) frameLimit();
+  return bytes;
+}
+function stringBytes(value) {
+  // JSON may escape each UTF-16 code unit as six ASCII bytes. Check size before
+  // inspecting/serializing a large string, and never call a host conversion hook.
+  const bytes = bounded(6 * value.length + 2);
+  if (!String.prototype.isWellFormed.call(value)) throw new TypeError('Lone UTF-16 surrogates are unsupported');
+  return bytes;
+}
+
+/** Collision-free tagged-v1 tree wire. Dense arrays, own enumerable data only.
+ * Preflight memoizes graph sizes, including repeated aliases' expanded costs.
+ * No wire arrays are allocated until the entire bounded graph has passed. */
+export function encode(value) {
+  const active = new Set();
+  const memo = new WeakMap();
+  function measure(value, depth) {
+    if (depth > MAX_WIRE_DEPTH) throw new TypeError('Wire value nesting exceeds 40');
+    if (value === undefined) return { tag: 'undefined', bytes: 32, height: 0 };
+    if (value === null) return { tag: 'null', bytes: 32, height: 0 };
+    if (typeof value === 'boolean') return { tag: 'boolean', value, bytes: 32, height: 0 };
+    if (typeof value === 'number') return { tag: 'number', value: Number.isNaN(value) ? 'NaN' : value === Infinity ? 'Infinity' : value === -Infinity ? '-Infinity' : Object.is(value, -0) ? '-0' : value, bytes: 48, height: 0 };
+    if (typeof value === 'string') return { tag: 'string', value, bytes: bounded(32 + stringBytes(value)), height: 0 };
+    if (typeof value !== 'object') throw new TypeError('Wire accepts data values only');
+    // Reflection on a Proxy can execute arbitrary traps; reject without touching it.
+    if (types.isProxy(value)) throw new TypeError('Proxy values are unsupported');
+    if (active.has(value)) throw new TypeError('Cyclic values cannot cross the wire');
+    const cached = memo.get(value);
+    if (cached) {
+      if (depth + cached.height > MAX_WIRE_DEPTH) throw new TypeError('Wire value nesting exceeds 40');
+      return cached;
+    }
+    const isArray = Array.isArray(value);
+    if (!isArray && ![null, Object.prototype].includes(Object.getPrototypeOf(value))) throw new TypeError('Host object prototypes are unsupported');
+    // Even the smallest child costs at least 32 bytes in the conservative bound.
+    // This rejects huge sparse arrays before any per-index loop or allocation.
+    const length = isArray ? Object.getOwnPropertyDescriptor(value, 'length').value : undefined;
+    if (isArray) bounded(32 + length * 32);
+    const keys = Reflect.ownKeys(value);
+    if (keys.some(key => typeof key !== 'string')) throw new TypeError('Symbol properties are unsupported');
+    if (isArray && keys.length !== length + 1) throw new TypeError('Sparse/named arrays are unsupported');
+    if (!isArray) bounded(32 + keys.length * 40);
+    active.add(value);
+    try {
+      const node = { tag: isArray ? 'array' : 'object', children: [], bytes: 32, height: 0 };
+      const entries = isArray ? Array.from({ length }, (_, index) => String(index)) : keys;
+      for (const key of entries) {
+        const descriptor = Object.getOwnPropertyDescriptor(value, key);
+        if (!descriptor || !('value' in descriptor) || !descriptor.enumerable) throw new TypeError('Sparse/accessor/non-enumerable properties are unsupported');
+        const keyBytes = isArray ? 0 : bounded(8 + stringBytes(key));
+        // Charge key/node cost before descending or allocating an entry tuple.
+        bounded(node.bytes + keyBytes + 32);
+        const child = measure(descriptor.value, depth + 1);
+        node.bytes = bounded(node.bytes + keyBytes + child.bytes);
+        node.height = Math.max(node.height, child.height + 1);
+        node.children.push(isArray ? child : [key, child]);
       }
-      if(Object.getOwnPropertyNames(value).some(key=>key!=='length'&&!/^\d+$/.test(key)))throw new TypeError('Named array properties are unsupported');
-      return ['array',out];
-    }
-    if(![null,Object.prototype].includes(Object.getPrototypeOf(value)))throw new TypeError('Host object prototypes are unsupported');
-    const out=[];
-    if(Object.getOwnPropertyNames(value).length!==Object.keys(value).length)throw new TypeError('Non-enumerable object properties are unsupported');
-    for(const key of Object.keys(value)) {
-      const descriptor=Object.getOwnPropertyDescriptor(value,key);
-      if(!('value' in descriptor))throw new TypeError('Accessor properties are unsupported');
-      out.push([key,encode(descriptor.value,active,depth+1)]);
-    }
-    return ['object',out];
-  } finally { active.delete(value); }
+      memo.set(value, node);
+      return node;
+    } finally { active.delete(value); }
+  }
+  const root = measure(value, 0);
+  function build(node) {
+    if (node.tag === 'undefined' || node.tag === 'null') return [node.tag];
+    if (node.tag === 'array') return ['array', node.children.map(build)];
+    if (node.tag === 'object') return ['object', node.children.map(([key, child]) => [key, build(child)])];
+    return [node.tag, node.value];
+  }
+  return build(root);
 }
 export function decode(wire, depth=0) {
   if(depth>40||!Array.isArray(wire)||typeof wire[0]!=='string')throw new TypeError('Invalid tagged-v1 value');
