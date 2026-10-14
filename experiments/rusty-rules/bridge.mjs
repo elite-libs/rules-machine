@@ -1,5 +1,10 @@
 import { spawn } from 'node:child_process';
 import { encode, decode } from './wire.mjs';
+function ruleData(rules){
+  const value=decode(encode(rules));
+  function check(v){if(v===undefined||typeof v==='number'&&!Number.isFinite(v))throw new TypeError('Rules require ordinary JSON values');if(v&&typeof v==='object')for(const child of Object.values(v))check(child);}
+  check(value);return value;
+}
 export class RustBridgeError extends Error {
   constructor(code,message,options){super(message,options);this.name='RustBridgeError';this.code=code;}
 }
@@ -66,9 +71,9 @@ export class RustBridge {
       this.#child.stdin.write(frame,error=>{if(error)this.#fail(new RustBridgeError('WRITE_FAILED',error.message,{cause:error}));});
     });
   }
-  async prepare(rules,options){return (await this.request('prepare',{rules},options)).program;}
+  async prepare(rules,options){return (await this.request('prepare',{rules:ruleData(rules)},options)).program;}
   async execute(rules,input={}, {options={},...requestOptions}={}) {
-    const output=await this.request('execute',{rules,input:encode(input),options},requestOptions);
+    const output=await this.request('execute',{rules:ruleData(rules),input:encode(input),options},requestOptions);
     return this.#decode(output);
   }
   async run(program,input={}, {options={},...requestOptions}={}) {

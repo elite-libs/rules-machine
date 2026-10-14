@@ -164,3 +164,19 @@ fn unknown_bare_function_rejects() {
     assert!(Program::compile(&json!("ABS - 2")).is_err());
     assert!(Program::compile(&json!("a..b")).is_err());
 }
+#[test]
+fn response_expansion_and_source_byte_cache_are_bounded() {
+    assert!(
+        Value::from_json(&json!("x".repeat(2 * 1024 * 1024)))
+            .wire()
+            .is_err()
+    );
+    let mut s = Session::default();
+    for _ in 0..12 {
+        s.command(&json!({"op":"prepare","rules":format!("\"{}\"","x".repeat(99_000))}))
+            .unwrap();
+    }
+    let stats = s.command(&json!({"op":"stats"})).unwrap();
+    assert!(stats["programs"].as_u64().unwrap() < 128);
+    assert!(stats["programSourceBytes"].as_u64().unwrap() <= 1048576);
+}
