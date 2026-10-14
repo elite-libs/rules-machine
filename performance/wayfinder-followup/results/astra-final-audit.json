@@ -1,0 +1,69 @@
+{
+  "auditedAt": "2026-10-14T23:30:04.796264+00:00",
+  "reviewer": "gpt-6-astra",
+  "observations": 168,
+  "pairedBlocks": 12,
+  "observationsPerArm": {
+    "baseline": 84,
+    "tuned": 84
+  },
+  "minimumWarmMs": 250.06601,
+  "iterationCountsMatchFrozenSchedule": true,
+  "countsMatch": true,
+  "digestsMatch": true,
+  "moduleHashes": {
+    "baseline": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+    "tuned": "abe5ec5e021b40f4a89499f430783dc564934242d88d8f83e306b4c7405f78fe"
+  },
+  "modulesMatchRecordedDiskPaths": true,
+  "candidateMatchesScreen": true,
+  "workerUnchanged": true,
+  "sourceIdentityProof": [
+    {
+      "arm": "baseline",
+      "commit": "4f06377",
+      "sourceMapSha256": "e2dbc702c65607375c9d346246970b1d5625a0fece8ba7665a8f65153803131f",
+      "matchingSourceFiles": [
+        "src/expression-engine/engine.ts",
+        "src/utils/errors.ts",
+        "src/utils/budget.ts",
+        "src/utils/paths.ts",
+        "src/utils/mutations.ts",
+        "src/expression-engine/assignment.ts",
+        "src/utils/utils.ts",
+        "src/expression-engine/dates.ts",
+        "src/expression-engine/language-utils.ts",
+        "src/expression-engine/materialize.ts",
+        "src/expression-engine/language.ts",
+        "src/utils/snapshot.ts",
+        "src/structural-engine/executor.ts",
+        "src/index.ts"
+      ],
+      "mismatches": []
+    },
+    {
+      "arm": "candidate",
+      "commit": "9adecf3",
+      "sourceMapSha256": "55a034a60d896b4a938631eeb4fd204d656b746e64e43b4137ceb197992c8c45",
+      "matchingSourceFiles": [
+        "src/expression-engine/engine.ts",
+        "src/utils/errors.ts",
+        "src/utils/budget.ts",
+        "src/utils/mutations.ts",
+        "src/utils/string-path.ts",
+        "src/utils/paths.ts",
+        "src/expression-engine/assignment.ts",
+        "src/utils/utils.ts",
+        "src/expression-engine/dates.ts",
+        "src/expression-engine/language-utils.ts",
+        "src/expression-engine/materialize.ts",
+        "src/expression-engine/language.ts",
+        "src/utils/snapshot.ts",
+        "src/structural-engine/executor.ts",
+        "src/index.ts"
+      ],
+      "mismatches": []
+    }
+  ],
+  "decision": "Approve retained browser bundle improvement and independent error-identity correction; no supported runtime speedup. Slice regressions remain possible under host contention."
+}
