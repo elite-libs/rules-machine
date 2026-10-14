@@ -125,7 +125,7 @@ export function createExpressionEngine(): ExpressionEngine {
           if (tokens[i + 1] === '(' && /^[$A-Z_a-z][$\w.]*$/.test(token)) {
             // This engine exposes only the built-in language's function set.
             // Unknown calls must not degrade to their argument or an undefined term.
-            try { if (!parser.getPrefixOp(token)) throw new Error(); }
+            try { if (!parser.getPrefixOp(token) && !parser.getInfixOp(token)) throw new Error(); }
             catch { throw new UserError(`Unknown function: ${token}`); }
           }
         }
