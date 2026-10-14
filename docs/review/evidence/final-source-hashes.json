@@ -1,0 +1,17 @@
+{
+  "src/index.ts": "3388d24e698c283322812f19edd3220141bd28ce42e2187b1dcc37e157740d8d",
+  "src/expression-engine/engine.ts": "de64eb9a65c41add83f4f8dea825a16ee80477c5988b0da24d74be7b0de7064d",
+  "src/expression-engine/assignment.ts": "5b8aa022636103cf956b009c5d45dde2b62af9f93377510e548ca017bd0b0921",
+  "src/expression-engine/language.ts": "f6fb713585757d4dd7ffb2de81fb6c38480490eddcc28a6ef8b8274bd48c753e",
+  "src/expression-engine/language-utils.ts": "2eaa4574c4102be2e1c6dde50a3a9d2908e8ed203594f51985620d2dc79ea77f",
+  "src/structural-engine/executor.ts": "a6b28f8b8a321564d5c6df4cc2fac7b675044731bd90e2c20ac039d8770b05a1",
+  "src/utils/paths.ts": "e5c934dbbe11bf8567e10c821ba8c4ad119165da67787366c2b3ecea3ea1039d",
+  "src/utils/utils.ts": "bdd344ac695505dbb8b3cfdb950251e3b4141a83b3d7a228af3cf4bb9e7be816",
+  "package.json": "0cc48e3fdb063fc3d2a9775336d56c8c30d481f5699e4f670931d8f7f8673490",
+  "pnpm-lock.yaml": "921fec87d2170dfd92835daf57d26074286598d1103685319bdc917f34678ae5",
+  "performance/comparison/analyze.mjs": "03297ca7d7dd25522790b48cc9bad20cd8cd93fafb7927d224cc49f8724a556a",
+  "performance/comparison/plan.md": "e131acaf5c3af99637b027c0f362e32e0b8f67b367cee1377f591e5e2bd06706",
+  "experiments/rusty-rules/src/main.rs": "cd47e18e85a6b9afd4f5d8473b9a9090ad75ab64ae3884d54517c16b57cde46f",
+  "experiments/rusty-rules/Cargo.lock": "0202e182c25c988edabdc1026cbfdc17c138b0e93d85c2a952eb79192321c7b7",
+  "note": "Final report/source hashes. Measurement-time module/harness hashes remain in performance/comparison/results/2026-10-14/environment.json. Runtime source remains79c23b6; subsequent changes are harness evidence/documentation."
+}

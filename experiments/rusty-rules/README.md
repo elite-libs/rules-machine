@@ -1,6 +1,6 @@
 # Experimental rusty-rules
 
-A local Rust prototype, not a published crate or a drop-in replacement. It parses the same JSON rule strings and structures used by the comparison fixtures into expression/rule trees. The supported subset comprises finite numeric arithmetic/comparisons, primitive equality, booleans and short-circuit AND/OR, JSON string literals, dotted object paths, assignment, sequences, if/then/else and return. Unsupported syntax fails explicitly. Arrays, library functions, null/missing semantics, dynamic dates, compound assignment and the full JavaScript compatibility surface are excluded.
+A local Rust prototype, not a published crate or a drop-in replacement. It parses the same JSON rule strings and structures used by the comparison fixtures into expression/rule trees. The supported subset comprises finite numeric arithmetic/comparisons, primitive equality, booleans and short-circuit AND/OR, JSON string literals, dotted object paths, assignment, sequences, if/then/else and return. The tested rejection cases fail explicitly; accepted syntax outside the validated subset has no compatibility guarantee. Nested returns are currently accepted but unvalidated and must not be used as compatibility evidence. Arrays, library functions, null/missing semantics, dynamic dates, compound assignment and the full JavaScript compatibility surface are excluded.
 
 Build/test: `mise exec rust@1.99.0 -- cargo test --manifest-path experiments/rusty-rules/Cargo.toml` then the same command with `build --release`.
 

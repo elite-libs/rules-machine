@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-10-14T00:10:59Z",
+  "tool": "T3 Code collaborative preview_evaluate",
+  "bundleSourceRevision": "79c23b6",
+  "passed": true,
+  "actualNestedReturn": 1,
+  "emptyArray": [],
+  "singletonArray": [1],
+  "nullValue": null,
+  "require": "undefined",
+  "process": "undefined",
+  "note": "Browser navigation initially reported client errors; execution verified after bundle injection in bounded chunks. Packed browser-global also passed isolated VM smoke tests."
+}

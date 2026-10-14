@@ -4,4 +4,6 @@ Parent: [Wayfinder](../WAYFINDER.md). Related historical GitHub reports: #49, #4
 
 Fix lost returns in branches/sequences/try/catch; use an unforgeable return signal. A return in array `run` ends only that callback. Evaluate recursive and/or groups with short circuiting and explicit empty-group identities. Restore array contexts through nested execution and exceptions. Reject malformed, ambiguous, cyclic, or excessively deep rule structures before mutation. Avoid trace work when disabled; avoid trace serialization masking original errors. Preserve ordinary trace snapshots where possible. Cover null and exported literal helper semantics.
 
-Acceptance: targeted regression cases plus original suite, no unsupported global pollution/RCE claim. Implementation and validation evidence pending.
+Acceptance: targeted regression cases plus original suite, no unsupported global pollution/RCE claim. Implemented and locally verified; see [results](../RESULTS.md) and the corresponding local PR draft.
+
+Final disposition and limitations: [results and decisions](../RESULTS.md). No external ticket or PR was published.

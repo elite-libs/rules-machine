@@ -334,7 +334,7 @@ console.log(result.trace);
 
 ### Security
 
-- **No `eval()`** — Uses safe expression parsing via [`expressionparser`](https://www.npmjs.com/package/expressionparser)
+- **No `eval()`** — Uses expression parsing via [`expressionparser`](https://www.npmjs.com/package/expressionparser)
 - **Protected keys** — Blocks dangerous keys: `__proto__`, `constructor`, `prototype`, etc.
 - **Reserved fields** — Prevents use of `$item`, `$index`, `$array` in input
 

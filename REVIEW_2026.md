@@ -1,5 +1,7 @@
 # Deep Audit, Review & Gap Analysis
 
+> Historical April review of an older architecture. Its scores, dependency versions, speculative security impacts, and remediation examples are not a current assessment. The evidence-backed October review, fixes, benchmarks, and remaining gaps are tracked in [the Wayfinder map](docs/review/WAYFINDER.md).
+
 **Repository:** rules-machine
 **Date:** April 6, 2026
 **Version:** 1.6.0

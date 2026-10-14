@@ -1,0 +1,17 @@
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.154
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling rusty-rules-experiment v0.1.0 (/home/dan/code/oss/rules-machine/experiments/rusty-rules)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.77s
+     Running unittests src/main.rs (/tmp/rules-machine-rust-validation/debug/deps/rusty_rules_experiment-a5e92571f82d2ba9)
+
+running 4 tests
+test tests::precedence_and_short_circuit ... ok
+test tests::rejects_unsupported ... ok
+test tests::measured_work_and_nested_scope_contract ... ok
+test tests::rule_mutations ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -19,10 +19,16 @@ flowchart TD
 
 | Ticket | Owner | Acceptance | State |
 | --- | --- | --- | --- |
-| [01 Structural contracts](tickets/01-structural.md) | Architect | Nested returns/logical groups, array scope, validation, safe traces; regressions | In progress |
-| [02 Expression safety](tickets/02-expression.md) | Coordinator | Correct assignment scanning, math domains, safe dictionaries and predicates; regressions | In progress |
-| [03 Performance and Rust](tickets/03-performance-rust.md) | Performance Wizard | Frozen workload/oracles, original/tuned/Rust timings, explicit subset gaps | In progress |
-| [04 Distribution](tickets/04-distribution.md) | Coordinator | Install/build/typecheck/lint/test and actual ESM/CJS/browser artifact checks | In progress |
+| [01 Structural contracts](tickets/01-structural.md) | Architect | Nested returns/logical groups, array scope, validation, safe traces; regressions | Implemented and locally verified |
+| [02 Expression safety](tickets/02-expression.md) | Coordinator | Correct assignment scanning, math domains, safe dictionaries and predicates; regressions | Implemented and locally verified |
+| [03 Performance and Rust](tickets/03-performance-rust.md) | Performance Wizard | Frozen workload/oracles, original/tuned/Rust timings, explicit subset gaps | Implemented and locally verified |
+| [04 Distribution](tickets/04-distribution.md) | Coordinator | Install/build/typecheck/lint/test and actual ESM/CJS/browser artifact checks | Implemented and locally verified |
+
+## Final reconciliation
+
+See [results and decisions](RESULTS.md), [compatibility notes](CHANGELOG.md), and [remaining contracts](tickets/05-residual-contracts.md). Runtime source is frozen at `79c23b6`. Final validation: 367 tests, typecheck/lint/build, packed ESM/CommonJS/browser/declarations and collaborative browser smoke pass. Twelve balanced process blocks confirm a 13.67× warm-workload improvement; see tracked performance evidence for scope and uncertainty.
+
+Local PR drafts: [runtime](prs/01-runtime-hardening.md), [distribution](prs/02-distribution.md), [performance/Rust](prs/03-performance-rust.md), [documentation](prs/04-specification-docs.md). No external PRs were created or linked.
 
 ## Baseline evidence
 
