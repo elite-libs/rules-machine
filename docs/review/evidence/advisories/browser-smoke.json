@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-14T00:28:42.518891+00:00",
+  "dependencyBuildCommit": "ad5c47a",
+  "tool": "T3 Code collaborative browser preview_evaluate",
+  "passed": true,
+  "prototypeMarkerPreserved": true,
+  "nullValue": null,
+  "require": "undefined",
+  "process": "undefined",
+  "note": "Loaded final dist/index.global.js in browser; test-owned prototype marker removed in finally."
+}

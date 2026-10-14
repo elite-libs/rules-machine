@@ -1,12 +1,14 @@
 # October review: results and decisions
 
-Original revision `ee300ad`; accepted runtime source `79c23b6`. All work is local on `overhaul/wayfinder-2026-10`; no issue, PR, release, remote worker, or deployment was created externally.
+Original revision `ee300ad`; interpreter source `79c23b6`; final security dependency/build candidate `ad5c47a`. All work is local on `overhaul/wayfinder-2026-10`; no issue, PR, release, remote worker, or deployment was created externally.
 
 ## Outcome
 
-The original 267-test suite passed despite reproducible structural, expression and packaging defects. The accepted implementation passes 367 tests across 14 files, including new regression tests and seven workflows extracted from actual Markdown. Type checking, lint (zero errors; 97 warnings and two informational diagnostics), declarations, packed external ESM/CommonJS consumers, browser-global VM execution and the collaborative browser smoke pass. Coverage is 91.35% lines and 89.35% branches. Hosted CI was configured for Node24/26 but not executed in this local-only run.
+The original 267-test suite passed despite reproducible structural, expression and packaging defects. The accepted implementation passes 368 tests across 15 files, including new regression tests and seven workflows extracted from actual Markdown. Type checking, lint (zero errors; 97 warnings and two informational diagnostics), declarations, packed external ESM/CommonJS consumers, browser-global VM execution and the collaborative browser smoke pass. The interpreter-source coverage snapshot is91.35% lines and89.35% branches. Hosted CI was configured for Node24/26 but not executed in this local-only run.
 
-The fresh twelve-block local confirmation supports retaining the syntax cache and disabled-trace serialization fixes together with correctness hardening. Geometric-mean throughput improved 13.67× [13.27,14.06] on seven reused-program slices. Upgrade-only yielded 1.00× [0.98,1.02], so no speed improvement is attributed to dependency/tool upgrades. On the same four scalar slices, native Rust improved 5.83× [5.06,6.65] over tuned TypeScript. Separate cold-create diagnostics did not support a gain. This is one busy local Intel i7-7700K host on Node26.8.2, not a production capacity claim.
+The final security dependency/build tree was confirmed in twelve fresh balanced process blocks. Tuned throughput improved14.24× [13.96,14.55] on seven reused-program slices; upgrade-only yielded1.01× [0.99,1.03], supporting no isolated upgrade gain. On the same four scalar slices, native Rust improved6.06× [5.74,6.42] over tuned TypeScript. All300 confirmation samples passed exact first-pass business-state/output oracles and timed actual-work/digest checks; no valid samples were discarded. These local synthetic results include input reset and output consumption and do not establish production SLOs or a JavaScript/Rust bridge advantage.
+
+The original pre-security confirmation remains unmodified under`performance/comparison/results/2026-10-14/`; final dependency-tree evidence is under`performance/comparison/results/2026-10-14-security/`. Do not infer a security-patch speedup from differences between the two campaigns. Cold-create and small retention diagnostics were collected separately before the dependency follow-up, not repeated or promoted into final warm-workload claims.
 
 ## Findings disposition
 
@@ -24,7 +26,7 @@ The fresh twelve-block local confirmation supports retaining the syntax cache an
 | Tracing | Disabled tracing serialized input and could throw on unrelated cyclic/BigInt values. Skip serialization; safe enabled snapshots. | Fixed for tested snapshots; object-reference history remains open |
 | Runtime performance | Rebuilt parser/operator tables and reparsed every expression. Cache syntax per factory, bounded512 entries, with current resolver and reentrancy/failure restoration. | Accepted with measured evidence |
 | Distribution | Advertised ESM file absent; Node-specific browser build; stale Node14/yarn CI; example type dependency broke global check. Repair artifacts and library validation boundary. | Fixed locally; hosted CI unrun |
-| Dependency claims | Historical audit described obsolete versions and speculative RCE. Current versions verified for upgrade compatibility; blanket pollution/RCE not established. Advisory scan disclosure rejected by automatic review. | Claims corrected; advisory scan unperformed |
+| Dependency claims | Historical audit described obsolete versions and speculative RCE. User subsequently authorized the scan;16 advisories were reported and patched. The production OMIT prototype-deletion path was reproduced safely; no RCE is claimed. | Fresh audit: zero known advisories; [ticket06](tickets/06-dependency-advisories.md) |
 | Rust | Shared scalar fixtures,100 held-out input cases, short-circuit/rejection checks and four Rust unit tests pass. No full-spec or bridge claim. | Experimental subset, gaps open |
 | Broader parser/date/resource behavior | Returned host objects, flat-expression stack limits, relative dates, byte budgets, transactionality and type ergonomics need their own contracts. | [Follow-up05](tickets/05-residual-contracts.md) |
 
@@ -42,9 +44,9 @@ The Architect independently [audited the measurement instrument](council-measure
 
 Retain the confirmed TypeScript implementation. Review compatibility notes before release; this branch does not publish or deploy. Rust warrants a separately scoped differential-spec/FFI investigation only if production workloads justify it. The local timing result is strong for warm reused programs, while cold preparation, arrays beyond map, production workload skew, retained-byte limits and JavaScript/Rust bridge latency remain limited or unmeasured. Host load and frequency drift are included in raw observations; no valid slow sample was deleted. Per-slice intervals are not adjusted for multiple comparisons.
 
-An optional public advisory scan remains blocked because automatic approval review rejected sending the dependency inventory. No other work depends on it and no vulnerability-free claim is made. Remote/paid compute was not launched; model/reporting cost is unavailable.
+The user subsequently authorized the public advisory scan. It reported16 advisories, all resolved by the patched locked tree; a second scan reports zero known advisories. This is a point-in-time database result and does not establish absence of unknown vulnerabilities. Before/after responses and the reachable production OMIT regression are tracked in ticket06. Remote/paid compute was not launched; model/reporting cost is unavailable.
 
-Full timings, raw samples, profiles, compiler/dependency identities and rerun commands are in the [comparison report](../../performance/comparison/results/2026-10-14/report.md) and [comparison README](../../performance/comparison/README.md).
+Full timings, raw samples, profiles, compiler/dependency identities and rerun commands are in the [comparison report](../../performance/comparison/results/2026-10-14-security/report.md) and [comparison README](../../performance/comparison/README.md).
 
 ## Reviewable delivery
 

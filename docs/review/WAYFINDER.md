@@ -10,6 +10,8 @@ flowchart TD
   W --> E[02 Expression correctness and resource safety]
   W --> P[03 Measured tuning and Rust subset]
   W --> D[04 Distribution and developer tooling]
+  W --> A[06 Authorized advisory remediation]
+  A --> V
   S --> V[Combined regression validation]
   E --> V
   P --> V
@@ -24,9 +26,16 @@ flowchart TD
 | [03 Performance and Rust](tickets/03-performance-rust.md) | Performance Wizard | Frozen workload/oracles, original/tuned/Rust timings, explicit subset gaps | Implemented and locally verified |
 | [04 Distribution](tickets/04-distribution.md) | Coordinator | Install/build/typecheck/lint/test and actual ESM/CJS/browser artifact checks | Implemented and locally verified |
 
+| [05 Remaining contracts](tickets/05-residual-contracts.md) | Follow-up | Explicit parser/date/budget/Rust gaps | Open and scoped |
+| [06 Dependency advisories](tickets/06-dependency-advisories.md) | Coordinator |16 findings patched,0 known findings on re-audit; regression and performance confirmation | Implemented and locally verified |
+
+## Authorized advisory follow-up
+
+The user subsequently authorized the public advisory scan. It found16 advisories; commit`ad5c47a` updates the affected packages and adds an actual-rule OMIT regression. A second scan reports zero known advisories and368 tests pass. See [ticket06](tickets/06-dependency-advisories.md) and [local dependency-security PR draft](prs/05-dependency-security.md). Final dependency-tree performance reconfirmation passed all12 blocks; [new report](../../performance/comparison/results/2026-10-14-security/report.md) is separate from the original results.
+
 ## Final reconciliation
 
-See [results and decisions](RESULTS.md), [compatibility notes](CHANGELOG.md), and [remaining contracts](tickets/05-residual-contracts.md). Runtime source is frozen at `79c23b6`. Final validation: 367 tests, typecheck/lint/build, packed ESM/CommonJS/browser/declarations and collaborative browser smoke pass. Twelve balanced process blocks confirm a 13.67× warm-workload improvement; see tracked performance evidence for scope and uncertainty.
+See [results and decisions](RESULTS.md), [compatibility notes](CHANGELOG.md), and [remaining contracts](tickets/05-residual-contracts.md). Runtime source is frozen at `79c23b6`. Final validation: 368 tests, typecheck/lint/build, packed ESM/CommonJS/browser/declarations and collaborative browser smoke pass. Twelve balanced process blocks confirm a14.24× warm-workload improvement for the final security dependency tree; see tracked performance evidence for scope and uncertainty.
 
 Local PR drafts: [runtime](prs/01-runtime-hardening.md), [distribution](prs/02-distribution.md), [performance/Rust](prs/03-performance-rust.md), [documentation](prs/04-specification-docs.md). No external PRs were created or linked.
 

@@ -1,0 +1,25 @@
+{
+  "evidenceObservedAt": "2026-10-14T00:27:10.428093+00:00",
+  "authorizedBy": "User explicitly allowed the public pnpm advisory scan",
+  "command": "npm exec --package pnpm@10.34.6 -- pnpm audit --json",
+  "dependencyFixCommit": "ad5c47a",
+  "before": {
+    "high": 10,
+    "moderate": 5,
+    "low": 1,
+    "critical": 0
+  },
+  "after": {
+    "high": 0,
+    "moderate": 0,
+    "low": 0,
+    "critical": 0
+  },
+  "ignoredCves": [],
+  "rawHashes": {
+    "before.json": "bbcbf80c72cf8703190f7ad97ff402365dfdd248a263abb94e2964cbf8abfc7d",
+    "after.json": "3cc0b046e86ff8a387b5d168a182138547dd9adcf3c891710c598383c529a86b",
+    "before-summary.json": "6cfaf3a097af47fc1179276914bf0996b887dea8551f60ad087f4a9f52843f18"
+  },
+  "caveat": "Point-in-time known-advisory coverage; zero findings does not prove absence of unknown vulnerabilities."
+}

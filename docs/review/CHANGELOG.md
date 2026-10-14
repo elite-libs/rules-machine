@@ -15,4 +15,6 @@ This branch changes behavior and requires compatibility review before a release.
 - Node ESM/CJS exports and browser IIFE are smoke-tested; the parser null fix is bundled downstream. The engine factories and RuleMachineOptions are exported.
 - Validation uses pinned pnpm 10.34.6, Vitest 5.0.3 and Node 24/26 CI. The library typecheck is separate from standalone examples. The pnpm lockfile is authoritative.
 
+- Authorized dependency follow-up upgrades lodash to4.18.1 and pins patched build/coverage transitives. All16 reported advisories are resolved; a rule-language OMIT prototype-deletion regression was added.
+
 See [Wayfinder](WAYFINDER.md) for review drafts, measured evidence, and remaining gaps.

@@ -1,0 +1,16 @@
+{
+  "dependencyBuildCommit": "ad5c47a",
+  "knownAdvisoriesBefore": 16,
+  "knownAdvisoriesAfter": 0,
+  "typescriptTests": 368,
+  "testFiles": 15,
+  "projectCheckPassed": true,
+  "offlineFrozenInstallPassed": true,
+  "browserPrototypeRegressionPassed": true,
+  "confirmationSamples": 300,
+  "completeBalancedBlocks": 12,
+  "timingsFiniteAndPositive": true,
+  "finalModuleHashMatchesMeasuredCandidate": true,
+  "priorPerformanceEvidencePreserved": true,
+  "pointInTimeAdvisoryResultOnly": true
+}

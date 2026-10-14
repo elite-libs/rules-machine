@@ -7,3 +7,5 @@ Adds serialized fixtures with independent business-state oracles, timed complete
 Confirmation: 12 fixed process blocks, no discarded valid runs. Tuned aggregate 13.67× [13.27,14.06] across seven reused-program slices; upgrade-only 1.00× [0.98,1.02]. Native Rust versus tuned is 5.83× [5.06,6.65] on the four shared scalar slices. Results include input reset and output digest work. See the tracked comparison report and raw results for boundaries, host drift and exclusions; these figures do not establish cold-start or production-bridge gains.
 
 Rust remains an experimental subset with explicit gaps, not a replacement release. Full library functionality, JavaScript integration and wider resource guarantees require separate work.
+
+Superseding final security-tree confirmation:14.24× [13.96,14.55] tuned/original on seven slices;1.01× [0.99,1.03] upgrade-only;6.06× [5.74,6.42] Rust/tuned on the four shared scalar slices. See [final report](../../../performance/comparison/results/2026-10-14-security/report.md). The original report above remains historical evidence, not the final dependency-tree claim.
