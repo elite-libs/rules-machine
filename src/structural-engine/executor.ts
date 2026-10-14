@@ -9,7 +9,7 @@ import {
   withExecutionBudget,
 } from '../utils/budget';
 import { UserError } from '../utils/errors';
-import { withAtomicWrites } from '../utils/mutations';
+import { recordMutation, withAtomicWrites } from '../utils/mutations';
 import {
   assertWritablePath,
   getOwnPath as get,
@@ -318,6 +318,8 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           );
           const previousReturnValue = results.returnValue;
           try {
+            for (const key of contextKeys)
+              recordMutation(input, key, undefined);
             Object.assign(input, {
               $item: item,
               $index: index,

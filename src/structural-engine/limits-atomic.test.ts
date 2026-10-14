@@ -148,6 +148,28 @@ describe('atomic writes', () => {
     expect(input.value).toBe(1);
     expect(input.self).toBe(input);
   });
+  test('rollback never restores expired callback context after callback assignments', () => {
+    const input = { items: [1, 2], inner: [3] };
+    expect(() =>
+      ruleFactory(
+        [
+          {
+            map: 'items',
+            run: [
+              '$item = 5',
+              '$index = 7',
+              { map: 'inner', run: '$array = ARRAY(8)' },
+            ],
+          },
+          'THROW "failed"',
+        ],
+        { atomic: true },
+      )(input),
+    ).toThrow('failed');
+    expect(input).toEqual({ items: [1, 2], inner: [3] });
+    for (const key of ['$item', '$index', '$array'])
+      expect(Object.hasOwn(input, key)).toBe(false);
+  });
   test('runtime errors do not log to the caller console', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     try {
