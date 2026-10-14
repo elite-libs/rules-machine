@@ -1,0 +1,22 @@
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /tmp/rules-machine-upgrade-only/tsup.config.ts
+CLI Target: node24
+CLI Cleaning output folder
+CJS Build start
+ESM Build start
+IIFE Build start
+ESM dist/index.js     34.29 KB
+ESM dist/index.js.map 72.76 KB
+ESM ⚡️ Build success in 36ms
+CJS dist/index.cjs     36.51 KB
+CJS dist/index.cjs.map 72.87 KB
+CJS ⚡️ Build success in 36ms
+IIFE dist/index.global.js     213.99 KB
+IIFE dist/index.global.js.map 328.77 KB
+IIFE ⚡️ Build success in 42ms
+DTS Build start
+DTS ⚡️ Build success in 1341ms
+DTS dist/index.d.cts 4.21 KB
+DTS dist/index.d.ts  4.21 KB
