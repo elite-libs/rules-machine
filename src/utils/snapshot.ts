@@ -17,9 +17,13 @@ export function traceSnapshot(
     checkStringLength(value.length);
     consumeWork(value.length);
   }
-  if (typeof value === 'bigint') return String(value);
+  if (typeof value === 'bigint' || typeof value === 'symbol') {
+    const text = String(value);
+    checkStringLength(text.length);
+    consumeWork(text.length);
+    return text;
+  }
   if (typeof value === 'function') return '[Function]';
-  if (typeof value === 'symbol') return String(value);
   if (value === null || typeof value !== 'object') return value;
   if (ancestors.has(value)) return '[Circular]';
   ancestors.add(value);
@@ -35,6 +39,8 @@ export function traceSnapshot(
       : {};
     if (Array.isArray(value)) checkArrayLength(value.length);
     for (const key of Object.keys(value)) {
+      checkStringLength(key.length);
+      consumeWork(key.length);
       const descriptor = Object.getOwnPropertyDescriptor(value, key);
       if (!descriptor) continue;
       Object.defineProperty(result, key, {

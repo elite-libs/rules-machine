@@ -1,4 +1,5 @@
-import { consumeWork, ResourceLimitError } from './budget';
+import { checkStringLength, consumeWork, ResourceLimitError } from './budget';
+import { UserError } from './errors';
 
 type Entry = { target: object; key: string; descriptor?: PropertyDescriptor };
 class MutationJournal {
@@ -37,10 +38,30 @@ export function recordMutation(target: object, key: string, value: unknown) {
       typeof value === 'number' &&
       value < target.length
     ) {
+      const removed = Object.getOwnPropertyNames(target).filter((property) => {
+        checkStringLength(property.length);
+        consumeWork(property.length + 1);
+        const index = Number(property);
+        return (
+          /^(0|[1-9]\d*)$/.test(property) &&
+          index >= value &&
+          index < 2 ** 32 - 1
+        );
+      });
+      // Truncation deletes configurable indices. A nonextensible array cannot
+      // recreate those properties during rollback, even though length is writable.
+      if (
+        !Object.isExtensible(target) &&
+        removed.some(
+          (property) =>
+            Object.getOwnPropertyDescriptor(target, property)?.configurable,
+        )
+      )
+        throw new UserError(
+          'Atomic execution cannot truncate a nonextensible array with removable elements',
+        );
       active.record(target, 'length');
-      for (const property of Object.getOwnPropertyNames(target))
-        if (/^(0|[1-9]\d*)$/.test(property) && Number(property) >= value)
-          active.record(target, property);
+      for (const property of removed) active.record(target, property);
       return;
     }
     if (

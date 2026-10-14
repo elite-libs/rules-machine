@@ -22,6 +22,23 @@ import type { AndRule, OrRule, Rule } from './types';
 
 const trailingQuotes = /^(['"])([\s\S]*)\1$/;
 
+// Error values may originate from injected engines. Read only an own data
+// message; trace formatting must not call a getter, toString or valueOf.
+function errorDescription(error: unknown): string {
+  if (
+    error !== null &&
+    (typeof error === 'object' || typeof error === 'function')
+  ) {
+    const descriptor = Object.getOwnPropertyDescriptor(error, 'message');
+    return descriptor &&
+      'value' in descriptor &&
+      typeof descriptor.value === 'string'
+      ? descriptor.value
+      : '[Thrown object]';
+  }
+  return String(error);
+}
+
 const arrayMethods = ['map', 'filter', 'every', 'some', 'find'] as const;
 const isArrayRule = (data: object) =>
   Object.keys(data).some((key) =>
@@ -489,7 +506,7 @@ export function createRuleExecutor<TInput extends object>(
         if (trace)
           logTrace({
             operation: 'error',
-            error: e instanceof Error ? e.message : String(e),
+            error: errorDescription(e),
             rule,
             stepRow,
             stepCount,
@@ -515,7 +532,7 @@ export function createRuleExecutor<TInput extends object>(
             stepCount,
             currentState: snapshot(input),
             stepRow,
-            lastValue: e instanceof Error ? e.message : String(e),
+            lastValue: errorDescription(e),
           });
         throw e;
       }
