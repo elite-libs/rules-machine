@@ -66,7 +66,7 @@ export type TermResolver = (term: string) => unknown;
 export interface ExpressionEngine {
   /**
    * Pre-process an expression string into a `CompiledExpression`.
-   * Metadata extraction is cached; syntax is prepared lazily on evaluation.
+   * Metadata and validated syntax are prepared and cached together.
    */
   compile(expression: string): CompiledExpression;
 
@@ -177,6 +177,7 @@ export function createExpressionEngine(
   function entry(source: string): Entry {
     const existing = syntax.get(source);
     if (existing) return existing;
+    consumeWork(source.length);
     validateSource(source);
     const metadata = { source, ...extractAssignment(source) };
     const parsedSource = (
