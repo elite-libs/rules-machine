@@ -33,6 +33,10 @@ if (mode === 'oracle') {
   writeFileSync(resolve(out, 'pilot.json'), JSON.stringify(pilot, null, 2));
   writeFileSync(resolve(out, 'counts.json'), JSON.stringify(Object.fromEntries(pilot.rows.map(r => [r.name, r.iterations])), null, 2));
 } else {
+  const pilotProvenance = JSON.parse(readFileSync(resolve(out, 'pilot-provenance.json'), 'utf8'));
+  for (const key of ['node', 'execPath', 'moduleSHA256', 'binarySHA256']) {
+    if (pilotProvenance[key] !== provenance[key]) throw Error(`Pilot provenance changed: ${key}; rerun pilot`);
+  }
   const blocks = [];
   for (let block = 0; block < 12; block++) {
     const order = block % 2 ? ['rust', 'ts'] : ['ts', 'rust'];
