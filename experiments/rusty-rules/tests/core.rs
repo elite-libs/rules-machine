@@ -291,3 +291,25 @@ fn json_decoder_preserves_adjacent_binary_values() {
         );
     }
 }
+
+#[test]
+fn nested_callback_overwrites_and_error_restore_parent_slots() {
+    let result = run(
+        json!([
+            {"map":"items","run":[
+                "saved=$item",
+                {"try":{"map":"inner","run":["$item=99","ABS(\"bad\")"]},"catch":"caught=$item"},
+                {"return":"[$item,$index,LENGTH($array),saved,caught]"}
+            ],"set":"out"},
+            {"return":"out"}
+        ]),
+        json!({"items":[10,20],"inner":[1]}),
+    );
+    assert_eq!(
+        result["result"],
+        json!([[10.0, 0.0, 2.0, 10.0, 10.0], [20.0, 1.0, 2.0, 20.0, 20.0]])
+    );
+    assert!(result["input"].get("$item").is_none());
+    assert!(result["input"].get("$index").is_none());
+    assert!(result["input"].get("$array").is_none());
+}

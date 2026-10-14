@@ -1342,7 +1342,10 @@ impl Context {
             },
             Rule::Array(method, p, body, dest) => {
                 let data = get(&self.input, p)?;
-                let len = data.items()?.len();
+                let Value::Array(items) = &data else {
+                    return Err("Expected array".into());
+                };
+                let len = items.borrow().len();
                 let mut values = vec![];
                 let mut answer = match method.as_str() {
                     "every" => Value::Bool(true),
@@ -1351,36 +1354,40 @@ impl Context {
                     _ => Value::Undefined,
                 };
                 for index in 0..len {
-                    let item = property(&data, &index.to_string());
+                    // Fetch each item at callback time, preserving mutation and
+                    // captured-length behavior without formatting an index key.
+                    let item = items
+                        .borrow()
+                        .get(index)
+                        .cloned()
+                        .unwrap_or(Value::Undefined);
                     let context_keys = ["$item", "$index", "$array"];
-                    let mut saved = Vec::new();
-                    for key in context_keys {
-                        let Value::Object(o) = &self.input else {
+                    // The input references are already validated acyclic data.
+                    // insert returns the previous binding: save on the stack,
+                    // avoid duplicate lookups, and never hold a borrow in run().
+                    let saved = {
+                        let Value::Object(object) = &self.input else {
                             unreachable!()
                         };
-                        saved.push(o.borrow().get(key).cloned());
-                    }
-                    // These references already come from the validated acyclic
-                    // input graph. Internal callback scope installation cannot
-                    // introduce a cycle, and must not rescan the array per item.
-                    let Value::Object(object) = &self.input else {
-                        unreachable!()
-                    };
-                    {
                         let mut object = object.borrow_mut();
-                        object.insert("$item".into(), item.clone());
-                        object.insert("$index".into(), Value::Number(index as f64));
-                        object.insert("$array".into(), data.clone());
-                    }
+                        [
+                            object.insert("$item".into(), item.clone()),
+                            object.insert("$index".into(), Value::Number(index as f64)),
+                            object.insert("$array".into(), data.clone()),
+                        ]
+                    };
                     let result = self.run(body).map(|_| self.last.clone());
-                    for (key, saved) in context_keys.into_iter().zip(saved) {
-                        let Value::Object(o) = &self.input else {
+                    {
+                        let Value::Object(object) = &self.input else {
                             unreachable!()
                         };
-                        if let Some(v) = saved {
-                            o.borrow_mut().insert(key.into(), v);
-                        } else {
-                            o.borrow_mut().remove(key);
+                        let mut object = object.borrow_mut();
+                        for (key, saved) in context_keys.into_iter().zip(saved) {
+                            if let Some(value) = saved {
+                                object.insert(key.into(), value);
+                            } else {
+                                object.remove(key);
+                            }
                         }
                     }
                     let value = result?;
