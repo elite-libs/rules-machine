@@ -486,6 +486,7 @@ fn contains_reference(
     value: &Value,
     target: &Value,
     active: &mut Vec<usize>,
+    completed: &mut HashMap<usize, usize>,
     depth: usize,
 ) -> bool {
     if depth > 100 {
@@ -500,12 +501,21 @@ fn contains_reference(
             if active.contains(&id) {
                 return true;
             }
+            if completed
+                .get(&id)
+                .is_some_and(|seen_depth| depth <= *seen_depth)
+            {
+                return false;
+            }
             active.push(id);
             let found = v
                 .borrow()
                 .iter()
-                .any(|v| contains_reference(v, target, active, depth + 1));
+                .any(|v| contains_reference(v, target, active, completed, depth + 1));
             active.pop();
+            if !found {
+                completed.insert(id, depth);
+            }
             found
         }
         Value::Object(v) => {
@@ -513,12 +523,21 @@ fn contains_reference(
             if active.contains(&id) {
                 return true;
             }
+            if completed
+                .get(&id)
+                .is_some_and(|seen_depth| depth <= *seen_depth)
+            {
+                return false;
+            }
             active.push(id);
             let found = v
                 .borrow()
                 .values()
-                .any(|v| contains_reference(v, target, active, depth + 1));
+                .any(|v| contains_reference(v, target, active, completed, depth + 1));
             active.pop();
+            if !found {
+                completed.insert(id, depth);
+            }
             found
         }
         _ => false,
@@ -526,7 +545,7 @@ fn contains_reference(
 }
 fn write(target: &Value, key: &str, value: Value) -> Result<()> {
     if matches!(value, Value::Array(_) | Value::Object(_))
-        && contains_reference(&value, target, &mut Vec::new(), 0)
+        && contains_reference(&value, target, &mut Vec::new(), &mut HashMap::new(), 0)
     {
         return Err("Cyclic writes are unsupported".into());
     }
@@ -586,7 +605,7 @@ fn set(input: &Value, p: &str, value: Value) -> Result<()> {
             child = if keys[i + 1].parse::<usize>().is_ok() {
                 Value::array(vec![])
             } else {
-                Value::object(BTreeMap::new())
+                Value::Object(Rc::new(RefCell::new(BTreeMap::new())))
             };
             write(&target, &keys[i], child.clone())?
         }
@@ -807,7 +826,7 @@ impl Parser {
                 "NULL" => Expr::Literal(Value::Null),
                 "UNDEFINED" => Expr::Literal(Value::Undefined),
                 "EMPTY" => Expr::Array(vec![]),
-                "EMPTYDICT" => Expr::Literal(Value::object(BTreeMap::new())),
+                "EMPTYDICT" => Expr::Literal(Value::Object(Rc::new(RefCell::new(BTreeMap::new())))),
                 "INFINITY" => Expr::Literal(Value::Number(f64::INFINITY)),
                 "EPSILON" => Expr::Literal(Value::Number(f64::EPSILON)),
                 "PI" => Expr::Literal(Value::Number(std::f64::consts::PI)),
@@ -1119,7 +1138,7 @@ impl Context {
         }
         match e {
             Expr::Literal(v) => Ok(match v {
-                Value::Object(_) => Value::object(BTreeMap::new()),
+                Value::Object(_) => Value::Object(Rc::new(RefCell::new(BTreeMap::new()))),
                 _ => v.clone(),
             }),
             Expr::Array(a) => Ok(Value::array(
@@ -1778,5 +1797,27 @@ impl Session {
             }
             _ => Err("Unsupported protocol operation".into()),
         }
+    }
+}
+
+#[cfg(test)]
+mod graph_tests {
+    use super::*;
+    #[test]
+    fn repeated_alias_cycle_scan_visits_unique_nodes() {
+        let mut value = Value::array(vec![]);
+        for _ in 0..35 {
+            value = Value::array(vec![value.clone(), value]);
+        }
+        let target = Value::Object(Rc::new(RefCell::new(BTreeMap::new())));
+        let mut completed = HashMap::new();
+        assert!(!contains_reference(
+            &value,
+            &target,
+            &mut Vec::new(),
+            &mut completed,
+            0
+        ));
+        assert_eq!(completed.len(), 36);
     }
 }
