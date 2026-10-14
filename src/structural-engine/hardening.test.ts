@@ -96,6 +96,31 @@ describe('structural execution contracts', () => {
     expect(input).toEqual({});
   });
 
+  test('revalidates changed rules before mutation on every execution', () => {
+    const resultRule: Record<string, unknown> = { return: 'x' };
+    const execute = ruleFactory(['x = 2', unsafeRule(resultRule)]);
+    expect(execute({ x: 1 })).toBe(2);
+
+    const input = { x: 1 };
+    resultRule.unexpected = '1';
+    expect(() => execute(input)).toThrow(/Invalid rule/);
+    expect(input.x).toBe(1);
+
+    delete resultRule.unexpected;
+    let calls = 0;
+    Object.defineProperty(resultRule, 'return', {
+      get() {
+        calls++;
+        return 'x';
+      },
+      enumerable: true,
+      configurable: true,
+    });
+    expect(() => execute(input)).toThrow(/accessors/);
+    expect(calls).toBe(0);
+    expect(input.x).toBe(1);
+  });
+
   test('bounds rule complexity and rejects cycles', () => {
     const cycle: Rule[] = [];
     cycle.push(cycle);
