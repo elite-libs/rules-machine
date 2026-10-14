@@ -855,5 +855,5 @@
     "STRING_STARTS_WITH": "Two strings.",
     "STRING_ENDS_WITH": "Two strings."
   },
-  "powerDomain": "Finite nonzero bases other than +/-1 must be powers of two and exponent integer; other finite domains explicitly reject. Nonfinite/zero/+/-1 special cases follow JS."
+  "powerDomain": "Finite nonzero bases other than +/-1 must be powers of two and exponent integer; other finite domains explicitly reject. Nonfinite/zero/+/-1 special cases follow JS. Membership uses exact IEEE-754 significand bits, including subnormal single-bit powers; adjacent nonpowers reject. JSON decoding enables exact float roundtrip."
 }

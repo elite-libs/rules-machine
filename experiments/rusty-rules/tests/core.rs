@@ -243,3 +243,51 @@ fn array_append_at_limit_rejects() {
     let p = Program::compile(&json!(["items=RANGE(0,100000)", "items[100000]=1"])).unwrap();
     assert!(p.execute(Value::from_json(&json!({})), true).is_err());
 }
+
+#[test]
+fn power_domain_rejects_nearby_bases_and_accepts_subnormal_powers() {
+    let p = Program::compile(&json!("a ^ b")).unwrap();
+    for a in [
+        (1u64 << 50) as f64 + 1.0,
+        f64::from_bits(2.0f64.to_bits() + 1),
+        f64::from_bits(2.0f64.to_bits() - 1),
+        f64::from_bits(3),
+        f64::from_bits((1u64 << 52) - 1),
+    ] {
+        assert!(
+            p.execute(Value::from_json(&json!({"a":a,"b":3})), true)
+                .is_err(),
+            "{a}"
+        );
+    }
+    for a in [
+        f64::from_bits(1),
+        f64::from_bits(2),
+        f64::MIN_POSITIVE,
+        0.5,
+        2.0,
+    ] {
+        let (v, _) = p
+            .execute(Value::from_json(&json!({"a":a,"b":1})), true)
+            .unwrap();
+        assert!(matches!(v,Value::Number(v) if v.to_bits()==a.to_bits()));
+    }
+}
+
+#[test]
+fn json_decoder_preserves_adjacent_binary_values() {
+    for text in [
+        "1.9999999999999998",
+        "2.0000000000000004",
+        "1125899906842625",
+        "5e-324",
+        "2.225073858507201e-308",
+    ] {
+        let parsed: Json = serde_json::from_str(text).unwrap();
+        assert_eq!(
+            parsed.as_f64().unwrap().to_bits(),
+            text.parse::<f64>().unwrap().to_bits(),
+            "{text}"
+        );
+    }
+}

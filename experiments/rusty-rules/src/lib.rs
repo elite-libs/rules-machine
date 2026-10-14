@@ -1124,6 +1124,19 @@ fn validate_input(v: &Value) -> Result<()> {
     }
     Ok(())
 }
+// A rounded log2 is not a membership test: adjacent large values can round
+// to the same integer logarithm. Inspect the exact IEEE-754 significand.
+fn is_power_of_two_magnitude(value: f64) -> bool {
+    let bits = value.to_bits() & 0x7fff_ffff_ffff_ffff;
+    let exponent = bits >> 52;
+    let fraction = bits & 0x000f_ffff_ffff_ffff;
+    if exponent == 0 {
+        fraction.is_power_of_two()
+    } else {
+        exponent != 0x7ff && fraction == 0
+    }
+}
+
 struct Context {
     input: Value,
     last: Value,
@@ -1207,7 +1220,7 @@ impl Context {
                                     && y.is_finite()
                                     && x != 0.0
                                     && x.abs() != 1.0
-                                    && (y.fract() != 0.0 || !x.abs().log2().fract().eq(&0.0))
+                                    && (y.fract() != 0.0 || !is_power_of_two_magnitude(x))
                                 {
                                     return Err("Power supports finite power-of-two bases with integer exponents; other finite domains unsupported".into());
                                 } else {
@@ -1819,5 +1832,34 @@ mod graph_tests {
             0
         ));
         assert_eq!(completed.len(), 36);
+    }
+}
+
+#[cfg(test)]
+mod power_domain_tests {
+    use super::*;
+    #[test]
+    fn exact_binary_significands_include_subnormal_powers() {
+        for exponent in 1u64..0x7ff {
+            let bits = exponent << 52;
+            assert!(is_power_of_two_magnitude(f64::from_bits(bits)));
+            assert!(is_power_of_two_magnitude(-f64::from_bits(bits)));
+            assert!(!is_power_of_two_magnitude(f64::from_bits(bits + 1)));
+        }
+        for bit in 0..52 {
+            assert!(is_power_of_two_magnitude(f64::from_bits(1u64 << bit)));
+        }
+        for value in [
+            0.0,
+            -0.0,
+            f64::INFINITY,
+            f64::NEG_INFINITY,
+            f64::NAN,
+            f64::from_bits(3),
+            f64::from_bits((1u64 << 52) - 1),
+            (1u64 << 50) as f64 + 1.0,
+        ] {
+            assert!(!is_power_of_two_magnitude(value));
+        }
     }
 }
