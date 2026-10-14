@@ -181,6 +181,21 @@ describe('structural execution contracts', () => {
     expect(() => ruleFactory('x = 1', { trace: true })(input)).not.toThrow();
   });
 
+  test('preserves explicit null through the default parser', () => {
+    expect(
+      ruleFactory(
+        { return: 'value' },
+        { ignoreMissingKeys: false },
+      )({ value: null }),
+    ).toBeNull();
+    expect(
+      ruleFactory({ return: 'values' })({ values: [null, { nested: null }] }),
+    ).toEqual([null, { nested: null }]);
+    expect(ruleFactory('value == other')({ value: null, other: null })).toBe(
+      true,
+    );
+  });
+
   test('literal extraction is stable and preserves string contents', () => {
     for (let i = 0; i < 3; i++)
       expect(extractValueOrLiteral({}, '"hello"')).toBe('hello');
