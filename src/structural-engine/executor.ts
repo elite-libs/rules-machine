@@ -23,20 +23,6 @@ import type { AndRule, OrRule, Rule } from './types';
 const trailingQuotes = /^(['"])([\s\S]*)\1$/;
 
 const arrayMethods = ['map', 'filter', 'every', 'some', 'find'] as const;
-// Private schemas avoid rebuilding operator and allowed-key arrays per node.
-const ruleKeys = new Map<string, ReadonlySet<string>>([
-  ['if', new Set(['if', 'then', 'else'])],
-  ['and', new Set(['and'])],
-  ['or', new Set(['or'])],
-  ['return', new Set(['return'])],
-  ['try', new Set(['try', 'catch'])],
-  ...arrayMethods.map(
-    (method): [string, ReadonlySet<string>] => [
-      method,
-      new Set([method, 'run', 'set']),
-    ],
-  ),
-]);
 const isArrayRule = (data: object) =>
   Object.keys(data).some((key) =>
     (arrayMethods as readonly string[]).includes(key),
@@ -674,24 +660,25 @@ function validateRule(rules: Rule) {
       const prototype = Object.getPrototypeOf(object);
       if (prototype !== null && prototype !== Object.prototype)
         fail('rule objects must have a plain or null prototype');
-      // The descriptor pass proved these keys are enumerable strings.
-      const keys = ownKeys as string[];
-      let operator = '';
-      let operatorCount = 0;
-      for (const key of keys) {
-        if (ruleKeys.has(key)) {
-          operator = key;
-          operatorCount++;
-        }
-      }
-      if (operatorCount !== 1)
+      const keys = Object.keys(object);
+      const operators = keys.filter((key) =>
+        ['if', 'and', 'or', 'return', 'try', ...arrayMethods].includes(key),
+      );
+      if (operators.length !== 1)
         fail('expected exactly one structural operator');
+      const operator = operators[0];
       if (logicalOnly && operator !== 'and' && operator !== 'or')
         fail('condition must be a string or logical object');
-      const allowed = ruleKeys.get(operator) as ReadonlySet<string>;
-      for (const key of keys) {
-        if (!allowed.has(key)) fail(`unexpected key in ${operator} rule`);
-      }
+      const allowed =
+        operator === 'if'
+          ? ['if', 'then', 'else']
+          : operator === 'try'
+            ? ['try', 'catch']
+            : (arrayMethods as readonly string[]).includes(operator)
+              ? [operator, 'run', 'set']
+              : [operator];
+      if (keys.some((key) => !allowed.includes(key)))
+        fail(`unexpected key in ${operator} rule`);
       if (operator === 'and' || operator === 'or') {
         if (!Array.isArray(object[operator]))
           fail(`${operator} must be an array`);
