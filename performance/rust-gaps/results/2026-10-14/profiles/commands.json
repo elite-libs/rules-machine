@@ -1,0 +1,10 @@
+{
+  "classification": "Separate diagnostic profiles; TSmodule unchanged across subsequent Rust exact-power final rerun. Not acceptance timing.",
+  "cwd": "/home/dan/code/oss/rules-machine",
+  "node": "v26.8.2",
+  "moduleSha256": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+  "commands": [
+    "node --cpu-prof --cpu-prof-dir=performance/rust-gaps/results/2026-10-14/profiles --cpu-prof-name=ts-pricing.cpuprofile performance/comparison/worker.mjs /home/dan/code/oss/rules-machine/dist/index.mjs pricing-0 5000 300",
+    "node --cpu-prof --cpu-prof-dir=performance/rust-gaps/results/2026-10-14/profiles --cpu-prof-name=ts-map4096.cpuprofile performance/comparison/worker.mjs /home/dan/code/oss/rules-machine/dist/index.mjs array-map-4096 200 30"
+  ]
+}

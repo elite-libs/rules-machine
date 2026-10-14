@@ -1,10 +1,10 @@
 {
-  "at": "2026-10-14T01:27:39.051001+00:00",
+  "at": "2026-10-14T01:39:08.962504+00:00",
   "node": "v26.8.2",
   "rustCompiler": "rustc1.99.0 b940084d7eb6a299eb4bfeb8e34901bc051e7ac4 LLVM23.1.1 x86_64-unknown-linux-gnu",
   "runtimeSource": "d4a88ea",
   "runtimeSnapshot": "4c85672",
-  "rustSource": "de6ca7f",
+  "rustSource": "127d762",
   "bridgeRawEnvelopeSource": "d532ef5",
   "baselineSource": "ee300ad",
   "priorSecuritySource": "7b073e3",
@@ -12,15 +12,15 @@
     "baseline": "Exact original source,original dependencies,original build.",
     "upgrade": "Exact original source/old original build, final runtime dependencies; does not isolate toolchain upgrades.",
     "tuned": "Final TS runtime d4a88ea and final dependencies/build.",
-    "rust": "Expanded core subset native Rust release de6ca7f, all seven unchanged timed fixture slices."
+    "rust": "Expanded core subset native Rust release127d762 with exact binary-power guard and serde_json float_roundtrip, all seven unchanged timed fixture slices."
   },
-  "node24": "Unavailable; only Node26.8.2 measured.",
+  "node24": "Node24.21.0 later found; all main performance evidence Node26.8.2 only, correctness/package qualification recorded separately.",
   "hashes": {
     "pnpm-lock.yaml": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d",
     "package.json": "f8412435a9014df7548105bdf5b6a12f99e414a15cd09a58f27f53ab992f56eb",
     "experiments/rusty-rules/Cargo.lock": "0202e182c25c988edabdc1026cbfdc17c138b0e93d85c2a952eb79192321c7b7",
-    "experiments/rusty-rules/Cargo.toml": "bb0a0608c0f1998dc69bede7397d24c5c5e8aca9837d7fc9ef9b44464e5fffb2",
-    "experiments/rusty-rules/src/lib.rs": "b0541e9d152dd9e2f2d8e6df6e8c2a29c6a3c3fc1d9687d596859cd31f7c88b2",
+    "experiments/rusty-rules/Cargo.toml": "42c80404c2c63adaeec98ba5ef61f1e40adf25a0fb735a49aca77ce298c912aa",
+    "experiments/rusty-rules/src/lib.rs": "81d31c117eab74cb577a0f803fd38175e40bfc73152ecd413863cc7af26ab01a",
     "experiments/rusty-rules/src/main.rs": "1fe5804405a7078f4245d4408629bf09404843ad6fe7778f4caef98e97661190",
     "experiments/rusty-rules/bridge.mjs": "615300d616ae08b0031f8adb61adf0a9697395e23007c05792dc4f1de0cc426f",
     "experiments/rusty-rules/wire.mjs": "f17ecba29da1d52d8f61c91d35e80a943276f6393ca15c57b5f95d6564389f7c",
@@ -70,26 +70,39 @@
     "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/ExpressionParser.d.ts": "747f13f1cd9f839a012e628ac9ab2ef0e813019d22297789a0d14dc4998625a9",
     "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/helpers.d.ts": "f273b32ce8e2a2604ebb8e1d0d038f2db5265ba308562ff1ed0a538e7dd83259",
     "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.d.ts": "3dff04fb6f24b66bff52da0c47727473ebc93da5182afd61209859daf1160aac",
-    "experiments/rusty-rules/target/release/rusty-rules-experiment": "2024c8533c015884a60dc57bbb3ee07103cdb349575105d9fe829ec579acc637"
+    "experiments/rusty-rules/target/release/rusty-rules-experiment": "6efc246caadb7457bb2738f514eb58dcfab6a8ca7b91793f96ca8de0eb9f436b"
   },
   "historicalEvidence": {
     "native-pre-context": "Complete screening campaign c6439e7; rustSource command placeholder resolved by immutable binary hash.",
     "native-final": "Complete earlier1051a86 pre-numeric-scope campaign; diagnostic only.",
     "native-numeric-before-index-boundary": "Interrupted partial076d4ba; excluded from confirmation.",
     "native-before-dag-memo": "Interrupted partiale456fb0; excluded from confirmation.",
-    "prior": "Matched12blocks finalTSruntime d4a88ea versus prior7b073e3; final TS module hash must match native-confirmation."
+    "prior": "Matched12blocks finalTSruntime d4a88ea versus prior7b073e3; final TS module hash must match native-confirmation.",
+    "native-confirmation": "Complete de6ca7f campaign before exact power guard and JSON float roundtrip; diagnostic superseded by native-exact-power-confirmation.",
+    "bridge-confirmation": "Complete de6ca7f bridge/cold/retention campaign, diagnostic superseded by bridge-exact-power-confirmation.",
+    "numeric-grid-power-exact": "10718-case development grid,14failures caused by default serde_json float decoding; all retained."
   },
   "finalValidation": {
-    "rustTests": 21,
+    "rustTests": 24,
     "bridgeTests": 15,
     "sharedDifferential": 419,
-    "numericDomainGrid": 10478,
+    "numericDomainGrid": 11158,
     "numericGridPolicy": "Exact TS equality or explicit declared Rust domain rejection; no approximate float comparison.",
-    "tsArtifactIdentity": "native/prior/bridge hashes identical",
-    "rustArtifactIdentity": "native/bridge hashes identical"
+    "independentReview": "Architect approved exact-power guard, JSON float-roundtrip and independent boundary oracle before freeze.",
+    "tsArtifactIdentity": "native-exact-power/prior/bridge-exact-power module hashes verified identical",
+    "rustArtifactIdentity": "native-exact-power/bridge-exact-power binary hashes verified identical"
   },
   "costAccounting": {
     "paidRemoteComputeUSD": 0,
     "modelAndReportingCosts": "unavailable"
+  },
+  "rustSerdeJsonFeatures": [
+    "float_roundtrip"
+  ],
+  "historicalPowerAttributionCorrection": {
+    "oldRandomPowerFailures": 56,
+    "alsoHadChangedInputFloats": 56,
+    "alsoHadChangedResults": 52,
+    "conclusion": "Old failures confounded math and JSON decoding; no isolated libm/V8 rounding attribution claimed."
   }
 }

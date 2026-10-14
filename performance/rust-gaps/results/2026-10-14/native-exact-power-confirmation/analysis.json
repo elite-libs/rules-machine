@@ -1,0 +1,363 @@
+{
+  "environment": {
+    "at": "2026-10-14T01:38:41.294Z",
+    "fixtureVersion": "shared-subset-v2",
+    "nativeRunnerSha256": "c762c8875298628e65345f21f8abb39a246c2ca85abd30b11eff9f1717f57b80",
+    "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+    "node": "v26.8.2",
+    "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+    "cpus": 8,
+    "platform": "linux 7.2.5-3-omarchy x64",
+    "memory": 67342082048,
+    "blocks": 12,
+    "baseline": "/tmp/rules-machine-baseline/dist/index.js",
+    "tuned": "/home/dan/code/oss/rules-machine/dist/index.mjs",
+    "upgrade": "/tmp/rules-machine-upgrade-only/dist/index.js",
+    "rust": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+    "moduleHashes": {
+      "baseline": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+      "tuned": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+      "upgrade": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+      "rust": "6efc246caadb7457bb2738f514eb58dcfab6a8ca7b91793f96ca8de0eb9f436b"
+    },
+    "harnessHashes": {
+      "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+      "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626",
+      "worker.mjs": "057224f7554de4a3c32a7db7b8722241bfd8b53814d35cf8c4e8169c676ce2b1",
+      "run.mjs": "ab2af1b63b0f54bb79a6fba97d93eec3ec73c88915dc97edc1f19a9f7e16a43f",
+      "verify.mjs": "9a299c8bd27160a8c02b7af23b62fecd9e2cd9f5d68b5fb1f3cdf115b51d0aa1"
+    },
+    "command": [
+      "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+      "/home/dan/code/oss/rules-machine/performance/rust-gaps/native-run.mjs",
+      "baseline=/tmp/rules-machine-baseline/dist/index.js",
+      "upgrade=/tmp/rules-machine-upgrade-only/dist/index.js",
+      "tuned=/home/dan/code/oss/rules-machine/dist/index.mjs",
+      "rust=/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+      "blocks=12",
+      "output=performance/rust-gaps/results/2026-10-14/native-exact-power-confirmation",
+      "tunedSource=d4a88ea",
+      "rustSource=127d762"
+    ]
+  },
+  "observations": 336,
+  "rows": [
+    {
+      "fixture": "eligibility",
+      "baseline": {
+        "medianNs": 262455.9513888889,
+        "minNs": 179629.52343750003,
+        "maxNs": 322245.27864583326,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 268030.2578125,
+        "minNs": 168396.15277777778,
+        "maxNs": 297677.15972222225,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.0075092495235662,
+          "lower95": 0.9230233490282281,
+          "upper95": 1.1053242538085684
+        }
+      },
+      "tuned": {
+        "medianNs": 38118.391493055555,
+        "minNs": 24869.574652777766,
+        "maxNs": 67827.17100694444,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 6.710314251532346,
+          "lower95": 5.517781788194043,
+          "upper95": 7.980810704659501
+        }
+      },
+      "rust": {
+        "medianNs": 2495.8090277777774,
+        "minNs": 1789.334201388889,
+        "maxNs": 4651.532986111111,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 97.5525278301891,
+          "lower95": 85.32386657575364,
+          "upper95": 112.18554035566383
+        }
+      }
+    },
+    {
+      "fixture": "pricing-0",
+      "baseline": {
+        "medianNs": 458932.5589488636,
+        "minNs": 340326.31107954547,
+        "maxNs": 608411.6193181819,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 458676.87713068177,
+        "minNs": 348642.11363636365,
+        "maxNs": 623441.2343749999,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.0238703776356937,
+          "lower95": 0.9177698670889473,
+          "upper95": 1.1462626705940762
+        }
+      },
+      "tuned": {
+        "medianNs": 46043.36292613637,
+        "minNs": 37586.65909090909,
+        "maxNs": 70991.82244318182,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 9.6838037782753,
+          "lower95": 8.69621931560483,
+          "upper95": 10.928020117758045
+        }
+      },
+      "rust": {
+        "medianNs": 5866.603693181818,
+        "minNs": 4438.176136363636,
+        "maxNs": 12073.197443181818,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 71.97713426509796,
+          "lower95": 61.60376950120698,
+          "upper95": 83.3426596878366
+        }
+      }
+    },
+    {
+      "fixture": "pricing-1024",
+      "baseline": {
+        "medianNs": 437273.1159539473,
+        "minNs": 356544.4358552631,
+        "maxNs": 619806.2697368421,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 487306.27713815786,
+        "minNs": 356382.7944078948,
+        "maxNs": 662206.8190789474,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.9574053969787425,
+          "lower95": 0.8228529640451983,
+          "upper95": 1.0970884401764618
+        }
+      },
+      "tuned": {
+        "medianNs": 49515.47203947367,
+        "minNs": 35424.97532894736,
+        "maxNs": 72821.45888157895,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 9.488386129051772,
+          "lower95": 8.14772734728657,
+          "upper95": 10.841157371232033
+        }
+      },
+      "rust": {
+        "medianNs": 6264.249177631579,
+        "minNs": 4552.899671052632,
+        "maxNs": 11722.697368421053,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 70.30224619354506,
+          "lower95": 60.02276660079469,
+          "upper95": 80.74846420450869
+        }
+      }
+    },
+    {
+      "fixture": "pricing-32768",
+      "baseline": {
+        "medianNs": 533091.4730902778,
+        "minNs": 403701.5086805555,
+        "maxNs": 712122.9947916667,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 533891.5572916666,
+        "minNs": 420710.9131944444,
+        "maxNs": 712353.3229166666,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.9477629930635959,
+          "lower95": 0.896322123474615,
+          "upper95": 0.9974699906701008
+        }
+      },
+      "tuned": {
+        "medianNs": 59496.02083333333,
+        "minNs": 39277.77083333332,
+        "maxNs": 90579.69618055555,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 9.061969191387362,
+          "lower95": 7.953900715516484,
+          "upper95": 10.133006613823031
+        }
+      },
+      "rust": {
+        "medianNs": 6556.266493055556,
+        "minNs": 5830.930555555556,
+        "maxNs": 11939.269097222223,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 65.23541707346736,
+          "lower95": 57.18484675748435,
+          "upper95": 75.38696125680394
+        }
+      }
+    },
+    {
+      "fixture": "array-map-16",
+      "baseline": {
+        "medianNs": 808759.987704918,
+        "minNs": 628624.9344262296,
+        "maxNs": 1163439.918032787,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 918780.4549180327,
+        "minNs": 567601.1311475411,
+        "maxNs": 1239423.3852459015,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.9400515499334214,
+          "lower95": 0.8254937189859253,
+          "upper95": 1.0747923273280855
+        }
+      },
+      "tuned": {
+        "medianNs": 93146.87295081964,
+        "minNs": 75186.81967213117,
+        "maxNs": 181540.73770491802,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 8.249242948060962,
+          "lower95": 7.2184240072199195,
+          "upper95": 9.472372728153989
+        }
+      },
+      "rust": {
+        "medianNs": 12924.631147540982,
+        "minNs": 9087.065573770491,
+        "maxNs": 19181.680327868853,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 63.258237863979815,
+          "lower95": 56.065569195690365,
+          "upper95": 70.66862499406751
+        }
+      }
+    },
+    {
+      "fixture": "array-map-256",
+      "baseline": {
+        "medianNs": 10021097.96,
+        "minNs": 7547504.240000001,
+        "maxNs": 14271743.88,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 12652730.86,
+        "minNs": 7607815.48,
+        "maxNs": 13763837.520000003,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.923392366527572,
+          "lower95": 0.8364891257529986,
+          "upper95": 1.0278429854383793
+        }
+      },
+      "tuned": {
+        "medianNs": 832434.7600000002,
+        "minNs": 529664.9600000001,
+        "maxNs": 1560825.6000000006,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 12.607940570140602,
+          "lower95": 10.753167970622785,
+          "upper95": 14.601413575914457
+        }
+      },
+      "rust": {
+        "medianNs": 233475.76,
+        "minNs": 130452.16,
+        "maxNs": 425586.56,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 49.19974967383588,
+          "lower95": 43.10435422032499,
+          "upper95": 55.69374670016047
+        }
+      }
+    },
+    {
+      "fixture": "array-map-4096",
+      "baseline": {
+        "medianNs": 156870232.5,
+        "minNs": 111459967.5,
+        "maxNs": 213434866.5,
+        "blocks": 12
+      },
+      "upgrade": {
+        "medianNs": 149541366.5,
+        "minNs": 116593407.49999999,
+        "maxNs": 181088667.5,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.0517945047491584,
+          "lower95": 0.9671910264599122,
+          "upper95": 1.1415236497551244
+        }
+      },
+      "tuned": {
+        "medianNs": 10470073,
+        "minNs": 7061211.499999995,
+        "maxNs": 15502491,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 14.83241979708957,
+          "lower95": 13.26139619203769,
+          "upper95": 16.5143618743435
+        }
+      },
+      "rust": {
+        "medianNs": 3034867.5,
+        "minNs": 2240661.5,
+        "maxNs": 4545088,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 48.42568630652362,
+          "lower95": 40.49293490671419,
+          "upper95": 58.27216217506414
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "upgrade": {
+      "ratio": 0.9778026552060681,
+      "lower95": 0.9510610869345558,
+      "upper95": 1.0073910697612336
+    },
+    "tuned": {
+      "ratio": 9.789984492492335,
+      "lower95": 9.344558428145696,
+      "upper95": 10.191467762878098
+    },
+    "rust": {
+      "ratio": 64.90701569980426,
+      "lower95": 62.50825165307128,
+      "upper95": 67.12532654786385
+    },
+    "rustOverTuned": {
+      "ratio": 6.629940604050973,
+      "lower95": 6.404279215273117,
+      "upper95": 6.8548860304481165
+    }
+  },
+  "method": "Equal-weight geometric throughput ratios, paired whole process blocks;10000 deterministic percentile bootstrap resamples; per-slice intervals unadjusted."
+}

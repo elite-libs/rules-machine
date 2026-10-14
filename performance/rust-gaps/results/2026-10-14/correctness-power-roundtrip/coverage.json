@@ -1,0 +1,810 @@
+{
+  "at": "2026-10-14T01:36:37.279Z",
+  "specVersion": "rust-core-gap-contract-v1",
+  "claim": "Core subset only, not full function or JavaScript object compatibility",
+  "cases": 419,
+  "uniquePrograms": 279,
+  "passed": 419,
+  "failed": 0,
+  "functions": [
+    {
+      "name": "NEG",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "ADD",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "SUB",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "MUL",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "DIV",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "MOD",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "ISPRIME",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "GCD",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DATE",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DATEISO",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "NOT",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Any supported tagged value; JS truthiness."
+    },
+    {
+      "name": "ABS",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "ACOS",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ACOSH",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ASIN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ASINH",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ATAN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ATAN2",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ATANH",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "CUBEROOT",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "CEIL",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "COS",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "COSH",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "EXP",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "FLOOR",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "LN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "LOG",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "LOG2",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "SIN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "SINH",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "SQRT",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "TAN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "TANH",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ROUND",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "SIGN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "TRUNC",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "IF",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "AVERAGE",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "SUM",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "CHAR",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "CODE",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DEC2BIN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DEC2HEX",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DEC2STR",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "BIN2DEC",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "HEX2DEC",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "STR2DEC",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DEGREES",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "RADIANS",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "MIN",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Numeric scalar or numeric array; NaN propagates after validating every element; signed-zero ties match JS."
+    },
+    {
+      "name": "MAX",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Numeric scalar or numeric array; NaN propagates after validating every element; signed-zero ties match JS."
+    },
+    {
+      "name": "SORT",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Numeric array only; NaN or nonnumeric elements explicitly reject; stable ascending comparator."
+    },
+    {
+      "name": "REVERSE",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Array only."
+    },
+    {
+      "name": "INDEX",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Array or ASCII string and numeric index; non-ASCII string valid-index access rejects."
+    },
+    {
+      "name": "LENGTH",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Array or string (UTF-16 length)."
+    },
+    {
+      "name": "JOIN",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "STRING",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "STRING_CONTAINS",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Two strings."
+    },
+    {
+      "name": "STRING_ENDS_WITH",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Two strings."
+    },
+    {
+      "name": "STRING_STARTS_WITH",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Two strings."
+    },
+    {
+      "name": "SPLIT",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "CHARARRAY",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ARRAY",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ISNAN",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Strict numeric arguments, including NaN and infinities."
+    },
+    {
+      "name": "MAP",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "REDUCE",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "RANGE",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Finite safe-integer bounds; at most 100000 results."
+    },
+    {
+      "name": "UPPER",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "LOWER",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "ZIP",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "UNZIP",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "TAKE",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation."
+    },
+    {
+      "name": "DROP",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation."
+    },
+    {
+      "name": "SLICE",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation."
+    },
+    {
+      "name": "CONCAT",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Two arrays; combined result at most 100000 elements."
+    },
+    {
+      "name": "HEAD",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Array only."
+    },
+    {
+      "name": "TAIL",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Array only."
+    },
+    {
+      "name": "LAST",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Array only."
+    },
+    {
+      "name": "CONS",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Any value and array; result at most 100000 elements."
+    },
+    {
+      "name": "FILTER",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "TAKEWHILE",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DROPWHILE",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "CONTAINS",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker."
+    },
+    {
+      "name": "INCLUDES",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker."
+    },
+    {
+      "name": "OBJECT_CONTAINS",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "COUNT_KEYS",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Object only; arrays and null reject."
+    },
+    {
+      "name": "OMIT",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "REMOVE_VALUES",
+      "status": "supported-tested",
+      "cases": 1,
+      "notes": "Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker."
+    },
+    {
+      "name": "FILTER_VALUES",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "INCLUDES_VALUES",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "GET",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "PUT",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "DICT",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "UNZIPDICT",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "KEYS",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "VALUES",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    },
+    {
+      "name": "THROW",
+      "status": "unsupported-rejects",
+      "cases": 1,
+      "notes": "Unknown calls reject during preparation; not part of supported grammar."
+    }
+  ],
+  "features": [
+    {
+      "name": "function",
+      "cases": 35,
+      "passed": 35
+    },
+    {
+      "name": "null-missing-undefined",
+      "cases": 7,
+      "passed": 7
+    },
+    {
+      "name": "numeric-and-case",
+      "cases": 15,
+      "passed": 15
+    },
+    {
+      "name": "nested-sequences-returns",
+      "cases": 4,
+      "passed": 4
+    },
+    {
+      "name": "recursive-conditions",
+      "cases": 3,
+      "passed": 3
+    },
+    {
+      "name": "structural-arrays",
+      "cases": 9,
+      "passed": 9
+    },
+    {
+      "name": "try-catch",
+      "cases": 3,
+      "passed": 3
+    },
+    {
+      "name": "path-writes",
+      "cases": 2,
+      "passed": 2
+    },
+    {
+      "name": "common-functions",
+      "cases": 8,
+      "passed": 8
+    },
+    {
+      "name": "undefined-constant",
+      "cases": 2,
+      "passed": 2
+    },
+    {
+      "name": "generated-family-0",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-1",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-2",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-3",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-4",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-5",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-6",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-7",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-8",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-9",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-10",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "generated-family-11",
+      "cases": 20,
+      "passed": 20
+    },
+    {
+      "name": "frozen-benchmark-fixtures",
+      "cases": 15,
+      "passed": 15
+    },
+    {
+      "name": "function-rejection",
+      "cases": 62,
+      "passed": 62
+    },
+    {
+      "name": "date-and-random",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "unknown-function",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "higher-order-functions",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "object-library-helpers",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "bracket-read-syntax",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "unsafe-write",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "javascript-operators",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "chained-assignment",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "unknown-structural-fields",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "trace",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "atomic-option",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "budget-option",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "readonly-option",
+      "cases": 1,
+      "passed": 1
+    },
+    {
+      "name": "sort-nan-domain",
+      "cases": 1,
+      "passed": 1
+    }
+  ],
+  "transportExclusions": [
+    "cyclic graphs/shared identity",
+    "sparse arrays",
+    "accessors/non-enumerable object data",
+    "host functions/objects",
+    "symbols/BigInt",
+    "lone UTF16 surrogates"
+  ],
+  "syntaxExclusions": [
+    "bracket expression reads",
+    "bare calls without parentheses",
+    "non-ASCII bare identifiers",
+    "tracing"
+  ],
+  "resourceBounds": {
+    "programCacheEntries": 128,
+    "programSourceBytes": 1048576,
+    "wireDepth": 40,
+    "frameBytes": 8388608,
+    "pendingRequests": 128,
+    "queuedRequestBytes": 16777216,
+    "structuralNodes": 10000,
+    "expressionTokens": 4096,
+    "evaluationSteps": 1000000
+  }
+}

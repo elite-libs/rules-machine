@@ -1,0 +1,51 @@
+   Compiling serde_json v1.0.154
+   Compiling rusty-rules-experiment v0.1.0 (/home/dan/code/oss/rules-machine/experiments/rusty-rules)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.56s
+     Running unittests src/lib.rs (experiments/rusty-rules/target/debug/deps/rusty_rules_experiment-a74a853d5348cc3e)
+
+running 2 tests
+test power_domain_tests::exact_binary_significands_include_subnormal_powers ... ok
+test graph_tests::repeated_alias_cycle_scan_visits_unique_nodes ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (experiments/rusty-rules/target/debug/deps/rusty_rules_experiment-d22a3b449aec92c0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/core.rs (experiments/rusty-rules/target/debug/deps/core-af4f9c831141ec68)
+
+running 22 tests
+test arrays_scope_and_callback_returns ... ok
+test array_predicates ... ok
+test assignment_result_aliases ... ok
+test callback_fast_scope_preserves_dsl_cycle_guard ... ok
+test cyclic_write_rejects_without_retained_cycle ... ok
+test json_decoder_preserves_adjacent_binary_values ... ok
+test minmax_signed_zero_and_sort_nan_domain ... ok
+test null_and_undefined_are_distinct ... ok
+test paths_and_compound ... ok
+test nested_sequences_and_return ... ok
+test power_domain_rejects_nearby_bases_and_accepts_subnormal_powers ... ok
+test parser_escape_uses_next_character_verbatim ... ok
+test recursive_conditions ... ok
+test try_catch_and_return ... ok
+test cache_is_bounded_and_releases ... ok
+test unary_case_and_short_circuit ... ok
+test unknown_bare_function_rejects ... ok
+test wire_no_collision ... ok
+test unknown_syntax_rejects ... ok
+test array_append_at_limit_rejects ... ok
+test allocation_and_numeric_domains_reject_early ... ok
+test response_expansion_and_source_byte_cache_are_bounded ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.60s
+
+   Doc-tests rusty_rules_experiment
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,5 +1,5 @@
 {
-  "description": "All retained gap-phase evidence, including development failures and interrupted campaigns. Final primary classification in report.md.",
+  "description": "All retained gap-phase evidence including superseded de6ca7f, development failures and interrupted campaigns. Final primary127d762 classification in report.md.",
   "artifacts": {
     "bridge-confirmation/analysis.json": {
       "bytes": 38176,
@@ -17,6 +17,22 @@
       "bytes": 38504,
       "sha256": "7c16cf1eecbe6bd2778464bc65c4bcffe634c1c804f042f21592c12526333d82"
     },
+    "bridge-exact-power-confirmation/analysis.json": {
+      "bytes": 38195,
+      "sha256": "107148a5db4eb5788cf27ecfff5d96a1b5d659a3895cec2c6c946d57aa67d005"
+    },
+    "bridge-exact-power-confirmation/environment.json": {
+      "bytes": 1447,
+      "sha256": "db8d23dbf24045f8f82be113e58e92d405190292bef89c5c951ec0f6d4ee441f"
+    },
+    "bridge-exact-power-confirmation/raw.json": {
+      "bytes": 137499,
+      "sha256": "4b92f1d5d9d6976d66a54e66abdae6335cc503b3c48afa5f3ffd659ac2bad35e"
+    },
+    "bridge-exact-power-confirmation-stdout.txt": {
+      "bytes": 38523,
+      "sha256": "10287a82de18fabf68dae4b0d1f4ccf1513b000a3b938b5cf6539429ee0c9a76"
+    },
     "bridge-final-frozen-tests.txt": {
       "bytes": 1400,
       "sha256": "fc1e65788c51982edba7d931ac7a8c86ce88ee2daf253fc922ee1485e5b8294d"
@@ -28,6 +44,14 @@
     "bridge-final-tests.txt": {
       "bytes": 320,
       "sha256": "ca5c5be3b2607d458233f898f8d0c6f190edd4b18d4b8701e5927b45905bec00"
+    },
+    "bridge-power-exact-tests.txt": {
+      "bytes": 1405,
+      "sha256": "8ab67ae0441dbbf29d45e4888cb50bf1c593d6ea3c902aa8503ac1cae8dec9ca"
+    },
+    "bridge-power-roundtrip-tests.txt": {
+      "bytes": 1403,
+      "sha256": "f049cad9d2f8e03bf7af911e044275de25987535d487dac72bca205b94475fef"
     },
     "context-ablation/context-ablation.json": {
       "bytes": 5633,
@@ -89,9 +113,41 @@
       "bytes": 793428,
       "sha256": "19d75e3c7acff77e354489f2b05b880d528a4c47ce8c987f033bfbec7f9937f9"
     },
+    "correctness-power-exact/coverage.json": {
+      "bytes": 21520,
+      "sha256": "175b4f4c773e23eb2955ee14aa6f9a6de5cd54606828a2f814943496381c3136"
+    },
+    "correctness-power-exact/coverage.md": {
+      "bytes": 3623,
+      "sha256": "4f360bc0a668d1a6204ca8d7aac300b441c408318f2a4a1b8f28a4cb33e0af69"
+    },
+    "correctness-power-exact/differential.json": {
+      "bytes": 793428,
+      "sha256": "71e8b714e97f987d1cd93f0b0bb6a42c6a32247e592fa9cf4b418582ccf77db8"
+    },
+    "correctness-power-roundtrip/coverage.json": {
+      "bytes": 21520,
+      "sha256": "8e7a8d09ac8281088045475c6a9019af1dd4bb637336772552498848eef80c1c"
+    },
+    "correctness-power-roundtrip/coverage.md": {
+      "bytes": 3623,
+      "sha256": "4f360bc0a668d1a6204ca8d7aac300b441c408318f2a4a1b8f28a4cb33e0af69"
+    },
+    "correctness-power-roundtrip/differential.json": {
+      "bytes": 793428,
+      "sha256": "0ade9d2df0a018fa47023e333b60b407d20da94f5460fd5c91779f2d8a5d64cf"
+    },
     "correctness-signed-zero-probe/differential.json": {
       "bytes": 794138,
       "sha256": "dec97d5bd0eafca308312732aebe6ae8222bda7b4387973dcdf1d217ac93d1df"
+    },
+    "final-self-review.md": {
+      "bytes": 2664,
+      "sha256": "83b94183f15fcaed55bcb1c42d129ee62c98ea00611101d983b2f3d5e9940410"
+    },
+    "index-de6ca7f.json": {
+      "bytes": 11951,
+      "sha256": "56b11180eb69d4ebda475a08d630d252cecac46a6cff47779c3eb2262f96f680"
     },
     "native-before-dag-memo/environment.json": {
       "bytes": 2116,
@@ -140,6 +196,38 @@
     "native-confirmation-stdout.txt": {
       "bytes": 17873,
       "sha256": "2fdd04b38aed178dcdef4d32c141c6eb732a1b145a21e03dd800fd806d0d27c3"
+    },
+    "native-exact-power-analysis-stdout.txt": {
+      "bytes": 778,
+      "sha256": "526ba5db38ebeea988d8da64781a47aa1753e00ab6882ae287de5c01ea063d79"
+    },
+    "native-exact-power-confirmation/analysis.json": {
+      "bytes": 10792,
+      "sha256": "6feabb069544ca47afc13b40b9f6ab52e8a80a8ae2dbfb3f1191dc84d179cf53"
+    },
+    "native-exact-power-confirmation/environment.json": {
+      "bytes": 2128,
+      "sha256": "32a5d847e7a8501985d5d222ee762c92bee0046633f48d02bdb6a230242a6c52"
+    },
+    "native-exact-power-confirmation/raw.json": {
+      "bytes": 104515,
+      "sha256": "f5a552271c02f1386581bdd32fad4a2773c106d2d4882139266630558f74bb79"
+    },
+    "native-exact-power-confirmation/report.md": {
+      "bytes": 777,
+      "sha256": "3f3193d92732eba899dac4891d6a59c3f4e744834a578e7a70bbd26085e899fe"
+    },
+    "native-exact-power-confirmation/schedule.json": {
+      "bytes": 379,
+      "sha256": "affcc7c9d663de479dbc95ac757c86cb719b828e77e42bf8e0ff62b66333a02b"
+    },
+    "native-exact-power-confirmation/summary.json": {
+      "bytes": 4685,
+      "sha256": "c4227a88be3506c741402a525648d250cb5b4a4a99907ccd6ac2e958e042151e"
+    },
+    "native-exact-power-confirmation-stdout.txt": {
+      "bytes": 17865,
+      "sha256": "c4994cec4a44e736ad50ae00220a69d10ed306772a85dcff7c7ef03ba61772c1"
     },
     "native-final/analysis.json": {
       "bytes": 10796,
@@ -253,6 +341,22 @@
       "bytes": 26,
       "sha256": "19e98f5b60a8a61d80a2d0df22ac322dddfa2b186a78b65a8c5af16cfd2d53f3"
     },
+    "numeric-grid-power-exact/numeric-grid.json": {
+      "bytes": 4810596,
+      "sha256": "3b7b4dd61f3d9790b58028c4ef88b5a60178d2517439c26145347eb22011df7b"
+    },
+    "numeric-grid-power-exact-stdout.txt": {
+      "bytes": 671,
+      "sha256": "dff550d27ccb3ed4ce2cf24feb71171fa14a1067a9140b06353caac3ec622005"
+    },
+    "numeric-grid-power-roundtrip/numeric-grid.json": {
+      "bytes": 4964004,
+      "sha256": "943cf774ddb12574673cd0282e3d4b03dd810eae90e6763ead60dff37832f443"
+    },
+    "numeric-grid-power-roundtrip-stdout.txt": {
+      "bytes": 26,
+      "sha256": "24e57ea657f56e5c3bd40210da2180e16e5927d43a3400c67438e07ff21b49b4"
+    },
     "prior/analysis.json": {
       "bytes": 5902,
       "sha256": "2dff965a80bef78b239f00b8830f13949be1b76a5ecbbc7eb435f87cbf9a8667"
@@ -277,6 +381,10 @@
       "bytes": 2740,
       "sha256": "f062659b38c934f46fa12c00da6a7a2e7b58dce8a0f07127602597fc15aa87e2"
     },
+    "profiles/commands.json": {
+      "bytes": 775,
+      "sha256": "04793a66b917d366247289e21d75468077651075ff59ca63a6461625f2538a35"
+    },
     "profiles/summary.json": {
       "bytes": 8678,
       "sha256": "2f84f84b0f4ab54ded70270a3334f185a473bb1492531ff4b8ea0f0da434461e"
@@ -297,17 +405,33 @@
       "bytes": 235150,
       "sha256": "1c06510b54297817f319a1112ce33ac13caba19da1de7bb7bd43abf5f17efa45"
     },
-    "provenance.json": {
+    "provenance-de6ca7f.json": {
       "bytes": 12320,
       "sha256": "b4c424b12e9b0ff941c56b0a5ca68a7b8b4e663f9eae57ddc28708d8267c293b"
     },
-    "report.md": {
+    "provenance.json": {
+      "bytes": 13444,
+      "sha256": "4c72fccafaf96d8ed6828cd109790ac389ffe2e03133ba5813facf5759600deb"
+    },
+    "report-de6ca7f.md": {
       "bytes": 9454,
       "sha256": "bda3e3c6ebe3dbbdec4508ed462e39a512e2cde9a65dd9bb7a2de476667ab925"
+    },
+    "report.md": {
+      "bytes": 10283,
+      "sha256": "c88368703662ce7e3c20cd7f1a0202001593778028a0fdf87a27c64f83dedef8"
     },
     "rust-final-tests.txt": {
       "bytes": 1932,
       "sha256": "8cd37ea2ee2b149bf25dc879071fd51c327d034d49f84f29e860e8b75ef89637"
+    },
+    "rust-power-exact-tests.txt": {
+      "bytes": 2091,
+      "sha256": "b96a6545d66b4aca118706aa9f4153b7b3badc1fbcd97deabd7da50a4f16372f"
+    },
+    "rust-power-roundtrip-tests.txt": {
+      "bytes": 2183,
+      "sha256": "f9474e7bd6d691e1bd528f618f615c4cb4d56960b58d42605a4f98e08e49c3f7"
     }
   }
 }

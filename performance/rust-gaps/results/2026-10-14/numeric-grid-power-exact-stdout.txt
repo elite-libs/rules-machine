@@ -1,0 +1,15 @@
+FAIL power-binary-boundaries "a ^ b" case2585
+FAIL power-binary-boundaries "a ^ b" case2586
+FAIL power-binary-boundaries "a ^ b" case2587
+FAIL power-binary-boundaries "a ^ b" case2589
+FAIL power-binary-boundaries "a ^ b" case2590
+FAIL power-binary-boundaries "a ^ b" case2591
+FAIL power-binary-boundaries "a ^ b" case2592
+FAIL power-binary-boundaries "a ^ b" case2593
+FAIL power-binary-boundaries "a ^ b" case2594
+FAIL power-binary-boundaries "a ^ b" case2595
+FAIL power-binary-boundaries "a ^ b" case2597
+FAIL power-binary-boundaries "a ^ b" case2598
+FAIL power-binary-boundaries "a ^ b" case2599
+FAIL power-binary-boundaries "a ^ b" case2600
+10704/10718;14 differences
