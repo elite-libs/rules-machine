@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { encode, decode } from './wire.mjs';
+import { encode, decode, preflightJSON } from './wire.mjs';
 function ruleData(rules){
   const value=decode(encode(rules));
   function check(v){if(v===undefined||typeof v==='number'&&!Number.isFinite(v))throw new TypeError('Rules require ordinary JSON values');if(v&&typeof v==='object')for(const child of Object.values(v))check(child);}
@@ -9,7 +9,9 @@ export class RustBridgeError extends Error {
   constructor(code,message,options){super(message,options);this.name='RustBridgeError';this.code=code;}
 }
 /** One owned sequential worker. Cancellation/timeout terminates the worker and
- * rejects all requests, ensuring timed-out work cannot keep consuming resources. */
+ * rejects all requests, ensuring timed-out work cannot keep consuming resources.
+ * Raw payloads/options require ordinary JSON data. Conservative 8 MiB preflight
+ * may reject frames below their actual serialized size limit. */
 export class RustBridge {
   #child; #pending=new Map(); #next=0; #closed=false; #buffer=Buffer.alloc(0); #stderr=''; #queuedBytes=0; #closePromise; #resolveClose;
   constructor({binary,args=[],timeoutMs=5000,maxPending=128,maxFrameBytes=8*1024*1024,maxQueuedBytes=16*1024*1024,env=process.env}={}) {
@@ -57,7 +59,15 @@ export class RustBridge {
     if(!Number.isSafeInteger(timeoutMs)||timeoutMs<=0)return Promise.reject(new TypeError('timeoutMs must be positive integer'));
     if(this.#pending.size>=this.maxPending)return Promise.reject(new RustBridgeError('BACKPRESSURE','Bridge pending request limit reached'));
     const id=++this.#next;let frame;
-    try{frame=JSON.stringify({...payload,op,id})+'\n';}catch(error){return Promise.reject(error);}
+    try{
+      if(typeof op!=='string'||!op)throw new TypeError('op must be a nonempty string');
+      if(payload===null||typeof payload!=='object'||Array.isArray(payload))throw new TypeError('payload must be a JSON object');
+      // Validate before spreading payload (which could otherwise run getters).
+      // This wrapper conservatively overcounts the flattened envelope and adds
+      // one depth level; tagged depth40 values still fit within JSON depth128.
+      preflightJSON({payload,op,id});
+      frame=JSON.stringify({...payload,op,id})+'\n';
+    }catch(error){return Promise.reject(error);}
     const bytes=Buffer.byteLength(frame);
     if(this.#queuedBytes+bytes>this.maxQueuedBytes)return Promise.reject(new RustBridgeError('BACKPRESSURE','Queued request byte limit reached'));
     if(bytes>this.maxFrameBytes)return Promise.reject(new RustBridgeError('FRAME_LIMIT','Request exceeds frame limit'));

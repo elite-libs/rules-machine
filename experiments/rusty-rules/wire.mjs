@@ -1,6 +1,8 @@
 import { types } from 'node:util';
 
-/** The worker's frame limit also bounds parent-side tree expansion. */
+/** The worker's frame limit also bounds parent-side tree expansion.
+ * Estimates intentionally exceed JSON bytes, so some values below the actual
+ * 8 MiB serialized limit are rejected before serialization or tree expansion. */
 export const MAX_WIRE_BYTES = 8 * 1024 * 1024;
 const MAX_WIRE_DEPTH = 40;
 
@@ -81,6 +83,55 @@ export function encode(value) {
   }
   return build(root);
 }
+/** Validate ordinary JSON before JSON.stringify can invoke any host hooks.
+ * A metadata-only DAG walk accounts for expanded aliases without constructing
+ * another tree. Depth128 accommodates the wrapping of depth40 tagged values. */
+export function preflightJSON(value) {
+  const active = new Set();
+  const memo = new WeakMap();
+  function measure(value, depth) {
+    if (depth > 128) throw new TypeError('JSON frame nesting exceeds 128');
+    if (value === null || typeof value === 'boolean') return { bytes: 32, height: 0 };
+    if (typeof value === 'number' && Number.isFinite(value)) return { bytes: 48, height: 0 };
+    if (typeof value === 'string') return { bytes: bounded(32 + stringBytes(value)), height: 0 };
+    if (typeof value !== 'object' || value === null) throw new TypeError('Frame payload requires ordinary JSON data');
+    if (types.isProxy(value)) throw new TypeError('Proxy values are unsupported');
+    if (active.has(value)) throw new TypeError('Cyclic values cannot cross the wire');
+    const cached = memo.get(value);
+    if (cached) {
+      if (depth + cached.height > 128) throw new TypeError('JSON frame nesting exceeds 128');
+      return cached;
+    }
+    const isArray = Array.isArray(value);
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== null && prototype !== (isArray ? Array.prototype : Object.prototype)) throw new TypeError('Host object prototypes are unsupported');
+    const length = isArray ? Object.getOwnPropertyDescriptor(value, 'length').value : undefined;
+    if (isArray) bounded(32 + length * 32);
+    const keys = Reflect.ownKeys(value);
+    if (keys.some(key => typeof key !== 'string')) throw new TypeError('Symbol properties are unsupported');
+    if (isArray && keys.length !== length + 1) throw new TypeError('Sparse/named arrays are unsupported');
+    if (!isArray) bounded(32 + keys.length * 40);
+    active.add(value);
+    try {
+      let bytes = 32, height = 0;
+      const entries = isArray ? Array.from({ length }, (_, index) => String(index)) : keys;
+      for (const key of entries) {
+        const descriptor = Object.getOwnPropertyDescriptor(value, key);
+        if (!descriptor || !('value' in descriptor) || !descriptor.enumerable) throw new TypeError('Sparse/accessor/non-enumerable properties are unsupported');
+        const keyBytes = isArray ? 0 : bounded(8 + stringBytes(key));
+        bounded(bytes + keyBytes + 32);
+        const child = measure(descriptor.value, depth + 1);
+        bytes = bounded(bytes + keyBytes + child.bytes);
+        height = Math.max(height, child.height + 1);
+      }
+      const result = { bytes, height };
+      memo.set(value, result);
+      return result;
+    } finally { active.delete(value); }
+  }
+  return measure(value, 0);
+}
+
 export function decode(wire, depth=0) {
   if(depth>40||!Array.isArray(wire)||typeof wire[0]!=='string')throw new TypeError('Invalid tagged-v1 value');
   const [tag,value]=wire;

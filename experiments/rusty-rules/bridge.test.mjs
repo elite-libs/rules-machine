@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolve} from 'node:path';
 import {RustBridge} from './bridge.mjs';
-import {encode,decode} from './wire.mjs';
+import {encode,decode,preflightJSON,MAX_WIRE_BYTES} from './wire.mjs';
 const binary=resolve('experiments/rusty-rules/target/release/rusty-rules-experiment');
 function worker(options={}){return new RustBridge({binary,...options});}
 function fake(source,options={}){return new RustBridge({binary:process.execPath,args:['-e',source],...options});}
@@ -59,4 +59,46 @@ test('wire preflight rejects accessors and proxies without host callbacks',()=>{
   Object.defineProperty(array,'constructor',{get:getter});
   assert.throws(()=>encode(array),/arrays/);
   assert.equal(calls,0);
+});
+
+test('raw JSON preflight bounds aliases and retains room for tagged depth40',()=>{
+  let alias=0;
+  for(let depth=0;depth<35;depth++)alias=[alias,alias];
+  assert.throws(()=>preflightJSON({options:alias}),{code:'FRAME_LIMIT'});
+  let deep=1;
+  for(let depth=0;depth<40;depth++)deep={nested:deep};
+  const envelope={payload:{input:encode(deep),options:{trace:false,atomic:true,limits:{maxOperations:1000}}},op:'run',id:1};
+  const estimate=preflightJSON(envelope);
+  assert.ok(estimate.bytes<=MAX_WIRE_BYTES);
+  assert.ok(Buffer.byteLength(JSON.stringify(envelope))<=estimate.bytes);
+  assert.deepEqual(decode(envelope.payload.input),deep);
+});
+
+test('raw request and options validation reject expansion and host hooks before submission',async()=>{
+  const bridge=fake('process.stdin.resume();setInterval(()=>{},1000)');
+  try{
+    let alias=0;
+    for(let depth=0;depth<35;depth++)alias=[alias,alias];
+    await assert.rejects(bridge.request('stats',{extra:alias}),{code:'FRAME_LIMIT'});
+    await assert.rejects(bridge.run('program',{}, {options:{extra:alias}}),{code:'FRAME_LIMIT'});
+    let calls=0;
+    const getter=()=>{calls++;return 1;};
+    await assert.rejects(bridge.request('stats',Object.defineProperty({},'extra',{enumerable:true,get:getter})),/accessor/);
+    await assert.rejects(bridge.run('program',{}, {options:{toJSON(){calls++;return {};}}}),/ordinary JSON/);
+    await assert.rejects(bridge.run('program',{}, {options:Object.defineProperty({},'trace',{enumerable:true,get:getter})}),/accessor/);
+    const proxy=new Proxy({}, {ownKeys(){calls++;return [];},getPrototypeOf(){calls++;return Object.prototype;}});
+    await assert.rejects(bridge.request('stats',proxy),/Proxy/);
+    await assert.rejects(bridge.run('program',{}, {options:proxy}),/Proxy/);
+    assert.equal(calls,0);
+    assert.equal(bridge.pendingCount,0);
+  }finally{await dead(bridge);}
+});
+
+test('normal raw request options survive conservative envelope validation',async()=>{
+  const source='process.stdin.on("data",chunk=>{for(const line of chunk.toString().trim().split("\\n")){const request=JSON.parse(line);process.stdout.write(JSON.stringify({id:request.id,result:{options:request.options}})+"\\n");}})';
+  const bridge=fake(source);
+  try{
+    const options={trace:false,atomic:true,limits:{maxOperations:1000,maxArrayLength:20}};
+    assert.deepEqual(await bridge.request('stats',{options}),{options});
+  }finally{await dead(bridge);}
 });
