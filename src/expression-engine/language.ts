@@ -255,7 +255,7 @@ export const ruleExpressionLanguage = (
       const str = string(arg());
       return str.split('');
     },
-    ARRAY: (arg) => array(arg()),
+    ARRAY: (arg) => array(toArray(arg())),
     ISNAN: (arg) => Number.isNaN(num(arg())),
     MAP: (arg1, arg2) => {
       const func = arg1();

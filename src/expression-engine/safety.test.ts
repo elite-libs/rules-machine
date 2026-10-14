@@ -2,6 +2,10 @@ import { describe, expect, test } from 'vitest';
 import { ruleFactory } from '../index';
 
 describe('language correctness and resource bounds', () => {
+  test('supports singleton numeric and string array literals', () => {
+    expect(ruleFactory('[1]')()).toEqual([1]);
+    expect(ruleFactory('["potion"]')()).toEqual(['potion']);
+  });
   test('equality binds before OR and assignment binds after boolean operations', () => {
     expect(
       ruleFactory('income - debt > 25000 OR region == "west"')({

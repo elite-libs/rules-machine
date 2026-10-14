@@ -24,7 +24,7 @@ export function assertWritablePath(path: string): void {
 
 export function setOwnPath(data: object, path: string, value: unknown): void {
   assertWritablePath(path);
-  const keys = toPath(path);
+  const keys = Object.hasOwn(data, path) ? [path] : toPath(path);
   let target = data as Record<string, unknown>;
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];

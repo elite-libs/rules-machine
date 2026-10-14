@@ -17,6 +17,12 @@ describe('own data paths', () => {
     setOwnPath(input, 'items[0].value', 3);
     expect(input.items).toEqual([{ value: 3 }]);
   });
+  test('writes the same exact dotted own key that reads resolve', () => {
+    const input = { 'a.b': 1, a: { b: 10 } };
+    setOwnPath(input, 'a.b', 3);
+    expect(input['a.b']).toBe(3);
+    expect(input.a.b).toBe(10);
+  });
   test.each([
     '__proto__.bad',
     'a.constructor.bad',

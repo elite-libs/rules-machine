@@ -19,7 +19,10 @@ describe('assignment boundaries', () => {
     ['user.value??=2', 'user.value', '??='],
     ['items[0]=3', 'items[0]', '='],
   ])('recognizes %s', (source, lhs, assignmentOperator) => {
-    expect(extractAssignment(source)).toEqual({ lhs, assignmentOperator });
+    expect(extractAssignment(source)).toMatchObject({
+      lhs,
+      assignmentOperator,
+    });
   });
   test.each([
     'x=y=1',

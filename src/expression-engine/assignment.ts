@@ -8,11 +8,13 @@ const keyPath =
 export function extractAssignment(source: string): {
   assignmentOperator: string | undefined;
   lhs: string | undefined;
+  rhs?: string;
 } {
   let quote = '';
   let depth = 0;
   let assignmentOperator: string | undefined;
   let lhs: string | undefined;
+  let rhs: string | undefined;
   for (let i = 0; i < source.length; i++) {
     const ch = source[i];
     if (quote) {
@@ -32,9 +34,11 @@ export function extractAssignment(source: string): {
       depth--;
       continue;
     }
-    if (depth !== 0 || ch !== '=') continue;
+    if (ch !== '=') continue;
     const previous = source[i - 1];
     if ('=!<>~'.includes(previous ?? '') || source[i + 1] === '=') continue;
+    if (depth !== 0)
+      throw new UserError('Assignments must be top-level expressions');
     let start = i;
     let operator = '=';
     if (previous === '?' && source[i - 2] === '?') {
@@ -51,6 +55,11 @@ export function extractAssignment(source: string): {
       throw new UserError(`Invalid assignment target: ${lhs}`);
     assertWritablePath(lhs);
     assignmentOperator = operator;
+    rhs = source.slice(i + 1).trim();
+    if (!rhs)
+      throw new UserError('Assignment requires a right-hand expression');
   }
-  return { assignmentOperator, lhs };
+  return rhs === undefined
+    ? { assignmentOperator, lhs }
+    : { assignmentOperator, lhs, rhs };
 }
