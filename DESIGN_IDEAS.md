@@ -1,4 +1,6 @@
-# Exploring Various Patterns
+# Historical Syntax Design Notes
+
+This document records alternatives considered during development. Examples under “Syntax Ideas” describe proposals, not supported rule syntax. See the README and guide for the current API.
 
 ## `Rule` Expressions
 
@@ -10,7 +12,7 @@ Typically it includes 3 parts: a left-hand side (LHS), an operator (`+`, `*`, `=
 
 - Assignment Operator Examples
   - `account.balance -= 100`
-  - `discount ??= 10` - this is modern ES2019 syntax. It sets the `discount` to 10 only if it is unset (null-ish coalescing.)
+  - `discount ??= 10` - this is JavaScript logical assignment syntax (ES2021). It sets the `discount` to 10 only if it is unset (null-ish coalescing.)
   - `invoice.total += cart.subtotal`
 - Logical Operators (Boolean Expressions)
   - `==`
@@ -29,7 +31,7 @@ Typically it includes 3 parts: a left-hand side (LHS), an operator (`+`, `*`, `=
   {"return": "discount"},
 ]
 
-// Possible recursive structure?
+// Supported recursive structure
 [
   {
     "if":
@@ -46,9 +48,9 @@ Typically it includes 3 parts: a left-hand side (LHS), an operator (`+`, `*`, `=
   {"return": "discount"},
 ]
 
-// "price >= 25 || price <= 50"
+// "price >= 25 OR price <= 50"
 [
-  {"if": "price >= 25 || price <= 50", "then": "discount = 5"},
+  {"if": "price >= 25 OR price <= 50", "then": "discount = 5"},
   {"if": "price >= 100", "then": "discount = 20"},
   {"return": "discount"},
 ]

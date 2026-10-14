@@ -124,9 +124,11 @@ const result = engine(input);
 
 ```ts
 ruleFactory([
-  { if: 'score > 90', then: 'grade = "A"' },
-  { if: 'score > 80', then: 'grade = "B"' },
-  { else: 'grade = "C"' },
+  {
+    if: 'score >= 90',
+    then: 'grade = "A"',
+    else: { if: 'score >= 80', then: 'grade = "B"', else: 'grade = "C"' },
+  },
 ]);
 ```
 
@@ -187,18 +189,20 @@ ruleFactory([{ if: 'valid', then: 'result = "ok"' }, { return: 'result' }]);
 
 ```ts
 ruleFactory([
-  { try: 'riskyOperation()', catch: 'status = "failed"' },
+  { try: 'THROW("example failure")', catch: 'status = "failed"' },
   { return: 'status' },
 ]);
 ```
 
 ### Operators
 
-**Comparison:** `=`, `==`, `!=`, `<>`, `<`, `<=`, `>`, `>=`, `~=`
+**Assignment:** `=`, `+=`, `-=`, `*=`, `/=`, `??=`
+
+**Comparison:** `==`, `!=`, `<>`, `<`, `<=`, `>`, `>=`, `~=`
 
 **Arithmetic:** `+`, `-`, `*`, `/`, `%`, `^`
 
-**Logical:** `AND`, `OR` (note: inline forms don't short-circuit; object forms do)
+**Logical:** `AND`, `OR` (note: both inline and object forms short-circuit)
 
 ### Built-in Functions
 
@@ -334,10 +338,18 @@ console.log(result.trace);
 - **Protected keys** — Blocks dangerous keys: `__proto__`, `constructor`, `prototype`, etc.
 - **Reserved fields** — Prevents use of `$item`, `$index`, `$array` in input
 
+### Execution contract and limits
+
+Assignments mutate the supplied input. Use trusted JSON data without functions, getters, or class instances, and provide a mutable input object. Reads resolve own properties; assignment paths reject `__proto__`, `constructor`, and `prototype`. Array callback variables are restored after each callback. A `return` in an array's `run` finishes that callback; other returns finish the pipeline.
+
+Execution is synchronous and is not a sandbox for hostile programs. Validation allows at most 100 levels of rule nesting and 10,000 structural nodes. Expressions are limited to 100,000 characters and 100 grouping levels. `RANGE` requires finite safe integer bounds and produces at most 100,000 items; `GCD` requires finite safe integers; `ISPRIME` accepts integers up to 1e12 and returns false for values outside the prime domain. These checks do not provide a wall-clock timeout or a total workload budget.
+
+Use `AND` and `OR` for logical operators, double quotes for string literals, and `STRING([...])` for string concatenation. JavaScript `&&`, `||`, arbitrary function calls, wildcard paths, and object-valued `return` rules are unsupported. Return objects with a string expression such as `DICT(["valid", "errors"], [valid, errors])`. Pass nested arrays through input because the parser does not reliably support nested array literals. Legacy `FILTER_VALUES` and `INCLUDES_VALUES` remove matching values; they preserve exclusion behavior for compatibility.
+
 ### Performance
 
-- Optimized for high-throughput scenarios
-- Minimal overhead vs. native JavaScript
+- Reuses a bounded expression cache within each factory
+- Reuse a factory for repeated executions; measure throughput with your rules and data
 - Suitable for edge computing and serverless environments
 
 ## Use Cases

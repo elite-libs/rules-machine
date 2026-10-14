@@ -35,6 +35,7 @@ getDiscount({ price: 150 }); // 20
 
 ```ts
 const calculateStackableDiscount = ruleFactory([
+  'discount = 0',
   // First discount: base price threshold
   {
     if: 'price <= 100',
@@ -59,13 +60,15 @@ const calculateStackableDiscount = ruleFactory([
 ```ts
 const calculateCartTotal = ruleFactory([
   // Subtotal
-  'subtotal = SUM(cart.items[*].price)',
+  { map: 'cart.items', run: '$item.price', set: 'prices' },
+  'subtotal = SUM(prices)',
 
   // Discount
   { if: 'subtotal >= 100', then: 'discount = 10', else: 'discount = 0' },
   'afterDiscount = subtotal - discount',
 
-  // Tax based on state
+  // Tax based on state (use your jurisdiction table in production)
+  'taxRate = 0',
   { if: 'state == "NY"', then: 'taxRate = 0.08875' },
   { if: 'state == "CA"', then: 'taxRate = 0.0725' },
   { if: 'state == "OR"', then: 'taxRate = 0' },
@@ -85,13 +88,15 @@ calculateCartTotal({
     items: [{ price: 25 }, { price: 35 }],
   },
 });
-// 64.40 (60 - 10 discount + 5.31 tax + 5.99 shipping)
+// 65.325 (60 subtotal, no discount, 5.325 tax, free shipping)
+// Apply your currency rounding policy before charging a customer.
 ```
 
 ### Shipping Rules
 
 ```ts
 const calculateShipping = ruleFactory([
+  'shipping = 5.99',
   // Free shipping for premium members
   { if: 'user.isPremium', then: 'shipping = 0' },
 
@@ -103,9 +108,6 @@ const calculateShipping = ruleFactory([
     if: { and: ['shippingOption == "express"', 'shipping != 0'] },
     then: 'shipping = 24.99',
   },
-
-  // Standard shipping
-  { if: 'shipping == null', then: 'shipping = 5.99' },
 
   { return: 'shipping' },
 ]);
@@ -120,10 +122,10 @@ const calculateShipping = ruleFactory([
 ```ts
 const onUserRegister = ruleFactory([
   // Apply free trial
-  'user.trialEnds = DATEISO("+14 days")',
+  'user.trialEnds = DATEISO("14d")',
 
   // Welcome bonus for referred users
-  { if: 'user.referralCode != null', then: 'user.balance = 10' },
+  { if: { and: ['user.referralCode != null', 'user.referralCode != UNDEFINED'] }, then: 'user.balance = 10' },
 
   // Assign tier based on plan
   { if: 'user.plan == "premium"', then: 'user.tier = "gold"' },
@@ -144,6 +146,7 @@ const onUserRegister = ruleFactory([
 
 ```ts
 const canAccessResource = ruleFactory([
+  'access = false',
   // Admins can access everything
   { if: 'user.role == "admin"', then: 'access = true' },
 
@@ -164,8 +167,6 @@ const canAccessResource = ruleFactory([
     then: 'access = true',
   },
 
-  // Default: no access
-  { else: 'access = false' },
 
   { return: 'access' },
 ]);
@@ -175,6 +176,7 @@ const canAccessResource = ruleFactory([
 
 ```ts
 const checkUpgradeEligibility = ruleFactory([
+  'eligible = true',
   // Must be on active plan
   { if: 'user.status != "active"', then: 'eligible = false' },
 
@@ -194,14 +196,12 @@ const checkUpgradeEligibility = ruleFactory([
     if: {
       and: [
         'requestedPlan.tier > user.currentPlan.tier',
-        'user.paymentMethod == null',
+        { or: ['user.paymentMethod == null', 'user.paymentMethod == UNDEFINED'] },
       ],
     },
     then: 'eligible = false',
   },
 
-  // Default: eligible
-  { else: 'eligible = true' },
 
   { return: 'eligible' },
 ]);
@@ -254,7 +254,7 @@ const approveLoan = ruleFactory([
   'baseRate = 3.5',
   { if: 'applicant.creditScore < 680', then: 'rate = baseRate + 2' },
   {
-    if: 'applicant.creditScore >= 680 && applicant.creditScore < 750',
+    if: 'applicant.creditScore >= 680 AND applicant.creditScore < 750',
     then: 'rate = baseRate + 1',
   },
   { if: 'applicant.creditScore >= 750', then: 'rate = baseRate' },
@@ -262,7 +262,7 @@ const approveLoan = ruleFactory([
   // Default approval
   { if: 'decision != "denied"', then: 'decision = "approved"' },
 
-  { return: { decision, maxAmount, rate } },
+  { return: 'DICT(["decision", "maxAmount", "rate"], [decision, maxAmount, rate])' },
 ]);
 ```
 
@@ -279,9 +279,9 @@ const detectFraud = ruleFactory([
   { if: 'transaction.amount > 10000', then: 'riskScore += 30' },
   { if: 'transaction.amount > 50000', then: 'riskScore += 20' },
 
-  // Unusual time
+  // Host supplies transaction.hour in the intended business timezone (0–23).
   {
-    if: 'HOUR(transaction.timestamp) < 6 || HOUR(transaction.timestamp) > 23',
+    if: 'transaction.hour < 6',
     then: 'riskScore += 10',
   },
 
@@ -289,14 +289,14 @@ const detectFraud = ruleFactory([
   { if: 'user.transactionsLastHour > 5', then: 'riskScore += 25' },
 
   // New device
-  { if: 'transaction.deviceId != user.knownDevices', then: 'riskScore += 15' },
+  { if: 'NOT CONTAINS(transaction.deviceId, user.knownDevices)', then: 'riskScore += 15' },
 
   // Determine action
   { if: 'riskScore >= 70', then: 'action = "block"' },
-  { if: 'riskScore >= 40 && riskScore < 70', then: 'action = "review"' },
+  { if: 'riskScore >= 40 AND riskScore < 70', then: 'action = "review"' },
   { if: 'riskScore < 40', then: 'action = "approve"' },
 
-  { return: { action, riskScore } },
+  { return: 'DICT(["action", "riskScore"], [action, riskScore])' },
 ]);
 ```
 
@@ -305,19 +305,17 @@ const detectFraud = ruleFactory([
 ```ts
 const calculateSalesTax = ruleFactory([
   // Determine tax jurisdiction
-  { if: 'shippingAddress.state == null', then: 'jurisdiction = "origin"' },
-  { else: 'jurisdiction = "destination"' },
+  { if: { or: ['shippingAddress.state == null', 'shippingAddress.state == UNDEFINED'] }, then: 'jurisdiction = "origin"', else: 'jurisdiction = "destination"' },
 
   // Get tax rate based on jurisdiction
   { if: 'jurisdiction == "origin"', then: 'taxRate = warehouse.taxRate' },
   {
     if: 'jurisdiction == "destination"',
-    then: 'taxRate = GET("taxRates." + shippingAddress.state)',
+    then: 'taxRate = GET(shippingAddress.state, taxRates)',
   },
 
   // Check for tax-exempt items
   'taxableAmount = 0',
-  'map: cart.items',
   {
     map: 'cart.items',
     run: {
@@ -398,19 +396,24 @@ const generateLoot = ruleFactory([
   'loot = []',
 
   // Common drop (80% chance)
-  { if: 'RAND() < 0.8', then: 'loot = CONCAT(loot, ["potion"])' },
+  { if: 'randomRolls.common < 0.8', then: 'loot = CONCAT(loot, ["potion"])' },
 
   // Rare drop (20% chance)
-  { if: 'RAND() < 0.2', then: 'loot = CONCAT(loot, ["magic_sword"])' },
+  { if: 'randomRolls.rare < 0.2', then: 'loot = CONCAT(loot, ["magic_sword"])' },
 
   // Legendary drop (1% chance)
-  { if: 'RAND() < 0.01', then: 'loot = CONCAT(loot, ["dragon_armor"])' },
+  { if: 'randomRolls.legendary < 0.01', then: 'loot = CONCAT(loot, ["dragon_armor"])' },
 
   // Bonus for lucky players
   { if: 'player.luck >= 50', then: 'loot = CONCAT(loot, ["bonus_chest"])' },
 
   { return: 'loot' },
 ]);
+
+// Generate random inputs in the host so a run can be recorded and replayed.
+generateLoot({ player: { luck: 10 }, randomRolls: {
+  common: Math.random(), rare: Math.random(), legendary: Math.random(),
+} });
 ```
 
 ### Matchmaking Rules
@@ -484,7 +487,10 @@ function getDiscount(user, cart) {
 ```ts
 // Base rules
 const baseRules = [
-  'subtotal = SUM(cart.items[*].price)',
+  'discount = 0',
+  'taxRate = 0',
+  { map: 'cart.items', run: '$item.price', set: 'prices' },
+  'subtotal = SUM(prices)',
   { if: 'subtotal >= 100', then: 'freeShipping = true' },
 ];
 
@@ -519,17 +525,17 @@ const validateUser = ruleFactory([
 
   // Required fields
   {
-    if: 'user.name == null',
+    if: { or: ['user.name == null', 'user.name == UNDEFINED'] },
     then: 'errors = CONCAT(errors, ["name is required"])',
   },
   {
-    if: 'user.email == null',
+    if: { or: ['user.email == null', 'user.email == UNDEFINED'] },
     then: 'errors = CONCAT(errors, ["email is required"])',
   },
 
   // Email format
   {
-    if: 'user.email != null && !STRING_CONTAINS("@", user.email)',
+    if: { and: ['user.email != null', 'user.email != UNDEFINED', 'NOT STRING_CONTAINS("@", user.email)'] },
     then: 'errors = CONCAT(errors, ["invalid email"])',
   },
 
@@ -538,13 +544,13 @@ const validateUser = ruleFactory([
 
   // Password strength
   {
-    if: 'LENGTH(user.password) < 8',
+    if: { or: ['user.password == null', 'user.password == UNDEFINED', 'LENGTH(user.password) < 8'] },
     then: 'errors = CONCAT(errors, ["password too short"])',
   },
 
   // Return validation result
   { if: 'LENGTH(errors) > 0', then: 'valid = false', else: 'valid = true' },
-  { return: { valid, errors } },
+  { return: 'DICT(["valid", "errors"], [valid, errors])' },
 ]);
 ```
 

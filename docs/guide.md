@@ -20,8 +20,9 @@ yarn add @elite-libs/rules-machine
 import { ruleFactory } from '@elite-libs/rules-machine';
 
 const calculateDiscount = ruleFactory([
-  { if: 'price >= 100', then: 'discount = 20' },
+  'discount = 0',
   { if: 'price >= 50', then: 'discount = 10' },
+  { if: 'price >= 100', then: 'discount = 20' },
   { return: 'discount' },
 ]);
 
@@ -31,9 +32,9 @@ console.log(result); // 10
 
 ### How It Works
 
-1. **`ruleFactory(rules)`** — Parses and compiles your rules
+1. **`ruleFactory(rules)`** — Creates an executor for your rules
 2. **`engine(input)`** — Executes rules with your data
-3. **Returns** — The result of the last `return` statement (or modified input)
+3. **Returns** — The first executed `return` value, or the last evaluated value when no return executes. Assignments mutate the supplied input object
 
 ## Rule Syntax
 
@@ -41,9 +42,11 @@ console.log(result); // 10
 
 ```ts
 ruleFactory([
-  { if: 'score > 90', then: 'grade = "A"' },
-  { if: 'score > 80', then: 'grade = "B"' },
-  { else: 'grade = "C"' },
+  {
+    if: 'score >= 90',
+    then: 'grade = "A"',
+    else: { if: 'score >= 80', then: 'grade = "B"', else: 'grade = "C"' },
+  },
 ]);
 ```
 
@@ -64,7 +67,7 @@ Use object form for short-circuit evaluation:
 }
 ```
 
-Inline form (doesn't short-circuit):
+Inline form also short-circuits:
 
 ```ts
 { if: 'age >= 18 AND age <= 65', then: 'eligible = true' }
@@ -83,7 +86,7 @@ ruleFactory([
 ]);
 ```
 
-Supported operators: `=`, `+=`, `-=`, `*=`, `/=`, `%=`, `??=`
+Supported operators: `=`, `+=`, `-=`, `*=`, `/=`, `??=`
 
 ### Return Rules
 
@@ -99,7 +102,7 @@ ruleFactory([
 
 ### Array Operations
 
-Process arrays with special variables: `$item`, `$index`, `$array`
+Process arrays with special variables: `$item`, `$index`, `$array`. They are scoped to each callback and restored after nested operations and errors. A `return` inside `run` ends only that callback; outside array callbacks it ends the pipeline.
 
 #### Map
 
@@ -113,7 +116,7 @@ const doubleNumbers = ruleFactory([
 ]);
 
 doubleNumbers({ numbers: [1, 2, 3] });
-// { numbers: [1, 2, 3], doubled: [2, 4, 6] }
+// [2, 4, 6]; the input object also gains doubled: [2, 4, 6]
 ```
 
 #### Filter
@@ -176,7 +179,7 @@ const firstAdult = ruleFactory([
 
 ```ts
 ruleFactory([
-  { try: 'riskyOperation()', catch: 'status = "failed"' },
+  { try: 'THROW("example failure")', catch: 'status = "failed"' },
   { return: 'status' },
 ]);
 ```
@@ -206,10 +209,10 @@ See [API Reference](../README.md#built-in-functions) for the full list.
 
 ### String Literals
 
-Wrap strings in quotes:
+Wrap string literals in double quotes. Use `STRING` to join strings; `+` accepts numbers:
 
 ```ts
-ruleFactory(['status = "active"', 'message = "Hello, " + user.name']);
+ruleFactory(['status = "active"', 'message = STRING(["Hello, ", user.name])']);
 ```
 
 ## Debugging with Traces
@@ -253,11 +256,11 @@ ruleFactory(rules, options);
 
 ### Protected Keys
 
-Rules Machine blocks dangerous keys to prevent prototype pollution:
+Rules Machine rejects reserved top-level input keys and unsafe assignment path segments. Path reads use own properties:
 
 ```ts
 // Throws error
-engine({ __proto__: { isAdmin: true } });
+engine(JSON.parse('{"__proto__": {"isAdmin": true}}'));
 engine({ constructor: 'malicious' });
 engine({ toString: 'override' });
 ```
@@ -277,6 +280,8 @@ engine({ $array: [] });
 
 Rules Machine uses safe expression parsing via [`expressionparser`](https://www.npmjs.com/package/expressionparser). It never uses `eval()` or `Function()`.
 
+See [execution contracts and limits](../README.md#execution-contract-and-limits) for mutation, supported syntax, numeric bounds, and the synchronous trust model.
+
 ## Common Patterns
 
 ### Chaining Rules
@@ -284,8 +289,9 @@ Rules Machine uses safe expression parsing via [`expressionparser`](https://www.
 ```ts
 ruleFactory([
   { if: 'user.isNew', then: 'user.rewardsBalance = 500' },
-  { if: 'user.rewardsBalance >= 1000', then: 'discount = 0.10' },
+  'discount = 0',
   { if: 'user.rewardsBalance >= 500', then: 'discount = 0.05' },
+  { if: 'user.rewardsBalance >= 1000', then: 'discount = 0.10' },
   { return: 'discount' },
 ]);
 ```
@@ -309,6 +315,7 @@ ruleFactory([
 
 ```ts
 ruleFactory([
+  'canAccess = false',
   {
     if: {
       or: ['user.isAdmin', { and: ['user.isPremium', 'user.years >= 5'] }],
