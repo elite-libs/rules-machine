@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-14T00:15:51Z",
+  "confirmationSamples": 300,
+  "completeBalancedBlocks": 12,
+  "samplesPerBlock": 25,
+  "timingsFiniteAndPositive": true,
+  "actualOperationCountsPositive": true,
+  "finalModuleHashMatchesMeasuredCandidate": true,
+  "typescriptTests": 367,
+  "rustTests": 4,
+  "offlineFrozenInstallPassed": true,
+  "projectCheckPassed": true,
+  "externalPullRequestsCreated": 0,
+  "note": "Console evidence text has trailing whitespace normalized; raw performance observations are retained unmodified."
+}
