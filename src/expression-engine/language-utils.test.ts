@@ -405,10 +405,9 @@ describe('dateParser', () => {
     expect(result).toBe(timestamp);
   });
 
-  test('should handle unknown date format', () => {
-    // Long strings that aren't valid dates get parsed by Date constructor
-    const result = dateParser(() => 'not-a-date-format-at-all');
-    expect(typeof result).toBe('number');
-    expect(result).toBeNaN();
+  test('rejects unknown date formats with a user error', () => {
+    expect(() => dateParser(() => 'not-a-date-format-at-all')).toThrow(
+      UserError,
+    );
   });
 });

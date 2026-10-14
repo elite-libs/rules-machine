@@ -1,4 +1,10 @@
 import { describe, expect, test } from 'vitest';
+import {
+  ExecutionBudget,
+  ResourceLimitError,
+  withExecutionBudget,
+} from './budget';
+import { withAtomicWrites } from './mutations';
 import { getOwnPath, setOwnPath } from './paths';
 
 describe('own data paths', () => {
@@ -43,4 +49,116 @@ describe('own data paths', () => {
   ])('rejects %s', (path) => {
     expect(() => setOwnPath({}, path, true)).toThrow('Unsafe assignment path');
   });
+});
+
+// Accessor and host-object boundaries must be checked without invoking user code.
+describe('descriptor-only path access', () => {
+  test('rejects exact and nested getter reads and writes without invocation', () => {
+    let calls = 0;
+    const nested = Object.defineProperty({}, 'secret', {
+      get() {
+        calls++;
+        return {};
+      },
+      enumerable: true,
+    });
+    const input = { nested };
+    expect(() => getOwnPath(input, 'nested.secret')).toThrow(/accessor/);
+    expect(() => setOwnPath(input, 'nested.secret.child', 1)).toThrow(
+      /accessor/,
+    );
+    expect(() => setOwnPath(input, 'nested.secret', 1)).toThrow(/accessor/);
+    expect(calls).toBe(0);
+    const direct = Object.defineProperty({}, 'a.b', {
+      get() {
+        calls++;
+        return 1;
+      },
+    });
+    expect(() => getOwnPath(direct, 'a.b')).toThrow(/accessor/);
+    expect(calls).toBe(0);
+  });
+
+  test('returns host values by identity and rejects traversing or overwriting function parents', () => {
+    const fn = () => 1;
+    const date = new Date(0);
+    expect(getOwnPath({ fn, date }, 'fn')).toBe(fn);
+    expect(getOwnPath({ fn, date }, 'date')).toBe(date);
+    expect(() => getOwnPath({ fn }, 'fn.name')).toThrow(/host function/);
+    expect(() => getOwnPath({ date }, 'date.anything')).toThrow(/opaque/);
+    const input = { fn };
+    expect(() => setOwnPath(input, 'fn.value', 1)).toThrow(/host function/);
+    expect(input.fn).toBe(fn);
+    expect(() => setOwnPath({ date }, 'date.value', 1)).toThrow(/opaque/);
+  });
+
+  test('supports frozen reads and reports readonly writes without mutation', () => {
+    const input = Object.freeze({ nested: Object.freeze({ value: null }) });
+    expect(getOwnPath(input, 'nested.value')).toBeNull();
+    expect(() => setOwnPath(input, 'nested.value', 1)).toThrow(/readonly/);
+    expect(input.nested.value).toBeNull();
+  });
+});
+
+describe('bounded array writes', () => {
+  test('rejects length coercion without invoking host methods', () => {
+    let calls = 0;
+    const length = {
+      valueOf() {
+        calls++;
+        return 1;
+      },
+    };
+    const input = { values: [1, 2] };
+    expect(() => setOwnPath(input, 'values.length', length)).toThrow(
+      /nonnegative integer/,
+    );
+    expect(calls).toBe(0);
+    expect(input.values).toEqual([1, 2]);
+  });
+
+  test('validates ordinary numeric array lengths', () => {
+    for (const value of [-1, 1.5, NaN, Infinity, 0x100000000]) {
+      expect(() =>
+        setOwnPath({ values: [1, 2] }, 'values.length', value),
+      ).toThrow(/nonnegative integer/);
+    }
+    const input = { values: [1, 2] };
+    setOwnPath(input, 'values.length', 1);
+    expect(input.values).toEqual([1]);
+  });
+});
+
+test('bounds sparse index and length writes before mutation', () => {
+  const input = { values: [1] };
+  for (const path of ['values[1000]', 'values.length']) {
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxArrayLength: 2 }), () =>
+        setOwnPath(input, path, path.endsWith('length') ? 1000 : 2),
+      ),
+    ).toThrow(ResourceLimitError);
+    expect(input.values).toEqual([1]);
+  }
+  withExecutionBudget(new ExecutionBudget({ maxArrayLength: 2 }), () =>
+    setOwnPath(input, 'values.01', 4),
+  );
+  expect(input.values.length).toBe(1);
+  expect(getOwnPath(input, 'values.01')).toBe(4);
+});
+
+test('journals descriptors and array length changes for atomic rollback', () => {
+  const values = [1, 2, 3];
+  const input = { values, alias: values };
+  expect(() =>
+    withAtomicWrites(() => {
+      setOwnPath(input, 'values.length', 1);
+      setOwnPath(input, 'values[5]', 9);
+      setOwnPath(input, 'added.deep', 1);
+      throw new Error('rollback');
+    }),
+  ).toThrow('rollback');
+  expect(input.values).toBe(values);
+  expect(input.alias).toBe(values);
+  expect(values).toEqual([1, 2, 3]);
+  expect(input).not.toHaveProperty('added');
 });

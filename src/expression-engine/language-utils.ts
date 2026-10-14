@@ -1,14 +1,30 @@
-import {
-  type Delegate,
-  type ExpressionThunk,
-  type ExpressionValue,
-  isArgumentsArray,
+import type {
+  ArgumentsArray,
+  Delegate,
+  ExpressionThunk,
+  ExpressionValue,
 } from 'expressionparser/dist/ExpressionParser.js';
 import isObject from 'lodash/isObject.js';
-import omit from 'lodash/omit.js';
-import ms from 'ms';
+import toPath from 'lodash/toPath.js';
+import {
+  checkArrayLength,
+  consumeWork,
+  ResourceLimitError,
+} from '../utils/budget';
 import { UserError } from '../utils/errors';
-import { toArray } from '../utils/utils';
+import { parseDate } from './dates';
+import {
+  dataEntries,
+  describeValue,
+  isProtectedInput,
+  readData,
+  unwrapInternal,
+} from './materialize';
+
+export const isArgumentsArray = (value: unknown): value is ArgumentsArray =>
+  Array.isArray(value) &&
+  !isProtectedInput(value) &&
+  readData(value, 'isArgumentsArray') === true;
 
 export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();
@@ -16,7 +32,7 @@ export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   if (!isArgumentsArray(result)) {
     if (f.length > 1) {
       throw new UserError(
-        `Too few arguments. Expected ${f.length}, found 1 (${JSON.stringify(
+        `Too few arguments. Expected ${f.length}, found 1 (${describeValue(
           result,
         )})`,
       );
@@ -31,7 +47,7 @@ export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
 export const num = (result: ExpressionValue) => {
   if (typeof result !== 'number') {
     throw new UserError(
-      `Expected number, found: ${typeof result} ${JSON.stringify(result)}`,
+      `Expected number, found: ${typeof result} ${describeValue(result)}`,
     );
   }
 
@@ -40,58 +56,44 @@ export const num = (result: ExpressionValue) => {
 export const array = (result: ExpressionValue) => {
   if (!Array.isArray(result)) {
     throw new UserError(
-      `Expected array, found: ${typeof result} ${JSON.stringify(result)}`,
+      `Expected array, found: ${typeof result} ${describeValue(result)}`,
     );
   }
 
-  result = unpackArray([...result]);
-  if (isArgumentsArray(result))
-    throw new UserError('Expected array, found: arguments');
-
-  return result;
+  checkArrayLength(result.length);
+  consumeWork(result.length);
+  return Array.from({ length: result.length }, (_, index) =>
+    unwrapInternal(readData(result, String(index))),
+  ) as ExpressionValue[];
 };
-const unpackArray = <TInput extends unknown[]>(
-  thunks: TInput | ExpressionThunk[],
-) => thunks.map((thunk) => (typeof thunk === 'function' ? thunk() : thunk));
 const bool = (value: ExpressionValue) => {
   if (typeof value !== 'boolean') {
     throw new UserError(
-      `Expected boolean, found: ${typeof value} ${JSON.stringify(value)}`,
+      `Expected boolean, found: ${typeof value} ${describeValue(value)}`,
     );
   }
 
   return value;
 };
 export const evalBool = (value: ExpressionValue): boolean => {
-  // eslint-disable-next-line prefer-const
-  let result: ExpressionValue = false as ExpressionValue;
-
-  while (typeof value === 'function' && value.length === 0) value = value();
-  if (!result) result = value;
-
-  return bool(result);
+  return bool(unwrapInternal(value));
 };
-export const evalString = (value: ExpressionValue) => {
-  let result: ExpressionValue;
-  if (typeof value === 'function' && value.length === 0) result = value();
-  else result = value;
-
-  return string(result);
-};
+export const evalString = (value: ExpressionValue) =>
+  string(unwrapInternal(value));
 
 export const evalArray = (
   arr: ExpressionValue,
   typeCheck?: (value: ExpressionValue) => ExpressionValue,
 ) => {
-  return toArray(arr).map((value) => {
-    let result: ExpressionValue;
-    if (typeof value === 'function' && value.length === 0) result = value();
-    else result = value;
+  const values = Array.isArray(arr) ? array(arr) : [unwrapInternal(arr)];
+  return values.map((value) => {
+    let result = value;
 
     if (typeCheck) {
       try {
         result = typeCheck(result);
       } catch (err) {
+        if (err instanceof ResourceLimitError) throw err;
         throw new UserError(
           `In array; ${err instanceof Error ? err.message : String(err)}`,
         );
@@ -104,12 +106,15 @@ export const evalArray = (
 export const obj = (obj: ExpressionValue) => {
   if (typeof obj !== 'object' || obj === null) {
     throw new UserError(
-      `Expected object, found: ${typeof obj} ${JSON.stringify(obj)}`,
+      `Expected object, found: ${typeof obj} ${describeValue(obj)}`,
     );
   } else if (Array.isArray(obj)) {
     throw new UserError('Expected object, found array');
   }
 
+  const prototype = Object.getPrototypeOf(obj);
+  if (prototype !== Object.prototype && prototype !== null)
+    throw new UserError('Expected a plain object; host objects are opaque');
   return obj;
 };
 
@@ -126,48 +131,122 @@ export const obj = (obj: ExpressionValue) => {
  * ```
  */
 export const filterValues = (arg1: ExpressionThunk, arg2: ExpressionThunk) => {
-  const includeValues = toArray(arg1());
-  const data = toArray(arg2());
-  return data.filter((val) => !includeValues.includes(val));
+  const includeValues = evalArray(arg1());
+  const data = evalArray(arg2());
+  const excluded = new Set(includeValues);
+  return data.filter((val) => !excluded.has(val));
 };
 export const containsValues = (
   arg1: ExpressionThunk,
   arg2: ExpressionThunk,
 ) => {
-  const matches = toArray(arg1());
+  const matches = evalArray(arg1());
   const data = evalArray(arg2());
-  return data.some((val) => matches.includes(val));
+  const included = new Set(matches);
+  return data.some((val) => included.has(val));
 };
 export const objectContainsValues = (
   arg1: ExpressionThunk,
   arg2: ExpressionThunk,
 ) => {
-  const matches = toArray(arg1());
-  const data = arg2();
-  return Object.keys(data).some((val) => matches.includes(val));
+  const matches = evalArray(arg1());
+  const data = obj(arg2());
+  const keys = Object.keys(data);
+  consumeWork(keys.length);
+  const included = new Set(matches);
+  return keys.some((key) => included.has(key));
 };
 export const countObjectKeys = (arg1: ExpressionThunk) => {
-  return Object.keys(arg1()).length;
+  const keys = Object.keys(obj(arg1()));
+  consumeWork(keys.length);
+  return keys.length;
 };
 export const omitProperties = (
   arg1: ExpressionThunk,
   arg2: ExpressionThunk,
 ) => {
-  const matches = toArray(arg1()) as [];
+  const matches = evalArray(arg1());
   const data = arg2();
   if (!isObject(data)) {
     throw new UserError(
-      `OMIT expects object for second argument, ${typeof data} ${JSON.stringify(
+      `OMIT expects object for second argument, ${typeof data} ${describeValue(
         data,
       )}`,
     );
   }
-  return omit(data, matches);
+  const clone = (value: object): Record<PropertyKey, unknown> => {
+    const prototype = Object.getPrototypeOf(value);
+    if (
+      !Array.isArray(value) &&
+      prototype !== Object.prototype &&
+      prototype !== null
+    )
+      throw new UserError('OMIT cannot copy an opaque host object');
+    const copy = (
+      Array.isArray(value) ? [] : Object.create(prototype)
+    ) as Record<PropertyKey, unknown>;
+    for (const [key, child] of dataEntries(value))
+      Object.defineProperty(copy, key, {
+        value: child,
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      });
+    return copy;
+  };
+  const output = clone(data);
+  const segmentText = (
+    value: ExpressionValue,
+    active = new Set<object>(),
+  ): string => {
+    consumeWork();
+    if (Array.isArray(value)) {
+      if (active.has(value))
+        throw new UserError('OMIT path must not be cyclic');
+      active.add(value);
+      try {
+        return array(value)
+          .map((part) => segmentText(part, active))
+          .join(',');
+      } finally {
+        active.delete(value);
+      }
+    }
+    if (typeof value === 'number') return String(value);
+    return string(value);
+  };
+  for (const raw of matches) {
+    let path: string[];
+    if (Array.isArray(raw)) path = array(raw).map((part) => segmentText(part));
+    else {
+      const keyPath = segmentText(raw);
+      path = Object.hasOwn(output, keyPath) ? [keyPath] : toPath(keyPath);
+    }
+    let target = output;
+    for (let i = 0; i < path.length; i++) {
+      const key = path[i];
+      if (i === path.length - 1) {
+        delete target[key];
+        break;
+      }
+      const child = readData(target, key);
+      if (child === null || typeof child !== 'object') break;
+      const copy = clone(child);
+      Object.defineProperty(target, key, {
+        value: copy,
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      });
+      target = copy;
+    }
+  }
+  return output as ExpressionValue;
 };
 export const iterable = (result: ExpressionValue) => {
   if (!Array.isArray(result) && typeof result !== 'string') {
     throw new UserError(
-      `Expected array or string, found: ${typeof result} ${JSON.stringify(
+      `Expected array or string, found: ${typeof result} ${describeValue(
         result,
       )}`,
     );
@@ -179,7 +258,7 @@ export const iterable = (result: ExpressionValue) => {
 export const string = (result: ExpressionValue) => {
   if (typeof result !== 'string') {
     throw new UserError(
-      `Expected string, found: ${typeof result} ${JSON.stringify(result)}`,
+      `Expected string, found: ${typeof result} ${describeValue(result)}`,
     );
   }
 
@@ -188,29 +267,34 @@ export const string = (result: ExpressionValue) => {
 export const char = (result: ExpressionValue) => {
   if (typeof result !== 'string' || result.length !== 1) {
     throw new UserError(
-      `Expected char, found: ${typeof result} ${JSON.stringify(result)}`,
+      `Expected char, found: ${typeof result} ${describeValue(result)}`,
     );
   }
 
   return result;
 };
 
-export const dateParser = (
-  arg: ExpressionThunk | string | number,
-): number | string => {
-  const dateArg = typeof arg === 'function' ? arg() : arg;
+export const dateParser = (arg: ExpressionThunk | string | number): number =>
+  parseDate(typeof arg === 'function' ? unwrapInternal(arg) : arg);
 
-  if (typeof dateArg === 'string' && dateArg.length < 6) {
-    // possible date duration expression
-    const duration = (ms as (value: string) => number)(dateArg) ?? 0;
-    const d = new Date(Date.now() + duration);
-    // console.info(`DATE: ${dateArg} (${duration}ms) => ${d}`);
-    return d.getTime();
-  }
-  if (typeof dateArg === 'string' || typeof dateArg === 'number') {
-    const d = new Date(dateArg);
-    return d.getTime();
-  }
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
-  return `UnknownDate(${dateArg?.toString()})`;
-};
+/** Primitive join semantics without invoking host conversion hooks. */
+export function joinValues(
+  values: ExpressionValue[],
+  separator: string,
+): string {
+  let characters = Math.max(0, values.length - 1) * separator.length;
+  const strings = values.map((value) => {
+    if (
+      value !== null &&
+      (typeof value === 'object' ||
+        typeof value === 'function' ||
+        typeof value === 'symbol')
+    )
+      throw new UserError('String joining accepts primitive values only');
+    const text = value == null ? '' : String(value);
+    characters += text.length;
+    return text;
+  });
+  consumeWork(characters);
+  return strings.join(separator);
+}
