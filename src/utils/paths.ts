@@ -78,13 +78,17 @@ function ownData(data: unknown, key: string): unknown {
 }
 
 /** Resolve own data properties only; accessors and host methods are never invoked. */
-export function getOwnPath(data: unknown, path: string | number): unknown {
+export function getOwnPath(
+  data: unknown,
+  path: string | number,
+  read: (data: unknown, key: string) => unknown = ownData,
+): unknown {
   consumeWork(typeof path === 'string' ? path.length : 1);
   if (data != null && Object.hasOwn(Object(data), path))
-    return ownData(data, String(path));
+    return read(data, String(path));
   let value: unknown = data;
   for (const key of toPath(String(path))) {
-    value = ownData(value, key);
+    value = read(value, key);
     if (value === undefined) return undefined;
   }
   return value;

@@ -485,7 +485,7 @@ export const ruleExpressionLanguage = (
       const rawKey = arg1();
       const key = typeof rawKey === 'string' ? rawKey : num(rawKey);
       const inputObj = obj(arg2());
-      const value = getOwnPath(inputObj, key);
+      const value = getOwnPath(inputObj, key, readData);
       return (
         isProtectedInput(inputObj) ? protectInput(value) : value
       ) as ExpressionValue;
