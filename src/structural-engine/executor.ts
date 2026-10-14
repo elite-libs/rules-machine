@@ -116,7 +116,8 @@ export function createRuleExecutor<TInput extends object>(
     if (input === null || typeof input !== 'object' || Array.isArray(input)) {
       throw new UserError('Input must be an object');
     }
-    validateRule(rules);
+    // Execute a detached program so input aliases cannot rewrite validated rules.
+    rules = validateRule(rules);
     const traceSimple: TraceRow[] = [];
     const snapshot = trace ? serializeTrace : (_data: unknown) => undefined;
 
@@ -624,18 +625,22 @@ function checkInvalidKeys<TInput extends object>(data: TInput) {
   return data;
 }
 
-/** Validate the complete program before any input mutation occurs. */
-function validateRule(rules: Rule) {
+/** Validate and detach the complete program before any input mutation occurs. */
+function validateRule(rules: Rule): Rule {
   const active = new WeakSet<object>();
   let nodes = 0;
   const fail = (message: string): never => {
     throw new UserError(`Invalid rule: ${message}`);
   };
-  const visit = (value: unknown, depth: number, logicalOnly = false): void => {
+  const visit = (
+    value: unknown,
+    depth: number,
+    logicalOnly = false,
+  ): unknown => {
     consumeWork();
     if (++nodes > 10_000) fail('maximum node count (10000) exceeded');
     if (depth > 100) fail('maximum nesting depth (100) exceeded');
-    if (typeof value === 'string') return;
+    if (typeof value === 'string') return value;
     if (!value || typeof value !== 'object')
       fail('expected a string or rule object');
     const object = value as Record<string, unknown>;
@@ -664,14 +669,15 @@ function validateRule(rules: Rule) {
         checkArrayLength(object.length);
         if (ownKeys.length !== object.length + 1)
           fail('sparse rule arrays are not supported');
+        const snapshot: unknown[] = [];
         for (let index = 0; index < object.length; index++)
-          visit(descriptors[String(index)].value, depth + 1);
-        return;
+          snapshot.push(visit(descriptors[String(index)].value, depth + 1));
+        return snapshot;
       }
       const prototype = Object.getPrototypeOf(object);
       if (prototype !== null && prototype !== Object.prototype)
         fail('rule objects must have a plain or null prototype');
-      const keys = Object.keys(object);
+      const keys = ownKeys as string[];
       const operators = keys.filter((key) =>
         ['if', 'and', 'or', 'return', 'try', ...arrayMethods].includes(key),
       );
@@ -690,15 +696,18 @@ function validateRule(rules: Rule) {
               : [operator];
       if (keys.some((key) => !allowed.includes(key)))
         fail(`unexpected key in ${operator} rule`);
+      const snapshot = Object.create(null) as Record<string, unknown>;
+      for (const key of keys) snapshot[key] = descriptors[key].value;
       if (operator === 'and' || operator === 'or') {
-        if (!Array.isArray(object[operator]))
+        if (!Array.isArray(snapshot[operator]))
           fail(`${operator} must be an array`);
-        const children = object[operator] as unknown[];
+        const children = snapshot[operator] as unknown[];
         const childKeys = Reflect.ownKeys(children);
         consumeWork(childKeys.length);
         checkArrayLength(children.length);
         if (childKeys.length !== children.length + 1)
           fail('logical arrays must be dense and contain no extra keys');
+        const childSnapshots: unknown[] = [];
         for (let index = 0; index < children.length; index++) {
           const descriptor = Object.getOwnPropertyDescriptor(
             children,
@@ -706,36 +715,40 @@ function validateRule(rules: Rule) {
           );
           if (!descriptor || !('value' in descriptor) || !descriptor.enumerable)
             fail('logical arrays must contain enumerable data values');
-          visit(descriptor?.value, depth + 1, true);
+          childSnapshots.push(visit(descriptor?.value, depth + 1, true));
         }
+        snapshot[operator] = childSnapshots;
       } else if (operator === 'if') {
-        visit(object.if, depth + 1, true);
-        if (!Object.hasOwn(object, 'then')) fail('if requires then');
-        visit(object.then, depth + 1);
-        if (Object.hasOwn(object, 'else')) visit(object.else, depth + 1);
+        snapshot.if = visit(snapshot.if, depth + 1, true);
+        if (!Object.hasOwn(snapshot, 'then')) fail('if requires then');
+        // biome-ignore lint/suspicious/noThenProperty: structural then is data, never a callable.
+        snapshot.then = visit(snapshot.then, depth + 1);
+        if (Object.hasOwn(snapshot, 'else'))
+          snapshot.else = visit(snapshot.else, depth + 1);
       } else if (operator === 'try') {
-        visit(object.try, depth + 1);
-        if (!Object.hasOwn(object, 'catch')) fail('try requires catch');
-        visit(object.catch, depth + 1);
+        snapshot.try = visit(snapshot.try, depth + 1);
+        if (!Object.hasOwn(snapshot, 'catch')) fail('try requires catch');
+        snapshot.catch = visit(snapshot.catch, depth + 1);
       } else if (operator === 'return') {
-        if (typeof object.return !== 'string')
+        if (typeof snapshot.return !== 'string')
           fail('return must be a string expression');
       } else {
         if (
-          typeof object[operator] !== 'string' ||
-          !(object[operator] as string).trim()
+          typeof snapshot[operator] !== 'string' ||
+          !(snapshot[operator] as string).trim()
         )
           fail(`${operator} must be a nonempty input path`);
-        if (Object.hasOwn(object, 'set') && typeof object.set !== 'string')
+        if (Object.hasOwn(snapshot, 'set') && typeof snapshot.set !== 'string')
           fail('set must be an input path');
-        if (Object.hasOwn(object, 'set'))
-          assertWritablePath(object.set as string);
-        if (!Object.hasOwn(object, 'run')) fail(`${operator} requires run`);
-        visit(object.run, depth + 1);
+        if (Object.hasOwn(snapshot, 'set'))
+          assertWritablePath(snapshot.set as string);
+        if (!Object.hasOwn(snapshot, 'run')) fail(`${operator} requires run`);
+        snapshot.run = visit(snapshot.run, depth + 1);
       }
+      return snapshot;
     } finally {
       active.delete(object);
     }
   };
-  visit(rules, 0);
+  return visit(rules, 0) as Rule;
 }

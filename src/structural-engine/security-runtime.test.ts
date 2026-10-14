@@ -157,3 +157,45 @@ test('atomic preflight rejects irreversible partial truncation before any deleti
   expect(Object.getOwnPropertyDescriptors(items)).toEqual(before);
   expect(input.x).toBe(1);
 });
+
+test('input aliases cannot replace a prevalidated later rule with an accessor', () => {
+  let calls = 0;
+  const injected = Object.defineProperty({}, 'return', {
+    enumerable: true,
+    get() {
+      calls++;
+      return '9';
+    },
+  });
+  const rules = ['program[1] = injected', { return: '1' }];
+  const input = { program: rules, injected };
+  const run = ruleFactory(rules);
+  expect(run(input)).toBe(1);
+  expect(calls).toBe(0);
+  expect(() => run(input)).toThrow('accessors');
+  expect(calls).toBe(0);
+});
+
+test('input aliases cannot inject a cycle or mutate a selected conditional branch mid-call', () => {
+  const cycle: Record<string, unknown> = { if: 'true' };
+  // biome-ignore lint/suspicious/noThenProperty: construct a structural cycle, not a promise.
+  cycle.then = cycle;
+  const rules = ['program[1] = injected', { return: '1' }];
+  const input = { program: rules, injected: cycle };
+  const run = ruleFactory(rules);
+  expect(run(input)).toBe(1);
+  expect(() => run(input)).toThrow('cyclic');
+
+  let calls = 0;
+  const injected = Object.defineProperty({}, 'return', {
+    enumerable: true,
+    get() {
+      calls++;
+      return '9';
+    },
+  });
+  // biome-ignore lint/suspicious/noThenProperty: structural then contains a rule.
+  const condition = { if: 'program.then = injected', then: { return: '2' } };
+  expect(ruleFactory(condition)({ program: condition, injected })).toBe(2);
+  expect(calls).toBe(0);
+});
