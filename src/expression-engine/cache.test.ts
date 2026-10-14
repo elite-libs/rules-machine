@@ -38,6 +38,7 @@ describe('syntax cache context isolation', () => {
       expect(() => engine.evaluateExpression(source, () => 7), source).toThrow();
     }
     expect(engine.evaluateExpression('ABS(2)', () => 0)).toBe(2);
+    expect(engine.evaluateExpression('(true) AND (false)', () => 0)).toBe(false);
     expect(engine.evaluateExpression('"a && b"', () => 0)).toBe('a && b');
   });
   test('recognizes compact assignment and ignores assignment text in literals', () => {
