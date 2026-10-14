@@ -15,7 +15,6 @@
     "rust": "Expanded core subset native Rust release de6ca7f, all seven unchanged timed fixture slices."
   },
   "node24": "Unavailable; only Node26.8.2 measured.",
-  "costUSD": 0,
   "hashes": {
     "pnpm-lock.yaml": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d",
     "package.json": "f8412435a9014df7548105bdf5b6a12f99e414a15cd09a58f27f53ab992f56eb",
@@ -88,5 +87,9 @@
     "numericGridPolicy": "Exact TS equality or explicit declared Rust domain rejection; no approximate float comparison.",
     "tsArtifactIdentity": "native/prior/bridge hashes identical",
     "rustArtifactIdentity": "native/bridge hashes identical"
+  },
+  "costAccounting": {
+    "paidRemoteComputeUSD": 0,
+    "modelAndReportingCosts": "unavailable"
   }
 }

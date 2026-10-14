@@ -4,7 +4,7 @@ The expanded Rust core passes 419 shared differential/rejection cases and 10,478
 
 The final 12-block comparison measures TS **8.68× [8.23, 9.16]** versus original, native Rust **8.32× [7.88, 8.78]** versus final TS on the same seven slices, and the persistent Node bridge **0.291× [0.274, 0.310]** versus direct TS. The bridge loses at the actual encode/pipe/decode boundary. Final TS is **0.720× [0.700, 0.740]** the throughput of the earlier security-only candidate after the added protection bundle. These are local within-campaign estimates, not portable guarantees.
 
-The Rust source is `de6ca7f`; the TS runtime source is `d4a88ea`; source, binary, module, lock and dependency hashes are in [provenance](results/2026-10-14/provenance.json). Node 26.8.2 was measured; Node 24 was unavailable. Cost: $0. Original benchmark fixtures and historical security evidence remain unchanged.
+The Rust source is `de6ca7f`; the TS runtime source is `d4a88ea`; source, binary, module, lock and dependency hashes are in [provenance](results/2026-10-14/provenance.json). Node 26.8.2 was measured; Node 24 was unavailable. No paid remote compute; model/reporting costs unavailable. Original benchmark fixtures and historical security evidence remain unchanged.
 
 From the repository root, build and validate:
 

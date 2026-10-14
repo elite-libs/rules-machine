@@ -1,6 +1,6 @@
 # Final Rust compatibility and performance evidence
 
-Final primary candidate: TS runtime `d4a88ea`, built artifact SHA-256 `2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1`; Rust release source `de6ca7f`; bounded persistent bridge raw-envelope source `d532ef5`. Node26.8.2, rustc1.99.0/LLVM23.1.1, Linux x64, i7-7700K,8logicalCPUs. Node24 was unavailable. Local execution only; external compute/API cost $0. CPU utilization was not sampled.
+Final primary candidate: TS runtime `d4a88ea`, built artifact SHA-256 `2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1`; Rust release source `de6ca7f`; bounded persistent bridge raw-envelope source `d532ef5`. Node26.8.2, rustc1.99.0/LLVM23.1.1, Linux x64, i7-7700K,8logicalCPUs. Node24 was unavailable. Local execution only; no paid remote compute. Model/reporting costs are unavailable. CPU utilization was not sampled.
 
 ## Exact arms and timing boundaries
 
