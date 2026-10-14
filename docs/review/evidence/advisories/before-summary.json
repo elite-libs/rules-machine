@@ -1,0 +1,273 @@
+{
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 5,
+      "high": 10,
+      "critical": 0
+    },
+    "dependencies": 150,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 150
+  },
+  "advisories": [
+    {
+      "id": "GHSA-r5fr-rjxr-66jc",
+      "package": "lodash",
+      "severity": "high",
+      "affected": ">=4.0.0 <=4.17.23",
+      "patched": ">=4.18.0",
+      "url": "https://github.com/advisories/GHSA-r5fr-rjxr-66jc",
+      "findings": [
+        {
+          "version": "4.17.23",
+          "paths": [
+            ".>lodash"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-f23m-r3pf-42rh",
+      "package": "lodash",
+      "severity": "moderate",
+      "affected": "<=4.17.23",
+      "patched": ">=4.18.0",
+      "url": "https://github.com/advisories/GHSA-f23m-r3pf-42rh",
+      "findings": [
+        {
+          "version": "4.17.23",
+          "paths": [
+            ".>lodash"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-4w7w-66w2-5vf9",
+      "package": "vite",
+      "severity": "moderate",
+      "affected": ">=7.0.0 <=7.3.1",
+      "patched": ">=7.3.2",
+      "url": "https://github.com/advisories/GHSA-4w7w-66w2-5vf9",
+      "findings": [
+        {
+          "version": "7.3.1",
+          "paths": [
+            ".>vitest>vite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-v2wj-q39q-566r",
+      "package": "vite",
+      "severity": "high",
+      "affected": ">=7.1.0 <=7.3.1",
+      "patched": ">=7.3.2",
+      "url": "https://github.com/advisories/GHSA-v2wj-q39q-566r",
+      "findings": [
+        {
+          "version": "7.3.1",
+          "paths": [
+            ".>vitest>vite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-p9ff-h696-f583",
+      "package": "vite",
+      "severity": "high",
+      "affected": ">=7.0.0 <=7.3.1",
+      "patched": ">=7.3.2",
+      "url": "https://github.com/advisories/GHSA-p9ff-h696-f583",
+      "findings": [
+        {
+          "version": "7.3.1",
+          "paths": [
+            ".>vitest>vite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-qx2v-qp2m-jg93",
+      "package": "postcss",
+      "severity": "moderate",
+      "affected": "<8.5.10",
+      "patched": ">=8.5.10",
+      "url": "https://github.com/advisories/GHSA-qx2v-qp2m-jg93",
+      "findings": [
+        {
+          "version": "8.5.8",
+          "paths": [
+            ".>tsup>postcss"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-g7r4-m6w7-qqqr",
+      "package": "esbuild",
+      "severity": "low",
+      "affected": ">=0.27.3 <0.28.1",
+      "patched": ">=0.28.1",
+      "url": "https://github.com/advisories/GHSA-g7r4-m6w7-qqqr",
+      "findings": [
+        {
+          "version": "0.27.7",
+          "paths": [
+            ".>tsup>esbuild"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-v6wh-96g9-6wx3",
+      "package": "vite",
+      "severity": "moderate",
+      "affected": ">=7.0.0 <=7.3.4",
+      "patched": ">=7.3.5",
+      "url": "https://github.com/advisories/GHSA-v6wh-96g9-6wx3",
+      "findings": [
+        {
+          "version": "7.3.1",
+          "paths": [
+            ".>vitest>vite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-fx2h-pf6j-xcff",
+      "package": "vite",
+      "severity": "high",
+      "affected": ">=7.0.0 <=7.3.4",
+      "patched": ">=7.3.5",
+      "url": "https://github.com/advisories/GHSA-fx2h-pf6j-xcff",
+      "findings": [
+        {
+          "version": "7.3.1",
+          "paths": [
+            ".>vitest>vite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-6g55-p6wh-862q",
+      "package": "postcss",
+      "severity": "high",
+      "affected": "<=8.5.11",
+      "patched": ">=8.5.12",
+      "url": "https://github.com/advisories/GHSA-6g55-p6wh-862q",
+      "findings": [
+        {
+          "version": "8.5.8",
+          "paths": [
+            ".>tsup>postcss"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-fxqj-rqcc-2cmp",
+      "package": "postcss",
+      "severity": "moderate",
+      "affected": "<=8.5.22",
+      "patched": ">=8.5.23",
+      "url": "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp",
+      "findings": [
+        {
+          "version": "8.5.8",
+          "paths": [
+            ".>tsup>postcss"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-28wg-ghj8-5hjv",
+      "package": "nanoid",
+      "severity": "high",
+      "affected": "<3.3.16",
+      "patched": ">=3.3.16",
+      "url": "https://github.com/advisories/GHSA-28wg-ghj8-5hjv",
+      "findings": [
+        {
+          "version": "3.3.11",
+          "paths": [
+            ".>tsup>postcss>nanoid"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-2v37-7h3g-55p8",
+      "package": "nanoid",
+      "severity": "high",
+      "affected": "<3.3.18",
+      "patched": ">=3.3.18",
+      "url": "https://github.com/advisories/GHSA-2v37-7h3g-55p8",
+      "findings": [
+        {
+          "version": "3.3.11",
+          "paths": [
+            ".>tsup>postcss>nanoid"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-r28c-9q8g-f849",
+      "package": "postcss",
+      "severity": "high",
+      "affected": "<=8.5.17",
+      "patched": ">=8.5.18",
+      "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849",
+      "findings": [
+        {
+          "version": "8.5.8",
+          "paths": [
+            ".>tsup>postcss"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-xwg4-73v4-xw9w",
+      "package": "nanoid",
+      "severity": "high",
+      "affected": "<3.3.12",
+      "patched": ">=3.3.12",
+      "url": "https://github.com/advisories/GHSA-xwg4-73v4-xw9w",
+      "findings": [
+        {
+          "version": "3.3.11",
+          "paths": [
+            ".>tsup>postcss>nanoid"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GHSA-68fv-2mgg-jv7q",
+      "package": "source-map-js",
+      "severity": "high",
+      "affected": ">=1.0.0 <1.2.2",
+      "patched": ">=1.2.2",
+      "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+      "findings": [
+        {
+          "version": "1.2.1",
+          "paths": [
+            ".>@vitest/coverage-v8>magicast>source-map-js"
+          ]
+        }
+      ]
+    }
+  ]
+}
