@@ -180,3 +180,11 @@ fn response_expansion_and_source_byte_cache_are_bounded() {
     assert!(stats["programs"].as_u64().unwrap() < 128);
     assert!(stats["programSourceBytes"].as_u64().unwrap() <= 1048576);
 }
+#[test]
+fn callback_fast_scope_preserves_dsl_cycle_guard() {
+    let p = Program::compile(&json!({"map":"items","run":"$item.parent=$array"})).unwrap();
+    assert!(
+        p.execute(Value::from_json(&json!({"items":[{"x":1}]})), true)
+            .is_err()
+    );
+}
