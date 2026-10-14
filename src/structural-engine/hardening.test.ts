@@ -144,6 +144,37 @@ describe('structural execution contracts', () => {
     expect(ruleFactory(['x = 3', { return: 'x' }])(input)).toBe(3);
   });
 
+  test('disabled tracing preserves thrown values without invoking coercion', () => {
+    let calls = 0;
+    const failure = {
+      toString() {
+        calls++;
+        throw new Error('unexpected error coercion');
+      },
+    };
+    const engine: ExpressionEngine = {
+      compile: (source) => ({
+        source,
+        lhs: undefined,
+        assignmentOperator: undefined,
+      }),
+      evaluate: () => {
+        throw failure;
+      },
+      evaluateExpression: () => {
+        throw failure;
+      },
+    };
+    let thrown: unknown;
+    try {
+      createRuleExecutor(engine, { trace: false }).execute('1');
+    } catch (error) {
+      thrown = error;
+    }
+    expect(thrown).toBe(failure);
+    expect(calls).toBe(0);
+  });
+
   test('traces cycles and BigInt without corrupting shared references', () => {
     const shared = { id: 1 };
     const input: Record<string, unknown> = { amount: 1n, a: shared, b: shared };
