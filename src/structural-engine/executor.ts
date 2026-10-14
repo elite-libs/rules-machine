@@ -128,8 +128,8 @@ export function createRuleExecutor<TInput extends object>(
 
     const getReturnValue = () => results.lastValue;
 
-    const startTime = trace ? performance.now() : 0;
-    if (trace) logTrace({ operation: 'begin', startTime });
+    const startTime = performance.now();
+    logTrace({ operation: 'begin', startTime });
 
     // Build a term resolver that closes over the mutable `input` reference.
     const mutableInput = input as MutableInput;
@@ -142,18 +142,16 @@ export function createRuleExecutor<TInput extends object>(
           stepCount,
           ignoreMissingKeys,
         );
-        if (trace)
-          logTrace({
-            operation: 'key.lookup',
-            key: term,
-            value: result as ExpressionValue,
-            stepRow,
-            stepCount,
-          });
+        logTrace({
+          operation: 'key.lookup',
+          key: term,
+          value: result as ExpressionValue,
+          stepRow,
+          stepCount,
+        });
         return result as ExpressionValue;
       } catch (error) {
-        if (trace)
-          logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
+        logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
         throw error;
       }
     };
@@ -396,14 +394,13 @@ export function createRuleExecutor<TInput extends object>(
           if (handleRule(rule.try) === BREAK) return BREAK;
         } catch (error) {
           if (error instanceof ResourceLimitError) throw error;
-          if (trace)
-            logTrace({
-              operation: 'catch',
-              rule: rule.catch,
-              currentState: snapshot(input),
-              stepRow,
-              stepCount,
-            });
+          logTrace({
+            operation: 'catch',
+            rule: rule.catch,
+            currentState: snapshot(input),
+            stepRow,
+            stepCount,
+          });
           if (handleRule(rule.catch) === BREAK) return BREAK;
         }
       }
@@ -462,31 +459,29 @@ export function createRuleExecutor<TInput extends object>(
           const previous = get(input, lhs);
           set(input, lhs, value);
           results.lastValue = value;
-          if (trace)
-            logTrace({
-              operation: 'evalRule',
-              result: snapshot(input),
-              rule,
-              lhs,
-              value,
-              previous: snapshot(previous),
-              stepRow,
-              stepCount,
-            });
+          logTrace({
+            operation: 'evalRule',
+            result: snapshot(input),
+            rule,
+            lhs,
+            value,
+            previous: snapshot(previous),
+            stepRow,
+            stepCount,
+          });
           return input as unknown as RuleResult;
         } else {
           const result = expressionEngine.evaluate(
             compiled,
             termResolver,
           ) as RuleResult;
-          if (trace)
-            logTrace({
-              operation: 'expression',
-              result,
-              rule,
-              stepRow,
-              stepCount,
-            });
+          logTrace({
+            operation: 'expression',
+            result,
+            rule,
+            stepRow,
+            stepCount,
+          });
           results.lastValue = result;
           return result;
         }
@@ -527,15 +522,14 @@ export function createRuleExecutor<TInput extends object>(
       stepRow++;
     }
 
-    if (trace)
-      logTrace({
-        operation: 'complete',
-        runTime: performance.now() - startTime,
-        stepCount,
-        currentState: snapshot(input),
-        stepRow,
-        lastValue: snapshot(getReturnValue()),
-      });
+    logTrace({
+      operation: 'complete',
+      runTime: performance.now() - startTime,
+      stepCount,
+      currentState: snapshot(input),
+      stepRow,
+      lastValue: snapshot(getReturnValue()),
+    });
 
     if (trace) {
       results.runTime = performance.now() - startTime;
