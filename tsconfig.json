@@ -21,6 +21,13 @@
     "verbatimModuleSyntax": true,
     "noEmit": true
   },
-  "include": ["**/*.ts", "./.*.js"],
-  "exclude": ["**/node_modules", "__snapshots__", "**/dist"]
+  "include": [
+    "src/**/*.ts",
+    "*.config.ts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "__snapshots__",
+    "**/dist"
+  ]
 }

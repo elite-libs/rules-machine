@@ -1,23 +1,32 @@
-import { toBoolean } from './src/utils/utils';
 import { defineConfig } from 'tsup';
 
-export default defineConfig({
-  format: ['cjs', 'esm', 'iife'],
-  outDir: 'dist',
-  platform: 'node',
-  target: 'node24',
+const common = {
   entry: ['src/index.ts'],
-  globalName: 'RulesMachine',
-  clean: true,
+  outDir: 'dist',
+  target: 'es2022',
   bundle: true,
-  metafile: true,
-  minify: process.env.NODE_ENV === 'production',
-  dts: {
-    entry: './src/index.ts',
-  },
-  skipNodeModulesBundle: !toBoolean(process.env.BUNDLE_ALL),
   sourcemap: true,
-  noExternal: toBoolean(process.env.BUNDLE_ALL)
-    ? [/lodash/, 'ms', /expressionparser/]
-    : [],
-});
+  minify: process.env.NODE_ENV === 'production',
+};
+
+export default defineConfig([
+  {
+    ...common,
+    format: ['cjs', 'esm'],
+    platform: 'neutral',
+    // Bundle the reviewed parser patch for downstream consumers, too.
+    noExternal: ['expressionparser'],
+    outExtension: ({ format }) => ({ js: format === 'esm' ? '.mjs' : '.cjs' }),
+    dts: true,
+    clean: true,
+  },
+  {
+    ...common,
+    format: ['iife'],
+    platform: 'browser',
+    globalName: 'RulesMachine',
+    outExtension: () => ({ js: '.global.js' }),
+    noExternal: [/./],
+    clean: false,
+  },
+]);

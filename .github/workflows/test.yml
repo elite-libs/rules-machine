@@ -1,26 +1,26 @@
 name: test
 on:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [14.x]
-
+        node-version: [24.x, 26.x]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-      - run: yarn config set workspaces-experimental true
-      - run: yarn
-      - run: yarn format
-      - run: yarn test
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm test:coverage

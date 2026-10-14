@@ -1,0 +1,11 @@
+--- a/dist/ExpressionParser.js
++++ b/dist/ExpressionParser.js
+@@ -65,7 +65,7 @@
+     else if (isBasicDataObject(thunkExpression)) {
+         return objEvaluator(thunkExpression);
+     }
+-    else if (typeof thunkExpression === "object") {
++    else if (thunkExpression !== null && typeof thunkExpression === "object") {
+         return classObjEvaluator(thunkExpression);
+     }
+     else {
