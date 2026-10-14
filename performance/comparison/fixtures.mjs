@@ -1,5 +1,5 @@
 // Frozen shared-subset v1: every engine consumes these exact serializable rules.
-export const fixtureVersion = 'shared-subset-v1';
+export const fixtureVersion = 'shared-subset-v2';
 const applicants = Array.from({ length: 32 }, (_, i) => ({ age: 16 + i, income: 18000 + i * 3500, debt: i % 5 * 2000, active: i % 4 !== 0, region: i % 3 === 0 ? 'west' : 'east' }));
 const eligibilityRules = [
   'eligible = false',
@@ -22,6 +22,13 @@ export const fixtures = [
  oracle(input) { input.eligible = input.age >= 21 && input.income >= 30000 && input.active === true && (input.income-input.debt>25000 || input.region==='west');return {result:input.eligible,input}; } },
  ...[0,1024,32768].map(pricing),
  ...[16,256,4096].map(n=>({ name:`array-map-${n}`,shared:false,rules:[{map:'items',run:'$item * 2 + 1',set:'mapped'},{return:'mapped'}], inputs:[{items:Array.from({length:n},(_,i)=>i)}],
- oracle(input){ input.mapped=input.items.map(x=>x*2+1);input.$item=n-1;input.$index=n-1;input.$array=input.items;return {result:input.mapped,input}; } })),
+ oracle(input){ input.mapped=input.items.map(x=>x*2+1);return {result:input.mapped,input}; } })),
 ];
 export function expected(fixture) {return fixture.inputs.map(input=>fixture.oracle(structuredClone(input)));}
+
+// Historical baseline leaks reserved array execution fields. Compare user-visible
+// business state here; cleanup correctness has separate structural regressions.
+export function normalizeInput(input, fixture) {
+ if (!fixture.shared) for (const key of ['$item', '$index', '$array']) delete input[key];
+ return input;
+}
