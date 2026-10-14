@@ -1,5 +1,10 @@
 import toPath from 'lodash/toPath.js';
-import { checkArrayLength, consumeWork } from './budget';
+import {
+  checkArrayLength,
+  checkDataDepth,
+  checkStringLength,
+  consumeWork,
+} from './budget';
 import { UserError } from './errors';
 import { recordMutation } from './mutations';
 
@@ -83,11 +88,14 @@ export function getOwnPath(
   path: string | number,
   read: (data: unknown, key: string) => unknown = ownData,
 ): unknown {
+  if (typeof path === 'string') checkStringLength(path.length);
   consumeWork(typeof path === 'string' ? path.length : 1);
   if (data != null && Object.hasOwn(Object(data), path))
     return read(data, String(path));
   let value: unknown = data;
-  for (const key of toPath(String(path))) {
+  const keys = toPath(String(path));
+  checkDataDepth(keys.length);
+  for (const key of keys) {
     value = read(value, key);
     if (value === undefined) return undefined;
   }
@@ -95,6 +103,7 @@ export function getOwnPath(
 }
 
 export function assertWritablePath(path: string): void {
+  checkStringLength(path.length);
   consumeWork(path.length);
   if (!path || toPath(path).some((key) => unsafe.has(key))) {
     throw new UserError(`Unsafe assignment path: ${path}`);
@@ -106,6 +115,7 @@ export function setOwnPath(data: object, path: string, value: unknown): void {
   if (data === null || typeof data !== 'object')
     throw new UserError('Assignment requires an object');
   const keys = Object.hasOwn(data, path) ? [path] : toPath(path);
+  checkDataDepth(keys.length);
   let target = data as Record<string, unknown>;
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];

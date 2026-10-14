@@ -8,6 +8,8 @@ import isObject from 'lodash/isObject.js';
 import toPath from 'lodash/toPath.js';
 import {
   checkArrayLength,
+  checkDataDepth,
+  checkStringLength,
   consumeWork,
   ResourceLimitError,
 } from '../utils/budget';
@@ -183,7 +185,7 @@ export const omitProperties = (
     )
       throw new UserError('OMIT cannot copy an opaque host object');
     const copy = (
-      Array.isArray(value) ? [] : Object.create(prototype)
+      Array.isArray(value) ? new Array(value.length) : Object.create(prototype)
     ) as Record<PropertyKey, unknown>;
     for (const [key, child] of dataEntries(value))
       Object.defineProperty(copy, key, {
@@ -203,6 +205,7 @@ export const omitProperties = (
     if (Array.isArray(value)) {
       if (active.has(value))
         throw new UserError('OMIT path must not be cyclic');
+      checkDataDepth(active.size + 1);
       active.add(value);
       try {
         return array(value)
@@ -224,6 +227,7 @@ export const omitProperties = (
     }
     let target = output;
     for (let i = 0; i < path.length; i++) {
+      checkDataDepth(i + 1);
       const key = path[i];
       if (i === path.length - 1) {
         delete target[key];
@@ -252,6 +256,10 @@ export const iterable = (result: ExpressionValue) => {
     );
   }
 
+  if (typeof result === 'string') {
+    checkStringLength(result.length);
+    consumeWork(result.length);
+  }
   return result;
 };
 
@@ -262,9 +270,15 @@ export const string = (result: ExpressionValue) => {
     );
   }
 
+  checkStringLength(result.length);
+  consumeWork(result.length);
   return result;
 };
 export const char = (result: ExpressionValue) => {
+  if (typeof result === 'string') {
+    checkStringLength(result.length);
+    consumeWork(result.length);
+  }
   if (typeof result !== 'string' || result.length !== 1) {
     throw new UserError(
       `Expected char, found: ${typeof result} ${describeValue(result)}`,
@@ -295,6 +309,7 @@ export function joinValues(
     characters += text.length;
     return text;
   });
+  checkStringLength(characters);
   consumeWork(characters);
   return strings.join(separator);
 }
