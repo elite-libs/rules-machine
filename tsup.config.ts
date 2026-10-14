@@ -25,6 +25,8 @@ export default defineConfig([
     format: ['iife'],
     platform: 'browser',
     globalName: 'RulesMachine',
+    // Keep browser delivery compact; development builds remain readable.
+    minify: process.env.NODE_ENV !== 'development',
     outExtension: () => ({ js: '.global.js' }),
     noExternal: [/./],
     clean: false,
