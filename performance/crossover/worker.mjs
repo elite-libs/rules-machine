@@ -27,9 +27,10 @@ try {
     }
     const run = () => {
       if (bridge) return bridge.run(program, f.input);
-      // Match the bridge's caller-owned input and returned result boundaries.
+      // Isolate caller-owned input once. Mutated input and scalar result are
+      // already caller-owned; the bridge returns its decoded owned copy.
       const input = structuredClone(f.input);
-      return structuredClone({ result: execute(input), input });
+      return { result: execute(input), input };
     };
     deepStrictEqual(await run(), f.expected);
     // Identical preparation/warm count in both arms; no cold compilation timing.
