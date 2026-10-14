@@ -619,6 +619,27 @@
       "options": {
         "trace": true
       }
+    },
+    {
+      "feature": "atomic-option",
+      "rules": "1",
+      "options": {
+        "atomic": true
+      }
+    },
+    {
+      "feature": "budget-option",
+      "rules": "1",
+      "options": {
+        "maxOperations": 10
+      }
+    },
+    {
+      "feature": "readonly-option",
+      "rules": "1",
+      "options": {
+        "readonly": true
+      }
     }
   ],
   "supportedFunctions": [
