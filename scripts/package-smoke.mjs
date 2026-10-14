@@ -36,6 +36,26 @@ try {
   assert.equal(vm.runInContext(`RulesMachine.ruleFactory('value')({value:null})`, context), null);
   const manifest = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
   assert.ok(readFileSync(join(packageRoot, manifest.types), 'utf8').includes('ruleFactory'));
+  writeFileSync(join(directory, 'consumer.mts'), `
+    import { ruleFactory, createExpressionEngine, ResourceLimitError,
+      type ExecutionResult, type RuleMachineOptions } from '@elite-libs/rules-machine';
+    const plain: number = ruleFactory('1')<number>({});
+    const traced: ExecutionResult<{x: number}> & {lastValue: number} =
+      ruleFactory<{x: number}>('x', {trace: true})<number>({x: 1});
+    const options: RuleMachineOptions = {trace: Math.random() > 0.5,
+      atomic: true, limits: {maxStringLength: 1000}};
+    const dynamic: number | ExecutionResult<Record<string, unknown>> =
+      ruleFactory('1', options)<number>({});
+    const retainedBytes: number = createExpressionEngine().cacheStats().estimatedBytes;
+    const error: Error = new ResourceLimitError('limited');
+    // @ts-expect-error Traced results are not plain numeric results.
+    const invalid: number = ruleFactory('1', {trace: true})<number>({});
+    void [plain, traced, dynamic, retainedBytes, error, invalid];
+  `);
+  execFileSync(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'),
+    '--noEmit', '--strict', '--skipLibCheck', '--module', 'NodeNext',
+    '--moduleResolution', 'NodeNext', '--target', 'ES2022',
+    join(directory, 'consumer.mts')], {stdio: 'inherit'});
   console.log('Packed ESM, CommonJS, browser-global and declaration smoke checks passed.');
 } finally {
   rmSync(directory, { recursive: true, force: true });
