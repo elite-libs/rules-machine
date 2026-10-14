@@ -1,0 +1,139 @@
+{
+  "at": "2026-10-14T01:58:36.674702+00:00",
+  "node": "v26.8.2",
+  "rustCompiler": "rustc1.99.0 b940084d7eb6a299eb4bfeb8e34901bc051e7ac4 LLVM23.1.1 x86_64-unknown-linux-gnu",
+  "runtimeSource": "d4a88ea",
+  "runtimeSnapshot": "4c85672",
+  "rustSource": "91ef65e",
+  "bridgeRawEnvelopeSource": "d532ef5",
+  "baselineSource": "ee300ad",
+  "priorSecuritySource": "7b073e3",
+  "armSemantics": {
+    "baseline": "Exact original source,original dependencies,original build.",
+    "upgrade": "Exact original source/old original build, final runtime dependencies; does not isolate toolchain upgrades.",
+    "tuned": "Final TS runtime d4a88ea and final dependencies/build.",
+    "rust": "Combined callback-allocation + immutable prepared-path source91ef65e, release binary with inherited exact power domain and serde_json float_roundtrip."
+  },
+  "node24": "Node24.21.0 later found; all main performance evidence Node26.8.2 only, correctness/package qualification recorded separately.",
+  "hashes": {
+    "pnpm-lock.yaml": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d",
+    "package.json": "f8412435a9014df7548105bdf5b6a12f99e414a15cd09a58f27f53ab992f56eb",
+    "experiments/rusty-rules/Cargo.lock": "0202e182c25c988edabdc1026cbfdc17c138b0e93d85c2a952eb79192321c7b7",
+    "experiments/rusty-rules/Cargo.toml": "42c80404c2c63adaeec98ba5ef61f1e40adf25a0fb735a49aca77ce298c912aa",
+    "experiments/rusty-rules/src/lib.rs": "2c0c5217967c542ad1124c9037e60f23166fad6c76cd2d2d9aac45c8964478b1",
+    "experiments/rusty-rules/src/main.rs": "1fe5804405a7078f4245d4408629bf09404843ad6fe7778f4caef98e97661190",
+    "experiments/rusty-rules/bridge.mjs": "615300d616ae08b0031f8adb61adf0a9697395e23007c05792dc4f1de0cc426f",
+    "experiments/rusty-rules/wire.mjs": "f17ecba29da1d52d8f61c91d35e80a943276f6393ca15c57b5f95d6564389f7c",
+    "dist/index.mjs": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+    "/tmp/rules-machine-baseline/pnpm-lock.yaml": "a58c21a1a266bbd98a4b2cf737dadf818c80d90cde65a9d027071754997db518",
+    "/tmp/rules-machine-baseline/dist/index.js": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+    "/tmp/rules-machine-upgrade-only/dist/index.js": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+    "/tmp/rules-machine-rust-gaps-prior/dist/index.mjs": "ea0ccf4b8f06c8d6622a2f3b9f9fd64a61241d5deef22e3a056041bce23cd5f3",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/lodash@4.17.23/node_modules/lodash/lodash.js": "71b4b7f5d2fc2d69399fd3edd7104fa10f9fd73fc600130825c3032ee8c50dad",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.d.ts": "3dff04fb6f24b66bff52da0c47727473ebc93da5182afd61209859daf1160aac",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/helpers.d.ts": "f273b32ce8e2a2604ebb8e1d0d038f2db5265ba308562ff1ed0a538e7dd83259",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/ExpressionParser.d.ts": "747f13f1cd9f839a012e628ac9ab2ef0e813019d22297789a0d14dc4998625a9",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/docgen.d.ts": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.js.map": "ea7244e7282309b1f5e773120a81dba2b055274f95635010fec8df4888bcf7bf",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/helpers.js.map": "4b307dda0bcdb29bc6e8e05c3a10c0af547ddce9469dcef50119db2d3ead3028",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/ExpressionParser.js.map": "483aabc9a3f9ead45c38a7207bf11048fb0d4e9afe4b7609f261516c533d5742",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/docgen.js.map": "50175cf814e2b8a354bf876f27f0d59054cd509590f1e8241ccbdff851a12809",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.js": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/helpers.js": "66d56f03bc0e313041592c23e769072a74878329d26ae0f5fa7f973ce5c0c1c0",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/ExpressionParser.js": "e90faf028a5bcc097c9285d9ec985c60071776500e3ac39f89cca9a1066a0abd",
+    "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/docgen.js": "2a10733e5c8ca1cb278dc8ee1bf333076c9ebc44587a6843553bc6d55a123be7",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/lodash@4.17.23/node_modules/lodash/lodash.js": "71b4b7f5d2fc2d69399fd3edd7104fa10f9fd73fc600130825c3032ee8c50dad",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/lodash.js": "f5465f55566bf544aad0a31c6135889ca1ed81eea8f53ec61c6cbe86926f07cf",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/docgen.js": "2a10733e5c8ca1cb278dc8ee1bf333076c9ebc44587a6843553bc6d55a123be7",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/ExpressionParser.js": "e90faf028a5bcc097c9285d9ec985c60071776500e3ac39f89cca9a1066a0abd",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/helpers.js": "66d56f03bc0e313041592c23e769072a74878329d26ae0f5fa7f973ce5c0c1c0",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.js": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/docgen.js.map": "50175cf814e2b8a354bf876f27f0d59054cd509590f1e8241ccbdff851a12809",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/ExpressionParser.js.map": "483aabc9a3f9ead45c38a7207bf11048fb0d4e9afe4b7609f261516c533d5742",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/helpers.js.map": "4b307dda0bcdb29bc6e8e05c3a10c0af547ddce9469dcef50119db2d3ead3028",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.js.map": "ea7244e7282309b1f5e773120a81dba2b055274f95635010fec8df4888bcf7bf",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/docgen.d.ts": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/ExpressionParser.d.ts": "747f13f1cd9f839a012e628ac9ab2ef0e813019d22297789a0d14dc4998625a9",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/helpers.d.ts": "f273b32ce8e2a2604ebb8e1d0d038f2db5265ba308562ff1ed0a538e7dd83259",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.d.ts": "3dff04fb6f24b66bff52da0c47727473ebc93da5182afd61209859daf1160aac",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/docgen.js": "2a10733e5c8ca1cb278dc8ee1bf333076c9ebc44587a6843553bc6d55a123be7",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/ExpressionParser.js": "34de4720a6823e7a4ccfa3d9618bcc0e18ef9beb253256ca68af68f36d1c2540",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/helpers.js": "66d56f03bc0e313041592c23e769072a74878329d26ae0f5fa7f973ce5c0c1c0",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.js": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/docgen.js.map": "50175cf814e2b8a354bf876f27f0d59054cd509590f1e8241ccbdff851a12809",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/ExpressionParser.js.map": "483aabc9a3f9ead45c38a7207bf11048fb0d4e9afe4b7609f261516c533d5742",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/helpers.js.map": "4b307dda0bcdb29bc6e8e05c3a10c0af547ddce9469dcef50119db2d3ead3028",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.js.map": "ea7244e7282309b1f5e773120a81dba2b055274f95635010fec8df4888bcf7bf",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/docgen.d.ts": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/ExpressionParser.d.ts": "747f13f1cd9f839a012e628ac9ab2ef0e813019d22297789a0d14dc4998625a9",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/helpers.d.ts": "f273b32ce8e2a2604ebb8e1d0d038f2db5265ba308562ff1ed0a538e7dd83259",
+    "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.d.ts": "3dff04fb6f24b66bff52da0c47727473ebc93da5182afd61209859daf1160aac",
+    "experiments/rusty-rules/target/release/rusty-rules-experiment": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d",
+    "experiments/rusty-rules/examples/allocation_probe.rs": "2997cd59f5b5a50614f06a82ed7c55df078a32ba5c628d10c29c27b55a1001d6",
+    "performance/rust-tuning/measure.mjs": "31633d061747c31dc788ba86f69637ad8ced21b296f874421454863b72419e7f",
+    "performance/rust-tuning/allocation.mjs": "1e921a3c040fac74a98ca9a9917b1bad8d3b96d0105a6135a6738050698f7543"
+  },
+  "historicalEvidence": {
+    "native-pre-context": "Complete screening campaign c6439e7; rustSource command placeholder resolved by immutable binary hash.",
+    "native-final": "Complete earlier1051a86 pre-numeric-scope campaign; diagnostic only.",
+    "native-numeric-before-index-boundary": "Interrupted partial076d4ba; excluded from confirmation.",
+    "native-before-dag-memo": "Interrupted partiale456fb0; excluded from confirmation.",
+    "prior": "Matched12blocks finalTSruntime d4a88ea versus prior7b073e3; final TS module hash must match native-confirmation.",
+    "native-confirmation": "Complete de6ca7f campaign before exact power guard and JSON float roundtrip; diagnostic superseded by native-exact-power-confirmation.",
+    "bridge-confirmation": "Complete de6ca7f bridge/cold/retention campaign, diagnostic superseded by bridge-exact-power-confirmation.",
+    "numeric-grid-power-exact": "10718-case development grid,14failures caused by default serde_json float decoding; all retained."
+  },
+  "finalValidation": {
+    "rustTests": 27,
+    "bridgeTests": 15,
+    "sharedCases": 419,
+    "numericDomainCases": 11158,
+    "independentSourceReview": "Architect approved before combined confirmation; results/combined-freeze.md",
+    "pairedRustBlocks": 12,
+    "nativeFourArmBlocks": 12,
+    "bridgeBlocks": 12,
+    "retentionProcessesPerArm": 3
+  },
+  "costAccounting": {
+    "paidRemoteComputeUSD": 0,
+    "modelAndReportingCosts": "unavailable"
+  },
+  "rustSerdeJsonFeatures": [
+    "float_roundtrip"
+  ],
+  "historicalPowerAttributionCorrection": {
+    "oldRandomPowerFailures": 56,
+    "alsoHadChangedInputFloats": 56,
+    "alsoHadChangedResults": 52,
+    "conclusion": "Old failures confounded math and JSON decoding; no isolated libm/V8 rounding attribution claimed."
+  },
+  "preTuningBaseline": "127d762",
+  "loop1Source": "79e61d2",
+  "loop2Source": "91ef65e",
+  "verifiedIdentity": {
+    "tsNativeBridgePriorModule": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+    "rustPairedNativeBridgeBinary": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d",
+    "rootReleaseBinaryMatchesImmutableCache": true,
+    "pairedBaselineMatchesPreviouslyConfirmed127d762": true
+  },
+  "binarySourceMappings": {
+    "base-127d762": {
+      "path": ".cache/rust-tuning/base-127d762",
+      "sha256": "6efc246caadb7457bb2738f514eb58dcfab6a8ca7b91793f96ca8de0eb9f436b",
+      "source": "127d762"
+    },
+    "loop1-context": {
+      "path": ".cache/rust-tuning/loop1-context",
+      "sha256": "98515323a9889666e6d82a4b99f2e6183e3ccbb7d3dfc1a59b2f45fdad9b0223",
+      "source": "79e61d2"
+    },
+    "loop2-paths": {
+      "path": ".cache/rust-tuning/loop2-paths",
+      "sha256": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d",
+      "source": "91ef65e"
+    }
+  },
+  "allocationInstrumentation": "Counting GlobalAlloc lives only in standalone example binary; production CLI System allocator has no counters."
+}

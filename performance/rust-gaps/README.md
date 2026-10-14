@@ -1,10 +1,12 @@
-# Rust core compatibility and boundary measurements
+# Historical 127d762 compatibility and boundary baseline
+
+This page and its linked report describe the confirmed pre-tuning `127d762` baseline. The latest two-loop Rust source `91ef65e`, paired tuning gain and fresh final native/bridge/cold/retention evidence are in [the tuning report](../rust-tuning/results/report.md). The numbers below remain historical baseline evidence, not the latest candidate.
 
 The expanded Rust core passes 419 shared differential/rejection cases and 11,158 deterministic numeric/domain probes, with explicit rejection domains. It supports 35 of 97 named TypeScript functions, nested sequence results and returns, null versus undefined, recursive conditions, all five array rules and try/catch. See [machine-readable scope](spec.json), [function domains](../../experiments/rusty-rules/README.md), and [final report](results/2026-10-14/report.md).
 
-The final 12-block comparison measures TS **9.79× [9.34, 10.19]** versus original, native Rust **6.63× [6.40, 6.85]** versus final TS on the same seven slices, and the persistent Node bridge **0.281× [0.272, 0.291]** versus direct TS. The bridge loses at the actual encode/pipe/decode boundary. Final TS is **0.720× [0.700, 0.740]** the throughput of the earlier security-only candidate after the added protection bundle. These are local within-campaign estimates, not portable guarantees.
+The pre-tuning 127d762 12-block comparison measures TS **9.79× [9.34, 10.19]** versus original, native Rust **6.63× [6.40, 6.85]** versus final TS on the same seven slices, and the persistent Node bridge **0.281× [0.272, 0.291]** versus direct TS. The bridge loses at the actual encode/pipe/decode boundary. Final TS is **0.720× [0.700, 0.740]** the throughput of the earlier security-only candidate after the added protection bundle. These are local within-campaign estimates, not portable guarantees.
 
-The Rust source is `127d762`; the TS runtime source is `d4a88ea`; source, binary, module, lock and dependency hashes are in [provenance](results/2026-10-14/provenance.json). Node 26.8.2 was measured; Only Node 26 performance was measured; Node 24.21.0 qualification is reported separately by the coordinator. No paid remote compute; model/reporting costs unavailable. Original benchmark fixtures and historical security evidence remain unchanged.
+This historical Rust source is `127d762`; the TS runtime source is `d4a88ea`; source, binary, module, lock and dependency hashes are in [provenance](results/2026-10-14/provenance.json). Node 26.8.2 was measured; Only Node 26 performance was measured; Node 24.21.0 qualification is reported separately by the coordinator. No paid remote compute; model/reporting costs unavailable. Original benchmark fixtures and historical security evidence remain unchanged.
 
 From the repository root, build and validate:
 
@@ -28,4 +30,4 @@ node performance/rust-gaps/measure-bridge.mjs dist/index.mjs experiments/rusty-r
 
 Preparation and process startup are excluded from native warm timing. Native timings include fresh input construction/reset, execution and checked result digest. Bridge timings include parent encoding, bounded framing, pipe transport, worker execution, returned result/input decoding and the same digest. Thus native speed does not predict bridge speed. Full traces, arbitrary JS objects, all library functions, exact TS budget/options parity and other excluded syntax remain outside the core contract.
 
-Earlier complete screening campaigns, interrupted campaigns and failing development probes are retained and classified in the final report. The final complete preplanned campaign is primary; no earlier samples are selected to increase the reported gain. CPU profiles and causal context ablation are separate diagnostics.
+Earlier complete screening campaigns, interrupted campaigns and failing development probes are retained and classified in the final report. Within this historical phase the complete preplanned campaign is primary; no earlier samples are selected to increase the reported gain. CPU profiles and causal context ablation are separate diagnostics.

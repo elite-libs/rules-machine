@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-14T01:47:20.904Z",
+  "classification": "Separate allocator-count diagnostic; atomic counting overhead means these are NOT latency timings. Fresh value/input construction + validate/evaluate/digest inside counter; program compilation/JSON parse/output serialization outside.",
+  "source": "loop1-context",
+  "binary": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/allocation-loop1-context",
+  "binarySha256": "5ae3f32a5cd5e38aa0715bb0248ca69976786350e825aa913e304ee7f28eff54",
+  "exampleSha256": "2997cd59f5b5a50614f06a82ed7c55df078a32ba5c628d10c29c27b55a1001d6",
+  "instrumentSha256": "1e921a3c040fac74a98ca9a9917b1bad8d3b96d0105a6135a6738050698f7543",
+  "rows": [
+    {
+      "fixture": "eligibility",
+      "allocations": 11300,
+      "bytesRequested": 644640,
+      "checksum": 42120,
+      "deallocations": 11300,
+      "operations": 320,
+      "reallocations": 1710,
+      "allocationsPerOperation": 35.3125,
+      "bytesRequestedPerOperation": 2014.5
+    },
+    {
+      "fixture": "pricing-0",
+      "allocations": 24640,
+      "bytesRequested": 1469440,
+      "checksum": 564808000,
+      "deallocations": 24640,
+      "operations": 320,
+      "reallocations": 6080,
+      "allocationsPerOperation": 77,
+      "bytesRequestedPerOperation": 4592
+    },
+    {
+      "fixture": "pricing-1024",
+      "allocations": 24960,
+      "bytesRequested": 1797120,
+      "checksum": 564808000,
+      "deallocations": 24960,
+      "operations": 320,
+      "reallocations": 6080,
+      "allocationsPerOperation": 78,
+      "bytesRequestedPerOperation": 5616
+    },
+    {
+      "fixture": "pricing-32768",
+      "allocations": 24960,
+      "bytesRequested": 11955200,
+      "checksum": 564808000,
+      "deallocations": 24960,
+      "operations": 320,
+      "reallocations": 6080,
+      "allocationsPerOperation": 78,
+      "bytesRequestedPerOperation": 37360
+    },
+    {
+      "fixture": "array-map-16",
+      "allocations": 1160,
+      "bytesRequested": 52230,
+      "checksum": 28560170,
+      "deallocations": 1160,
+      "operations": 10,
+      "reallocations": 210,
+      "allocationsPerOperation": 116,
+      "bytesRequestedPerOperation": 5223
+    },
+    {
+      "fixture": "array-map-256",
+      "allocations": 15560,
+      "bytesRequested": 630630,
+      "checksum": 506210474,
+      "deallocations": 15560,
+      "operations": 10,
+      "reallocations": 2650,
+      "allocationsPerOperation": 1556,
+      "bytesRequestedPerOperation": 63063
+    },
+    {
+      "fixture": "array-map-4096",
+      "allocations": 245960,
+      "bytesRequested": 9885030,
+      "checksum": 843219114,
+      "deallocations": 245960,
+      "operations": 10,
+      "reallocations": 41090,
+      "allocationsPerOperation": 24596,
+      "bytesRequestedPerOperation": 988503
+    }
+  ]
+}

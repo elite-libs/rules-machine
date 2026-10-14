@@ -1,0 +1,1346 @@
+[
+  {
+    "block": 0,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 67690698,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 0,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 34809281,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 0,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 97625174,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 0,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 51743488,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 0,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 86267916,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 0,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 47497458,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 0,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 45352874,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 0,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 30062034,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 0,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 99745456,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 0,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 55145607,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 0,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 94019066,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 0,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 60444136,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 0,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 106952170,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 0,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 54974417,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 1,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 32356848,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 1,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 52373591,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 1,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 52353571,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 1,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 86528831,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 1,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 48739648,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 1,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 82433475,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 1,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 30091077,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 1,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 45813923,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 1,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 54781238,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 1,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 88795812,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 1,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 57077707,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 1,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 97582747,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 1,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 65305203,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 1,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 91340116,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 2,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 54982468,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 2,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 32866037,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 2,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 84179215,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 2,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 51537299,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 2,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 82884835,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 2,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 65452611,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 2,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 88482306,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 2,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 59460328,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 2,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 157393557,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 2,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 127240345,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 2,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 136652662,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 2,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 83657998,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 2,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 113398066,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 2,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 60556756,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 3,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 38718741,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 3,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 98139890,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 3,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 73939160,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 3,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 147332220,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 3,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 80936615,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 3,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 100664271,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 3,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 29911320,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 3,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 49918873,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 3,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 70489575,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 3,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 93048927,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 3,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 55755911,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 3,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 93127714,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 3,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 54319681,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 3,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 106654142,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 4,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 93421514,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 4,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 34418239,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 4,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 82035219,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 4,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 52418362,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 4,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 80452795,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 4,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 61547700,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 4,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 46272437,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 4,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 30822253,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 4,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 91956915,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 4,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 77951664,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 4,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 112212780,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 4,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 57968832,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 4,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 122808814,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 4,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 53797402,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 5,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 32403077,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 5,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 54598082,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 5,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 49644833,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 5,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 85739601,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 5,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 49138435,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 5,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 81498648,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 5,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 30260764,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 5,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 49917296,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 5,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 54893612,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 5,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 92004919,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 5,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 56487350,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 5,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 114305351,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 5,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 54209790,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 5,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 98883111,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 6,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 57379170,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 6,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 34153124,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 6,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 82762655,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 6,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 51722566,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 6,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 82986320,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 6,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 47886634,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 6,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 44515872,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 6,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 32497916,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 6,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 89267828,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 6,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 55483248,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 6,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 105061445,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 6,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 56550530,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 6,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 94853144,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 6,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 57987782,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 7,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 33116188,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 7,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 54768946,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 7,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 50063436,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 7,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 85745322,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 7,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 47942131,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 7,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 81710207,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 7,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 30253605,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 7,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 49089147,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 7,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 64990134,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 7,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 108056074,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 7,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 54924509,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 7,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 93718394,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 7,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 54624533,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 7,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 92391202,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 8,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 52502533,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 8,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 33474133,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 8,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 84546081,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 8,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 50418611,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 8,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 79716573,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 8,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 49237752,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 8,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 45444923,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 8,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 31299367,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 8,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 109031427,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 8,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 58005068,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 8,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 102206849,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 8,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 55899618,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 8,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 94472820,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 8,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 56598801,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 9,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 35030061,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 9,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 52280309,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 9,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 56996227,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 9,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 87297085,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 9,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 49145483,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 9,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 84169831,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 9,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 33810843,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 9,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 50081453,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 9,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 55889199,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 9,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 98978983,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 9,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 55471479,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 9,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 94223238,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 9,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 54435868,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 9,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 97761295,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 10,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 54243249,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 10,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 33152370,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 10,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 97538918,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 10,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 60298211,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 10,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 85919539,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 10,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 49512819,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 10,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 44468106,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 10,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 31496165,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 10,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 88878780,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 10,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 58778734,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 10,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 93796606,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 10,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 62197451,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 10,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 93216396,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 10,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 71553268,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 11,
+    "fixture": "eligibility",
+    "arm": "new",
+    "elapsedNs": 59675708,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 11,
+    "fixture": "eligibility",
+    "arm": "old",
+    "elapsedNs": 65498322,
+    "operations": 29504,
+    "checksum": 3883464
+  },
+  {
+    "block": 11,
+    "fixture": "pricing-0",
+    "arm": "new",
+    "elapsedNs": 68887860,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 11,
+    "fixture": "pricing-0",
+    "arm": "old",
+    "elapsedNs": 142347031,
+    "operations": 18752,
+    "checksum": 3032977728
+  },
+  {
+    "block": 11,
+    "fixture": "pricing-1024",
+    "arm": "new",
+    "elapsedNs": 105731970,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 11,
+    "fixture": "pricing-1024",
+    "arm": "old",
+    "elapsedNs": 102607039,
+    "operations": 17824,
+    "checksum": 1395034528
+  },
+  {
+    "block": 11,
+    "fixture": "pricing-32768",
+    "arm": "new",
+    "elapsedNs": 31952233,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 11,
+    "fixture": "pricing-32768",
+    "arm": "old",
+    "elapsedNs": 45028310,
+    "operations": 8576,
+    "checksum": 2251952512
+  },
+  {
+    "block": 11,
+    "fixture": "array-map-16",
+    "arm": "new",
+    "elapsedNs": 58871037,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 11,
+    "fixture": "array-map-16",
+    "arm": "old",
+    "elapsedNs": 92237927,
+    "operations": 9766,
+    "checksum": 2122058246
+  },
+  {
+    "block": 11,
+    "fixture": "array-map-256",
+    "arm": "new",
+    "elapsedNs": 56143023,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 11,
+    "fixture": "array-map-256",
+    "arm": "old",
+    "elapsedNs": 93589864,
+    "operations": 719,
+    "checksum": 3754781631
+  },
+  {
+    "block": 11,
+    "fixture": "array-map-4096",
+    "arm": "new",
+    "elapsedNs": 55334707,
+    "operations": 44,
+    "checksum": 1133183724
+  },
+  {
+    "block": 11,
+    "fixture": "array-map-4096",
+    "arm": "old",
+    "elapsedNs": 110083553,
+    "operations": 44,
+    "checksum": 1133183724
+  }
+]

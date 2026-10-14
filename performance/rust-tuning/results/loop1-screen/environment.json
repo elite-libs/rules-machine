@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-14T01:47:36.555Z",
+  "classification": "Six-block candidate screening; not final confirmation.",
+  "node": "v26.8.2",
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/rust-tuning/measure.mjs",
+    ".cache/rust-tuning/base-127d762",
+    ".cache/rust-tuning/loop1-context",
+    "performance/rust-tuning/results/loop1-screen",
+    "6",
+    "127d762",
+    "loop1-context"
+  ],
+  "oldSource": "127d762",
+  "newSource": "loop1-context",
+  "binaries": {
+    "old": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/base-127d762",
+    "new": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/loop1-context"
+  },
+  "hashes": {
+    "old": "6efc246caadb7457bb2738f514eb58dcfab6a8ca7b91793f96ca8de0eb9f436b",
+    "new": "98515323a9889666e6d82a4b99f2e6183e3ccbb7d3dfc1a59b2f45fdad9b0223"
+  },
+  "instrumentSha256": "081cd76550af0c7b75177406845718b41c6f6ee69c19cbd47f089f42b1bd8022",
+  "fixtureSha256": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+  "schedule": {
+    "eligibility": 1295,
+    "pricing-0": 606,
+    "pricing-1024": 480,
+    "pricing-32768": 255,
+    "array-map-16": 3958,
+    "array-map-256": 721,
+    "array-map-4096": 40
+  },
+  "blocks": 6,
+  "ordering": "Alternating old/new and new/old; six blocks balance position.",
+  "boundary": "Native fresh value construction/input validation/evaluate/digest, preparation and JSON process boundary excluded. Actual counts and weighted digest validated."
+}

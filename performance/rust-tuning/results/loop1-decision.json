@@ -1,0 +1,81 @@
+{
+  "source": "79e61d2",
+  "baseline": "127d762",
+  "status": "provisionally retained for independent combined confirmation",
+  "screening": {
+    "allSeven": {
+      "ratio": 1.0567039412458377,
+      "lower95": 1.010754669743625,
+      "upper95": 1.0982259702663626
+    },
+    "arrayAggregate": {
+      "ratio": 1.1222057138638415,
+      "lower95": 0.9958358159039798,
+      "upper95": 1.2646117403253572
+    },
+    "scalarAggregate": {
+      "ratio": 1.0100990576316546,
+      "lower95": 0.9655258526595,
+      "upper95": 1.0690516331424782
+    }
+  },
+  "allocationMechanism": [
+    {
+      "fixture": "eligibility",
+      "oldAllocationsPerOp": 35.3125,
+      "newAllocationsPerOp": 35.3125,
+      "oldRequestedBytesPerOp": 2014.5,
+      "newRequestedBytesPerOp": 2014.5
+    },
+    {
+      "fixture": "pricing-0",
+      "oldAllocationsPerOp": 77,
+      "newAllocationsPerOp": 77,
+      "oldRequestedBytesPerOp": 4592,
+      "newRequestedBytesPerOp": 4592
+    },
+    {
+      "fixture": "pricing-1024",
+      "oldAllocationsPerOp": 78,
+      "newAllocationsPerOp": 78,
+      "oldRequestedBytesPerOp": 5616,
+      "newRequestedBytesPerOp": 5616
+    },
+    {
+      "fixture": "pricing-32768",
+      "oldAllocationsPerOp": 78,
+      "newAllocationsPerOp": 78,
+      "oldRequestedBytesPerOp": 37360,
+      "newRequestedBytesPerOp": 37360
+    },
+    {
+      "fixture": "array-map-16",
+      "oldAllocationsPerOp": 149,
+      "newAllocationsPerOp": 116,
+      "oldRequestedBytesPerOp": 7165,
+      "newRequestedBytesPerOp": 5223
+    },
+    {
+      "fixture": "array-map-256",
+      "oldAllocationsPerOp": 2069,
+      "newAllocationsPerOp": 1556,
+      "oldRequestedBytesPerOp": 94441,
+      "newRequestedBytesPerOp": 63063
+    },
+    {
+      "fixture": "array-map-4096",
+      "oldAllocationsPerOp": 32789,
+      "newAllocationsPerOp": 24596,
+      "oldRequestedBytesPerOp": 1495297,
+      "newRequestedBytesPerOp": 988503
+    }
+  ],
+  "interpretation": "Whole fixed suite paired interval exceeds1, no aggregate regression, deterministic allocation reduction. Array aggregate interval includes1, so no significant aggregate-array latency claim; final independent paired127d762-vs-combined confirmation required.",
+  "correctness": {
+    "rustTests": 25,
+    "bridgeTests": 15,
+    "sharedCases": 419,
+    "numericDomainCases": 11158
+  },
+  "sourceMapping": "loop1-screen environment symbolic newSource loop1-context maps to79e61d2 and immutable binary hash there; baseline maps127d762."
+}

@@ -1,0 +1,136 @@
+screen block 1/6
+screen block 2/6
+screen block 3/6
+screen block 4/6
+screen block 5/6
+screen block 6/6
+{
+  "environment": {
+    "at": "2026-10-14T01:52:24.226Z",
+    "classification": "Six-block candidate screening; not final confirmation.",
+    "node": "v26.8.2",
+    "command": [
+      "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+      "/home/dan/code/oss/rules-machine/performance/rust-tuning/measure.mjs",
+      ".cache/rust-tuning/loop1-context",
+      ".cache/rust-tuning/loop2-paths",
+      "performance/rust-tuning/results/loop2-screen",
+      "6",
+      "79e61d2",
+      "91ef65e"
+    ],
+    "oldSource": "79e61d2",
+    "newSource": "91ef65e",
+    "binaries": {
+      "old": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/loop1-context",
+      "new": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/loop2-paths"
+    },
+    "hashes": {
+      "old": "98515323a9889666e6d82a4b99f2e6183e3ccbb7d3dfc1a59b2f45fdad9b0223",
+      "new": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+    },
+    "instrumentSha256": "d7fac7f1cd24a7e7dcb165bea6cb16d034520c4c458ee9ce26bdaea2330939c6",
+    "fixtureSha256": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+    "schedule": {
+      "eligibility": 1312,
+      "pricing-0": 263,
+      "pricing-1024": 258,
+      "pricing-32768": 200,
+      "array-map-16": 11017,
+      "array-map-256": 309,
+      "array-map-4096": 48
+    },
+    "blocks": 6,
+    "ordering": "Alternating old/new and new/old; 6 blocks balance position.",
+    "boundary": "Native fresh value construction/input validation/evaluate/digest, preparation and JSON process boundary excluded. Actual counts and weighted digest validated."
+  },
+  "observations": 84,
+  "rows": [
+    {
+      "fixture": "eligibility",
+      "oldMedianNs": 1980.65185546875,
+      "newMedianNs": 1135.6110661204268,
+      "newOverOld": {
+        "ratio": 1.7236932970556622,
+        "lower95": 1.5961511642304385,
+        "upper95": 1.84392731416742
+      }
+    },
+    {
+      "fixture": "pricing-0",
+      "oldMedianNs": 4846.577471482889,
+      "newMedianNs": 3198.987226711027,
+      "newOverOld": {
+        "ratio": 1.5517249409704421,
+        "lower95": 1.3550390429042487,
+        "upper95": 1.7427911751941279
+      }
+    },
+    {
+      "fixture": "pricing-1024",
+      "oldMedianNs": 4701.003452034884,
+      "newMedianNs": 2899.4496124031007,
+      "newOverOld": {
+        "ratio": 1.6291519555881186,
+        "lower95": 1.5017838452637504,
+        "upper95": 1.7588909670516688
+      }
+    },
+    {
+      "fixture": "pricing-32768",
+      "oldMedianNs": 5471.785234375,
+      "newMedianNs": 3663.011484375,
+      "newOverOld": {
+        "ratio": 1.5085102580759737,
+        "lower95": 1.4263145855521286,
+        "upper95": 1.609175091220754
+      }
+    },
+    {
+      "fixture": "array-map-16",
+      "oldMedianNs": 8518.241671961514,
+      "newMedianNs": 5868.972723972043,
+      "newOverOld": {
+        "ratio": 1.4752046674124895,
+        "lower95": 1.418603647420479,
+        "upper95": 1.5520424399541217
+      }
+    },
+    {
+      "fixture": "array-map-256",
+      "oldMedianNs": 121713.82524271845,
+      "newMedianNs": 78694.72977346278,
+      "newOverOld": {
+        "ratio": 1.5296604930796431,
+        "lower95": 1.436535650836356,
+        "upper95": 1.6251150356144466
+      }
+    },
+    {
+      "fixture": "array-map-4096",
+      "oldMedianNs": 1834649.3125,
+      "newMedianNs": 1289010.8958333335,
+      "newOverOld": {
+        "ratio": 1.370957455392026,
+        "lower95": 1.2235239651855476,
+        "upper95": 1.4766053357977489
+      }
+    }
+  ],
+  "all": {
+    "ratio": 1.537778200714901,
+    "lower95": 1.5062651446301367,
+    "upper95": 1.5741800459872002
+  },
+  "arrays": {
+    "ratio": 1.4571036134885484,
+    "lower95": 1.418160523148948,
+    "upper95": 1.498140804467978
+  },
+  "scalar": {
+    "ratio": 1.6012020918848824,
+    "lower95": 1.5434039996348143,
+    "upper95": 1.6739173605941455
+  },
+  "uncertainty": "10000 paired whole-block percentile bootstraps; screening/selection evidence, not independent final acceptance; per-slice intervals unadjusted."
+}

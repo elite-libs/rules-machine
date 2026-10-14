@@ -1,0 +1,7 @@
+# Combined source freeze before final timing
+
+Source91ef65e combines loop1callback allocation changes79e61d2 and loop2immutable predecoded paths. Full gates27Rust tests(25integration+2unit),15bridge tests,419shared cases,11158numeric/domain probes pass. Allocation-count examples are separate binaries and introduce no counting allocator into timed CLI.
+
+Independent architect critical source review approved freeze: array borrow temporaries end before callback execution, saved-slot mutable borrow is explicitly scoped, restoration happens before propagating callback errors; captured length and fresh per-index reads preserve later item mutation/shrink behavior. Prepared expression paths retain compile-time validation, exact raw own-key precedence and fresh per-input lookup, with immutable syntax metadata only. Added regressions cover nested error restoration, current input and late item reads. Architect reviewed source without running CPU tests.
+
+Final criteria frozen before confirmation:12balanced paired127d762-vs-91ef65e process blocks, unchanged seven fixtures/oracles/digest, actual completed counts and skipped-work sentinel. Require whole-suite point gain>=5% and paired95%interval lower>1. Then fresh12-block four-arm original/upgrade/finalTS/Rust and12-block bridge confirmation with cold/retention diagnostics. PriorTScomparison and separateTSprofiles remain valid only after modulehash verification. No source changes during any timing campaign.

@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-14T01:55:49.816Z",
+  "node": "v26.8.2",
+  "modulePath": "/home/dan/code/oss/rules-machine/dist/index.mjs",
+  "moduleSha256": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+  "binaryPath": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/loop2-paths",
+  "binarySha256": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d",
+  "blocks": 12,
+  "schedule": {
+    "eligibility": 38,
+    "pricing-0": 43,
+    "pricing-1024": 46,
+    "pricing-32768": 16,
+    "array-map-16": 833,
+    "array-map-256": 80,
+    "array-map-4096": 7
+  },
+  "instrumentHashes": {
+    "worker": "43b522797c9544d7a1c52126359fa1fd78a20397e38c32499837baf030fccb70",
+    "bridge": "615300d616ae08b0031f8adb61adf0a9697395e23007c05792dc4f1de0cc426f",
+    "wire": "f17ecba29da1d52d8f61c91d35e80a943276f6393ca15c57b5f95d6564389f7c"
+  },
+  "boundary": "Parent tagged encode + pipe/framing + worker execute + result/input tagged decode + checked output digest; direct TS clone/evaluate + same digest. Warm prepare excluded; cold measured separately.",
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/rust-gaps/measure-bridge.mjs",
+    "dist/index.mjs",
+    ".cache/rust-tuning/loop2-paths",
+    "performance/rust-tuning/results/final-bridge",
+    "12"
+  ]
+}

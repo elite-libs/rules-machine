@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-14T01:53:23.817Z",
+  "classification": "Independent paired Rust-source confirmation; not cross-campaign inference.",
+  "node": "v26.8.2",
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/rust-tuning/measure.mjs",
+    ".cache/rust-tuning/base-127d762",
+    ".cache/rust-tuning/loop2-paths",
+    "performance/rust-tuning/results/combined-confirmation",
+    "12",
+    "127d762",
+    "91ef65e"
+  ],
+  "oldSource": "127d762",
+  "newSource": "91ef65e",
+  "binaries": {
+    "old": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/base-127d762",
+    "new": "/home/dan/code/oss/rules-machine/.cache/rust-tuning/loop2-paths"
+  },
+  "hashes": {
+    "old": "6efc246caadb7457bb2738f514eb58dcfab6a8ca7b91793f96ca8de0eb9f436b",
+    "new": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+  },
+  "instrumentSha256": "d7fac7f1cd24a7e7dcb165bea6cb16d034520c4c458ee9ce26bdaea2330939c6",
+  "fixtureSha256": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+  "schedule": {
+    "eligibility": 922,
+    "pricing-0": 586,
+    "pricing-1024": 557,
+    "pricing-32768": 268,
+    "array-map-16": 9766,
+    "array-map-256": 719,
+    "array-map-4096": 44
+  },
+  "blocks": 12,
+  "ordering": "Alternating old/new and new/old; 12 blocks balance position.",
+  "boundary": "Native fresh value construction/input validation/evaluate/digest, preparation and JSON process boundary excluded. Actual counts and weighted digest validated."
+}
