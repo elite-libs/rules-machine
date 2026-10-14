@@ -90,13 +90,7 @@ impl Value {
                 }
             }
             Self::Number(v) => *v,
-            Self::String(v) => {
-                if v.trim().is_empty() {
-                    0.0
-                } else {
-                    v.trim().parse().unwrap_or(f64::NAN)
-                }
-            }
+            Self::String(v) => js_numeric_string(v),
             _ => return Err("Object relational coercion is unsupported".into()),
         })
     }
@@ -277,6 +271,89 @@ impl Value {
         })
     }
 }
+fn js_space(c: char) -> bool {
+    matches!(c,'\u{0009}'..='\u{000d}'|'\u{0020}'|'\u{00a0}'|'\u{1680}'|'\u{2000}'..='\u{200a}'|'\u{2028}'|'\u{2029}'|'\u{202f}'|'\u{205f}'|'\u{3000}'|'\u{feff}')
+}
+fn js_numeric_string(source: &str) -> f64 {
+    let s = source.trim_matches(js_space);
+    if s.is_empty() {
+        return 0.0;
+    }
+    if matches!(s, "Infinity" | "+Infinity") {
+        return f64::INFINITY;
+    }
+    if s == "-Infinity" {
+        return f64::NEG_INFINITY;
+    }
+    let bytes = s.as_bytes();
+    if bytes.len() > 2 && bytes[0] == b'0' {
+        let width = match bytes[1] {
+            b'x' | b'X' => 4,
+            b'o' | b'O' => 3,
+            b'b' | b'B' => 1,
+            _ => 0,
+        };
+        if width != 0 {
+            let mut bits = Vec::new();
+            for ch in s[2..].chars() {
+                let Some(digit) = ch.to_digit(1 << width) else {
+                    return f64::NAN;
+                };
+                for shift in (0..width).rev() {
+                    bits.push(((digit >> shift) & 1) as u8)
+                }
+            }
+            let Some(first) = bits.iter().position(|v| *v != 0) else {
+                return 0.0;
+            };
+            let bits = &bits[first..];
+            if bits.len() > 1024 {
+                return f64::INFINITY;
+            }
+            let take = bits.len().min(53);
+            let mut mantissa = bits[..take].iter().fold(0u64, |v, b| (v << 1) | *b as u64);
+            if bits.len() > 53 && bits[53] == 1 && (bits[54..].contains(&1) || mantissa & 1 == 1) {
+                mantissa += 1
+            }
+            return (mantissa as f64) * 2f64.powi((bits.len() - take) as i32);
+        }
+    }
+    let (mut i, mut digits) = (0, 0);
+    if bytes.first().is_some_and(|b| *b == b'+' || *b == b'-') {
+        i += 1
+    }
+    while bytes.get(i).is_some_and(u8::is_ascii_digit) {
+        i += 1;
+        digits += 1
+    }
+    if bytes.get(i) == Some(&b'.') {
+        i += 1;
+        while bytes.get(i).is_some_and(u8::is_ascii_digit) {
+            i += 1;
+            digits += 1
+        }
+    }
+    if digits == 0 {
+        return f64::NAN;
+    }
+    if bytes.get(i).is_some_and(|b| *b == b'e' || *b == b'E') {
+        i += 1;
+        if bytes.get(i).is_some_and(|b| *b == b'+' || *b == b'-') {
+            i += 1
+        }
+        let start = i;
+        while bytes.get(i).is_some_and(u8::is_ascii_digit) {
+            i += 1
+        }
+        if i == start {
+            return f64::NAN;
+        }
+    }
+    if i != bytes.len() {
+        return f64::NAN;
+    }
+    s.parse().unwrap_or(f64::NAN)
+}
 fn unsafe_key(k: &str) -> bool {
     matches!(k, "__proto__" | "prototype" | "constructor")
 }
@@ -287,6 +364,9 @@ fn path(s: &str) -> Result<Vec<String>> {
     let c: Vec<char> = s.chars().collect();
     let (mut i, mut parts) = (0, Vec::new());
     while i < c.len() {
+        if parts.len() >= 100 {
+            return Err("Path exceeds 100 segments".into());
+        }
         if c[i] == '.' {
             if i == 0 || c.get(i + 1).is_none_or(|c| *c == '.' || *c == '[') {
                 return Err("Empty path segment is unsupported".into());
@@ -725,6 +805,7 @@ impl Parser {
                 "TRUE" => Expr::Literal(Value::Bool(true)),
                 "FALSE" => Expr::Literal(Value::Bool(false)),
                 "NULL" => Expr::Literal(Value::Null),
+                "UNDEFINED" => Expr::Literal(Value::Undefined),
                 "EMPTY" => Expr::Array(vec![]),
                 "EMPTYDICT" => Expr::Literal(Value::object(BTreeMap::new())),
                 "INFINITY" => Expr::Literal(Value::Number(f64::INFINITY)),
@@ -978,6 +1059,30 @@ impl Program {
     }
 }
 fn validate_input(v: &Value) -> Result<()> {
+    fn bounds(v: &Value, depth: usize) -> Result<()> {
+        if depth > 40 {
+            return Err("Input exceeds depth 40".into());
+        }
+        match v {
+            Value::Array(a) => {
+                let a = a.borrow();
+                if a.len() > 100_000 {
+                    return Err("Input array exceeds 100000 elements".into());
+                }
+                for v in a.iter() {
+                    bounds(v, depth + 1)?;
+                }
+            }
+            Value::Object(o) => {
+                for v in o.borrow().values() {
+                    bounds(v, depth + 1)?;
+                }
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+    bounds(v, 0)?;
     let Value::Object(o) = v else {
         return Err("Input must be object".into());
     };
@@ -1076,7 +1181,20 @@ impl Context {
                             "*" => x * y,
                             "/" => x / y,
                             "%" | "MOD" => x % y,
-                            "^" => x.powf(y),
+                            "^" => {
+                                if y.is_nan() || x.abs() == 1.0 && y.is_infinite() {
+                                    f64::NAN
+                                } else if x.is_finite()
+                                    && y.is_finite()
+                                    && x != 0.0
+                                    && x.abs() != 1.0
+                                    && (y.fract() != 0.0 || !x.abs().log2().fract().eq(&0.0))
+                                {
+                                    return Err("Power supports finite power-of-two bases with integer exponents; other finite domains unsupported".into());
+                                } else {
+                                    x.powf(y)
+                                }
+                            }
                             _ => return Err("Unsupported binary operator".into()),
                         })
                     }
@@ -1308,8 +1426,7 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
         } as f64),
         "COUNT_KEYS" => Value::Number(match &a[0] {
             Value::Object(v) => v.borrow().len(),
-            Value::Array(v) => v.borrow().len(),
-            _ => return Err("COUNT_KEYS expects object or array".into()),
+            _ => return Err("COUNT_KEYS expects object".into()),
         } as f64),
         "MIN" | "MAX" => {
             let items = if matches!(a[0], Value::Array(_)) {
@@ -1326,9 +1443,24 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
                 let v = v.number()?;
                 if v.is_nan() {
                     answer = f64::NAN;
-                    break;
+                    continue;
                 }
-                answer = if name == "MIN" {
+                if answer.is_nan() {
+                    continue;
+                }
+                answer = if answer == 0.0 && v == 0.0 {
+                    if name == "MIN" {
+                        if answer.is_sign_negative() || v.is_sign_negative() {
+                            -0.0
+                        } else {
+                            0.0
+                        }
+                    } else if answer.is_sign_positive() || v.is_sign_positive() {
+                        0.0
+                    } else {
+                        -0.0
+                    }
+                } else if name == "MIN" {
                     answer.min(v)
                 } else {
                     answer.max(v)
@@ -1357,6 +1489,9 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
             Value::array(values)
         }
         "INDEX" => {
+            if !matches!(&a[0], Value::Array(_) | Value::String(_)) {
+                return Err("INDEX expects iterable".into());
+            }
             let index = n(1)?;
             if index < 0.0 || index.fract() != 0.0 {
                 Value::Undefined
@@ -1395,7 +1530,12 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
         "SORT" => {
             let mut v = arr(0)?;
             for v in &v {
-                v.number()?;
+                if v.number()?.is_nan() {
+                    return Err(
+                        "SORT of NaN values is unsupported because comparison is non-transitive"
+                            .into(),
+                    );
+                }
             }
             v.sort_by(|a, b| {
                 a.number()
@@ -1407,28 +1547,52 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
         }
         "CONCAT" => {
             let mut v = arr(0)?;
-            v.extend(arr(1)?);
+            let tail = arr(1)?;
+            if v.len().saturating_add(tail.len()) > 100_000 {
+                return Err("CONCAT exceeds 100000 elements".into());
+            }
+            v.extend(tail);
             Value::array(v)
         }
         "CONS" => {
+            let tail = arr(1)?;
+            if tail.len() >= 100_000 {
+                return Err("CONS exceeds 100000 elements".into());
+            }
             let mut v = vec![a[0].clone()];
-            v.extend(arr(1)?);
+            v.extend(tail);
             Value::array(v)
         }
         "TAKE" | "DROP" | "SLICE" => {
             let (index, limit, v) = if name == "SLICE" {
-                (n(0)?, Some(n(1)?), arr(2)?)
+                (
+                    n(0)?,
+                    Some(n(1)?),
+                    if matches!(a[2], Value::Array(_)) {
+                        arr(2)?
+                    } else {
+                        vec![a[2].clone()]
+                    },
+                )
             } else {
-                (n(0)?, None, arr(1)?)
+                (
+                    n(0)?,
+                    None,
+                    if matches!(a[1], Value::Array(_)) {
+                        arr(1)?
+                    } else {
+                        vec![a[1].clone()]
+                    },
+                )
             };
             let len = v.len();
             let bound = |n: f64| -> usize {
                 if n.is_nan() {
                     0
-                } else if n < 0.0 {
+                } else if n.trunc() < 0.0 {
                     (len as f64 + n.trunc()).max(0.0) as usize
                 } else {
-                    n.min(len as f64) as usize
+                    n.trunc().min(len as f64) as usize
                 }
             };
             let b = bound(index);

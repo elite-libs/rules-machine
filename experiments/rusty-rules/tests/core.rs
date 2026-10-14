@@ -188,3 +188,52 @@ fn callback_fast_scope_preserves_dsl_cycle_guard() {
             .is_err()
     );
 }
+#[test]
+fn minmax_signed_zero_and_sort_nan_domain() {
+    let p = Program::compile(&json!(
+        "[MIN([0,-0]), MIN([-0,0]), MAX([0,-0]), MAX([-0,0])]"
+    ))
+    .unwrap();
+    let (result, _) = p.execute(Value::from_json(&json!({})), true).unwrap();
+    assert_eq!(
+        result.wire().unwrap(),
+        json!([
+            "array",
+            [
+                ["number", "-0"],
+                ["number", "-0"],
+                ["number", 0.0],
+                ["number", 0.0]
+            ]
+        ])
+    );
+    let p = Program::compile(&json!("SORT([3, (0 / 0), 2])")).unwrap();
+    assert!(p.execute(Value::from_json(&json!({})), true).is_err());
+}
+
+#[test]
+fn allocation_and_numeric_domains_reject_early() {
+    for expression in [
+        "CONS(0,RANGE(0,100000))",
+        "CONCAT([0],RANGE(0,100000))",
+        "INDEX(42,-1)",
+        "INDEX(NULL,0/0)",
+        "3 ^ 0.2",
+    ] {
+        assert!(
+            Program::compile(&json!(expression))
+                .unwrap()
+                .execute(Value::from_json(&json!({})), true)
+                .is_err(),
+            "{expression}"
+        );
+    }
+    assert!(Program::compile(&json!(format!("{}=1", vec!["x"; 101].join(".")))).is_err());
+    let p = Program::compile(&json!("uNdEfInEd")).unwrap();
+    assert!(matches!(
+        p.execute(Value::from_json(&json!({"uNdEfInEd":7})), false)
+            .unwrap()
+            .0,
+        Value::Undefined
+    ));
+}

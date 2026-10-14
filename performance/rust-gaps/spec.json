@@ -568,6 +568,36 @@
           "name": "strings",
           "rules": "[STRING_CONTAINS(\"ell\",\"hello\"), STRING_STARTS_WITH(\"he\",\"hello\"), STRING_ENDS_WITH(\"lo\",\"hello\")]",
           "input": {}
+        },
+        {
+          "name": "min-max-signed-zero",
+          "rules": "[MIN([0,-0]), MIN([-0,0]), MAX([0,-0]), MAX([-0,0])]",
+          "input": {}
+        },
+        {
+          "name": "sort-infinite-comparator",
+          "rules": "SORT([3, -infinity, infinity, -0, 0, 2])",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "feature": "undefined-constant",
+      "cases": [
+        {
+          "name": "strict-shadow",
+          "rules": "UNDEFINED",
+          "input": {
+            "UNDEFINED": 7
+          },
+          "options": {
+            "ignoreMissingKeys": false
+          }
+        },
+        {
+          "name": "mixed-case",
+          "rules": "uNdEfInEd",
+          "input": {}
         }
       ]
     }
@@ -640,6 +670,10 @@
       "options": {
         "readonly": true
       }
+    },
+    {
+      "feature": "sort-nan-domain",
+      "rules": "SORT([3, (0 / 0), 2])"
     }
   ],
   "supportedFunctions": [
@@ -783,5 +817,43 @@
       "name": "STRING_ENDS_WITH",
       "expression": "STRING_ENDS_WITH(\"\u00e9\",\"caf\u00e9\")"
     }
-  ]
+  ],
+  "functionDomains": {
+    "ABS": "Strict numeric arguments, including NaN and infinities.",
+    "NEG": "Strict numeric arguments, including NaN and infinities.",
+    "NOT": "Any supported tagged value; JS truthiness.",
+    "FLOOR": "Strict numeric arguments, including NaN and infinities.",
+    "CEIL": "Strict numeric arguments, including NaN and infinities.",
+    "ROUND": "Strict numeric arguments, including NaN and infinities.",
+    "SQRT": "Strict numeric arguments, including NaN and infinities.",
+    "ISNAN": "Strict numeric arguments, including NaN and infinities.",
+    "ADD": "Strict numeric arguments, including NaN and infinities.",
+    "SUB": "Strict numeric arguments, including NaN and infinities.",
+    "MUL": "Strict numeric arguments, including NaN and infinities.",
+    "DIV": "Strict numeric arguments, including NaN and infinities.",
+    "MOD": "Strict numeric arguments, including NaN and infinities.",
+    "LENGTH": "Array or string (UTF-16 length).",
+    "COUNT_KEYS": "Object only; arrays and null reject.",
+    "MIN": "Numeric scalar or numeric array; NaN propagates after validating every element; signed-zero ties match JS.",
+    "MAX": "Numeric scalar or numeric array; NaN propagates after validating every element; signed-zero ties match JS.",
+    "SORT": "Numeric array only; NaN or nonnumeric elements explicitly reject; stable ascending comparator.",
+    "REVERSE": "Array only.",
+    "HEAD": "Array only.",
+    "TAIL": "Array only.",
+    "LAST": "Array only.",
+    "RANGE": "Finite safe-integer bounds; at most 100000 results.",
+    "INDEX": "Array or ASCII string and numeric index; non-ASCII string valid-index access rejects.",
+    "TAKE": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation.",
+    "DROP": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation.",
+    "SLICE": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation.",
+    "CONCAT": "Two arrays; combined result at most 100000 elements.",
+    "CONS": "Any value and array; result at most 100000 elements.",
+    "CONTAINS": "Supported primitive/array membership domain; object equality uses identity.",
+    "INCLUDES": "Supported primitive/array membership domain; object equality uses identity.",
+    "REMOVE_VALUES": "Supported primitive/array membership domain; object equality uses identity.",
+    "STRING_CONTAINS": "Two strings.",
+    "STRING_STARTS_WITH": "Two strings.",
+    "STRING_ENDS_WITH": "Two strings."
+  },
+  "powerDomain": "Finite nonzero bases other than +/-1 must be powers of two and exponent integer; other finite domains explicitly reject. Nonfinite/zero/+/-1 special cases follow JS."
 }

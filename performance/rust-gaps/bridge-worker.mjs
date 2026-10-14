@@ -21,7 +21,11 @@ if(mode==='warm'||mode==='pilot'){
  }
  }finally{await bridge.close();}
 }else if(mode==='cold'){
- for(let i=0;i<10;i++){const start=performance.now();const bridge=new RustBridge({binary});try{const program=await bridge.prepare(['out=price*quantity',{return:'out'}]);const output=await bridge.run(program,{price:17,quantity:3});deepStrictEqual(output,{result:51,input:{price:17,quantity:3,out:51}});raw.push({iteration:i,elapsedNs:(performance.now()-start)*1e6});}finally{await bridge.close();}}
+ for(let i=0;i<10;i++)for(const arm of (Number(block)+i)%2?['bridge','ts']:['ts','bridge']){
+  const start=performance.now();
+  if(arm==='ts'){const input={price:17,quantity:3};const execute=ruleFactory(['out=price*quantity',{return:'out'}]);const result=execute(input);const elapsedNs=(performance.now()-start)*1e6;deepStrictEqual({result,input},{result:51,input:{price:17,quantity:3,out:51}});raw.push({arm,iteration:i,elapsedNs});}
+  else{const bridge=new RustBridge({binary});try{const program=await bridge.prepare(['out=price*quantity',{return:'out'}]);const output=await bridge.run(program,{price:17,quantity:3});const elapsedNs=(performance.now()-start)*1e6;deepStrictEqual(output,{result:51,input:{price:17,quantity:3,out:51}});raw.push({arm,iteration:i,elapsedNs});}finally{await bridge.close();}}
+ }
 }else if(mode==='retention'||mode==='retention-ts'){
  if(!global.gc)throw Error('Retention mode requires --expose-gc');
  const isTs=mode==='retention-ts';const bridge=isTs?undefined:new RustBridge({binary,timeoutMs:10000});try{

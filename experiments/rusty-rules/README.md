@@ -42,3 +42,47 @@ Supported parenthesized functions are enumerated by `arity()` in src/lib.rs and 
 The original CLI benchmark mode remains available: one JSON line `{ rules, inputs, iterations, warmup }`, optionally `--once`, returns outputs/mutated inputs, elapsedNs, actual operation count and checked digest. Its ordinary JSON output necessarily omits undefined object fields and maps nonfinite/undefined array values to null, as JavaScript JSON.stringify does. Use tagged persistent commands when those distinctions matter. The scalar/array digest for the frozen benchmark cases is unchanged; measured loops still reset input and consume every result. Performance claims require fresh final-source confirmation; earlier reports remain historical and unchanged.
 
 Output expansion is bounded during recursive encoding using a conservative 8MiB response budget shared across result and input. This can reject some data below the raw byte frame limit when worst-case escaping estimates exceed the budget; it prevents alias-expanded output from allocating an arbitrarily large response before framing checks. Ordinary legacy benchmark output has an aggregate frame budget as well. The same scalar/array digest is preserved for historical frozen fixtures; new null/undefined/object results use additional digest cases outside those historical fixtures.
+
+MIN/MAX preserve JavaScript signed-zero tie behavior. SORT supports finite numbers and infinities, retaining stable equal ordering, but explicitly rejects NaN elements: the comparator is non-transitive there, so different standard-library sorting algorithms cannot promise the same sequence. The public Rust `Program::execute` API expects acyclic data trees produced by `Value::from_json` or `Value::from_wire`; arbitrary external Rc graphs are outside this transport/core contract. Unsupported execution options (including atomic, readonly and TypeScript budget knobs) reject instead of being ignored; the bridge uses its documented independent resource limits.
+
+### Exact function argument domains
+
+| Function | Accepted domain |
+| --- | --- |
+| ABS | Strict numeric arguments, including NaN and infinities. |
+| NEG | Strict numeric arguments, including NaN and infinities. |
+| NOT | Any supported tagged value; JS truthiness. |
+| FLOOR | Strict numeric arguments, including NaN and infinities. |
+| CEIL | Strict numeric arguments, including NaN and infinities. |
+| ROUND | Strict numeric arguments, including NaN and infinities. |
+| SQRT | Strict numeric arguments, including NaN and infinities. |
+| ISNAN | Strict numeric arguments, including NaN and infinities. |
+| ADD | Strict numeric arguments, including NaN and infinities. |
+| SUB | Strict numeric arguments, including NaN and infinities. |
+| MUL | Strict numeric arguments, including NaN and infinities. |
+| DIV | Strict numeric arguments, including NaN and infinities. |
+| MOD | Strict numeric arguments, including NaN and infinities. |
+| LENGTH | Array or string (UTF-16 length). |
+| COUNT_KEYS | Object only; arrays and null reject. |
+| MIN | Numeric scalar or numeric array; NaN propagates after validating every element; signed-zero ties match JS. |
+| MAX | Numeric scalar or numeric array; NaN propagates after validating every element; signed-zero ties match JS. |
+| SORT | Numeric array only; NaN or nonnumeric elements explicitly reject; stable ascending comparator. |
+| REVERSE | Array only. |
+| HEAD | Array only. |
+| TAIL | Array only. |
+| LAST | Array only. |
+| RANGE | Finite safe-integer bounds; at most 100000 results. |
+| INDEX | Array or ASCII string and numeric index; non-ASCII string valid-index access rejects. |
+| TAKE | Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation. |
+| DROP | Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation. |
+| SLICE | Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation. |
+| CONCAT | Two arrays; combined result at most 100000 elements. |
+| CONS | Any value and array; result at most 100000 elements. |
+| CONTAINS | Supported primitive/array membership domain; object equality uses identity. |
+| INCLUDES | Supported primitive/array membership domain; object equality uses identity. |
+| REMOVE_VALUES | Supported primitive/array membership domain; object equality uses identity. |
+| STRING_CONTAINS | Two strings. |
+| STRING_STARTS_WITH | Two strings. |
+| STRING_ENDS_WITH | Two strings. |
+
+Power operator: Finite nonzero bases other than +/-1 must be powers of two and exponent integer; other finite domains explicitly reject. Nonfinite/zero/+/-1 special cases follow JS. General libm exponentiation is excluded because exact IEEE outputs differ from V8. SORT rejects NaN and nonnumeric elements, including singleton arrays. Paths are limited to 100 segments; CONCAT/CONS results to 100000 elements.
