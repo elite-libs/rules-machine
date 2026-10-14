@@ -1,19 +1,24 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import {
-  type ArgumentsArray,
-  type ExpressionArray,
-  type ExpressionParserOptions,
-  type ExpressionThunk,
-  type ExpressionValue,
-  type InfixOps,
-  isArgumentsArray,
-  type TermDelegate,
-  type TermType,
-  type TermTyper,
+import type {
+  ArgumentsArray,
+  ExpressionArray,
+  ExpressionParserOptions,
+  ExpressionThunk,
+  ExpressionValue,
+  InfixOps,
+  TermDelegate,
+  TermType,
+  TermTyper,
 } from 'expressionparser/dist/ExpressionParser.js';
+import {
+  checkArrayLength,
+  consumeWork,
+  ResourceLimitError,
+} from '../utils/budget';
 import { UserError } from '../utils/errors';
 import { getOwnPath } from '../utils/paths';
 import { isNumber, toArray } from '../utils/utils';
+import { formatDateISO } from './dates';
 import {
   array,
   char,
@@ -24,7 +29,9 @@ import {
   evalBool,
   evalString,
   filterValues,
+  isArgumentsArray,
   iterable,
+  joinValues,
   num,
   obj,
   objectContainsValues,
@@ -32,6 +39,13 @@ import {
   string,
   unpackArgs,
 } from './language-utils';
+import {
+  dataEntries,
+  isProtectedInput,
+  protectInput,
+  readData,
+  rejectHostCallback,
+} from './materialize';
 
 const hasOwnProperty = (obj: object, key: string) => Object.hasOwn(obj, key);
 export interface FunctionOps {
@@ -46,6 +60,17 @@ TODO: Look into additional modifier operators:
 - `%=`
 - `||=`
 */
+
+const comparable = (value: ExpressionValue): string | number => {
+  if (
+    value !== null &&
+    (typeof value === 'object' ||
+      typeof value === 'function' ||
+      typeof value === 'symbol')
+  )
+    throw new UserError('Comparison accepts primitive values only');
+  return typeof value === 'string' ? value : Number(value);
+};
 
 const getInfixOps = (_termDelegate: TermDelegate): InfixOps => ({
   '+': (a, b) => num(a()) + num(b()),
@@ -72,10 +97,10 @@ const getInfixOps = (_termDelegate: TermDelegate): InfixOps => ({
   '!=': (a, b) => a() !== b(),
   '<>': (a, b) => a() !== b(),
   '~=': (a, b) => Math.abs(num(a()) - num(b())) < Number.EPSILON,
-  '>': (a, b) => a() > b(),
-  '<': (a, b) => a() < b(),
-  '>=': (a, b) => a() >= b(),
-  '<=': (a, b) => a() <= b(),
+  '>': (a, b) => comparable(a()) > comparable(b()),
+  '<': (a, b) => comparable(a()) < comparable(b()),
+  '>=': (a, b) => comparable(a()) >= comparable(b()),
+  '<=': (a, b) => comparable(a()) <= comparable(b()),
   AND: (a, b) => a() && b(),
   OR: (a, b) => a() || b(),
   '^': (a, b) => num(a()) ** num(b()),
@@ -119,8 +144,10 @@ export const ruleExpressionLanguage = (
       if (!Number.isSafeInteger(val) || val < 2) return false;
       if (val > 1_000_000_000_000)
         throw new UserError('ISPRIME supports integers up to 1000000000000');
-      for (let i = 2, s = Math.sqrt(val); i <= s; i++)
+      for (let i = 2, s = Math.sqrt(val); i <= s; i++) {
+        consumeWork();
         if (val % i === 0) return false;
+      }
 
       return true;
     },
@@ -137,6 +164,7 @@ export const ruleExpressionLanguage = (
         b = temp;
       }
       while (true) {
+        consumeWork();
         if (b === 0) return a;
         a %= b;
         if (a === 0) return b;
@@ -144,14 +172,7 @@ export const ruleExpressionLanguage = (
       }
     },
     DATE: dateParser,
-    DATEISO: (arg) => {
-      const dateArg = arg();
-      if (typeof dateArg === 'string' || typeof dateArg === 'number')
-        return new Date(dateParser(dateArg)).toISOString();
-
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      return `UnknownDate(${dateArg?.valueOf()})`;
-    },
+    DATEISO: (arg) => formatDateISO(arg()),
     NOT: (arg) => !arg(),
     '!': (arg) => !arg(),
     ABS: (arg) => Math.abs(num(arg())),
@@ -231,7 +252,10 @@ export const ruleExpressionLanguage = (
       ),
     SORT: (arg) => {
       const arr = array(arg()).slice();
-      arr.sort((a, b) => num(a) - num(b));
+      arr.sort((a, b) => {
+        consumeWork();
+        return num(a) - num(b);
+      });
       return arr;
     },
     REVERSE: (arg) => {
@@ -239,40 +263,61 @@ export const ruleExpressionLanguage = (
       arr.reverse();
       return arr;
     },
-    INDEX: (arg1, arg2) => iterable(arg1())[num(arg2())],
+    INDEX: (arg1, arg2) =>
+      readData(iterable(arg1()), String(num(arg2()))) as ExpressionValue,
     LENGTH: (arg) => {
       return iterable(arg()).length;
     },
-    JOIN: (arg1, arg2) => evalArray(arg2()).join(string(arg1())),
-    STRING: (arg) => evalArray(arg()).join(''),
+    JOIN: (arg1, arg2) => joinValues(evalArray(arg2()), string(arg1())),
+    STRING: (arg) => joinValues(evalArray(arg()), ''),
     STRING_CONTAINS: (arg1, arg2) => string(arg2()).includes(string(arg1())),
     STRING_ENDS_WITH: (arg1, arg2) => string(arg2()).endsWith(string(arg1())),
     STRING_STARTS_WITH: (arg1, arg2) =>
       string(arg2()).startsWith(string(arg1())),
-    SPLIT: (arg1, arg2) => string(arg2()).split(string(arg1())),
+    SPLIT: (arg1, arg2) => {
+      const separator = string(arg1());
+      const text = string(arg2());
+      let length = separator === '' ? text.length : 1;
+      if (separator)
+        for (
+          let index = text.indexOf(separator);
+          index !== -1;
+          index = text.indexOf(separator, index + separator.length)
+        ) {
+          consumeWork();
+          length++;
+          checkArrayLength(length);
+        }
+      checkArrayLength(length);
+      return text.split(separator);
+    },
 
     CHARARRAY: (arg) => {
       const str = string(arg());
+      checkArrayLength(str.length);
+      consumeWork(str.length);
       return str.split('');
     },
     ARRAY: (arg) => array(toArray(arg())),
     ISNAN: (arg) => Number.isNaN(num(arg())),
     MAP: (arg1, arg2) => {
       const func = arg1();
+      rejectHostCallback(func);
       const arr = evalArray(arg2());
       return arr.map((val: ExpressionValue) => {
-        if (typeof func === 'function') return () => func(val);
-        else return call(string(func))(() => val);
+        consumeWork();
+        return call(string(func))(() => val);
       });
     },
     REDUCE: (arg1, arg2, arg3) => {
       const func = arg1();
+      rejectHostCallback(func);
       const start = arg2();
       const arr = evalArray(arg3());
       return arr.reduce((prev: ExpressionValue, curr: ExpressionValue) => {
         const args: ExpressionArray<ExpressionThunk> = [() => prev, () => curr];
-        if (typeof func === 'function') return func(...args);
-        else return call(string(func))(...args);
+        consumeWork();
+        return call(string(func))(...args);
       }, start);
     },
     RANGE: (arg1, arg2) => {
@@ -282,6 +327,8 @@ export const ruleExpressionLanguage = (
         throw new UserError('RANGE expects finite safe integer bounds');
       if (limit - start > 100_000)
         throw new UserError('RANGE is limited to 100000 items');
+      checkArrayLength(Math.max(0, limit - start));
+      consumeWork(Math.max(0, limit - start));
       const result = [];
       for (let i = start; i < limit; i++) result.push(i);
 
@@ -323,6 +370,7 @@ export const ruleExpressionLanguage = (
     CONCAT: (arg1, arg2) => {
       const arr1 = array(arg1());
       const arr2 = array(arg2());
+      checkArrayLength(arr1.length + arr2.length);
       return arr1.concat(arr2);
     },
     HEAD: (arg1) => {
@@ -340,16 +388,17 @@ export const ruleExpressionLanguage = (
     CONS: (arg1, arg2) => {
       const head = arg1();
       const arr = array(arg2());
+      checkArrayLength(arr.length + 1);
       return [head].concat(arr);
     },
     FILTER: (arg1, arg2) => {
       const func = arg1();
+      rejectHostCallback(func);
       const arr = evalArray(arg2());
       const result: ExpressionArray<ExpressionValue> = [];
       arr.forEach((val: ExpressionValue) => {
-        let isSatisfied: boolean;
-        if (typeof func === 'function') isSatisfied = evalBool(func(val));
-        else isSatisfied = evalBool(call(string(func))(() => val));
+        consumeWork();
+        const isSatisfied = evalBool(call(string(func))(() => val));
 
         if (isSatisfied) result.push(val);
       });
@@ -358,12 +407,12 @@ export const ruleExpressionLanguage = (
     },
     TAKEWHILE: (arg1, arg2) => {
       const func = arg1();
+      rejectHostCallback(func);
       const arr = evalArray(arg2());
 
       const satisfaction = (val: ExpressionValue) => {
-        let isSatisfied: boolean;
-        if (typeof func === 'function') isSatisfied = evalBool(func(val));
-        else isSatisfied = evalBool(call(string(func))(() => val));
+        consumeWork();
+        const isSatisfied = evalBool(call(string(func))(() => val));
 
         return isSatisfied;
       };
@@ -375,12 +424,12 @@ export const ruleExpressionLanguage = (
     },
     DROPWHILE: (arg1, arg2) => {
       const func = arg1();
+      rejectHostCallback(func);
       const arr = evalArray(arg2());
 
       const satisfaction = (val: ExpressionValue) => {
-        let isSatisfied: boolean;
-        if (typeof func === 'function') isSatisfied = evalBool(func(val));
-        else isSatisfied = evalBool(call(string(func))(() => val));
+        consumeWork();
+        const isSatisfied = evalBool(call(string(func))(() => val));
 
         return isSatisfied;
       };
@@ -424,10 +473,11 @@ export const ruleExpressionLanguage = (
      * @param {*} arg2
      */
     REMOVE_VALUES: (arg1, arg2) => {
-      const removeValues = toArray(arg1());
+      const removeValues = evalArray(arg1());
       const data = evalArray(arg2());
 
-      return data.filter((val: ExpressionValue) => !removeValues.includes(val));
+      const excluded = new Set(removeValues);
+      return data.filter((val: ExpressionValue) => !excluded.has(val));
     },
     FILTER_VALUES: filterValues,
     INCLUDES_VALUES: filterValues,
@@ -435,14 +485,33 @@ export const ruleExpressionLanguage = (
       const rawKey = arg1();
       const key = typeof rawKey === 'string' ? rawKey : num(rawKey);
       const inputObj = obj(arg2());
-      return getOwnPath(inputObj, key) as ExpressionValue;
+      const value = getOwnPath(inputObj, key);
+      return (
+        isProtectedInput(inputObj) ? protectInput(value) : value
+      ) as ExpressionValue;
     },
     PUT: (arg1, arg2, arg3) => {
       const rawKey = arg1();
       const key = typeof rawKey === 'string' ? rawKey : num(rawKey);
       const value = arg2();
       const inputObj = obj(arg3());
-      return { ...inputObj, [key]: value };
+      const result = Object.create(
+        Object.getPrototypeOf(inputObj) === null ? null : Object.prototype,
+      );
+      for (const [property, child] of dataEntries(inputObj))
+        Object.defineProperty(result, property, {
+          value: child,
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
+      Object.defineProperty(result, key, {
+        value,
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      });
+      return result;
     },
     DICT: (arg1, arg2) => {
       const arr1 = evalArray(arg1());
@@ -480,6 +549,7 @@ export const ruleExpressionLanguage = (
             configurable: true,
           });
         } catch (err) {
+          if (err instanceof ResourceLimitError) throw err;
           throw new Error(
             `UNZIPDICT keys; ${err instanceof Error ? err.message : String(err)}`,
           );
@@ -496,7 +566,7 @@ export const ruleExpressionLanguage = (
       const inputObj = obj(arg1());
       return Object.keys(inputObj)
         .sort()
-        .map((key) => inputObj[key]);
+        .map((key) => readData(inputObj, key) as ExpressionValue);
     },
     THROW: (arg1) => {
       throw new UserError(string(arg1()));
