@@ -1210,9 +1210,18 @@ impl Context {
                         };
                         saved.push(o.borrow().get(key).cloned());
                     }
-                    write(&self.input, "$item", item.clone())?;
-                    write(&self.input, "$index", Value::Number(index as f64))?;
-                    write(&self.input, "$array", data.clone())?;
+                    // These references already come from the validated acyclic
+                    // input graph. Internal callback scope installation cannot
+                    // introduce a cycle, and must not rescan the array per item.
+                    let Value::Object(object) = &self.input else {
+                        unreachable!()
+                    };
+                    {
+                        let mut object = object.borrow_mut();
+                        object.insert("$item".into(), item.clone());
+                        object.insert("$index".into(), Value::Number(index as f64));
+                        object.insert("$array".into(), data.clone());
+                    }
                     let result = self.run(body).map(|_| self.last.clone());
                     for (key, saved) in context_keys.into_iter().zip(saved) {
                         let Value::Object(o) = &self.input else {

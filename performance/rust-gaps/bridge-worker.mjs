@@ -22,17 +22,20 @@ if(mode==='warm'||mode==='pilot'){
  }finally{await bridge.close();}
 }else if(mode==='cold'){
  for(let i=0;i<10;i++){const start=performance.now();const bridge=new RustBridge({binary});try{const program=await bridge.prepare(['out=price*quantity',{return:'out'}]);const output=await bridge.run(program,{price:17,quantity:3});deepStrictEqual(output,{result:51,input:{price:17,quantity:3,out:51}});raw.push({iteration:i,elapsedNs:(performance.now()-start)*1e6});}finally{await bridge.close();}}
-}else if(mode==='retention'){
- if(!global.gc)throw Error('Retention mode requires --expose-gc');const bridge=new RustBridge({binary,timeoutMs:10000});try{
- const snapshots=[];function snapshot(label,stats){global.gc();snapshots.push({label,stats,...memory(bridge)});}
- snapshot('startup',await bridge.stats());
- let last;for(let i=0;i<2000;i++){last=await bridge.prepare(`value + ${i}`);if(i===127||i===511||i===1999)snapshot(`unique-programs-${i+1}`,await bridge.stats());}
- const output=await bridge.run(last,{value:1});deepStrictEqual(output,{result:2000,input:{value:1}});const stats=await bridge.stats();if(stats.programs>128||stats.programSourceBytes>stats.sourceByteLimit||stats.retainedInputs!==0)throw Error('Cache resource gate');
- const program=await bridge.prepare([{return:'value + 1'}]);let completed=0;
- async function inputs(count,size){for(let i=0;i<count;i++){const input={value:i,payload:'x'.repeat(size)};const out=await bridge.run(program,input);if(out.result!==i+1||out.input.payload!==input.payload)throw Error('Large-input oracle');completed++;}}
- for(let block=0;block<6;block++){await inputs(500,64*1024);snapshot(`large-inputs-${completed}`,await bridge.stats());}
- await inputs(1000,0);snapshot('after-small-inputs',await bridge.stats());
- raw.push({snapshots,completed,requestPayloadBytes:64*1024,totalLargeInputCalls:3000});
- }finally{await bridge.close();}
+}else if(mode==='retention'||mode==='retention-ts'){
+ if(!global.gc)throw Error('Retention mode requires --expose-gc');
+ const isTs=mode==='retention-ts';const bridge=isTs?undefined:new RustBridge({binary,timeoutMs:10000});try{
+ const snapshots=[];const weak=[];let completed=0;const mutableRules=['value + 0'];const tsExecute=ruleFactory(mutableRules);
+ async function snapshot(label,stats){await new Promise(resolve=>setImmediate(resolve));global.gc();await new Promise(resolve=>setImmediate(resolve));global.gc();snapshots.push({label,stats,...(isTs?{parent:process.memoryUsage()}:memory(bridge)),sampledInputsAlive:weak.filter(ref=>ref.deref()!==undefined).length,sampledInputs:weak.length});}
+ await snapshot('startup',isTs?{syntaxCache:'factory-local, implementation bounded'}:await bridge.stats());
+ let last;for(let i=0;i<2000;i++){if(isTs){mutableRules[0]=`value + ${i}`;const result=tsExecute({value:1});if(result!==i+1)throw Error('TS unique source oracle');}else{last=await bridge.prepare(`value + ${i}`);}if(i===127||i===511||i===1999)await snapshot(`unique-programs-${i+1}`,isTs?{}:await bridge.stats());}
+ if(!isTs){const output=await bridge.run(last,{value:1});deepStrictEqual(output,{result:2000,input:{value:1}});const stats=await bridge.stats();if(stats.programs>128||stats.programSourceBytes>stats.sourceByteLimit||stats.retainedInputs!==0)throw Error('Cache resource gate');}
+ const program=isTs?undefined:await bridge.prepare([{return:'value + 1'}]);const execute=ruleFactory([{return:'value + 1'}]);
+ async function inputs(count,size){for(let i=0;i<count;i++){const input={value:i,payload:'x'.repeat(size)};if(i%100===0)weak.push(new WeakRef(input));if(isTs){if(execute(input)!==i+1)throw Error('TS large input oracle');}else{const out=await bridge.run(program,input);if(out.result!==i+1||out.input.payload!==input.payload)throw Error('Large-input oracle');}completed++;}}
+ for(let block=0;block<6;block++){await inputs(500,64*1024);await snapshot(`large-inputs-${completed}`,isTs?{completed}:await bridge.stats());}
+ await inputs(1000,0);await snapshot('after-small-inputs',isTs?{completed}:await bridge.stats());
+ if(snapshots.at(-1).sampledInputsAlive!==0)throw Error('Completed parent input object retained');
+ raw.push({snapshots,completed,requestPayloadBytes:64*1024,totalLargeInputCalls:3000,arm:isTs?'direct-ts':'bridge'});
+ }finally{if(bridge)await bridge.close();}
 }else throw Error('Unknown mode');
 console.log(JSON.stringify({node:process.version,mode,block:Number(block),raw}));
