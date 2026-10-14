@@ -1,0 +1,94 @@
+[
+  {
+    "phase": "pilot",
+    "fixture": "eligibility",
+    "arm": "baseline",
+    "iterations": 2,
+    "elapsedNs": 13896596.000000002,
+    "operations": 64,
+    "checksum": 42,
+    "rss": 67858432,
+    "boundaryNs": 100683946.99999999
+  },
+  {
+    "phase": "pilot",
+    "fixture": "pricing-0",
+    "arm": "baseline",
+    "iterations": 2,
+    "elapsedNs": 26293211,
+    "operations": 64,
+    "checksum": 5778.799999999998,
+    "rss": 67940352,
+    "boundaryNs": 125577503
+  },
+  {
+    "phase": "confirmation",
+    "block": 0,
+    "fixture": "eligibility",
+    "arm": "baseline",
+    "iterations": 36,
+    "elapsedNs": 206563135,
+    "operations": 1152,
+    "checksum": 756,
+    "rss": 72814592,
+    "boundaryNs": 338017128
+  },
+  {
+    "phase": "confirmation",
+    "block": 0,
+    "fixture": "eligibility",
+    "arm": "tuned",
+    "iterations": 36,
+    "elapsedNs": 11752324.000000002,
+    "operations": 1152,
+    "checksum": 756,
+    "rss": 65867776,
+    "boundaryNs": 79061606.99999999
+  },
+  {
+    "phase": "confirmation",
+    "block": 0,
+    "fixture": "eligibility",
+    "arm": "rust",
+    "iterations": 36,
+    "checksum": 756,
+    "elapsedNs": 1571873,
+    "operations": 1152,
+    "boundaryNs": 4537014.999999996
+  },
+  {
+    "phase": "confirmation",
+    "block": 0,
+    "fixture": "pricing-0",
+    "arm": "baseline",
+    "iterations": 20,
+    "elapsedNs": 224870739,
+    "operations": 640,
+    "checksum": 57788.00000000014,
+    "rss": 72617984,
+    "boundaryNs": 358677966.00000006
+  },
+  {
+    "phase": "confirmation",
+    "block": 0,
+    "fixture": "pricing-0",
+    "arm": "tuned",
+    "iterations": 20,
+    "elapsedNs": 14271287.000000002,
+    "operations": 640,
+    "checksum": 57788.00000000014,
+    "rss": 66093056,
+    "boundaryNs": 81636614.00000001
+  },
+  {
+    "phase": "confirmation",
+    "block": 0,
+    "fixture": "pricing-0",
+    "arm": "rust",
+    "iterations": 20,
+    "checksum": 57788.00000000014,
+    "elapsedNs": 4246939,
+    "operations": 640,
+    "boundaryNs": 8596309.000000019
+  }
+]

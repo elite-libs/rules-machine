@@ -1,0 +1,180 @@
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "baseline": {
+      "medianNs": 196912.76488095237,
+      "minNs": 172104.3244047619,
+      "maxNs": 328638.4032738096,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 203964.57886904757,
+      "minNs": 178677.4389880952,
+      "maxNs": 378562.9970238095,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 17499.635416666664,
+      "minNs": 15382.55208333333,
+      "maxNs": 30312.456845238106,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 1575.4002976190477,
+      "minNs": 1394.203869047619,
+      "maxNs": 6001.010416666667,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-0",
+    "shared": true,
+    "baseline": {
+      "medianNs": 407175.7942708333,
+      "minNs": 342786.00000000006,
+      "maxNs": 685398.4713541665,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 400816.2161458333,
+      "minNs": 340434.6276041667,
+      "maxNs": 873375.8411458331,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 27338.567708333318,
+      "minNs": 24760.07812499999,
+      "maxNs": 61306.44791666669,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 3737.6171875,
+      "minNs": 3556.0052083333335,
+      "maxNs": 12108.924479166666,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-1024",
+    "shared": true,
+    "baseline": {
+      "medianNs": 402492.3774038461,
+      "minNs": 349322.19471153844,
+      "maxNs": 684526.6658653846,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 382622.5216346154,
+      "minNs": 343833.0673076923,
+      "maxNs": 667189.8870192309,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 31611.918269230777,
+      "minNs": 25613.475961538443,
+      "maxNs": 48909.771634615376,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 4150.348557692308,
+      "minNs": 3652.314903846154,
+      "maxNs": 14350.742788461539,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-32768",
+    "shared": true,
+    "baseline": {
+      "medianNs": 436501.546875,
+      "minNs": 388266.290625,
+      "maxNs": 744218.4,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 426857.2437500001,
+      "minNs": 387100.33749999997,
+      "maxNs": 748725.934375,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 41217.07812499997,
+      "minNs": 34744.62187499998,
+      "maxNs": 61338.82187499999,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 11830.496875,
+      "minNs": 10356.88125,
+      "maxNs": 23618.6125,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-16",
+    "shared": false,
+    "baseline": {
+      "medianNs": 634170.1132075473,
+      "minNs": 542183.0188679243,
+      "maxNs": 1032864.3113207547,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 640738.113207547,
+      "minNs": 532388.6132075472,
+      "maxNs": 1200454.0094339622,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 67021.88679245285,
+      "minNs": 54348.87735849057,
+      "maxNs": 109630.06603773579,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-256",
+    "shared": false,
+    "baseline": {
+      "medianNs": 9082071.588235294,
+      "minNs": 8106778.470588235,
+      "maxNs": 20039751.294117652,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 9157858.94117647,
+      "minNs": 7529531.705882353,
+      "maxNs": 19153633.411764707,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 496340.2352941173,
+      "minNs": 407125.00000000023,
+      "maxNs": 931469.7647058824,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-4096",
+    "shared": false,
+    "baseline": {
+      "medianNs": 117854011.50000001,
+      "minNs": 109467313.49999999,
+      "maxNs": 233916314.5,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 126935200.50000001,
+      "minNs": 109785066.00000003,
+      "maxNs": 218758890,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 5637036.000000002,
+      "minNs": 5281358.999999998,
+      "maxNs": 11300854.000000002,
+      "blocks": 12
+    }
+  }
+]

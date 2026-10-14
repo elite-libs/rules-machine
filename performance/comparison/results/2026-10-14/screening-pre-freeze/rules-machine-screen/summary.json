@@ -1,0 +1,46 @@
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "baseline": {
+      "medianNs": 179308.27690972222,
+      "minNs": 179308.27690972222,
+      "maxNs": 179308.27690972222,
+      "blocks": 1
+    },
+    "tuned": {
+      "medianNs": 10201.67013888889,
+      "minNs": 10201.67013888889,
+      "maxNs": 10201.67013888889,
+      "blocks": 1
+    },
+    "rust": {
+      "medianNs": 1364.4730902777778,
+      "minNs": 1364.4730902777778,
+      "maxNs": 1364.4730902777778,
+      "blocks": 1
+    }
+  },
+  {
+    "fixture": "pricing-0",
+    "shared": true,
+    "baseline": {
+      "medianNs": 351360.5296875,
+      "minNs": 351360.5296875,
+      "maxNs": 351360.5296875,
+      "blocks": 1
+    },
+    "tuned": {
+      "medianNs": 22298.885937500003,
+      "minNs": 22298.885937500003,
+      "maxNs": 22298.885937500003,
+      "blocks": 1
+    },
+    "rust": {
+      "medianNs": 6635.8421875,
+      "minNs": 6635.8421875,
+      "maxNs": 6635.8421875,
+      "blocks": 1
+    }
+  }
+]

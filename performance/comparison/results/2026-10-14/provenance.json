@@ -1,0 +1,87 @@
+{
+  "baseline": {
+    "source": "ee300ad",
+    "dependencies": {
+      "expressionparser": {
+        "version": "1.1.9",
+        "entry": "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.js",
+        "entrySha256": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+        "packageSha256": "3aa52a124d86870ea52234531b566e7b53aa93f712e22f01ab60c6bf2a7ed5db",
+        "parserSha256": "e90faf028a5bcc097c9285d9ec985c60071776500e3ac39f89cca9a1066a0abd"
+      },
+      "lodash": {
+        "version": "4.17.23",
+        "entry": "/tmp/rules-machine-baseline/node_modules/.pnpm/lodash@4.17.23/node_modules/lodash/lodash.js",
+        "entrySha256": "71b4b7f5d2fc2d69399fd3edd7104fa10f9fd73fc600130825c3032ee8c50dad",
+        "packageSha256": "cbdbb6796a36727ab08e8fb599aa51d0348b83d878e62b8831c15b5694b2b6c6"
+      },
+      "ms": {
+        "version": "2.1.3",
+        "entry": "/tmp/rules-machine-baseline/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js",
+        "entrySha256": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+        "packageSha256": "1a6b4d9739790c0b94ab96c8cc0507e281c164c311ff4fbf5e57fb8d26290b40"
+      }
+    },
+    "packageSha256": "22043ce2de583c19d4a09ea5b9bc3af219a916e637cf52b94a693a3f0f8b04c2",
+    "lockSha256": "a58c21a1a266bbd98a4b2cf737dadf818c80d90cde65a9d027071754997db518"
+  },
+  "upgrade": {
+    "source": "ee300ad",
+    "dependencies": {
+      "expressionparser": {
+        "version": "1.1.9",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.js",
+        "entrySha256": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+        "packageSha256": "3aa52a124d86870ea52234531b566e7b53aa93f712e22f01ab60c6bf2a7ed5db",
+        "parserSha256": "34de4720a6823e7a4ccfa3d9618bcc0e18ef9beb253256ca68af68f36d1c2540"
+      },
+      "lodash": {
+        "version": "4.17.23",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/lodash@4.17.23/node_modules/lodash/lodash.js",
+        "entrySha256": "71b4b7f5d2fc2d69399fd3edd7104fa10f9fd73fc600130825c3032ee8c50dad",
+        "packageSha256": "cbdbb6796a36727ab08e8fb599aa51d0348b83d878e62b8831c15b5694b2b6c6"
+      },
+      "ms": {
+        "version": "2.1.3",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js",
+        "entrySha256": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+        "packageSha256": "1a6b4d9739790c0b94ab96c8cc0507e281c164c311ff4fbf5e57fb8d26290b40"
+      }
+    },
+    "packageSha256": "22043ce2de583c19d4a09ea5b9bc3af219a916e637cf52b94a693a3f0f8b04c2",
+    "lockSha256": "921fec87d2170dfd92835daf57d26074286598d1103685319bdc917f34678ae5"
+  },
+  "tuned": {
+    "source": "79c23b6",
+    "dependencies": {
+      "expressionparser": {
+        "version": "1.1.9",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.js",
+        "entrySha256": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+        "packageSha256": "3aa52a124d86870ea52234531b566e7b53aa93f712e22f01ab60c6bf2a7ed5db",
+        "parserSha256": "34de4720a6823e7a4ccfa3d9618bcc0e18ef9beb253256ca68af68f36d1c2540"
+      },
+      "lodash": {
+        "version": "4.17.23",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/lodash@4.17.23/node_modules/lodash/lodash.js",
+        "entrySha256": "71b4b7f5d2fc2d69399fd3edd7104fa10f9fd73fc600130825c3032ee8c50dad",
+        "packageSha256": "cbdbb6796a36727ab08e8fb599aa51d0348b83d878e62b8831c15b5694b2b6c6"
+      },
+      "ms": {
+        "version": "2.1.3",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js",
+        "entrySha256": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+        "packageSha256": "1a6b4d9739790c0b94ab96c8cc0507e281c164c311ff4fbf5e57fb8d26290b40"
+      }
+    },
+    "packageSha256": "0cc48e3fdb063fc3d2a9775336d56c8c30d481f5699e4f670931d8f7f8673490",
+    "lockSha256": "921fec87d2170dfd92835daf57d26074286598d1103685319bdc917f34678ae5"
+  },
+  "rust": {
+    "source": "4bcf91f",
+    "compiler": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "profile": "release",
+    "cargoLockSha256": "0202e182c25c988edabdc1026cbfdc17c138b0e93d85c2a952eb79192321c7b7",
+    "mainSha256": "cd47e18e85a6b9afd4f5d8473b9a9090ad75ab64ae3884d54517c16b57cde46f"
+  }
+}
