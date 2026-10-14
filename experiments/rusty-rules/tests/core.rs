@@ -313,3 +313,29 @@ fn nested_callback_overwrites_and_error_restore_parent_slots() {
     assert!(result["input"].get("$index").is_none());
     assert!(result["input"].get("$array").is_none());
 }
+
+#[test]
+fn prepared_path_segments_preserve_exact_keys_and_fresh_inputs() {
+    let p = Program::compile(&json!("a.b + c")).unwrap();
+    for (input, expected) in [
+        (json!({"a.b":7,"a":{"b":1},"c":2}), 9.0),
+        (json!({"a":{"b":10},"c":3}), 13.0),
+    ] {
+        let (v, _) = p.execute(Value::from_json(&input), false).unwrap();
+        assert!(matches!(v,Value::Number(v) if v==expected));
+    }
+    assert!(
+        p.execute(Value::from_json(&json!({"a":{},"c":2})), false)
+            .is_err()
+    );
+}
+
+#[test]
+fn callback_reads_later_mutated_items_at_callback_time() {
+    let value = run(
+        json!({"map":"items","run":[{"if":"$index == 0","then":"items[1]=99"},{"return":"$item"}]}),
+        json!({"items":[1,2]}),
+    );
+    assert_eq!(value["result"], json!([1.0, 99.0]));
+    assert_eq!(value["input"]["items"], json!([1.0, 99.0]));
+}

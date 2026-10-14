@@ -468,6 +468,9 @@ fn property(v: &Value, key: &str) -> Value {
 }
 fn get(input: &Value, p: &str) -> Result<Value> {
     let keys = path(p)?;
+    get_predecoded(input, p, &keys)
+}
+fn get_predecoded(input: &Value, p: &str, keys: &[String]) -> Result<Value> {
     if let Value::Object(o) = input {
         if let Some(v) = o.borrow().get(p) {
             return Ok(v.clone());
@@ -478,7 +481,7 @@ fn get(input: &Value, p: &str) -> Result<Value> {
         if matches!(&v,Value::String(s)if !s.is_ascii()) && key.parse::<usize>().is_ok() {
             return Err("Non-ASCII string index reads are unsupported".into());
         }
-        v = property(&v, &key)
+        v = property(&v, key)
     }
     Ok(v)
 }
@@ -616,7 +619,7 @@ fn set(input: &Value, p: &str, value: Value) -> Result<()> {
 #[derive(Clone, Debug)]
 enum Expr {
     Literal(Value),
-    Path(String),
+    Path(String, Vec<String>),
     Array(Vec<Expr>),
     Unary(String, Box<Expr>),
     Binary(String, Box<Expr>, Box<Expr>),
@@ -843,11 +846,11 @@ impl Parser {
                             "Functions require parenthesized arguments in this subset".into()
                         );
                     }
-                    path(&token)?;
+                    let keys = path(&token)?;
                     if token.contains('[') {
                         return Err("Bracket reads in expressions are unsupported; use dotted paths or INDEX".into());
                     }
-                    Expr::Path(token)
+                    Expr::Path(token, keys)
                 }
             }
         };
@@ -1157,8 +1160,8 @@ impl Context {
             Expr::Array(a) => Ok(Value::array(
                 a.iter().map(|e| self.eval(e)).collect::<Result<_>>()?,
             )),
-            Expr::Path(p) => {
-                let v = get(&self.input, p)?;
+            Expr::Path(p, keys) => {
+                let v = get_predecoded(&self.input, p, keys)?;
                 if matches!(v, Value::Undefined) {
                     match p.to_ascii_uppercase().as_str() {
                         "YES" | "ON" => return Ok(Value::Bool(true)),
