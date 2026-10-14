@@ -142,8 +142,8 @@ export function createRuleExecutor<TInput extends object>(
 
     const getReturnValue = () => results.lastValue;
 
-    const startTime = performance.now();
-    logTrace({ operation: 'begin', startTime });
+    const startTime = trace ? performance.now() : 0;
+    if (trace) logTrace({ operation: 'begin', startTime });
 
     // Build a term resolver that closes over the mutable `input` reference.
     const mutableInput = input as MutableInput;
@@ -156,16 +156,18 @@ export function createRuleExecutor<TInput extends object>(
           stepCount,
           ignoreMissingKeys,
         );
-        logTrace({
-          operation: 'key.lookup',
-          key: term,
-          value: result as ExpressionValue,
-          stepRow,
-          stepCount,
-        });
+        if (trace)
+          logTrace({
+            operation: 'key.lookup',
+            key: term,
+            value: result as ExpressionValue,
+            stepRow,
+            stepCount,
+          });
         return result as ExpressionValue;
       } catch (error) {
-        logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
+        if (trace)
+          logTrace({ operation: 'error', error, rule: term, stepRow, stepCount });
         throw error;
       }
     };
@@ -408,13 +410,14 @@ export function createRuleExecutor<TInput extends object>(
           if (handleRule(rule.try) === BREAK) return BREAK;
         } catch (error) {
           if (error instanceof ResourceLimitError) throw error;
-          logTrace({
-            operation: 'catch',
-            rule: rule.catch,
-            currentState: snapshot(input),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'catch',
+              rule: rule.catch,
+              currentState: snapshot(input),
+              stepRow,
+              stepCount,
+            });
           if (handleRule(rule.catch) === BREAK) return BREAK;
         }
       }
@@ -473,40 +476,43 @@ export function createRuleExecutor<TInput extends object>(
           const previous = get(input, lhs);
           set(input, lhs, value);
           results.lastValue = value;
-          logTrace({
-            operation: 'evalRule',
-            result: snapshot(input),
-            rule,
-            lhs,
-            value,
-            previous: snapshot(previous),
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'evalRule',
+              result: snapshot(input),
+              rule,
+              lhs,
+              value,
+              previous: snapshot(previous),
+              stepRow,
+              stepCount,
+            });
           return input as unknown as RuleResult;
         } else {
           const result = expressionEngine.evaluate(
             compiled,
             termResolver,
           ) as RuleResult;
-          logTrace({
-            operation: 'expression',
-            result,
-            rule,
-            stepRow,
-            stepCount,
-          });
+          if (trace)
+            logTrace({
+              operation: 'expression',
+              result,
+              rule,
+              stepRow,
+              stepCount,
+            });
           results.lastValue = result;
           return result;
         }
       } catch (e) {
-        logTrace({
-          operation: 'error',
-          error: e instanceof Error ? e.message : String(e),
-          rule,
-          stepRow,
-          stepCount,
-        });
+        if (trace)
+          logTrace({
+            operation: 'error',
+            error: e instanceof Error ? e.message : String(e),
+            rule,
+            stepRow,
+            stepCount,
+          });
         throw e;
       }
     }
@@ -521,27 +527,29 @@ export function createRuleExecutor<TInput extends object>(
         const ruleResult = handleRule(rule);
         if (ruleResult === BREAK) break;
       } catch (e) {
-        logTrace({
-          operation: 'error',
-          runTime: performance.now() - startTime,
-          stepCount,
-          currentState: snapshot(input),
-          stepRow,
-          lastValue: e instanceof Error ? e.message : String(e),
-        });
+        if (trace)
+          logTrace({
+            operation: 'error',
+            runTime: performance.now() - startTime,
+            stepCount,
+            currentState: snapshot(input),
+            stepRow,
+            lastValue: e instanceof Error ? e.message : String(e),
+          });
         throw e;
       }
       stepRow++;
     }
 
-    logTrace({
-      operation: 'complete',
-      runTime: performance.now() - startTime,
-      stepCount,
-      currentState: snapshot(input),
-      stepRow,
-      lastValue: snapshot(getReturnValue()),
-    });
+    if (trace)
+      logTrace({
+        operation: 'complete',
+        runTime: performance.now() - startTime,
+        stepCount,
+        currentState: snapshot(input),
+        stepRow,
+        lastValue: snapshot(getReturnValue()),
+      });
 
     if (trace) {
       results.runTime = performance.now() - startTime;
