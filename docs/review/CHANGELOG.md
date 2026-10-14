@@ -15,7 +15,7 @@ This branch changes behavior and requires compatibility review before a release.
 - Node ESM/CJS exports and browser IIFE are smoke-tested; the parser null fix is bundled downstream. The engine factories and RuleMachineOptions are exported.
 - Validation uses pinned pnpm 10.34.6, Vitest 5.0.3 and Node 24/26 CI. The library typecheck is separate from standalone examples. The pnpm lockfile is authoritative.
 
-- Authorized dependency follow-up upgrades lodash to4.18.1 and pins patched build/coverage transitives. All16 reported advisories are resolved; a rule-language OMIT prototype-deletion regression was added.
+- Authorized dependency follow-up upgrades lodash to 4.18.1 and pins patched build/coverage transitives. All 16 reported advisories are resolved; a rule-language OMIT prototype-deletion regression was added.
 
 See [Wayfinder](WAYFINDER.md) for review drafts, measured evidence, and remaining gaps.
 
@@ -25,6 +25,7 @@ See [Wayfinder](WAYFINDER.md) for review drafts, measured evidence, and remainin
 - Shared configurable work, array, string, traversal-depth and cooperative duration budgets supplement syntax bounds. Resource errors bypass rule catches. Cold source scanning counts toward work.
 - DATE/DATEISO now enforce epoch, explicit ISO and unit-bearing duration contracts. This intentionally rejects formerly ambiguous/fallback date inputs.
 - Trace rows preserve historical values without getters or toJSON. Unexpected runtime errors do not write to the console. `atomic: true` adds rollback while retaining the default partial-write behavior.
-- Factory overloads distinguish literal trace modes; dynamic trace options retain a union. Arbitrary rule strings still cannot provide static result inference.
+- Factory overloads distinguish literal trace modes; dynamic trace options retain a union. Ordinary input interfaces no longer require an index signature. Packed declaration consumers verify these contracts on Node 24 and 26. Arbitrary rule strings still cannot provide static result inference.
 - Compact negative comma arguments now parse consistently with spaced forms.
+- Rust enables exact float round-trip parsing and bit-based power-domain checks. Callback-scope allocation and compiled-path tuning preserve mutation/restoration semantics and pass separate paired performance confirmation.
 - Rust has an expanded, differentially checked core and bounded persistent Node child-process bridge. It remains an experiment with explicit unsupported functions and transport differences; see its README and shared specification.

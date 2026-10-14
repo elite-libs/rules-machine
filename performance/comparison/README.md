@@ -1,4 +1,6 @@
-# Reproduce the local comparison
+# Reproduce the historical local comparison
+
+This runner preserves the original scalar-shared Rust campaign boundary. The expanded core, all-seven-fixture native comparison and persistent bridge/cold/retention work use [the gap-phase contract](../rust-gaps/plan.md) and separate evidence; original results below remain historical.
 
 The frozen contract is [plan.md](plan.md). These are local synthetic workloads on Node 26.8.2, not a production SLA or a full Rust replacement comparison.
 

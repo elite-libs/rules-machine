@@ -1,0 +1,19 @@
+# 07: Remaining API, design and test boundaries
+
+Parent: [Wayfinder](../WAYFINDER.md). Local review record; no GitHub issue or PR.
+
+This distinguishes unresolved API choices and missing evidence from defects fixed in ticket 05. It does not treat passing tests as full language coverage.
+
+| Area | Evidence / consequence | Concrete next acceptance |
+| --- | --- | --- |
+| Input type ergonomics — fixed | `TInput extends Record<string, unknown>` rejected ordinary TypeScript interfaces without an index signature. Commit `3e8f578` broadens the constraint to `object`; emitted runtime bytes remain identical. | Interface-based external consumers compile against packed declarations on Node 24 and 26. Retain this regression. |
+| Trace schema | Expression rows contain structured snapshots while several rule/current-state fields contain serialized JSON strings. Operation/extra fields have open types and no schema version. | Design a versioned structured trace schema with discriminated operations, nested rule paths and migration tests; retain legacy behavior until migration is explicit. |
+| Error taxonomy | Resource errors are public and typed; other failures use mixed UserError/generic errors and message text. | Stable public error codes/types and source/rule locations, with conformance tests across parser, runtime and custom-engine boundaries. |
+| Prepared programs | Mutable rule objects require descriptor preflight each execution. Validation visit accounts for 25.5% of pricing profile self samples. Caching validation by object identity would miss later mutations. | An explicit immutable prepared-program contract, independently tested for mutation/reentrancy and benchmarked; preserve current mutable-rule semantics. |
+| Function test depth | Rust's strongest systematic domain grid covers its declared subset, not all 97 TypeScript functions. Existing tests on the other functions are not equivalent to systematic domain/property/mutation testing. | Full function inventory with independent expected properties, invalid domains, alias/cycle/accessor cases and mutation-test evidence; avoid using the same implementation as its own oracle. |
+| Runtime matrix | Node 26 and Node 24 now pass all 462 tests and packed consumers locally. | Hosted CI execution remains unobserved. Windows/macOS and cross-host performance are unmeasured. |
+| Isolation | Cooperative TypeScript limits cannot preempt host code or enforce OS heap bounds. Rust bridge cancellation terminates all pending work on its worker, and transport copies trees. | Treat worker isolation, memory caps, cancellation blast radius and host-side effects as explicit deployment/API decisions; do not claim sandbox or drop-in parity. |
+| Example / dependency scope | AWS sample targets published v1.4.7 and an older standalone Serverless toolchain; root pnpm audit does not validate that deployment. Its README now labels that scope. The obsolete Bun lock naming removed/old dependencies was removed; pnpm-lock is authoritative. | Validate a sample migration separately before presenting it as current v2 deployment evidence. |
+| Default branch rollout | Read-only GitHub alert query after push reports 144 open default-branch alerts: 7 critical, 71 high, 60 medium, 6 low; 142 attach to pnpm-lock, one to root package.json, one to the AWS example. These are not an audit of the pushed branch. | Preserve the zero-known-advisory claim only for the scanned overhaul pnpm tree. Do not claim default-branch remediation until an authorized integration and fresh verification. No merge/issue/PR is authorized here. |
+
+Rule-count, payload-size and nesting crossover experiments are tracked separately in [the controlled sweep](../../../performance/crossover/README.md). Production workloads and SLOs remain unavailable; synthetic crossings are workload-specific.

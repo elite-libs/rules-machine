@@ -1,11 +1,14 @@
 {
-  "sourceCommit": "e41b2ba",
-  "observedAtUTC": "2026-10-14 01:00:14 UTC",
+  "typescriptRuntimeCommit": "d4a88ea",
+  "combinedCandidateAtBrowserCheck": "4c85672",
+  "observedAtUTC": "2026-10-14 01:06:55 UTC",
   "tool": "T3 collaborative preview",
   "checks": {
     "arrayNoGetter": true,
     "arrayNoSpecies": true,
     "atomicRollback": true,
+    "atomicContextCleanup": true,
+    "coldSourceBudget": true,
     "compactNegative": true,
     "cyclicIdentity": true,
     "frozenIdentity": true,
@@ -13,6 +16,6 @@
     "traceHistory": true,
     "typedBudget": true
   },
-  "passed": 9,
+  "passed": 11,
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.45 Chrome/152.0.7977.130 Electron/44.4.2 Safari/537.36"
 }
