@@ -165,6 +165,22 @@ describe('materialization provenance and immutable host values', () => {
     expect(getter).not.toHaveBeenCalled();
   });
 
+  test.each([
+    'GET("nested.fn", PUT("x", 1, record))',
+    'GET("nested.fn", OMIT("unused", record))',
+    'GET("nested.fn", DICT(keyList, valueList))',
+  ])('preserves nested provenance through generated containers: %s', (source) => {
+    const fn = vi.fn(() => 42);
+    const nested = { fn };
+    const input = { record: { nested }, keyList: ['nested'], valueList: [nested] };
+    expect(evaluate(source, input)).toBe(fn);
+    expect(fn).not.toHaveBeenCalled();
+    const replacement = vi.fn(() => 99);
+    nested.fn = replacement;
+    expect(evaluate(source, input)).toBe(replacement);
+    expect(replacement).not.toHaveBeenCalled();
+  });
+
   test('enforces traversal and allocation budgets before large array copies', () => {
     const values = createMaterializer();
     expect(() =>
