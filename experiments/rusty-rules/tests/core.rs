@@ -237,3 +237,9 @@ fn allocation_and_numeric_domains_reject_early() {
         Value::Undefined
     ));
 }
+
+#[test]
+fn array_append_at_limit_rejects() {
+    let p = Program::compile(&json!(["items=RANGE(0,100000)", "items[100000]=1"])).unwrap();
+    assert!(p.execute(Value::from_json(&json!({})), true).is_err());
+}

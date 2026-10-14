@@ -557,7 +557,7 @@ fn write(target: &Value, key: &str, value: Value) -> Result<()> {
             let i = key
                 .parse::<usize>()
                 .map_err(|_| "Only array index writes supported")?;
-            if i > 100_000 {
+            if i >= 100_000 {
                 return Err("Array index exceeds limit".into());
             }
             if i > a.len() {
