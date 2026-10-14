@@ -5,7 +5,6 @@ import type {
   ExpressionValue,
 } from 'expressionparser/dist/ExpressionParser.js';
 import isObject from 'lodash/isObject.js';
-import toPath from 'lodash/toPath.js';
 import {
   checkArrayLength,
   checkDataDepth,
@@ -14,6 +13,7 @@ import {
   ResourceLimitError,
 } from '../utils/budget';
 import { UserError } from '../utils/errors';
+import { stringToPath as toPath } from '../utils/string-path';
 import { parseDate } from './dates';
 import {
   dataEntries,

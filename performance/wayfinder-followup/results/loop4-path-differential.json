@@ -1,0 +1,60 @@
+{
+  "at": "2026-10-14T23:22:01.131Z",
+  "oracle": "installed lodash 4.18.1 toPath(string)",
+  "exhaustive": {
+    "alphabet": [
+      "a",
+      ".",
+      "[",
+      "]",
+      "0",
+      "-",
+      "\"",
+      "'",
+      "\\",
+      " "
+    ],
+    "maxLength": 5,
+    "cases": 111111,
+    "passed": true
+  },
+  "seeded": {
+    "seed": "0x1a2b3c4d",
+    "cases": 5000,
+    "tokensPerPath": 40,
+    "passed": true
+  },
+  "otherChecks": [
+    "named quoted, Unicode, numeric, malformed paths",
+    "cache result mutation isolation",
+    "1001-key cache churn",
+    "uncached 20000-character key mutation isolation"
+  ],
+  "gates": {
+    "tests": 467,
+    "testFiles": 19,
+    "typecheck": true,
+    "build": true,
+    "packedConsumers": true
+  },
+  "hashes": {
+    "src/utils/string-path.ts": "f6fe33e06574c372bb9ba62427545c16b74a8d789e9a60d7ac55ae85b6a7b0fa",
+    "src/utils/string-path.test.ts": "8bf4599f63944ccfbef57d58d954288a1f4fba71f17071f145f04e8b9d67a4c4",
+    "node_modules/lodash/_stringToPath.js": "59db820071a2b05418f75fd3a41a6b519a10e25fd1257355bca7240a21690ca1",
+    "node_modules/lodash/toPath.js": "90edd92b5e23f14f88910f4277ba72c0a4b2b32edfeb6fb71974d0877e5ab90d"
+  },
+  "sizes": {
+    "baseline": {
+      "raw": 78509,
+      "gzip": 24040,
+      "brotli": 20146,
+      "license": false
+    },
+    "candidate": {
+      "raw": 72125,
+      "gzip": 22101,
+      "brotli": 18446,
+      "license": true
+    }
+  }
+}

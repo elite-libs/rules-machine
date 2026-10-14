@@ -1,4 +1,3 @@
-import toPath from 'lodash/toPath.js';
 import {
   checkArrayLength,
   checkDataDepth,
@@ -7,6 +6,7 @@ import {
 } from './budget';
 import { UserError } from './errors';
 import { recordMutation } from './mutations';
+import { stringToPath as toPath } from './string-path';
 
 const unsafe = new Set(['__proto__', 'prototype', 'constructor']);
 
