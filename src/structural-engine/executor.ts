@@ -1,7 +1,11 @@
 import type { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
 import type { ExpressionEngine } from '../expression-engine/engine';
 import { UserError } from '../utils/errors';
-import { getOwnPath as get, setOwnPath as set } from '../utils/paths';
+import {
+  assertWritablePath,
+  getOwnPath as get,
+  setOwnPath as set,
+} from '../utils/paths';
 import { toArray } from '../utils/utils';
 import type { AndRule, OrRule, Rule } from './types';
 
@@ -101,6 +105,9 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
     rules: Rule,
     input: TInput = {} as TInput,
   ): TReturn | ExecutionResult<TInput> {
+    if (input === null || typeof input !== 'object' || Array.isArray(input)) {
+      throw new UserError('Input must be an object');
+    }
     validateRule(rules);
     const traceSimple: TraceRow[] = [];
     const snapshot = trace ? serialize : (_data: unknown) => undefined;
@@ -620,10 +627,15 @@ function validateRule(rules: Rule) {
         if (typeof object.return !== 'string')
           fail('return must be a string expression');
       } else {
-        if (typeof object[operator] !== 'string')
-          fail(`${operator} must be an input path`);
+        if (
+          typeof object[operator] !== 'string' ||
+          !(object[operator] as string).trim()
+        )
+          fail(`${operator} must be a nonempty input path`);
         if (Object.hasOwn(object, 'set') && typeof object.set !== 'string')
           fail('set must be an input path');
+        if (Object.hasOwn(object, 'set'))
+          assertWritablePath(object.set as string);
         if (!Object.hasOwn(object, 'run')) fail(`${operator} requires run`);
         visit(object.run, depth + 1);
       }

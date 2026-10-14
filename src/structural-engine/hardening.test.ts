@@ -196,6 +196,36 @@ describe('structural execution contracts', () => {
     );
   });
 
+  test('rejects unsafe array destinations before callback side effects', () => {
+    const input = { items: [1], visits: 0 };
+    expect(() =>
+      ruleFactory({
+        map: 'items',
+        run: 'visits += 1',
+        set: '__proto__.polluted',
+      })(input),
+    ).toThrow(/Unsafe assignment path/);
+    expect(input).toEqual({ items: [1], visits: 0 });
+    expect(() => ruleFactory({ map: ' ', run: '1' })(input)).toThrow(
+      /nonempty input path/,
+    );
+    expect(() =>
+      ruleFactory({ map: 'items', run: '1', set: '' })(input),
+    ).toThrow(/Unsafe assignment path/);
+  });
+
+  test.each([
+    null,
+    1,
+    'input',
+    [],
+    () => 1,
+  ])('rejects non-record input with a user error: %j', (input) => {
+    expect(() =>
+      ruleFactory('1')(input as unknown as Record<string, unknown>),
+    ).toThrow('Input must be an object');
+  });
+
   test('literal extraction is stable and preserves string contents', () => {
     for (let i = 0; i < 3; i++)
       expect(extractValueOrLiteral({}, '"hello"')).toBe('hello');
