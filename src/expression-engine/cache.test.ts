@@ -34,7 +34,7 @@ describe('syntax cache context isolation', () => {
   });
   test('fails closed for unsupported syntax and unknown calls', () => {
     const engine = createExpressionEngine();
-    for (const source of ['', 'false && true', 'true || false', 'HOUR(timestamp)', 'RAND()', '1 2']) {
+    for (const source of ['', 'false && true', 'true || false', 'HOUR(timestamp)', 'RAND()', 'ABS()', '1 2', '"true', '"abc', '(1 + 2]', '(1 + 2', '1)' ]) {
       expect(() => engine.evaluateExpression(source, () => 7), source).toThrow();
     }
     expect(engine.evaluateExpression('ABS(2)', () => 0)).toBe(2);

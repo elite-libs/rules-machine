@@ -77,7 +77,7 @@ export function createExpressionEngine(): ExpressionEngine {
 
   function validateSource(source: string) {
     if (source.length > 100_000) throw new UserError('Expression exceeds maximum length of 100000 characters');
-    let depth = 0;
+    const groups: string[] = [];
     let quote = '';
     if (!source.trim()) throw new UserError('Expression must not be empty');
     for (let i = 0; i < source.length; i++) {
@@ -88,9 +88,14 @@ export function createExpressionEngine(): ExpressionEngine {
       } else if (ch === '&' || ch === '|') throw new UserError('Unsupported operator: use AND or OR');
       else if (ch === '"' || ch === "'") quote = ch;
       else if (ch === '(' || ch === '[') {
-        if (++depth > 100) throw new UserError('Expression exceeds maximum nesting depth of 100');
-      } else if (ch === ')' || ch === ']') depth--;
+        groups.push(ch);
+        if (groups.length > 100) throw new UserError('Expression exceeds maximum nesting depth of 100');
+      } else if (ch === ')' || ch === ']') {
+        if (groups.pop() !== (ch === ')' ? '(' : '[')) throw new UserError('Expression contains mismatched grouping');
+      }
     }
+    if (quote) throw new UserError('Expression contains an unterminated string literal');
+    if (groups.length) throw new UserError('Expression contains unclosed grouping');
   }
 
   function entry(source: string) {
@@ -130,6 +135,7 @@ export function createExpressionEngine(): ExpressionEngine {
         for (let i = 0; i < tokens.length - 1; i++) {
           const token = tokens[i];
           if (tokens[i + 1] === '(' && /^[$A-Z_a-z][$\w.]*$/.test(token)) {
+            if (tokens[i + 2] === ')') throw new UserError(`Function ${token} requires an argument`);
             // This engine exposes only the built-in language's function set.
             // Unknown calls must not degrade to their argument or an undefined term.
             try { if (!parser.getPrefixOp(token) && !parser.getInfixOp(token)) throw new Error(); }
