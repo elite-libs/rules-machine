@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf, test, vi } from 'vitest';
 import { createExpressionEngine } from '../expression-engine/engine';
 import {
+  createRuleExecutor,
   type ExecutionResult,
   ResourceLimitError,
   type RuleMachineOptions,
@@ -64,6 +65,31 @@ describe('execution limits', () => {
       expect(() =>
         ruleFactory('1', { limits: { maxOperations: value } })({}),
       ).toThrow();
+  });
+  test('cold source scanning counts as work before parsing', () => {
+    expect(() =>
+      ruleFactory(`${' '.repeat(1000)}1`, { limits: { maxOperations: 10 } })(
+        {},
+      ),
+    ).toThrow(ResourceLimitError);
+  });
+  test('atomic execution rolls back when the final deadline check fails', () => {
+    const now = vi
+      .spyOn(performance, 'now')
+      .mockReturnValue(2)
+      .mockReturnValueOnce(0);
+    const input = { value: 1 };
+    try {
+      expect(() =>
+        ruleFactory('value = 2', {
+          atomic: true,
+          limits: { maxDurationMs: 1 },
+        })(input),
+      ).toThrow(ResourceLimitError);
+      expect(input.value).toBe(1);
+    } finally {
+      now.mockRestore();
+    }
   });
   test('cache retention has entry and estimated byte ceilings', () => {
     const engine = createExpressionEngine({
@@ -169,6 +195,35 @@ describe('atomic writes', () => {
     expect(input).toEqual({ items: [1, 2], inner: [3] });
     for (const key of ['$item', '$index', '$array'])
       expect(Object.hasOwn(input, key)).toBe(false);
+  });
+  test('nested executor savepoints roll back failure and retain successful writes for the outer rollback', () => {
+    const input = { outer: 1, inner: 1 };
+    const engine = createExpressionEngine();
+    const nested = createRuleExecutor(engine, { atomic: true });
+    const executor = createRuleExecutor(
+      {
+        ...engine,
+        evaluate(compiled, resolver) {
+          if (compiled.source === 'trigger') {
+            expect(() =>
+              nested.execute(['inner = 3', 'THROW "inner failure"'], input),
+            ).toThrow('inner failure');
+            expect(input).toEqual({ outer: 2, inner: 1 });
+            nested.execute('inner = 4', input);
+            return 0;
+          }
+          return engine.evaluate(compiled, resolver);
+        },
+      },
+      { atomic: true },
+    );
+    expect(() =>
+      executor.execute(
+        ['outer = 2', 'trigger', 'THROW "outer failure"'],
+        input,
+      ),
+    ).toThrow('outer failure');
+    expect(input).toEqual({ outer: 1, inner: 1 });
   });
   test('runtime errors do not log to the caller console', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
