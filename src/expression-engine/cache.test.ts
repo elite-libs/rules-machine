@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { ruleFactory } from '../index';
 import { createExpressionEngine } from './engine';
 
 describe('syntax cache context isolation', () => {
@@ -48,6 +49,17 @@ describe('syntax cache context isolation', () => {
     expect(engine.evaluateExpression('[]', () => 0)).toEqual([]);
     expect(engine.evaluateExpression('[[], 2]', () => 0)).toEqual([[], 2]);
     expect(engine.evaluateExpression('"[]"', () => 0)).toBe('[]');
+  });
+  test('evaluates bracketed assignment targets and lazy nullish RHS', () => {
+    const input = { items: [3], object: { 'literal.key': 4 } };
+    ruleFactory(['items[0]=2', 'items[0]+=5', 'object["literal.key"]*=3'])(input);
+    expect(input).toEqual({ items: [7], object: { 'literal.key': 12 } });
+    const engine = createExpressionEngine();
+    expect(engine.evaluateExpression('items[0] ??= absent', term => {
+      if (term === 'items[0]') return 9;
+      throw new Error('RHS must be skipped');
+    })).toBe(9);
+    expect(engine.evaluateExpression('items[0] ??= 3', () => undefined as never)).toBe(3);
   });
   test('recognizes compact assignment and ignores assignment text in literals', () => {
     const engine = createExpressionEngine();

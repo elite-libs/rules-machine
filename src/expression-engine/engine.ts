@@ -3,6 +3,7 @@ import type { ExpressionThunk, ExpressionValue } from 'expressionparser/dist/Exp
 import { ruleExpressionLanguage } from './language';
 import { extractAssignment } from './assignment';
 import { UserError } from '../utils/errors';
+import { num } from './language-utils';
 
 /**
  * Public expression metadata. Parsed syntax is cached privately by the engine.
@@ -10,6 +11,8 @@ import { UserError } from '../utils/errors';
 export interface CompiledExpression {
   /** The original source string */
   source: string;
+  /** Right-hand expression for assignments; absent for pure expressions. */
+  rhs?: string;
   /**
    * The assignment operator found in this expression, if any.
    * e.g. `=`, `+=`, `-=`, `*=`, `/=`, `??=`
@@ -123,7 +126,9 @@ export function createExpressionEngine(): ExpressionEngine {
     try {
       const cached = entry(compiled.source);
       if (!cached.thunk) {
-        const source = compiled.source.replace(/^\s*return\s+/, '');
+        const source = (cached.metadata.lhs?.includes('[')
+          ? cached.metadata.rhs!
+          : compiled.source).replace(/^\s*return\s+/, '');
         const rawTokens = parser.tokenize(source);
         const tokens: string[] = [];
         for (let i = 0; i < rawTokens.length; i++) {
@@ -146,6 +151,23 @@ export function createExpressionEngine(): ExpressionEngine {
         const thunk = parser.rpnToThunk(rpn);
         if (rpn.length !== 0) throw new UserError('Invalid expression: unused terms or unsupported syntax');
         cached.thunk = thunk;
+      }
+      const { lhs, assignmentOperator } = cached.metadata;
+      // Bracketed write targets are paths, not array literals in the parser.
+      // Resolve their current value separately for compound assignment.
+      if (lhs?.includes('[')) {
+        if (assignmentOperator === '=') return parser.thunkToValue(cached.thunk);
+        const current = termResolver(lhs);
+        if (assignmentOperator === '??=') return current ?? parser.thunkToValue(cached.thunk);
+        const a = num(current);
+        const b = num(parser.thunkToValue(cached.thunk));
+        switch (assignmentOperator) {
+          case '+=': return a + b;
+          case '-=': return a - b;
+          case '*=': return a * b;
+          case '/=': return a / b;
+          default: throw new UserError('Unsupported assignment operator');
+        }
       }
       return parser.thunkToValue(cached.thunk);
     } finally {
