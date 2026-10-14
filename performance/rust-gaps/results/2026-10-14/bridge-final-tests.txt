@@ -1,0 +1,15 @@
+✖ experiments/rusty-rules/bridge.test.mjs (258.46004ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 268.296869
+
+✖ failing tests:
+
+test at experiments/rusty-rules/bridge.test.mjs:1:1
+✖ experiments/rusty-rules/bridge.test.mjs (258.46004ms)
+  'test failed'

@@ -78,11 +78,13 @@ MIN/MAX preserve JavaScript signed-zero tie behavior. SORT supports finite numbe
 | SLICE | Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation. |
 | CONCAT | Two arrays; combined result at most 100000 elements. |
 | CONS | Any value and array; result at most 100000 elements. |
-| CONTAINS | Supported primitive/array membership domain; object equality uses identity. |
-| INCLUDES | Supported primitive/array membership domain; object equality uses identity. |
-| REMOVE_VALUES | Supported primitive/array membership domain; object equality uses identity. |
+| CONTAINS | Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker. |
+| INCLUDES | Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker. |
+| REMOVE_VALUES | Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker. |
 | STRING_CONTAINS | Two strings. |
 | STRING_STARTS_WITH | Two strings. |
 | STRING_ENDS_WITH | Two strings. |
 
 Power operator: Finite nonzero bases other than +/-1 must be powers of two and exponent integer; other finite domains explicitly reject. Nonfinite/zero/+/-1 special cases follow JS. General libm exponentiation is excluded because exact IEEE outputs differ from V8. SORT rejects NaN and nonnumeric elements, including singleton arrays. Paths are limited to 100 segments; CONCAT/CONS results to 100000 elements.
+
+Final local confirmation is retained in [the gap-phase report](../../performance/rust-gaps/results/2026-10-14/report.md): native Rust is 8.32× [7.88, 8.78] the final TS throughput on the same seven frozen slices, while the persistent bridge is 0.291× [0.274, 0.310] direct TS throughput. The bridge is therefore slower at its real process/serialization boundary. These within-campaign estimates use 12 paired blocks; cross-campaign variation and prototype scope prevent a general replacement claim. Final source gates: 21 Rust tests, 15 bridge tests, 419 shared differential/rejection cases, and 10,478 exact-or-declared-rejection numeric/domain probes. Cold preparation and matched long-lived TS/bridge retention diagnostics are included in that report. The source is `de6ca7f`; exact artifacts and instrument hashes are recorded with the evidence.

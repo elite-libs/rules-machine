@@ -1,0 +1,140 @@
+FAIL power "a ^ b" case2045
+FAIL power "a ^ b" case2055
+FAIL power "a ^ b" case2093
+FAIL power "a ^ b" case2103
+FAIL power "a ^ b" case2104
+FAIL operator-< "a < b" case2168
+FAIL operator-< "a < b" case2169
+FAIL operator-< "a < b" case2170
+FAIL operator-< "a < b" case2187
+FAIL operator-< "a < b" case2188
+FAIL operator-< "a < b" case2189
+FAIL operator-< "a < b" case2206
+FAIL operator-< "a < b" case2207
+FAIL operator-< "a < b" case2208
+FAIL operator-< "a < b" case2311
+FAIL operator-< "a < b" case2330
+FAIL operator-< "a < b" case2349
+FAIL operator-< "a < b" case2415
+FAIL operator-< "a < b" case2416
+FAIL operator-< "a < b" case2417
+FAIL operator-< "a < b" case2434
+FAIL operator-< "a < b" case2435
+FAIL operator-< "a < b" case2436
+FAIL operator-< "a < b" case2453
+FAIL operator-< "a < b" case2454
+FAIL operator-< "a < b" case2455
+FAIL operator-> "a > b" case2655
+FAIL operator-> "a > b" case2656
+FAIL operator-> "a > b" case2657
+FAIL operator-> "a > b" case2668
+FAIL operator-> "a > b" case2669
+FAIL operator-> "a > b" case2670
+FAIL operator-> "a > b" case2674
+FAIL operator-> "a > b" case2675
+FAIL operator-> "a > b" case2676
+FAIL operator-> "a > b" case2687
+FAIL operator-> "a > b" case2688
+FAIL operator-> "a > b" case2689
+FAIL operator-> "a > b" case2693
+FAIL operator-> "a > b" case2694
+FAIL operator-> "a > b" case2695
+FAIL operator-> "a > b" case2706
+FAIL operator-> "a > b" case2707
+FAIL operator-> "a > b" case2708
+FAIL operator-> "a > b" case2852
+FAIL operator-> "a > b" case2853
+FAIL operator-> "a > b" case2854
+FAIL operator-<= "a <= b" case2890
+FAIL operator-<= "a <= b" case2891
+FAIL operator-<= "a <= b" case2892
+FAIL operator-<= "a <= b" case2909
+FAIL operator-<= "a <= b" case2910
+FAIL operator-<= "a <= b" case2911
+FAIL operator-<= "a <= b" case2928
+FAIL operator-<= "a <= b" case2929
+FAIL operator-<= "a <= b" case2930
+FAIL operator-<= "a <= b" case3033
+FAIL operator-<= "a <= b" case3052
+FAIL operator-<= "a <= b" case3071
+FAIL operator-<= "a <= b" case3137
+FAIL operator-<= "a <= b" case3138
+FAIL operator-<= "a <= b" case3139
+FAIL operator-<= "a <= b" case3156
+FAIL operator-<= "a <= b" case3157
+FAIL operator-<= "a <= b" case3158
+FAIL operator-<= "a <= b" case3175
+FAIL operator-<= "a <= b" case3176
+FAIL operator-<= "a <= b" case3177
+FAIL operator->= "a >= b" case3377
+FAIL operator->= "a >= b" case3378
+FAIL operator->= "a >= b" case3379
+FAIL operator->= "a >= b" case3390
+FAIL operator->= "a >= b" case3391
+FAIL operator->= "a >= b" case3392
+FAIL operator->= "a >= b" case3396
+FAIL operator->= "a >= b" case3397
+FAIL operator->= "a >= b" case3398
+FAIL operator->= "a >= b" case3409
+FAIL operator->= "a >= b" case3410
+FAIL operator->= "a >= b" case3411
+FAIL operator->= "a >= b" case3415
+FAIL operator->= "a >= b" case3416
+FAIL operator->= "a >= b" case3417
+FAIL operator->= "a >= b" case3428
+FAIL operator->= "a >= b" case3429
+FAIL operator->= "a >= b" case3430
+FAIL operator->= "a >= b" case3574
+FAIL operator->= "a >= b" case3575
+FAIL operator->= "a >= b" case3576
+FAIL MIN "MIN(a)" case5392
+FAIL MIN "MIN(a)" case5394
+FAIL MAX "MAX(a)" case5410
+FAIL MAX "MAX(a)" case5413
+FAIL SORT "SORT(a)" case5431
+FAIL SORT "SORT(a)" case5435
+FAIL SORT "SORT(a)" case5437
+FAIL SORT "SORT(a)" case5438
+FAIL SORT "SORT(a)" case5439
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5544
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5545
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5546
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5547
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5548
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5549
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5550
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5551
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5552
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5553
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5554
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5555
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5556
+FAIL COUNT_KEYS "COUNT_KEYS(a)" case5557
+FAIL TAKE "TAKE(n,a)" case5580
+FAIL DROP "DROP(n,a)" case5581
+FAIL TAKE "TAKE(n,a)" case5583
+FAIL DROP "DROP(n,a)" case5584
+FAIL TAKE "TAKE(n,a)" case5586
+FAIL DROP "DROP(n,a)" case5587
+FAIL SLICE "SLICE(start,end,a)" case5671
+FAIL SLICE "SLICE(start,end,a)" case5679
+FAIL SLICE "SLICE(start,end,a)" case5687
+FAIL SLICE "SLICE(start,end,a)" case5694
+FAIL SLICE "SLICE(start,end,a)" case5697
+FAIL SLICE "SLICE(start,end,a)" case5698
+FAIL SLICE "SLICE(start,end,a)" case5699
+FAIL SLICE "SLICE(start,end,a)" case5703
+FAIL SLICE "SLICE(start,end,a)" case5711
+FAIL SLICE "SLICE(start,end,a)" case5719
+FAIL SLICE "SLICE(start,end,a)" case5727
+FAIL SLICE "SLICE(start,end,a)" case5751
+FAIL TAKE "TAKE(1,a)" case5757
+FAIL TAKE "TAKE(1,a)" case5758
+FAIL TAKE "TAKE(1,a)" case5759
+FAIL TAKE "TAKE(1,a)" case5760
+FAIL TAKE "TAKE(1,a)" case5761
+FAIL DROP "DROP(1,a)" case5763
+FAIL DROP "DROP(1,a)" case5764
+FAIL DROP "DROP(1,a)" case5765
+FAIL DROP "DROP(1,a)" case5766
+FAIL DROP "DROP(1,a)" case5767

@@ -1,0 +1,20 @@
+✔ persistent prepare/run framing, data values and separate instances (30.796705ms)
+✔ roundtrip has no tag-object collisions and preserves undefined ownership (1.394961ms)
+✔ rule errors do not poison the worker or leak scope (10.527905ms)
+✔ pending and queued-byte backpressure reject before writing (12.763082ms)
+✔ deadline kills worker and rejects every pending request (36.955005ms)
+✔ abort before submission leaves healthy worker; submitted abort kills owned worker (10.817684ms)
+✔ spawn failure, premature process exit, malformed and wrong-id responses clean pending requests (205.779201ms)
+✔ frame limits are enforced for requests and partial responses (54.257985ms)
+✔ close rejects pending work and is idempotent (3.83059ms)
+✔ wire preflight bounds aliased expansion before constructing a frame (1.422665ms)
+✔ wire memoization preserves depth limits for aliases reached at deeper paths (0.985628ms)
+✔ wire preflight rejects accessors and proxies without host callbacks (0.40222ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 478.685536

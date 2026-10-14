@@ -1,0 +1,14 @@
+{
+  "iterations": {
+    "eligibility": 32,
+    "pricing-0": 16,
+    "pricing-1024": 19,
+    "pricing-32768": 20,
+    "array-map-16": 175,
+    "array-map-256": 31,
+    "array-map-4096": 3
+  },
+  "blocks": 12,
+  "order": "simple cyclic rotations; 12 blocks balance every position for4 arms on all7 now-supported frozen fixtures",
+  "warmup": "max(1, floor(iterations/5)) batches"
+}

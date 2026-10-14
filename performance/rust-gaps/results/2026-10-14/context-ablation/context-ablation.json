@@ -1,0 +1,263 @@
+{
+  "at": "2026-10-14T01:09:10.827Z",
+  "classification": "Diagnostic causal ablation, six balanced independent old/new process pairs per size; not final confirmation.",
+  "oldBinary": "/tmp/rules-machine-rust-pre-context",
+  "oldHash": "e71dbef4884149d4cca9eb965fc0d0267f9deb7c5e8b6646ee0400f10f023d7e",
+  "newBinary": "/tmp/rules-machine-rust-gaps/experiments/rusty-rules/target/release/rusty-rules-experiment",
+  "newHash": "00b106fc1c6bae50b5968fe46cb7e2bb3fa998c91e5aef29df489f5de3876443",
+  "mechanism": "Only internal $item/$index/$array installation bypasses graph cycle scans. Data references already reachable from validated acyclic input; DSL writes still call cycle detector. Old scan visits scale with array length per item, new internal insertion is constant work.",
+  "raw": [
+    {
+      "block": 0,
+      "fixture": "array-map-16",
+      "arm": "old",
+      "elapsedNs": 23465,
+      "operations": 2
+    },
+    {
+      "block": 0,
+      "fixture": "array-map-16",
+      "arm": "new",
+      "elapsedNs": 35272,
+      "operations": 2
+    },
+    {
+      "block": 0,
+      "fixture": "array-map-256",
+      "arm": "old",
+      "elapsedNs": 831893,
+      "operations": 2
+    },
+    {
+      "block": 0,
+      "fixture": "array-map-256",
+      "arm": "new",
+      "elapsedNs": 277105,
+      "operations": 2
+    },
+    {
+      "block": 0,
+      "fixture": "array-map-4096",
+      "arm": "old",
+      "elapsedNs": 188152332,
+      "operations": 2
+    },
+    {
+      "block": 0,
+      "fixture": "array-map-4096",
+      "arm": "new",
+      "elapsedNs": 4586985,
+      "operations": 2
+    },
+    {
+      "block": 1,
+      "fixture": "array-map-16",
+      "arm": "new",
+      "elapsedNs": 50121,
+      "operations": 2
+    },
+    {
+      "block": 1,
+      "fixture": "array-map-16",
+      "arm": "old",
+      "elapsedNs": 58258,
+      "operations": 2
+    },
+    {
+      "block": 1,
+      "fixture": "array-map-256",
+      "arm": "new",
+      "elapsedNs": 277424,
+      "operations": 2
+    },
+    {
+      "block": 1,
+      "fixture": "array-map-256",
+      "arm": "old",
+      "elapsedNs": 954903,
+      "operations": 2
+    },
+    {
+      "block": 1,
+      "fixture": "array-map-4096",
+      "arm": "new",
+      "elapsedNs": 4653753,
+      "operations": 2
+    },
+    {
+      "block": 1,
+      "fixture": "array-map-4096",
+      "arm": "old",
+      "elapsedNs": 165328935,
+      "operations": 2
+    },
+    {
+      "block": 2,
+      "fixture": "array-map-16",
+      "arm": "old",
+      "elapsedNs": 23800,
+      "operations": 2
+    },
+    {
+      "block": 2,
+      "fixture": "array-map-16",
+      "arm": "new",
+      "elapsedNs": 20248,
+      "operations": 2
+    },
+    {
+      "block": 2,
+      "fixture": "array-map-256",
+      "arm": "old",
+      "elapsedNs": 835522,
+      "operations": 2
+    },
+    {
+      "block": 2,
+      "fixture": "array-map-256",
+      "arm": "new",
+      "elapsedNs": 396104,
+      "operations": 2
+    },
+    {
+      "block": 2,
+      "fixture": "array-map-4096",
+      "arm": "old",
+      "elapsedNs": 166782914,
+      "operations": 2
+    },
+    {
+      "block": 2,
+      "fixture": "array-map-4096",
+      "arm": "new",
+      "elapsedNs": 7254538,
+      "operations": 2
+    },
+    {
+      "block": 3,
+      "fixture": "array-map-16",
+      "arm": "new",
+      "elapsedNs": 20289,
+      "operations": 2
+    },
+    {
+      "block": 3,
+      "fixture": "array-map-16",
+      "arm": "old",
+      "elapsedNs": 23631,
+      "operations": 2
+    },
+    {
+      "block": 3,
+      "fixture": "array-map-256",
+      "arm": "new",
+      "elapsedNs": 393696,
+      "operations": 2
+    },
+    {
+      "block": 3,
+      "fixture": "array-map-256",
+      "arm": "old",
+      "elapsedNs": 966757,
+      "operations": 2
+    },
+    {
+      "block": 3,
+      "fixture": "array-map-4096",
+      "arm": "new",
+      "elapsedNs": 5791448,
+      "operations": 2
+    },
+    {
+      "block": 3,
+      "fixture": "array-map-4096",
+      "arm": "old",
+      "elapsedNs": 180537137,
+      "operations": 2
+    },
+    {
+      "block": 4,
+      "fixture": "array-map-16",
+      "arm": "old",
+      "elapsedNs": 25417,
+      "operations": 2
+    },
+    {
+      "block": 4,
+      "fixture": "array-map-16",
+      "arm": "new",
+      "elapsedNs": 50453,
+      "operations": 2
+    },
+    {
+      "block": 4,
+      "fixture": "array-map-256",
+      "arm": "old",
+      "elapsedNs": 806321,
+      "operations": 2
+    },
+    {
+      "block": 4,
+      "fixture": "array-map-256",
+      "arm": "new",
+      "elapsedNs": 274737,
+      "operations": 2
+    },
+    {
+      "block": 4,
+      "fixture": "array-map-4096",
+      "arm": "old",
+      "elapsedNs": 175999432,
+      "operations": 2
+    },
+    {
+      "block": 4,
+      "fixture": "array-map-4096",
+      "arm": "new",
+      "elapsedNs": 4413676,
+      "operations": 2
+    },
+    {
+      "block": 5,
+      "fixture": "array-map-16",
+      "arm": "new",
+      "elapsedNs": 20412,
+      "operations": 2
+    },
+    {
+      "block": 5,
+      "fixture": "array-map-16",
+      "arm": "old",
+      "elapsedNs": 61158,
+      "operations": 2
+    },
+    {
+      "block": 5,
+      "fixture": "array-map-256",
+      "arm": "new",
+      "elapsedNs": 275969,
+      "operations": 2
+    },
+    {
+      "block": 5,
+      "fixture": "array-map-256",
+      "arm": "old",
+      "elapsedNs": 1546589,
+      "operations": 2
+    },
+    {
+      "block": 5,
+      "fixture": "array-map-4096",
+      "arm": "new",
+      "elapsedNs": 4346979,
+      "operations": 2
+    },
+    {
+      "block": 5,
+      "fixture": "array-map-4096",
+      "arm": "old",
+      "elapsedNs": 165583960,
+      "operations": 2
+    }
+  ]
+}

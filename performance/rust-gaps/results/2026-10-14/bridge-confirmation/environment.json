@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-14T01:28:05.533Z",
+  "node": "v26.8.2",
+  "modulePath": "/home/dan/code/oss/rules-machine/dist/index.mjs",
+  "moduleSha256": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+  "binaryPath": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+  "binarySha256": "2024c8533c015884a60dc57bbb3ee07103cdb349575105d9fe829ec579acc637",
+  "blocks": 12,
+  "schedule": {
+    "eligibility": 19,
+    "pricing-0": 26,
+    "pricing-1024": 20,
+    "pricing-32768": 6,
+    "array-map-16": 428,
+    "array-map-256": 82,
+    "array-map-4096": 4
+  },
+  "instrumentHashes": {
+    "worker": "43b522797c9544d7a1c52126359fa1fd78a20397e38c32499837baf030fccb70",
+    "bridge": "615300d616ae08b0031f8adb61adf0a9697395e23007c05792dc4f1de0cc426f",
+    "wire": "f17ecba29da1d52d8f61c91d35e80a943276f6393ca15c57b5f95d6564389f7c"
+  },
+  "boundary": "Parent tagged encode + pipe/framing + worker execute + result/input tagged decode + checked output digest; direct TS clone/evaluate + same digest. Warm prepare excluded; cold measured separately.",
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/rust-gaps/measure-bridge.mjs",
+    "dist/index.mjs",
+    "experiments/rusty-rules/target/release/rusty-rules-experiment",
+    "performance/rust-gaps/results/2026-10-14/bridge-confirmation",
+    "12"
+  ]
+}

@@ -848,9 +848,9 @@
     "SLICE": "Numeric offsets; array or scalar wrapped into a singleton; JS integer truncation.",
     "CONCAT": "Two arrays; combined result at most 100000 elements.",
     "CONS": "Any value and array; result at most 100000 elements.",
-    "CONTAINS": "Supported primitive/array membership domain; object equality uses identity.",
-    "INCLUDES": "Supported primitive/array membership domain; object equality uses identity.",
-    "REMOVE_VALUES": "Supported primitive/array membership domain; object equality uses identity.",
+    "CONTAINS": "Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker.",
+    "INCLUDES": "Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker.",
+    "REMOVE_VALUES": "Each argument accepts any supported value; scalars wrap to singleton arrays. First argument supplies matches, second supplies data. SameValueZero primitive matching; object identity within worker.",
     "STRING_CONTAINS": "Two strings.",
     "STRING_STARTS_WITH": "Two strings.",
     "STRING_ENDS_WITH": "Two strings."

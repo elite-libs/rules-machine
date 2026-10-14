@@ -1,0 +1,121 @@
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 25984.13819444445,
+      "minNs": 23354.867013888885,
+      "maxNs": 34875.82569444444,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 46033.29340277778,
+      "minNs": 38984.56041666667,
+      "maxNs": 55752.33645833333,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-0",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 43812.64825581396,
+      "minNs": 33893.21656976744,
+      "maxNs": 68119.24745639536,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 72306.8175872093,
+      "minNs": 37965.09956395348,
+      "maxNs": 94619.66097383724,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-1024",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 49904.907051282054,
+      "minNs": 26247.332131410258,
+      "maxNs": 76623.70512820514,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 74638.7564102564,
+      "minNs": 38045.37459935898,
+      "maxNs": 88544.08613782053,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-32768",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 62461.787715517225,
+      "minNs": 32537.966056034486,
+      "maxNs": 94117.30226293104,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 81605.88685344828,
+      "minNs": 45155.49407327586,
+      "maxNs": 94996.79418103446,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-16",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 86949.9347368421,
+      "minNs": 29220.20736842105,
+      "maxNs": 114519.72210526316,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 108286.59368421053,
+      "minNs": 47682.23789473684,
+      "maxNs": 190693.61999999997,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-256",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 885326.4684684685,
+      "minNs": 342808.96396396396,
+      "maxNs": 1119814.6396396395,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 1155482.3783783785,
+      "minNs": 507417.61261261266,
+      "maxNs": 1746807.189189189,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-4096",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 9761619.260869564,
+      "minNs": 5493828.826086956,
+      "maxNs": 11629069.347826088,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 11786333.782608699,
+      "minNs": 6289852.739130434,
+      "maxNs": 14460530.260869563,
+      "blocks": 12
+    }
+  }
+]

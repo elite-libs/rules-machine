@@ -1,0 +1,1427 @@
+{
+  "at": "2026-10-14T01:28:31.084Z",
+  "blocks": 12,
+  "summary": [
+    {
+      "fixture": "eligibility",
+      "directTsMedianNs": 44537.91118421052,
+      "bridgeMedianNs": 152453.9292763158,
+      "directTsOverBridge": {
+        "ratio": 0.29958590422907794,
+        "lower95": 0.2816821816677713,
+        "upper95": 0.3186673838700656
+      }
+    },
+    {
+      "fixture": "pricing-0",
+      "directTsMedianNs": 47786.66646634617,
+      "bridgeMedianNs": 144838.4771634615,
+      "directTsOverBridge": {
+        "ratio": 0.3486648098051743,
+        "lower95": 0.3319123243917137,
+        "upper95": 0.3645836781080879
+      }
+    },
+    {
+      "fixture": "pricing-1024",
+      "directTsMedianNs": 47877.16406250012,
+      "bridgeMedianNs": 152959.69218750007,
+      "directTsOverBridge": {
+        "ratio": 0.3097691121692542,
+        "lower95": 0.2805663783346698,
+        "upper95": 0.3435606154021716
+      }
+    },
+    {
+      "fixture": "pricing-32768",
+      "directTsMedianNs": 66777.39843750026,
+      "bridgeMedianNs": 349680.911458333,
+      "directTsOverBridge": {
+        "ratio": 0.20535874648746563,
+        "lower95": 0.1670636057911254,
+        "upper95": 0.25201751355326574
+      }
+    },
+    {
+      "fixture": "array-map-16",
+      "directTsMedianNs": 72897.81892523365,
+      "bridgeMedianNs": 231994.35981308413,
+      "directTsOverBridge": {
+        "ratio": 0.3042298943069466,
+        "lower95": 0.2841940560595755,
+        "upper95": 0.3276823117324894
+      }
+    },
+    {
+      "fixture": "array-map-256",
+      "directTsMedianNs": 592152.4024390248,
+      "bridgeMedianNs": 2160161.8048780486,
+      "directTsOverBridge": {
+        "ratio": 0.2836013505653305,
+        "lower95": 0.2562134805233621,
+        "upper95": 0.3195612907722808
+      }
+    },
+    {
+      "fixture": "array-map-4096",
+      "directTsMedianNs": 11631886.24999998,
+      "bridgeMedianNs": 35020747,
+      "directTsOverBridge": {
+        "ratio": 0.3059603500949295,
+        "lower95": 0.2538919686524732,
+        "upper95": 0.369533853473372
+      }
+    }
+  ],
+  "aggregate": {
+    "ratio": 0.2906943502931716,
+    "lower95": 0.27354560063902755,
+    "upper95": 0.31039590619728624
+  },
+  "coldBridgeStartupPrepareFirstRun": {
+    "samples": 30,
+    "medianNs": 2259960.499999991,
+    "minNs": 1964630.9999999972,
+    "maxNs": 5776729.000000003,
+    "independentParentProcesses": 3
+  },
+  "coldDirectTsFactoryFirstRun": {
+    "samples": 30,
+    "medianNs": 438127.0000000015,
+    "minNs": 237245.99999999895,
+    "maxNs": 5672710.999999993,
+    "independentParentProcesses": 3
+  },
+  "retention": [
+    {
+      "mode": "retention",
+      "block": 0,
+      "snapshots": [
+        {
+          "label": "startup",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 0,
+            "programs": 0,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 62488576,
+            "heapTotal": 8663040,
+            "heapUsed": 5814544,
+            "external": 2434082,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3088384,
+            "VmRSS": 3088384
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-128",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1554,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 63012864,
+            "heapTotal": 9187328,
+            "heapUsed": 6057560,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3293184,
+            "VmRSS": 3293184
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-512",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1664,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 67076096,
+            "heapTotal": 10760192,
+            "heapUsed": 6255080,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3293184,
+            "VmRSS": 3293184
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-2000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1792,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 72863744,
+            "heapTotal": 11022336,
+            "heapUsed": 6200792,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3325952,
+            "VmRSS": 3325952
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "large-inputs-500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 88231936,
+            "heapTotal": 24129536,
+            "heapUsed": 6305440,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3543040,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 5
+        },
+        {
+          "label": "large-inputs-1000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 1001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 88510464,
+            "heapTotal": 24129536,
+            "heapUsed": 6311704,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3661824,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 10
+        },
+        {
+          "label": "large-inputs-1500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 1501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 105050112,
+            "heapTotal": 40120320,
+            "heapUsed": 6314272,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3661824,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 15
+        },
+        {
+          "label": "large-inputs-2000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 2001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 106655744,
+            "heapTotal": 40906752,
+            "heapUsed": 6328224,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3661824,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 20
+        },
+        {
+          "label": "large-inputs-2500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 2501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 106405888,
+            "heapTotal": 40906752,
+            "heapUsed": 6326176,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3661824,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 25
+        },
+        {
+          "label": "large-inputs-3000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 3001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 106700800,
+            "heapTotal": 40906752,
+            "heapUsed": 6328776,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3661824,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 30
+        },
+        {
+          "label": "after-small-inputs",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 4001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 109322240,
+            "heapTotal": 40906752,
+            "heapUsed": 6337368,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3661824,
+            "VmRSS": 3399680
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 40
+        }
+      ],
+      "completed": 4000,
+      "requestPayloadBytes": 65536,
+      "totalLargeInputCalls": 3000,
+      "arm": "bridge"
+    },
+    {
+      "mode": "retention-ts",
+      "block": 0,
+      "snapshots": [
+        {
+          "label": "startup",
+          "stats": {
+            "syntaxCache": "factory-local, implementation bounded"
+          },
+          "parent": {
+            "rss": 62308352,
+            "heapTotal": 8663040,
+            "heapUsed": 5710424,
+            "external": 2434082,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-128",
+          "stats": {},
+          "parent": {
+            "rss": 63750144,
+            "heapTotal": 9449472,
+            "heapUsed": 6104528,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-512",
+          "stats": {},
+          "parent": {
+            "rss": 66502656,
+            "heapTotal": 11284480,
+            "heapUsed": 6492152,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-2000",
+          "stats": {},
+          "parent": {
+            "rss": 75313152,
+            "heapTotal": 12857344,
+            "heapUsed": 6492968,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "large-inputs-500",
+          "stats": {
+            "completed": 500
+          },
+          "parent": {
+            "rss": 76480512,
+            "heapTotal": 14168064,
+            "heapUsed": 6552376,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 5
+        },
+        {
+          "label": "large-inputs-1000",
+          "stats": {
+            "completed": 1000
+          },
+          "parent": {
+            "rss": 78446592,
+            "heapTotal": 16527360,
+            "heapUsed": 6557288,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 10
+        },
+        {
+          "label": "large-inputs-1500",
+          "stats": {
+            "completed": 1500
+          },
+          "parent": {
+            "rss": 78577664,
+            "heapTotal": 16527360,
+            "heapUsed": 6559952,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 15
+        },
+        {
+          "label": "large-inputs-2000",
+          "stats": {
+            "completed": 2000
+          },
+          "parent": {
+            "rss": 78577664,
+            "heapTotal": 16527360,
+            "heapUsed": 6560808,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 20
+        },
+        {
+          "label": "large-inputs-2500",
+          "stats": {
+            "completed": 2500
+          },
+          "parent": {
+            "rss": 78577664,
+            "heapTotal": 16527360,
+            "heapUsed": 6561760,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 25
+        },
+        {
+          "label": "large-inputs-3000",
+          "stats": {
+            "completed": 3000
+          },
+          "parent": {
+            "rss": 78577664,
+            "heapTotal": 16527360,
+            "heapUsed": 6563032,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 30
+        },
+        {
+          "label": "after-small-inputs",
+          "stats": {
+            "completed": 4000
+          },
+          "parent": {
+            "rss": 78577664,
+            "heapTotal": 16527360,
+            "heapUsed": 6564896,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 40
+        }
+      ],
+      "completed": 4000,
+      "requestPayloadBytes": 65536,
+      "totalLargeInputCalls": 3000,
+      "arm": "direct-ts"
+    },
+    {
+      "mode": "retention",
+      "block": 1,
+      "snapshots": [
+        {
+          "label": "startup",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 0,
+            "programs": 0,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 62361600,
+            "heapTotal": 8925184,
+            "heapUsed": 5814496,
+            "external": 2434082,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3141632,
+            "VmRSS": 3141632
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-128",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1554,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 63016960,
+            "heapTotal": 9187328,
+            "heapUsed": 6057512,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3276800,
+            "VmRSS": 3276800
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-512",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1664,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 66949120,
+            "heapTotal": 10498048,
+            "heapUsed": 6250688,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3276800,
+            "VmRSS": 3276800
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-2000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1792,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 73207808,
+            "heapTotal": 10760192,
+            "heapUsed": 6200864,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3309568,
+            "VmRSS": 3309568
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "large-inputs-500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 88018944,
+            "heapTotal": 23867392,
+            "heapUsed": 6316152,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3522560,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 5
+        },
+        {
+          "label": "large-inputs-1000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 1001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 88702976,
+            "heapTotal": 23867392,
+            "heapUsed": 6322288,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 10
+        },
+        {
+          "label": "large-inputs-1500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 1501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 103866368,
+            "heapTotal": 38023168,
+            "heapUsed": 6314344,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 15
+        },
+        {
+          "label": "large-inputs-2000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 2001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 106291200,
+            "heapTotal": 40644608,
+            "heapUsed": 6328200,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 20
+        },
+        {
+          "label": "large-inputs-2500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 2501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 106790912,
+            "heapTotal": 40644608,
+            "heapUsed": 6326152,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 25
+        },
+        {
+          "label": "large-inputs-3000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 3001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 106676224,
+            "heapTotal": 40644608,
+            "heapUsed": 6351616,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 30
+        },
+        {
+          "label": "after-small-inputs",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 4001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 109428736,
+            "heapTotal": 40644608,
+            "heapUsed": 6337440,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3383296
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 40
+        }
+      ],
+      "completed": 4000,
+      "requestPayloadBytes": 65536,
+      "totalLargeInputCalls": 3000,
+      "arm": "bridge"
+    },
+    {
+      "mode": "retention-ts",
+      "block": 1,
+      "snapshots": [
+        {
+          "label": "startup",
+          "stats": {
+            "syntaxCache": "factory-local, implementation bounded"
+          },
+          "parent": {
+            "rss": 62156800,
+            "heapTotal": 8663040,
+            "heapUsed": 5710424,
+            "external": 2434082,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-128",
+          "stats": {},
+          "parent": {
+            "rss": 63598592,
+            "heapTotal": 9449472,
+            "heapUsed": 6104528,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-512",
+          "stats": {},
+          "parent": {
+            "rss": 66351104,
+            "heapTotal": 11546624,
+            "heapUsed": 6492152,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-2000",
+          "stats": {},
+          "parent": {
+            "rss": 74870784,
+            "heapTotal": 12595200,
+            "heapUsed": 6487808,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "large-inputs-500",
+          "stats": {
+            "completed": 500
+          },
+          "parent": {
+            "rss": 75976704,
+            "heapTotal": 13905920,
+            "heapUsed": 6547336,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 5
+        },
+        {
+          "label": "large-inputs-1000",
+          "stats": {
+            "completed": 1000
+          },
+          "parent": {
+            "rss": 77942784,
+            "heapTotal": 16003072,
+            "heapUsed": 6548728,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 10
+        },
+        {
+          "label": "large-inputs-1500",
+          "stats": {
+            "completed": 1500
+          },
+          "parent": {
+            "rss": 78204928,
+            "heapTotal": 16265216,
+            "heapUsed": 6554816,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 15
+        },
+        {
+          "label": "large-inputs-2000",
+          "stats": {
+            "completed": 2000
+          },
+          "parent": {
+            "rss": 78204928,
+            "heapTotal": 16265216,
+            "heapUsed": 6555672,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 20
+        },
+        {
+          "label": "large-inputs-2500",
+          "stats": {
+            "completed": 2500
+          },
+          "parent": {
+            "rss": 78204928,
+            "heapTotal": 16265216,
+            "heapUsed": 6556624,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 25
+        },
+        {
+          "label": "large-inputs-3000",
+          "stats": {
+            "completed": 3000
+          },
+          "parent": {
+            "rss": 78204928,
+            "heapTotal": 16265216,
+            "heapUsed": 6557896,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 30
+        },
+        {
+          "label": "after-small-inputs",
+          "stats": {
+            "completed": 4000
+          },
+          "parent": {
+            "rss": 78204928,
+            "heapTotal": 16265216,
+            "heapUsed": 6559760,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 40
+        }
+      ],
+      "completed": 4000,
+      "requestPayloadBytes": 65536,
+      "totalLargeInputCalls": 3000,
+      "arm": "direct-ts"
+    },
+    {
+      "mode": "retention",
+      "block": 2,
+      "snapshots": [
+        {
+          "label": "startup",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 0,
+            "programs": 0,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 62533632,
+            "heapTotal": 8925184,
+            "heapUsed": 5814528,
+            "external": 2434082,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3072000,
+            "VmRSS": 3072000
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-128",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1554,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 62795776,
+            "heapTotal": 9187328,
+            "heapUsed": 6057544,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3284992,
+            "VmRSS": 3284992
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-512",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1664,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 66990080,
+            "heapTotal": 10498048,
+            "heapUsed": 6208856,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3284992,
+            "VmRSS": 3284992
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-2000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 0,
+            "programSourceBytes": 1792,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 72814592,
+            "heapTotal": 11022336,
+            "heapUsed": 6200776,
+            "external": 2434122,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3317760,
+            "VmRSS": 3317760
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "large-inputs-500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 87666688,
+            "heapTotal": 24129536,
+            "heapUsed": 6316256,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 5
+        },
+        {
+          "label": "large-inputs-1000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 1001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 88272896,
+            "heapTotal": 23867392,
+            "heapUsed": 6323096,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 10
+        },
+        {
+          "label": "large-inputs-1500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 1501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 105353216,
+            "heapTotal": 40644608,
+            "heapUsed": 6314288,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 15
+        },
+        {
+          "label": "large-inputs-2000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 2001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 105553920,
+            "heapTotal": 40644608,
+            "heapUsed": 6327112,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 20
+        },
+        {
+          "label": "large-inputs-2500",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 2501,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 105598976,
+            "heapTotal": 40644608,
+            "heapUsed": 6323416,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 25
+        },
+        {
+          "label": "large-inputs-3000",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 3001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 105725952,
+            "heapTotal": 40644608,
+            "heapUsed": 6348880,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 30
+        },
+        {
+          "label": "after-small-inputs",
+          "stats": {
+            "cacheLimit": 128,
+            "completed": 4001,
+            "programSourceBytes": 1802,
+            "programs": 128,
+            "retainedInputs": 0,
+            "sourceByteLimit": 1048576
+          },
+          "parent": {
+            "rss": 108216320,
+            "heapTotal": 40644608,
+            "heapUsed": 6334704,
+            "external": 2464575,
+            "arrayBuffers": 203133
+          },
+          "child": {
+            "VmHWM": 3530752,
+            "VmRSS": 3395584
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 40
+        }
+      ],
+      "completed": 4000,
+      "requestPayloadBytes": 65536,
+      "totalLargeInputCalls": 3000,
+      "arm": "bridge"
+    },
+    {
+      "mode": "retention-ts",
+      "block": 2,
+      "snapshots": [
+        {
+          "label": "startup",
+          "stats": {
+            "syntaxCache": "factory-local, implementation bounded"
+          },
+          "parent": {
+            "rss": 61984768,
+            "heapTotal": 8925184,
+            "heapUsed": 5710392,
+            "external": 2434082,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-128",
+          "stats": {},
+          "parent": {
+            "rss": 62926848,
+            "heapTotal": 9711616,
+            "heapUsed": 6104496,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-512",
+          "stats": {},
+          "parent": {
+            "rss": 65679360,
+            "heapTotal": 11546624,
+            "heapUsed": 6689504,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "unique-programs-2000",
+          "stats": {},
+          "parent": {
+            "rss": 75378688,
+            "heapTotal": 12857344,
+            "heapUsed": 6487728,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 0
+        },
+        {
+          "label": "large-inputs-500",
+          "stats": {
+            "completed": 500
+          },
+          "parent": {
+            "rss": 76201984,
+            "heapTotal": 14168064,
+            "heapUsed": 6547136,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 5
+        },
+        {
+          "label": "large-inputs-1000",
+          "stats": {
+            "completed": 1000
+          },
+          "parent": {
+            "rss": 77643776,
+            "heapTotal": 16265216,
+            "heapUsed": 6552048,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 10
+        },
+        {
+          "label": "large-inputs-1500",
+          "stats": {
+            "completed": 1500
+          },
+          "parent": {
+            "rss": 77643776,
+            "heapTotal": 16265216,
+            "heapUsed": 6554712,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 15
+        },
+        {
+          "label": "large-inputs-2000",
+          "stats": {
+            "completed": 2000
+          },
+          "parent": {
+            "rss": 77643776,
+            "heapTotal": 16265216,
+            "heapUsed": 6555568,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 20
+        },
+        {
+          "label": "large-inputs-2500",
+          "stats": {
+            "completed": 2500
+          },
+          "parent": {
+            "rss": 77643776,
+            "heapTotal": 16265216,
+            "heapUsed": 6556520,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 25
+        },
+        {
+          "label": "large-inputs-3000",
+          "stats": {
+            "completed": 3000
+          },
+          "parent": {
+            "rss": 77643776,
+            "heapTotal": 16265216,
+            "heapUsed": 6557792,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 30
+        },
+        {
+          "label": "after-small-inputs",
+          "stats": {
+            "completed": 4000
+          },
+          "parent": {
+            "rss": 77643776,
+            "heapTotal": 16265216,
+            "heapUsed": 6559656,
+            "external": 2434122,
+            "arrayBuffers": 137597
+          },
+          "sampledInputsAlive": 0,
+          "sampledInputs": 40
+        }
+      ],
+      "completed": 4000,
+      "requestPayloadBytes": 65536,
+      "totalLargeInputCalls": 3000,
+      "arm": "direct-ts"
+    }
+  ],
+  "uncertainty": "Bootstrap whole paired process blocks; per-slice intervals unadjusted for multiple comparisons. Cold/retention are diagnostic only."
+}

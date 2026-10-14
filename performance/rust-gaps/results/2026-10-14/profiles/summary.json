@@ -1,0 +1,296 @@
+[
+  {
+    "profile": "ts-pricing.cpuprofile",
+    "samples": 5866,
+    "durationMs": 7280.113,
+    "topSelf": [
+      {
+        "function": "visit",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3821,
+        "selfSamples": 1495,
+        "selfPercent": 25.48585066484828
+      },
+      {
+        "function": "writeData",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 1996,
+        "selfSamples": 600,
+        "selfPercent": 10.228435049437437
+      },
+      {
+        "function": "structuredClone",
+        "url": "node:internal/worker/js_transferable",
+        "line": 113,
+        "selfSamples": 487,
+        "selfPercent": 8.302079781793386
+      },
+      {
+        "function": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfSamples": 296,
+        "selfPercent": 5.046027957722468
+      },
+      {
+        "function": "ownData",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2030,
+        "selfSamples": 290,
+        "selfPercent": 4.943743607228094
+      },
+      {
+        "function": "termDelegate",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3067,
+        "selfSamples": 260,
+        "selfPercent": 4.432321854756222
+      },
+      {
+        "function": "getOwnPath",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2046,
+        "selfSamples": 176,
+        "selfPercent": 3.000340947834981
+      },
+      {
+        "function": "unwrapInternal",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2254,
+        "selfSamples": 139,
+        "selfPercent": 2.3695874531196726
+      },
+      {
+        "function": "materialize",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2274,
+        "selfSamples": 139,
+        "selfPercent": 2.3695874531196726
+      },
+      {
+        "function": "evaluateWithContext",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3297,
+        "selfSamples": 137,
+        "selfPercent": 2.335492669621548
+      },
+      {
+        "function": "structuredClone",
+        "url": "",
+        "line": 0,
+        "selfSamples": 133,
+        "selfPercent": 2.2673031026252985
+      },
+      {
+        "function": "(anonymous)",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 99,
+        "selfSamples": 103,
+        "selfPercent": 1.7558813501534265
+      },
+      {
+        "function": "ExecutionBudget",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 1857,
+        "selfSamples": 103,
+        "selfPercent": 1.7558813501534265
+      },
+      {
+        "function": "handleRule",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3471,
+        "selfSamples": 99,
+        "selfPercent": 1.687691783157177
+      },
+      {
+        "function": "evaluateRule",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3663,
+        "selfSamples": 83,
+        "selfPercent": 1.4149335151721787
+      },
+      {
+        "function": "table.<computed>",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3179,
+        "selfSamples": 82,
+        "selfPercent": 1.3978861234231164
+      },
+      {
+        "function": "executeProgram",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3407,
+        "selfSamples": 79,
+        "selfPercent": 1.3467439481759291
+      },
+      {
+        "function": "setOwnPath",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2067,
+        "selfSamples": 69,
+        "selfPercent": 1.1762700306853051
+      },
+      {
+        "function": "consume",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 1869,
+        "selfSamples": 54,
+        "selfPercent": 0.9205591544493692
+      },
+      {
+        "function": "isNumber",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2145,
+        "selfSamples": 53,
+        "selfPercent": 0.9035117627003069
+      }
+    ]
+  },
+  {
+    "profile": "ts-map4096.cpuprofile",
+    "samples": 1583,
+    "durationMs": 1819.187,
+    "topSelf": [
+      {
+        "function": "runItem",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3583,
+        "selfSamples": 337,
+        "selfPercent": 21.288692356285534
+      },
+      {
+        "function": "handleRule",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3471,
+        "selfSamples": 225,
+        "selfPercent": 14.213518635502211
+      },
+      {
+        "function": "termDelegate",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3067,
+        "selfSamples": 139,
+        "selfPercent": 8.780795957043589
+      },
+      {
+        "function": "unwrapInternal",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2254,
+        "selfSamples": 86,
+        "selfPercent": 5.432722678458623
+      },
+      {
+        "function": "materialize",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2274,
+        "selfSamples": 63,
+        "selfPercent": 3.979785217940619
+      },
+      {
+        "function": "ownData",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2030,
+        "selfSamples": 63,
+        "selfPercent": 3.979785217940619
+      },
+      {
+        "function": "isNumber",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2145,
+        "selfSamples": 58,
+        "selfPercent": 3.663929248262792
+      },
+      {
+        "function": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfSamples": 50,
+        "selfPercent": 3.158559696778269
+      },
+      {
+        "function": "(anonymous)",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3586,
+        "selfSamples": 49,
+        "selfPercent": 3.0953885028427037
+      },
+      {
+        "function": "(anonymous)",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 99,
+        "selfSamples": 46,
+        "selfPercent": 2.9058749210360078
+      },
+      {
+        "function": "table.<computed>",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3179,
+        "selfSamples": 43,
+        "selfPercent": 2.7163613392293113
+      },
+      {
+        "function": "(anonymous)",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3601,
+        "selfSamples": 39,
+        "selfPercent": 2.46367656348705
+      },
+      {
+        "function": "RegExp: ^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$",
+        "url": "",
+        "line": 0,
+        "selfSamples": 38,
+        "selfPercent": 2.4005053695514844
+      },
+      {
+        "function": "evaluateRule",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3663,
+        "selfSamples": 37,
+        "selfPercent": 2.337334175615919
+      },
+      {
+        "function": "getOwnPath",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 2046,
+        "selfSamples": 37,
+        "selfPercent": 2.337334175615919
+      },
+      {
+        "function": "structuredClone",
+        "url": "node:internal/worker/js_transferable",
+        "line": 113,
+        "selfSamples": 31,
+        "selfPercent": 1.9583070120025268
+      },
+      {
+        "function": "termResolver",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3437,
+        "selfSamples": 22,
+        "selfPercent": 1.3897662665824384
+      },
+      {
+        "function": "entry",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3231,
+        "selfSamples": 18,
+        "selfPercent": 1.137081490840177
+      },
+      {
+        "function": "compile",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 3294,
+        "selfSamples": 16,
+        "selfPercent": 1.010739102969046
+      },
+      {
+        "function": "consumeWork",
+        "url": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+        "line": 1908,
+        "selfSamples": 16,
+        "selfPercent": 1.010739102969046
+      }
+    ]
+  }
+]

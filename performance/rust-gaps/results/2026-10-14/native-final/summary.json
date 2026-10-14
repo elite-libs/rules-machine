@@ -1,0 +1,205 @@
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 232193.30208333334,
+      "minNs": 190659.0385416667,
+      "maxNs": 304154.6302083333,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 224846.66874999998,
+      "minNs": 190157.88645833332,
+      "maxNs": 393896.809375,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 37024.896875000006,
+      "minNs": 23879.464583333338,
+      "maxNs": 46561.641666666656,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 3223.7604166666665,
+      "minNs": 1709.996875,
+      "maxNs": 3758.376041666667,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-0",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 469230.31041666673,
+      "minNs": 326545.7604166667,
+      "maxNs": 659238.3437499999,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 441781.71874999994,
+      "minNs": 339988.94166666665,
+      "maxNs": 610997.7729166667,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 45701.54583333332,
+      "minNs": 38841.93333333333,
+      "maxNs": 55999.03333333331,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 5450.847916666667,
+      "minNs": 4451.839583333333,
+      "maxNs": 8566.735416666666,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-1024",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 459813.5115131579,
+      "minNs": 349262.6677631579,
+      "maxNs": 705078.447368421,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 505726.99506578955,
+      "minNs": 358289.3108552631,
+      "maxNs": 710672.1595394738,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 46893.07894736842,
+      "minNs": 35671.87171052632,
+      "maxNs": 73017.82730263157,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 6603.430921052632,
+      "minNs": 4403.422697368421,
+      "maxNs": 9367.567434210527,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "pricing-32768",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 543661.0850694445,
+      "minNs": 384701.8107638888,
+      "maxNs": 1347529.3368055553,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 529265.1197916666,
+      "minNs": 408450.7795138889,
+      "maxNs": 986089.8663194446,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 61499.843749999985,
+      "minNs": 42326.94618055555,
+      "maxNs": 84823.89583333331,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 6892.880208333333,
+      "minNs": 5720.986111111111,
+      "maxNs": 15985.484375,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-16",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 688480.2,
+      "minNs": 497418.2484848486,
+      "maxNs": 1244411.1393939394,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 900239.1515151514,
+      "minNs": 547804.406060606,
+      "maxNs": 1221815.4545454546,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 94716.84242424245,
+      "minNs": 62883.8909090909,
+      "maxNs": 194320.47878787885,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 16017.072727272727,
+      "minNs": 8903.660606060606,
+      "maxNs": 36323.09696969697,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-256",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 10355273.142857144,
+      "minNs": 7582752.892857142,
+      "maxNs": 18682793.82142857,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 10751618.142857144,
+      "minNs": 8007312.678571427,
+      "maxNs": 14932076.321428569,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 744485.5714285715,
+      "minNs": 483122.74999999994,
+      "maxNs": 1349664.4285714286,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 233386.2142857143,
+      "minNs": 126403.96428571429,
+      "maxNs": 384734.1785714286,
+      "blocks": 12
+    }
+  },
+  {
+    "fixture": "array-map-4096",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 142892188,
+      "minNs": 115229391.99999999,
+      "maxNs": 216255335,
+      "blocks": 12
+    },
+    "upgrade": {
+      "medianNs": 157520723.5,
+      "minNs": 122991641.50000001,
+      "maxNs": 214545210.5,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 9127580.000000002,
+      "minNs": 7290711.999999999,
+      "maxNs": 13261301.499999994,
+      "blocks": 12
+    },
+    "rust": {
+      "medianNs": 3317223,
+      "minNs": 2135003,
+      "maxNs": 4537068,
+      "blocks": 12
+    }
+  }
+]

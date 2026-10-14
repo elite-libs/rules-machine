@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-14T01:06:00.967Z",
+  "fixtureVersion": "shared-subset-v2",
+  "nativeRunnerSha256": "c762c8875298628e65345f21f8abb39a246c2ca85abd30b11eff9f1717f57b80",
+  "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+  "node": "v26.8.2",
+  "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+  "cpus": 8,
+  "platform": "linux 7.2.5-3-omarchy x64",
+  "memory": 67342082048,
+  "blocks": 12,
+  "baseline": "/tmp/rules-machine-baseline/dist/index.js",
+  "tuned": "/home/dan/code/oss/rules-machine/dist/index.mjs",
+  "upgrade": "/tmp/rules-machine-upgrade-only/dist/index.js",
+  "rust": "/tmp/rules-machine-rust-gaps/experiments/rusty-rules/target/release/rusty-rules-experiment",
+  "moduleHashes": {
+    "baseline": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+    "tuned": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+    "upgrade": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+    "rust": "e71dbef4884149d4cca9eb965fc0d0267f9deb7c5e8b6646ee0400f10f023d7e"
+  },
+  "harnessHashes": {
+    "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+    "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626",
+    "worker.mjs": "057224f7554de4a3c32a7db7b8722241bfd8b53814d35cf8c4e8169c676ce2b1",
+    "run.mjs": "ab2af1b63b0f54bb79a6fba97d93eec3ec73c88915dc97edc1f19a9f7e16a43f",
+    "verify.mjs": "9a299c8bd27160a8c02b7af23b62fecd9e2cd9f5d68b5fb1f3cdf115b51d0aa1"
+  },
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/tmp/rules-machine-rust-gaps/performance/rust-gaps/native-run.mjs",
+    "baseline=/tmp/rules-machine-baseline/dist/index.js",
+    "upgrade=/tmp/rules-machine-upgrade-only/dist/index.js",
+    "tuned=/home/dan/code/oss/rules-machine/dist/index.mjs",
+    "rust=experiments/rusty-rules/target/release/rusty-rules-experiment",
+    "tunedSource=4c85672",
+    "runtimeSource=d4a88ea",
+    "rustSource=08pending",
+    "blocks=12",
+    "output=/tmp/rules-machine-gap-native"
+  ]
+}
