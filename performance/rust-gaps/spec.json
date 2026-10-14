@@ -1,0 +1,597 @@
+{
+  "version": "rust-core-gap-contract-v1",
+  "wire": "tagged-v1: every value encoded as a typed tuple, preserving own undefined/null/nonfinite numbers; tree transport rejects cycles and sparse arrays",
+  "supported": [
+    {
+      "feature": "null-missing-undefined",
+      "cases": [
+        {
+          "name": "distinct-null-and-missing",
+          "rules": "[x, missing, NULL]",
+          "input": {
+            "x": null
+          }
+        },
+        {
+          "name": "own-undefined-assignment",
+          "rules": [
+            "out = missing",
+            {
+              "return": "out"
+            }
+          ],
+          "input": {}
+        },
+        {
+          "name": "undefined-input-present",
+          "rules": "[x, missing, x == missing]",
+          "inputWire": [
+            "object",
+            [
+              [
+                "x",
+                [
+                  "undefined"
+                ]
+              ]
+            ]
+          ]
+        },
+        {
+          "name": "strict-missing",
+          "rules": "missing",
+          "input": {},
+          "options": {
+            "ignoreMissingKeys": false
+          },
+          "error": true
+        },
+        {
+          "name": "nullish-lazy",
+          "rules": [
+            "x ??= ABS(\"bad\")",
+            {
+              "return": "x"
+            }
+          ],
+          "input": {
+            "x": 0
+          }
+        },
+        {
+          "name": "nullish-null",
+          "rules": [
+            "x ??= -7",
+            {
+              "return": "x"
+            }
+          ],
+          "input": {
+            "x": null
+          }
+        },
+        {
+          "name": "strict-nullish-lhs",
+          "rules": "x ??= 2",
+          "input": {},
+          "options": {
+            "ignoreMissingKeys": false
+          },
+          "error": true
+        }
+      ]
+    },
+    {
+      "feature": "numeric-and-case",
+      "cases": [
+        {
+          "name": "negative-and-case",
+          "rules": "-2 + abs(-3)",
+          "input": {}
+        },
+        {
+          "name": "mixed-boolean-precedence",
+          "rules": "TRUE oR FALSE aND false",
+          "input": {}
+        },
+        {
+          "name": "truthy-operands",
+          "rules": "[0 AND 9, 2 OR 8, null OR 4]",
+          "input": {}
+        },
+        {
+          "name": "constants",
+          "rules": "[null, EMPTY, EMPTYDICT, PI, e, EPSILON, infinity]",
+          "input": {}
+        },
+        {
+          "name": "nonfinite",
+          "rules": "[1 / 0, 0 / 0, -0]",
+          "input": {}
+        },
+        {
+          "name": "relations",
+          "rules": "[\"a\" < \"b\", null < 1, missing > 1, true >= 1]",
+          "input": {}
+        },
+        {
+          "name": "strict-equality",
+          "rules": "[null == missing, null == NULL, 1 == true]",
+          "input": {}
+        },
+        {
+          "name": "power-associativity",
+          "rules": "[2 ^ 3 ^ 2, -2 ^ 2, 2 ^ -2]",
+          "input": {}
+        },
+        {
+          "name": "escaped-string",
+          "rules": "\"hello\\nworld\"",
+          "input": {}
+        },
+        {
+          "name": "object-identity",
+          "rules": "[obj == obj, obj == other, items == items]",
+          "input": {
+            "obj": {
+              "x": 1
+            },
+            "other": {
+              "x": 1
+            },
+            "items": [
+              1
+            ]
+          }
+        },
+        {
+          "name": "emptydict-fresh",
+          "rules": [
+            "x=EMPTYDICT",
+            "x.value=2",
+            {
+              "return": "EMPTYDICT"
+            }
+          ],
+          "input": {}
+        }
+      ]
+    },
+    {
+      "feature": "nested-sequences-returns",
+      "cases": [
+        {
+          "name": "nested-results",
+          "rules": [
+            [
+              "1",
+              "2"
+            ]
+          ],
+          "input": {}
+        },
+        {
+          "name": "assignment-alias-results",
+          "rules": [
+            [
+              "x=1",
+              "x=2"
+            ]
+          ],
+          "input": {}
+        },
+        {
+          "name": "nested-return-stops",
+          "rules": [
+            {
+              "if": "true",
+              "then": [
+                "x=1",
+                {
+                  "return": "x+3"
+                },
+                "x=9"
+              ]
+            },
+            "x=10"
+          ],
+          "input": {}
+        },
+        {
+          "name": "return-in-catch",
+          "rules": [
+            {
+              "try": "ADD(\"bad\", 1)",
+              "catch": [
+                {
+                  "return": "7"
+                },
+                "x=9"
+              ]
+            },
+            "x=10"
+          ],
+          "input": {}
+        }
+      ]
+    },
+    {
+      "feature": "recursive-conditions",
+      "cases": [
+        {
+          "name": "empty-and-or",
+          "rules": [
+            {
+              "and": []
+            },
+            {
+              "or": []
+            }
+          ],
+          "input": {}
+        },
+        {
+          "name": "recursive-logical",
+          "rules": {
+            "if": {
+              "and": [
+                "x > 1",
+                {
+                  "or": [
+                    "false",
+                    {
+                      "and": [
+                        "true",
+                        "x < 9"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "then": "out=1",
+            "else": "out=2"
+          },
+          "input": {
+            "x": 3
+          }
+        },
+        {
+          "name": "logical-short-circuit",
+          "rules": {
+            "or": [
+              "true",
+              "ABS(\"bad\")"
+            ]
+          },
+          "input": {}
+        }
+      ]
+    },
+    {
+      "feature": "structural-arrays",
+      "cases": [
+        {
+          "name": "map-and-return-local",
+          "rules": [
+            {
+              "map": "items",
+              "run": [
+                {
+                  "return": "$item * 3"
+                },
+                "wrong=1"
+              ],
+              "set": "out"
+            },
+            "after=7",
+            {
+              "return": "out"
+            }
+          ],
+          "input": {
+            "items": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "name": "filter",
+          "rules": {
+            "filter": "items",
+            "run": "$item >= 2",
+            "set": "out"
+          },
+          "input": {
+            "items": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "name": "every",
+          "rules": {
+            "every": "items",
+            "run": "$item >= 2"
+          },
+          "input": {
+            "items": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "name": "some",
+          "rules": {
+            "some": "items",
+            "run": "$item >= 2"
+          },
+          "input": {
+            "items": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "name": "find",
+          "rules": {
+            "find": "items",
+            "run": "$item >= 2"
+          },
+          "input": {
+            "items": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "name": "find-missing",
+          "rules": {
+            "find": "items",
+            "run": "false"
+          },
+          "input": {
+            "items": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "name": "empty-every",
+          "rules": {
+            "every": "items",
+            "run": "false"
+          },
+          "input": {
+            "items": []
+          }
+        },
+        {
+          "name": "callback-state",
+          "rules": [
+            "total=0",
+            {
+              "map": "items",
+              "run": "total += $item"
+            },
+            {
+              "return": "total"
+            }
+          ],
+          "input": {
+            "items": [
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "name": "nested-scopes",
+          "rules": {
+            "map": "rows",
+            "run": [
+              "row=$item",
+              {
+                "map": "row",
+                "run": "$item * 2"
+              }
+            ]
+          },
+          "input": {
+            "rows": [
+              [
+                1,
+                2
+              ],
+              [
+                3
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "feature": "try-catch",
+      "cases": [
+        {
+          "name": "catch-runtime-type",
+          "rules": {
+            "try": "ADD(\"bad\", 1)",
+            "catch": "fallback=3"
+          },
+          "input": {}
+        },
+        {
+          "name": "restore-array-scope-on-error",
+          "rules": [
+            {
+              "try": {
+                "map": "items",
+                "run": "ABS(\"bad\")"
+              },
+              "catch": "fallback=1"
+            },
+            {
+              "return": "fallback"
+            }
+          ],
+          "input": {
+            "items": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "name": "partial-write-survives-catch",
+          "rules": {
+            "try": [
+              "x=2",
+              "ABS(\"bad\")"
+            ],
+            "catch": "y=x+1"
+          },
+          "input": {}
+        }
+      ]
+    },
+    {
+      "feature": "path-writes",
+      "cases": [
+        {
+          "name": "dotted-and-bracket",
+          "rules": [
+            "object.x=2",
+            "items[0]+=3",
+            "object[\"literal.key\"]=7",
+            {
+              "return": "items"
+            }
+          ],
+          "input": {
+            "object": {},
+            "items": [
+              4
+            ]
+          }
+        },
+        {
+          "name": "exact-dotted-own-key",
+          "rules": [
+            "a.b=3",
+            {
+              "return": "a.b"
+            }
+          ],
+          "input": {
+            "a.b": 1,
+            "a": {
+              "b": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "feature": "common-functions",
+      "cases": [
+        {
+          "name": "number-functions",
+          "rules": "[ABS(-3), FLOOR(2.8), CEIL(2.1), ROUND(2.5), SQRT(9), ADD(2,3), MOD(7,4)]",
+          "input": {}
+        },
+        {
+          "name": "array-functions",
+          "rules": "[MIN([3,1]), MAX([3,1]), SORT([3,1,2]), REVERSE([1,2]), HEAD([]), LAST([1,2]), TAIL([1,2])]",
+          "input": {}
+        },
+        {
+          "name": "array-slicing",
+          "rules": "[TAKE(2,[1,2,3]), DROP(-1,[1,2,3]), SLICE(1,3,[1,2,3,4]), CONCAT([1],[2]), CONS(0,[1,2])]",
+          "input": {}
+        },
+        {
+          "name": "range-index",
+          "rules": "[RANGE(-2,2), INDEX([3,4],1), LENGTH(\"hello\"), LENGTH([1,2]), COUNT_KEYS(object)]",
+          "input": {
+            "object": {
+              "a": 1,
+              "b": 2
+            }
+          }
+        },
+        {
+          "name": "contains",
+          "rules": "[CONTAINS([2],[1,2,3]), INCLUDES(4,[1,2]), REMOVE_VALUES([2],[1,2,3])]",
+          "input": {}
+        },
+        {
+          "name": "strings",
+          "rules": "[STRING_CONTAINS(\"ell\",\"hello\"), STRING_STARTS_WITH(\"he\",\"hello\"), STRING_ENDS_WITH(\"lo\",\"hello\")]",
+          "input": {}
+        }
+      ]
+    }
+  ],
+  "unsupported": [
+    {
+      "feature": "date-and-random",
+      "rules": "DATE(1)"
+    },
+    {
+      "feature": "unknown-function",
+      "rules": "RAND()"
+    },
+    {
+      "feature": "higher-order-functions",
+      "rules": "MAP(ABS,[1,2])"
+    },
+    {
+      "feature": "object-library-helpers",
+      "rules": "OMIT(\"x\",obj)"
+    },
+    {
+      "feature": "bracket-read-syntax",
+      "rules": "items[0]"
+    },
+    {
+      "feature": "unsafe-write",
+      "rules": "constructor.x=2"
+    },
+    {
+      "feature": "javascript-operators",
+      "rules": "true && false"
+    },
+    {
+      "feature": "chained-assignment",
+      "rules": "x=y=2"
+    },
+    {
+      "feature": "unknown-structural-fields",
+      "rules": {
+        "if": "true",
+        "then": "1",
+        "other": "2"
+      }
+    },
+    {
+      "feature": "trace",
+      "rules": "1",
+      "options": {
+        "trace": true
+      }
+    }
+  ]
+}

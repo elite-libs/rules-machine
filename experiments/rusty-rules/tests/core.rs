@@ -155,3 +155,12 @@ fn cyclic_write_rejects_without_retained_cycle() {
             .is_err()
     );
 }
+#[test]
+fn parser_escape_uses_next_character_verbatim() {
+    assert_eq!(run(json!("\"a\\nb\""), json!({}))["result"], json!("anb"));
+}
+#[test]
+fn unknown_bare_function_rejects() {
+    assert!(Program::compile(&json!("ABS - 2")).is_err());
+    assert!(Program::compile(&json!("a..b")).is_err());
+}

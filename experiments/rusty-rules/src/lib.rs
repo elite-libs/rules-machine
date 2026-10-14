@@ -269,6 +269,9 @@ fn path(s: &str) -> Result<Vec<String>> {
     let (mut i, mut parts) = (0, Vec::new());
     while i < c.len() {
         if c[i] == '.' {
+            if i == 0 || c.get(i + 1).is_none_or(|c| *c == '.' || *c == '[') {
+                return Err("Empty path segment is unsupported".into());
+            }
             i += 1;
             if i == c.len() {
                 return Err("Invalid path".into());
@@ -653,10 +656,21 @@ impl Parser {
         } else if token == "-" || token == "!" {
             Expr::Unary(token.clone(), Box::new(self.parse(7, depth + 1)?))
         } else if token.starts_with('"') {
-            let value: Json = serde_json::from_str(&token).map_err(|e| e.to_string())?;
-            Expr::Literal(Value::String(
-                value.as_str().ok_or("Expected string")?.into(),
-            ))
+            // expressionparser escapes the next character verbatim (not JSON escapes).
+            let chars: Vec<char> = token.chars().collect();
+            let mut value = String::new();
+            let mut i = 1;
+            while i + 1 < chars.len() {
+                if chars[i] == '\\' {
+                    i += 1;
+                }
+                if i + 1 >= chars.len() {
+                    return Err("Invalid string escape".into());
+                }
+                value.push(chars[i]);
+                i += 1;
+            }
+            Expr::Literal(Value::String(value))
         } else if token.as_bytes().first().is_some_and(|c| c.is_ascii_digit())
             || token.starts_with('.')
         {
