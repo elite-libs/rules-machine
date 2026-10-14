@@ -18,7 +18,7 @@ function worker(arm, action, counts) {
     const child = spawn(process.execPath, [resolve(here, 'worker.mjs'), arm, modulePath, binary, action, ...(counts ? [counts] : [])], { stdio: ['ignore', 'pipe', 'pipe'] });
     let text = '', errors = '';
     child.stdout.on('data', x => text += x); child.stderr.on('data', x => errors += x);
-    child.on('error', reject); child.on('exit', code => {
+    child.on('error', reject); child.on('close', code => {
       if (code) reject(Error(`Worker ${arm} exited ${code}: ${errors}`));
       else { try { accept(JSON.parse(text)); } catch (e) { reject(e); } }
     });

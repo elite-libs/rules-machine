@@ -19,7 +19,7 @@ try {
       try { program = await bridge.prepare(f.rules); }
       catch (error) {
         // Public bridge rule sanitization uses the tagged wire depth40 bound.
-        if (f.name !== 'layers-32-array' || !/depth/i.test(String(error.message))) throw error;
+        if (f.name !== 'layers-32-array' || !/Wire value nesting exceeds 40/.test(String(error.message))) throw error;
         rows.push({ name: f.name, axis: f.axis, supported: false,
           structuralDepth: f.structuralDepth, shape: f.shape, ...ruleMetadata(f.rules), error: String(error.message), operations: 0 });
         continue;

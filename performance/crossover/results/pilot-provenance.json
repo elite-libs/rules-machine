@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-14T01:57:56.914Z",
+  "node": "v26.8.2",
+  "execPath": "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+  "platform": "linux",
+  "arch": "x64",
+  "modulePath": "/home/dan/code/oss/rules-machine/dist/index.mjs",
+  "moduleSHA256": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+  "binary": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+  "binarySHA256": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+}

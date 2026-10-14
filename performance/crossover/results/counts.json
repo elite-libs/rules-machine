@@ -1,0 +1,17 @@
+{
+  "rules-1-payload-0": 2048,
+  "rules-4-payload-0": 2048,
+  "rules-16-payload-0": 1024,
+  "rules-64-payload-0": 256,
+  "rules-256-payload-0": 64,
+  "rules-1024-payload-0": 16,
+  "layers-0": 2048,
+  "layers-4": 2048,
+  "layers-16": 1024,
+  "layers-32": 512,
+  "layers-32-array": 256,
+  "payload-0": 64,
+  "payload-1024": 64,
+  "payload-32768": 64,
+  "payload-262144": 16
+}

@@ -27,7 +27,7 @@ for (const initial of data.blocks[0].arms[0].rows) {
     tsNsPerOperation: mean(pairs.map(p => p.ts.elapsedMs * 1e6 / p.ts.operations)),
     rustNsPerOperation: mean(pairs.map(p => p.rust.elapsedMs * 1e6 / p.rust.operations)) });
 }
-const result = { claimScope: 'Local prepared warm end-to-end serial workload sweep; ratios below one favor Rust. Not a universal byte/rule/layer crossover.',
+const result = { ratioLabel: 'Rust / TypeScript execution TIME; lower favors Rust', claimScope: 'Local prepared warm end-to-end serial workload sweep; ratios below one favor Rust. Not a universal byte/rule/layer crossover.',
   timingScope: 'Includes one TS input clone or bridge input/output serialization boundaries and full JSON output checksum; excludes prepare/startup, initial/final complete oracle assertions and three warm calls.',
   node: data.node, at: data.at, summary };
 writeFileSync(resolve(out, 'summary.json'), JSON.stringify(result, null, 2));
