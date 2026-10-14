@@ -340,9 +340,25 @@ console.log(result.trace);
 
 ### Execution contract and limits
 
-Assignments mutate the supplied input. Use trusted JSON data without functions, getters, or class instances, and provide a mutable input object. Reads resolve own properties; assignment paths reject `__proto__`, `constructor`, and `prototype`. Array callback variables are restored after each callback. A `return` in an array's `run` finishes that callback; other returns finish the pipeline.
+Assignments mutate the supplied input. Reads use own data properties and reject accessors. Input objects, frozen values, cycles, aliases and functions can be returned by identity without recursive mutation or function invocation. Functions and class instances are opaque: traversal, coercion and host callbacks reject. Built-in higher-order functions accept built-in names. Proxies and custom expression engines remain host code; use ordinary data for predictable execution. Assignment needs writable destinations and rejects `__proto__`, `constructor`, and `prototype` paths. Array callback variables are restored after each callback. A `return` in an array's `run` finishes that callback; other returns finish the pipeline.
 
-Execution is synchronous and is not a sandbox for hostile programs. Validation allows at most 100 levels of rule nesting and 10,000 structural nodes. Expressions are limited to 100,000 characters and 100 grouping levels. `RANGE` requires finite safe integer bounds and produces at most 100,000 items; `GCD` requires finite safe integers; `ISPRIME` accepts integers up to 1e12 and returns false for values outside the prime domain. These checks do not provide a wall-clock timeout or a total workload budget.
+By default, a runtime error leaves earlier assignments in place. Use `{ atomic: true }` to restore interpreter-owned property writes on an uncaught failure, including resource exhaustion. Rollback preserves existing object identities, aliases, array holes and descriptors. A handled rule `catch` continues the transaction; it does not create a savepoint. This option cannot undo external host side effects. Enabled traces snapshot historical values without invoking getters or `toJSON`; cycles, functions and accessors use descriptive markers. The returned trace result's `input` is the live caller object.
+
+Execution is synchronous and uses cooperative resource limits. A `ResourceLimitError` bypasses rule `catch` handlers. Defaults per execution are:
+
+| Option in `limits` | Default | What it bounds |
+| --- | ---: | --- |
+| `maxOperations` | 1,000,000 | Shared work accounting, including cold source scans, array loops and used string processing |
+| `maxArrayLength` | 100,000 | Arrays traversed or produced |
+| `maxStringLength` | 1,000,000 | Used string values and generated string results |
+| `maxDataDepth` | 128 | Traversed data depth; configurable up to 256 |
+| `maxDurationMs` | 1,000 | Cooperative elapsed deadline, checked periodically and before successful return |
+
+For example, `ruleFactory(rules, { atomic: true, limits: { maxOperations: 200_000, maxDurationMs: 50 } })`. These controls are not a process sandbox, strict heap cap, or preemptive timeout for host callbacks, Proxy traps or individual native operations. Isolate execution in a killable worker/process when those guarantees matter.
+
+Validation allows at most 100 levels of rule nesting and 10,000 structural nodes. Rule objects and child lists must contain enumerable data properties; sparse rule lists, symbol keys, getters and unexpected keys reject before execution. Expressions allow 100,000 characters, 100 grouping levels and at most 1,024 tokens. `expression.maxTokens` may lower that limit. The factory's syntax cache defaults to 512 entries and 8 MiB of conservative source/token accounting; configure `expression.maxCacheEntries` / `expression.maxCacheBytes`, or set either to zero to disable retention. This estimate is not measured VM heap usage. `createExpressionEngine().cacheStats()` exposes the accounting.
+
+`RANGE` requires finite safe integer bounds and at most 100,000 items; `GCD` requires finite safe integers; `ISPRIME` accepts integers up to 1e12 and returns false below the prime domain. `DATE` accepts finite epoch milliseconds, ISO date-only strings interpreted as UTC, ISO datetimes with an explicit `Z` or offset, and unit-bearing relative durations such as `"-2 days"`. `DATEISO` uses the same parser. Invalid dates, rollover dates, ambiguous local datetimes, bare numeric strings and host objects reject. Relative durations read the clock on every evaluation; they are not cached results.
 
 Use `AND` and `OR` for logical operators, double quotes for string literals, and `STRING([...])` for string concatenation. JavaScript `&&`, `||`, arbitrary function calls, wildcard paths, and object-valued `return` rules are unsupported. Return objects with a string expression such as `DICT(["valid", "errors"], [valid, errors])`. Pass nested arrays through input because the parser does not reliably support nested array literals. Legacy `FILTER_VALUES` and `INCLUDES_VALUES` remove matching values; they preserve exclusion behavior for compatibility.
 

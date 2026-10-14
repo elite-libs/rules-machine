@@ -11,6 +11,8 @@ flowchart TD
   W --> P[03 Measured tuning and Rust subset]
   W --> D[04 Distribution and developer tooling]
   W --> A[06 Authorized advisory remediation]
+  W --> G[05 Gap closure contracts and expanded Rust]
+  G --> V
   A --> V
   S --> V[Combined regression validation]
   E --> V
@@ -25,8 +27,7 @@ flowchart TD
 | [02 Expression safety](tickets/02-expression.md) | Coordinator | Correct assignment scanning, math domains, safe dictionaries and predicates; regressions | Implemented and locally verified |
 | [03 Performance and Rust](tickets/03-performance-rust.md) | Performance Wizard | Frozen workload/oracles, original/tuned/Rust timings, explicit subset gaps | Implemented and locally verified |
 | [04 Distribution](tickets/04-distribution.md) | Coordinator | Install/build/typecheck/lint/test and actual ESM/CJS/browser artifact checks | Implemented and locally verified |
-
-| [05 Remaining contracts](tickets/05-residual-contracts.md) | Follow-up | Explicit parser/date/budget/Rust gaps | Open and scoped |
+| [05 Remaining contracts](tickets/05-residual-contracts.md) | Coordinator, Architect, Performance | Host/date/resource/cache/trace/type contracts; Rust core/bridge and end-to-end measurements | Implemented; final confirmation in progress |
 | [06 Dependency advisories](tickets/06-dependency-advisories.md) | Coordinator |16 findings patched,0 known findings on re-audit; regression and performance confirmation | Implemented and locally verified |
 
 ## Authorized advisory follow-up
@@ -35,9 +36,9 @@ The user subsequently authorized the public advisory scan. It found16 advisories
 
 ## Final reconciliation
 
-See [results and decisions](RESULTS.md), [compatibility notes](CHANGELOG.md), and [remaining contracts](tickets/05-residual-contracts.md). Runtime source is frozen at `79c23b6`. Final validation: 368 tests, typecheck/lint/build, packed ESM/CommonJS/browser/declarations and collaborative browser smoke pass. Twelve balanced process blocks confirm a14.24× warm-workload improvement for the final security dependency tree; see tracked performance evidence for scope and uncertainty.
+See [results and decisions](RESULTS.md), [compatibility notes](CHANGELOG.md), and [gap disposition](tickets/05-residual-contracts.md). The original overhaul and security confirmation remain retained as historical campaigns. The user's “Fill in those gaps” follow-up adds explicit host/date/resource/cache/trace/atomic/type contracts and expanded Rust core/bridge experiments. TypeScript source is frozen at `02d9c60`; final confirmation is in progress.
 
-Local PR drafts: [runtime](prs/01-runtime-hardening.md), [distribution](prs/02-distribution.md), [performance/Rust](prs/03-performance-rust.md), [documentation](prs/04-specification-docs.md). No external PRs were created or linked.
+Local PR drafts: [runtime](prs/01-runtime-hardening.md), [distribution](prs/02-distribution.md), [performance/Rust](prs/03-performance-rust.md), [documentation](prs/04-specification-docs.md), [dependencies](prs/05-dependency-security.md), [gap contracts](prs/06-gap-contracts.md). No external PRs were created or linked.
 
 ## Baseline evidence
 
