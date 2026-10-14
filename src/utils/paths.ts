@@ -3,6 +3,19 @@ import { UserError } from './errors';
 
 const unsafe = new Set(['__proto__', 'prototype', 'constructor']);
 
+function writeData(target: object, key: string, value: unknown) {
+  const descriptor = Object.getOwnPropertyDescriptor(target, key);
+  if (descriptor && !('value' in descriptor))
+    throw new UserError(`Assignment cannot invoke an accessor: ${key}`);
+  Object.defineProperty(
+    target,
+    key,
+    descriptor
+      ? { value }
+      : { value, enumerable: true, writable: true, configurable: true },
+  );
+}
+
 /** Resolve data properties only; inherited host methods are not rule data. */
 export function getOwnPath(data: unknown, path: string | number): unknown {
   if (data != null && Object.hasOwn(Object(data), path)) {
@@ -31,19 +44,9 @@ export function setOwnPath(data: object, path: string, value: unknown): void {
     let child = Object.hasOwn(target, key) ? target[key] : undefined;
     if (child === null || typeof child !== 'object') {
       child = /^\d+$/.test(keys[i + 1]) ? [] : {};
-      Object.defineProperty(target, key, {
-        value: child,
-        enumerable: true,
-        writable: true,
-        configurable: true,
-      });
+      writeData(target, key, child);
     }
     target = child as Record<string, unknown>;
   }
-  Object.defineProperty(target, keys[keys.length - 1], {
-    value,
-    enumerable: true,
-    writable: true,
-    configurable: true,
-  });
+  writeData(target, keys[keys.length - 1], value);
 }

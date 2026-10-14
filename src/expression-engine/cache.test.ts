@@ -13,33 +13,62 @@ describe('syntax cache context isolation', () => {
   });
   test('restores resolver after reentrant calls and failures', () => {
     const engine = createExpressionEngine();
-    expect(engine.evaluateExpression('a + b', term => {
-      if (term === 'a') return engine.evaluateExpression('n + 1', () => 4);
-      return 7;
-    })).toBe(12);
-    expect(() => engine.evaluateExpression('a', () => { throw new Error('resolver'); })).toThrow('resolver');
+    expect(
+      engine.evaluateExpression('a + b', (term) => {
+        if (term === 'a') return engine.evaluateExpression('n + 1', () => 4);
+        return 7;
+      }),
+    ).toBe(12);
+    expect(() =>
+      engine.evaluateExpression('a', () => {
+        throw new Error('resolver');
+      }),
+    ).toThrow('resolver');
     expect(engine.evaluateExpression('a', () => 3)).toBe(3);
   });
   test('evicts syntax without changing results and isolates public metadata', () => {
     const engine = createExpressionEngine();
     engine.compile('x = 2').lhs = 'changed';
     expect(engine.compile('x = 2').lhs).toBe('x');
-    for (let n = 0; n < 520; n++) expect(engine.evaluateExpression(`${n} + value`, () => 1)).toBe(n + 1);
+    for (let n = 0; n < 520; n++)
+      expect(engine.evaluateExpression(`${n} + value`, () => 1)).toBe(n + 1);
     expect(engine.evaluateExpression('0 + value', () => 9)).toBe(9);
   });
   test('bounds source size and nesting before parsing', () => {
     const engine = createExpressionEngine();
     expect(() => engine.compile('a'.repeat(100_001))).toThrow('maximum length');
-    expect(() => engine.compile('('.repeat(101) + '1' + ')'.repeat(101))).toThrow('maximum nesting');
-    expect(engine.evaluateExpression('"' + '('.repeat(101) + '"', () => 0)).toBe('('.repeat(101));
+    expect(() =>
+      engine.compile('('.repeat(101) + '1' + ')'.repeat(101)),
+    ).toThrow('maximum nesting');
+    expect(
+      engine.evaluateExpression('"' + '('.repeat(101) + '"', () => 0),
+    ).toBe('('.repeat(101));
   });
   test('fails closed for unsupported syntax and unknown calls', () => {
     const engine = createExpressionEngine();
-    for (const source of ['', 'false && true', 'true || false', 'HOUR(timestamp)', 'RAND()', 'ABS()', '1 2', '"true', '"abc', '(1 + 2]', '(1 + 2', '1)' ]) {
-      expect(() => engine.evaluateExpression(source, () => 7), source).toThrow();
+    for (const source of [
+      '',
+      'false && true',
+      'true || false',
+      'HOUR(timestamp)',
+      'RAND()',
+      'ABS()',
+      '1 2',
+      '"true',
+      '"abc',
+      '(1 + 2]',
+      '(1 + 2',
+      '1)',
+    ]) {
+      expect(
+        () => engine.evaluateExpression(source, () => 7),
+        source,
+      ).toThrow();
     }
     expect(engine.evaluateExpression('ABS(2)', () => 0)).toBe(2);
-    expect(engine.evaluateExpression('(true) AND (false)', () => 0)).toBe(false);
+    expect(engine.evaluateExpression('(true) AND (false)', () => 0)).toBe(
+      false,
+    );
     expect(engine.evaluateExpression('"a && b"', () => 0)).toBe('a && b');
   });
   test('normalizes empty array syntax without sharing mutable results', () => {
@@ -52,18 +81,29 @@ describe('syntax cache context isolation', () => {
   });
   test('evaluates bracketed assignment targets and lazy nullish RHS', () => {
     const input = { items: [3], object: { 'literal.key': 4 } };
-    ruleFactory(['items[0]=2', 'items[0]+=5', 'object["literal.key"]*=3'])(input);
+    ruleFactory(['items[0]=2', 'items[0]+=5', 'object["literal.key"]*=3'])(
+      input,
+    );
     expect(input).toEqual({ items: [7], object: { 'literal.key': 12 } });
     const engine = createExpressionEngine();
-    expect(engine.evaluateExpression('items[0] ??= absent', term => {
-      if (term === 'items[0]') return 9;
-      throw new Error('RHS must be skipped');
-    })).toBe(9);
-    expect(engine.evaluateExpression('items[0] ??= 3', () => undefined as never)).toBe(3);
+    expect(
+      engine.evaluateExpression('items[0] ??= absent', (term) => {
+        if (term === 'items[0]') return 9;
+        throw new Error('RHS must be skipped');
+      }),
+    ).toBe(9);
+    expect(
+      engine.evaluateExpression('items[0] ??= 3', () => undefined as never),
+    ).toBe(3);
   });
   test('recognizes compact assignment and ignores assignment text in literals', () => {
     const engine = createExpressionEngine();
-    expect(engine.compile('x+=2')).toMatchObject({ lhs: 'x', assignmentOperator: '+=' });
-    expect(engine.compile('"message = value"').assignmentOperator).toBeUndefined();
+    expect(engine.compile('x+=2')).toMatchObject({
+      lhs: 'x',
+      assignmentOperator: '+=',
+    });
+    expect(
+      engine.compile('"message = value"').assignmentOperator,
+    ).toBeUndefined();
   });
 });

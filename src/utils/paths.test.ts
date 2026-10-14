@@ -23,6 +23,19 @@ describe('own data paths', () => {
     expect(input['a.b']).toBe(3);
     expect(input.a.b).toBe(10);
   });
+  test('preserves existing descriptors including array length', () => {
+    const input = { items: [1, 2, 3] };
+    setOwnPath(input, 'items.length', 1);
+    expect(input.items).toEqual([1]);
+    let called = false;
+    Object.defineProperty(input, 'setter', {
+      set() {
+        called = true;
+      },
+    });
+    expect(() => setOwnPath(input, 'setter', 2)).toThrow('accessor');
+    expect(called).toBe(false);
+  });
   test.each([
     '__proto__.bad',
     'a.constructor.bad',
