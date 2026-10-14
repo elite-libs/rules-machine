@@ -12,6 +12,7 @@ for(const fixture of fixtures){console.error(fixture.name);const execute=ruleFac
 // Deterministic held-out arithmetic/branch/path cases, distinct from timed fixtures.
 let seed=0x12345678;function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed;}
 for(let i=0;i<100;i++){const a=random()%100,b=random()%30+1,c=random()%20;check(['out = (nested.a + b) * 2 - c', {if:'(out >= 50) AND (b != 0)',then:'out = out / 2',else:'out = out % 7'},{return:'out'}],[{nested:{a},b,c}]);}
-for(const rules of ['a += 2','DATE(1)','a[0]','null','constructor.x',{map:'items',run:'$item'},'x = 1 / 0']){ok(rustRun({rules,inputs:[{a:1,x:0,items:[]}]}).error,`must reject ${JSON.stringify(rules)}`);}
+for(const rules of ['a += 2','DATE(1)','a[0]','null','constructor.x',[['1','2']],{map:'items',run:'$item'},'x = 1 / 0']){ok(rustRun({rules,inputs:[{a:1,x:0,items:[]}]}).error,`must reject ${JSON.stringify(rules)}`);}
+check('true OR false AND false',[{}]);
 check('false AND absent > 2',[{}]);check('true OR absent > 2',[{}]);
 console.log('Validated all frozen oracles, 100 held-out differential cases, short circuit and explicit unsupported-case rejection.');

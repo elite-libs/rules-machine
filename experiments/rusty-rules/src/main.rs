@@ -69,8 +69,7 @@ fn tokens(s: &str) -> Result<Vec<String>> {
 }
 fn precedence(op: &str) -> Option<u8> {
     Some(match op {
-        "OR" => 1,
-        "AND" => 2,
+        "OR" | "AND" => 1,
         "==" | "!=" => 3,
         "<" | ">" | "<=" | ">=" => 4,
         "+" | "-" => 5,
@@ -329,8 +328,39 @@ fn validate_input(v: &Value) -> Result<()> {
     }
     Ok(())
 }
+fn digest(v: &Value) -> Result<u32> {
+    match v {
+        Value::Bool(b) => Ok(if *b { 7 } else { 11 }),
+        Value::Number(n) => {
+            Ok((n.as_f64().ok_or("invalid number")? * 1000.0 + 0.5).floor() as i64 as u32)
+        }
+        Value::String(s) => Ok(s.encode_utf16().enumerate().fold(13u32, |sum, (i, c)| {
+            sum.wrapping_add((c as u32).wrapping_mul(i as u32 + 1))
+        })),
+        Value::Array(a) => a.iter().enumerate().try_fold(17u32, |sum, (i, v)| {
+            Ok(sum.wrapping_add(digest(v)?.wrapping_mul(i as u32 + 1)))
+        }),
+        _ => Err("unsupported benchmark result type".into()),
+    }
+}
+fn nested_sequence(v: &Value, root: bool) -> bool {
+    match v {
+        Value::Array(a) => (!root) || a.iter().any(|v| nested_sequence(v, false)),
+        Value::Object(o) => o.values().any(|v| nested_sequence(v, false)),
+        _ => false,
+    }
+}
 fn request(v: &Value) -> Result<Value> {
-    let rules = compile(v.get("rules").ok_or("missing rules")?)?;
+    let source = v.get("rules").ok_or("missing rules")?;
+    let top_level_return = source
+        .as_array()
+        .and_then(|a| a.last())
+        .and_then(Value::as_object)
+        .is_some_and(|o| o.len() == 1 && o.contains_key("return"));
+    if nested_sequence(source, true) && !top_level_return {
+        return Err("nested sequences require a final top-level return in this subset".into());
+    }
+    let rules = compile(source)?;
     let inputs = v
         .get("inputs")
         .and_then(Value::as_array)
@@ -357,19 +387,26 @@ fn request(v: &Value) -> Result<Value> {
         }
     }
     let start = Instant::now();
-    let mut checksum = 0f64;
-    for _ in 0..iterations {
-        for input in inputs {
+    let mut checksum = 0u32;
+    let mut completed = 0u64;
+    let skip_first = v
+        .get("skipTimedFirst")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    for iteration in 0..iterations {
+        for (index, input) in inputs.iter().enumerate() {
+            if skip_first && iteration == 0 && index == 0 {
+                continue;
+            }
             let mut copy = input.clone();
             let (result, _) = run(&rules, &mut copy)?;
-            checksum += result
-                .as_f64()
-                .unwrap_or_else(|| if result == true { 1.0 } else { 0.0 });
+            checksum = checksum.wrapping_add(digest(&result)?.wrapping_mul(index as u32 + 1));
+            completed += 1;
             std::hint::black_box(&result);
         }
     }
     Ok(
-        json!({"outputs":outputs,"elapsedNs":start.elapsed().as_nanos() as u64,"operations":iterations*inputs.len() as u64,"checksum":checksum}),
+        json!({"outputs":outputs,"elapsedNs":start.elapsed().as_nanos() as u64,"operations":completed,"checksum":checksum}),
     )
 }
 fn main() {
@@ -393,12 +430,29 @@ fn main() {
                 std::process::exit(1)
             }
         }
-        if once { break; }
+        if once {
+            break;
+        }
     }
 }
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn measured_work_and_nested_scope_contract() {
+        let valid=request(&json!({"rules":[{"return":"value"}],"inputs":[{"value":2},{"value":3}],"iterations":3})).unwrap();
+        assert_eq!(valid["operations"], json!(6));
+        assert_eq!(valid["checksum"], json!(24000));
+        let skipped=request(&json!({"rules":[{"return":"value"}],"inputs":[{"value":2},{"value":3}],"iterations":3,"skipTimedFirst":true})).unwrap();
+        assert_eq!(skipped["operations"], json!(5));
+        assert_eq!(skipped["checksum"], json!(22000));
+        assert!(request(&json!({"rules":[["1","2"]],"inputs":[{}]})).is_err());
+        assert_eq!(
+            evaluate(&expression("true OR false AND false").unwrap(), &json!({})).unwrap(),
+            json!(false)
+        );
+        assert_eq!(digest(&json!([1, 2, 3])).unwrap(), 14017);
+    }
     #[test]
     fn rejects_unsupported() {
         for s in [
