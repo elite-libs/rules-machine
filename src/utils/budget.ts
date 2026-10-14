@@ -34,19 +34,31 @@ export class ExecutionBudget {
   constructor(limits: ExecutionLimits = {}) {
     this.limits = { ...defaultExecutionLimits, ...limits };
     for (const [key, value] of Object.entries(this.limits)) {
-      if (!Number.isFinite(value) || value <= 0 ||
-          (key !== 'maxDurationMs' && !Number.isSafeInteger(value)))
-        throw new UserError(`${key} must be a finite positive ${key === 'maxDurationMs' ? 'number' : 'safe integer'}`);
+      if (
+        !Number.isFinite(value) ||
+        value <= 0 ||
+        (key !== 'maxDurationMs' && !Number.isSafeInteger(value))
+      )
+        throw new UserError(
+          `${key} must be a finite positive ${key === 'maxDurationMs' ? 'number' : 'safe integer'}`,
+        );
     }
-    if (this.limits.maxDataDepth > 256) throw new UserError('maxDataDepth cannot exceed 256');
+    if (this.limits.maxDataDepth > 256)
+      throw new UserError('maxDataDepth cannot exceed 256');
     this.deadline = performance.now() + this.limits.maxDurationMs;
   }
 
   consume(units = 1) {
-    if (!Number.isSafeInteger(units) || units < 0) throw new UserError('Work units must be a nonnegative safe integer');
+    if (!Number.isSafeInteger(units) || units < 0)
+      throw new UserError('Work units must be a nonnegative safe integer');
     this.operations += units;
-    if (!Number.isSafeInteger(this.operations) || this.operations > this.limits.maxOperations)
-      throw new ResourceLimitError(`Execution exceeded maxOperations (${this.limits.maxOperations})`);
+    if (
+      !Number.isSafeInteger(this.operations) ||
+      this.operations > this.limits.maxOperations
+    )
+      throw new ResourceLimitError(
+        `Execution exceeded maxOperations (${this.limits.maxOperations})`,
+      );
     if (this.operations >= this.nextClockCheck) {
       this.nextClockCheck = this.operations + 128;
       this.checkDeadline();
@@ -55,33 +67,56 @@ export class ExecutionBudget {
 
   checkDeadline() {
     if (performance.now() > this.deadline)
-      throw new ResourceLimitError(`Execution exceeded maxDurationMs (${this.limits.maxDurationMs})`);
+      throw new ResourceLimitError(
+        `Execution exceeded maxDurationMs (${this.limits.maxDurationMs})`,
+      );
   }
 
   checkArray(length: number) {
     if (length > this.limits.maxArrayLength)
-      throw new ResourceLimitError(`Array exceeds maxArrayLength (${this.limits.maxArrayLength})`);
+      throw new ResourceLimitError(
+        `Array exceeds maxArrayLength (${this.limits.maxArrayLength})`,
+      );
   }
 }
 
 let active: ExecutionBudget | undefined;
 
 /** Synchronous dynamic scope, restored for nested executions and exceptions. */
-export function withExecutionBudget<T>(budget: ExecutionBudget, run: () => T): T {
+export function withExecutionBudget<T>(
+  budget: ExecutionBudget,
+  run: () => T,
+): T {
   const previous = active;
   active = budget;
-  try { return run(); } finally { active = previous; }
+  try {
+    return run();
+  } finally {
+    active = previous;
+  }
 }
 
-export function currentExecutionBudget(): ExecutionBudget | undefined { return active; }
-export function consumeWork(units = 1): void { active?.consume(units); }
-export function checkArrayLength(length: number): void { active?.checkArray(length); }
+export function currentExecutionBudget(): ExecutionBudget | undefined {
+  return active;
+}
+export function consumeWork(units = 1): void {
+  active?.consume(units);
+}
+export function checkArrayLength(length: number): void {
+  active?.checkArray(length);
+}
 
 export function checkStringLength(length: number): void {
   if (active && length > active.limits.maxStringLength)
-    throw new ResourceLimitError(`String exceeds maxStringLength (${active.limits.maxStringLength})`);
+    throw new ResourceLimitError(
+      `String exceeds maxStringLength (${active.limits.maxStringLength})`,
+    );
 }
 export function checkDataDepth(depth: number): void {
-  if (depth > (active?.limits.maxDataDepth ?? defaultExecutionLimits.maxDataDepth))
-    throw new ResourceLimitError(`Data exceeds maxDataDepth (${active?.limits.maxDataDepth ?? defaultExecutionLimits.maxDataDepth})`);
+  if (
+    depth > (active?.limits.maxDataDepth ?? defaultExecutionLimits.maxDataDepth)
+  )
+    throw new ResourceLimitError(
+      `Data exceeds maxDataDepth (${active?.limits.maxDataDepth ?? defaultExecutionLimits.maxDataDepth})`,
+    );
 }

@@ -1,37 +1,26 @@
 import type { ExpressionValue } from 'expressionparser/dist/ExpressionParser.js';
 import type { ExpressionEngine } from '../expression-engine/engine';
+import {
+  checkArrayLength,
+  consumeWork,
+  ExecutionBudget,
+  type ExecutionLimits,
+  ResourceLimitError,
+  withExecutionBudget,
+} from '../utils/budget';
 import { UserError } from '../utils/errors';
+import { withAtomicWrites } from '../utils/mutations';
 import {
   assertWritablePath,
   getOwnPath as get,
   setOwnPath as set,
 } from '../utils/paths';
-import { toArray } from '../utils/utils';
+import { serializeTrace, traceSnapshot } from '../utils/snapshot';
 import type { AndRule, OrRule, Rule } from './types';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const trailingQuotes = /^(['"])([\s\S]*)\1$/;
-
-const serialize = (data: unknown) => {
-  if (data === null || typeof data !== 'object')
-    return typeof data === 'bigint' ? String(data) : data;
-  const ancestors: object[] = [];
-  try {
-    return JSON.stringify(data, function (_key, value) {
-      if (typeof value === 'bigint') return String(value);
-      if (value !== null && typeof value === 'object') {
-        while (ancestors.length && ancestors[ancestors.length - 1] !== this)
-          ancestors.pop();
-        if (ancestors.includes(value)) return '[Circular]';
-        ancestors.push(value);
-      }
-      return value;
-    });
-  } catch {
-    return '[Unserializable]';
-  }
-};
 
 const arrayMethods = ['map', 'filter', 'every', 'some', 'find'] as const;
 const isArrayRule = (data: object) =>
@@ -51,7 +40,7 @@ export interface TraceRow {
   stepRow?: number;
   stepCount?: number;
   lhs?: string;
-  value?: ExpressionValue;
+  value?: unknown;
   error?: unknown;
   [key: string]: unknown;
 }
@@ -61,6 +50,8 @@ export interface TraceRow {
 export interface ExecutorOptions {
   trace?: boolean;
   ignoreMissingKeys?: boolean;
+  limits?: ExecutionLimits;
+  atomic?: boolean;
 }
 
 // ─── Execution result ────────────────────────────────────────────────────────
@@ -101,7 +92,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
 ): RuleExecutor<TInput> {
   const { trace, ignoreMissingKeys = true } = options;
 
-  function execute<TReturn = unknown>(
+  function executeProgram<TReturn = unknown>(
     rules: Rule,
     input: TInput = {} as TInput,
   ): TReturn | ExecutionResult<TInput> {
@@ -110,10 +101,16 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
     }
     validateRule(rules);
     const traceSimple: TraceRow[] = [];
-    const snapshot = trace ? serialize : (_data: unknown) => undefined;
+    const snapshot = trace ? serializeTrace : (_data: unknown) => undefined;
 
-    function logTrace({ operation, rule, ...args }: TraceRow) {
-      if (trace) traceSimple.push({ operation, rule, ...args });
+    function logTrace(row: TraceRow) {
+      if (!trace) return;
+      const { operation, rule, ...args } = row;
+      traceSimple.push({
+        operation,
+        rule: traceSnapshot(rule) as Rule,
+        ...(traceSnapshot(args) as Record<string, unknown>),
+      });
     }
 
     let stepRow = 0;
@@ -164,18 +161,22 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
     const evaluateCondition = (
       condition: string | AndRule | OrRule,
     ): unknown => {
+      consumeWork();
       if (typeof condition === 'string')
         return evaluateRule({ stepRow, input, rule: condition });
-      if ('and' in condition && Object.hasOwn(condition, 'and'))
-        return condition.and.every((child) =>
-          Boolean(evaluateCondition(child)),
-        );
-      return (condition as OrRule).or.some((child) =>
-        Boolean(evaluateCondition(child)),
-      );
+      const conjunction = Object.hasOwn(condition, 'and');
+      const children = conjunction
+        ? (condition as AndRule).and
+        : (condition as OrRule).or;
+      for (let index = 0; index < children.length; index++) {
+        const result = Boolean(evaluateCondition(children[index]));
+        if (conjunction ? !result : result) return !conjunction;
+      }
+      return conjunction;
     };
 
     const handleRule = (rule: Rule): unknown => {
+      consumeWork();
       if (typeof rule === 'string') {
         results.lastValue = evaluateRule({ stepRow, input, rule });
         if (trace)
@@ -189,7 +190,8 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           });
       } else if (Array.isArray(rule)) {
         const values: unknown[] = [];
-        for (const child of rule) {
+        for (let childIndex = 0; childIndex < rule.length; childIndex++) {
+          const child = rule[childIndex];
           const value =
             typeof child === 'string'
               ? evaluateRule({ stepRow, input, rule: child, ignoreMissingKeys })
@@ -290,17 +292,6 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           arrayOperator
         ] as string;
 
-        const arrayMethod =
-          arrayOperator === 'map'
-            ? Array.prototype.map
-            : arrayOperator === 'filter'
-              ? Array.prototype.filter
-              : arrayOperator === 'every'
-                ? Array.prototype.every
-                : arrayOperator === 'some'
-                  ? Array.prototype.some
-                  : Array.prototype.find;
-
         if (trace)
           logTrace({
             operation: arrayOperator,
@@ -316,33 +307,69 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
         if (!Array.isArray(data))
           throw new UserError(`Data at '${arrayRule}' is not an array`);
 
+        checkArrayLength(data.length);
+        consumeWork(data.length);
         const runRule = (rule as { run: Rule }).run;
-        const arrayResult = arrayMethod.call(
-          toArray(data),
-          (item: unknown, index: number) => {
-            const contextKeys = ['$item', '$index', '$array'] as const;
-            const descriptors = contextKeys.map((key) =>
-              Object.getOwnPropertyDescriptor(input, key),
-            );
-            const previousReturnValue = results.returnValue;
-            try {
-              Object.assign(input, {
-                $item: item,
-                $index: index,
-                $array: data,
-              });
-              handleRule(runRule);
-              return results.lastValue;
-            } finally {
-              results.returnValue = previousReturnValue;
-              contextKeys.forEach((key, i) => {
-                const descriptor = descriptors[i];
-                if (descriptor) Object.defineProperty(input, key, descriptor);
-                else delete input[key];
-              });
-            }
-          },
-        );
+        const length = data.length;
+        const runItem = (item: unknown, index: number) => {
+          const contextKeys = ['$item', '$index', '$array'] as const;
+          const descriptors = contextKeys.map((key) =>
+            Object.getOwnPropertyDescriptor(input, key),
+          );
+          const previousReturnValue = results.returnValue;
+          try {
+            Object.assign(input, {
+              $item: item,
+              $index: index,
+              $array: data,
+            });
+            handleRule(runRule);
+            return results.lastValue;
+          } finally {
+            results.returnValue = previousReturnValue;
+            contextKeys.forEach((key, i) => {
+              const descriptor = descriptors[i];
+              if (descriptor) Object.defineProperty(input, key, descriptor);
+              else delete input[key];
+            });
+          }
+        };
+        let arrayResult: unknown =
+          arrayOperator === 'map'
+            ? new Array(length)
+            : arrayOperator === 'filter'
+              ? []
+              : arrayOperator === 'every'
+                ? true
+                : arrayOperator === 'some'
+                  ? false
+                  : undefined;
+        for (let index = 0; index < length; index++) {
+          const descriptor = Object.getOwnPropertyDescriptor(
+            data,
+            String(index),
+          );
+          if (descriptor && !('value' in descriptor))
+            throw new UserError('Array accessors are not supported');
+          if (!descriptor && arrayOperator !== 'find') continue;
+          const item: unknown = descriptor?.value;
+          const result = runItem(item, index);
+          if (arrayOperator === 'map')
+            (arrayResult as unknown[])[index] = result;
+          else if (arrayOperator === 'filter') {
+            if (result) (arrayResult as unknown[]).push(item);
+          } else if (arrayOperator === 'every' && !result) {
+            arrayResult = false;
+            break;
+          } else if (arrayOperator === 'some' && result) {
+            arrayResult = true;
+            break;
+          } else if (arrayOperator === 'find' && result) {
+            arrayResult = item;
+            break;
+          }
+        }
+
         results.lastValue = arrayResult;
 
         if ('set' in rule) {
@@ -363,7 +390,8 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
               stepCount,
             });
           if (handleRule(rule.try) === BREAK) return BREAK;
-        } catch {
+        } catch (error) {
+          if (error instanceof ResourceLimitError) throw error;
           logTrace({
             operation: 'catch',
             rule: rule.catch,
@@ -415,6 +443,7 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           `Nesting is not enabled for this rule type: ${JSON.stringify(rule)}`,
         );
 
+      consumeWork();
       stepCount++;
 
       try {
@@ -462,17 +491,16 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
           stepRow,
           stepCount,
         });
-        if (e instanceof Error && e.name !== 'UserError')
-          console.error('UNEXPECTED ERROR:', e);
         throw e;
       }
     }
 
     // ── Main execution loop ──────────────────────────────────────────────────
 
-    const ruleArray = toArray(rules);
+    const ruleArray = Array.isArray(rules) ? rules : [rules];
 
-    for (const rule of ruleArray) {
+    for (let ruleIndex = 0; ruleIndex < ruleArray.length; ruleIndex++) {
+      const rule = ruleArray[ruleIndex];
       try {
         const ruleResult = handleRule(rule);
         if (ruleResult === BREAK) break;
@@ -507,6 +535,19 @@ export function createRuleExecutor<TInput extends Record<string, unknown>>(
     return getReturnValue() as TReturn;
   }
 
+  function execute<TReturn = unknown>(
+    rules: Rule,
+    input: TInput = {} as TInput,
+  ): TReturn | ExecutionResult<TInput> {
+    const budget = new ExecutionBudget(options.limits);
+    const run = () =>
+      withExecutionBudget(budget, () => {
+        const result = executeProgram<TReturn>(rules, input);
+        budget.checkDeadline();
+        return result;
+      });
+    return options.atomic ? withAtomicWrites(run) : run();
+  }
   return { execute };
 }
 
@@ -570,6 +611,7 @@ function validateRule(rules: Rule) {
     throw new UserError(`Invalid rule: ${message}`);
   };
   const visit = (value: unknown, depth: number, logicalOnly = false): void => {
+    consumeWork();
     if (++nodes > 10_000) fail('maximum node count (10000) exceeded');
     if (depth > 100) fail('maximum nesting depth (100) exceeded');
     if (typeof value === 'string') return;
@@ -579,12 +621,30 @@ function validateRule(rules: Rule) {
     if (active.has(object)) fail('cyclic rule structure');
     active.add(object);
     try {
+      if (Array.isArray(object)) checkArrayLength(object.length);
+      const ownKeys = Reflect.ownKeys(object);
+      consumeWork(ownKeys.length);
+      const descriptors = Object.getOwnPropertyDescriptors(object);
+      for (const key of ownKeys) {
+        if (typeof key !== 'string') fail('symbol keys are not supported');
+        const descriptor = descriptors[key as string];
+        if (!('value' in descriptor)) fail('accessors are not supported');
+        if (Array.isArray(object) && key === 'length') continue;
+        if (!descriptor.enumerable)
+          fail('nonenumerable rule keys are not supported');
+        if (Array.isArray(object) && !/^(0|[1-9][0-9]*)$/.test(key as string))
+          fail('unexpected array key');
+      }
       if (Array.isArray(object)) {
         if (logicalOnly)
           fail(
             'The `if` value must be a string or logical object; arrays are not supported',
           );
-        for (const child of object) visit(child, depth + 1);
+        checkArrayLength(object.length);
+        if (ownKeys.length !== object.length + 1)
+          fail('sparse rule arrays are not supported');
+        for (let index = 0; index < object.length; index++)
+          visit(descriptors[String(index)].value, depth + 1);
         return;
       }
       const prototype = Object.getPrototypeOf(object);
@@ -612,8 +672,21 @@ function validateRule(rules: Rule) {
       if (operator === 'and' || operator === 'or') {
         if (!Array.isArray(object[operator]))
           fail(`${operator} must be an array`);
-        for (const child of object[operator] as unknown[])
-          visit(child, depth + 1, true);
+        const children = object[operator] as unknown[];
+        const childKeys = Reflect.ownKeys(children);
+        consumeWork(childKeys.length);
+        checkArrayLength(children.length);
+        if (childKeys.length !== children.length + 1)
+          fail('logical arrays must be dense and contain no extra keys');
+        for (let index = 0; index < children.length; index++) {
+          const descriptor = Object.getOwnPropertyDescriptor(
+            children,
+            String(index),
+          );
+          if (!descriptor || !('value' in descriptor) || !descriptor.enumerable)
+            fail('logical arrays must contain enumerable data values');
+          visit(descriptor?.value, depth + 1, true);
+        }
       } else if (operator === 'if') {
         visit(object.if, depth + 1, true);
         if (!Object.hasOwn(object, 'then')) fail('if requires then');

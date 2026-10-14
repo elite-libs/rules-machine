@@ -3,10 +3,34 @@ import type {
   ExpressionThunk,
   ExpressionValue,
 } from 'expressionparser/dist/ExpressionParser.js';
+import {
+  checkArrayLength,
+  consumeWork,
+  currentExecutionBudget,
+  ExecutionBudget,
+  type ExecutionLimits,
+  withExecutionBudget,
+} from '../utils/budget';
 import { UserError } from '../utils/errors';
 import { extractAssignment } from './assignment';
 import { ruleExpressionLanguage } from './language';
 import { num } from './language-utils';
+import { createMaterializer } from './materialize';
+
+export interface ExpressionEngineOptions {
+  maxTokens?: number;
+  maxCacheEntries?: number;
+  /** Conservative source/token accounting, not a VM heap-size guarantee. */
+  maxCacheBytes?: number;
+  limits?: ExecutionLimits;
+}
+
+export interface ExpressionCacheStats {
+  entries: number;
+  estimatedBytes: number;
+  maxEntries: number;
+  maxBytes: number;
+}
 
 /**
  * Public expression metadata. Parsed syntax is cached privately by the engine.
@@ -32,7 +56,7 @@ export interface CompiledExpression {
  * Delegate used by the expression engine to resolve a named term (variable)
  * against the current execution context.
  */
-export type TermResolver = (term: string) => ExpressionValue;
+export type TermResolver = (term: string) => unknown;
 
 /**
  * The public interface for evaluating string expressions.
@@ -51,39 +75,71 @@ export interface ExpressionEngine {
    * The `termResolver` is called for every named term encountered during
    * evaluation (variables, key paths, etc.).
    */
-  evaluate(
-    compiled: CompiledExpression,
-    termResolver: TermResolver,
-  ): ExpressionValue;
+  evaluate(compiled: CompiledExpression, termResolver: TermResolver): unknown;
 
   /**
    * Convenience: compile + evaluate in one call.
    */
-  evaluateExpression(
-    expression: string,
-    termResolver: TermResolver,
-  ): ExpressionValue;
+  evaluateExpression(expression: string, termResolver: TermResolver): unknown;
 }
 
 /**
  * Create a default `ExpressionEngine` backed by `expressionparser` and the
  * built-in `ruleExpressionLanguage` function set.
  */
-export function createExpressionEngine(): ExpressionEngine {
+export function createExpressionEngine(
+  options: ExpressionEngineOptions = {},
+): ExpressionEngine & { cacheStats(): ExpressionCacheStats } {
   // Cache syntax only: every evaluation resolves terms against its current context.
   // A bounded factory-local cache avoids retaining arbitrary unique user programs.
-  const cacheLimit = 512;
-  const syntax = new Map<
-    string,
-    { metadata: CompiledExpression; thunk?: ExpressionThunk }
-  >();
+  const cacheLimit = options.maxCacheEntries ?? 512;
+  const cacheBytes = options.maxCacheBytes ?? 8 * 1024 * 1024;
+  const maxTokens = options.maxTokens ?? 1024;
+  for (const [name, value] of [
+    ['maxCacheEntries', cacheLimit],
+    ['maxCacheBytes', cacheBytes],
+  ] as const)
+    if (!Number.isSafeInteger(value) || value < 0)
+      throw new UserError(`${name} must be a nonnegative safe integer`);
+  if (!Number.isSafeInteger(maxTokens) || maxTokens < 1 || maxTokens > 1024)
+    throw new UserError('maxTokens must be an integer between 1 and 1024');
+  type Entry = {
+    metadata: CompiledExpression;
+    thunk: ExpressionThunk;
+    bytes: number;
+  };
+  const syntax = new Map<string, Entry>();
+  let estimatedBytes = 0;
   let activeResolver: TermResolver | undefined;
-  const parser = init(ruleExpressionLanguage, (term: string) => {
-    if (typeof term !== 'string') throw new Error(`Invalid term: ${term}`);
-    if (!activeResolver)
-      throw new Error('Expression evaluated without a resolver');
-    return activeResolver(term);
-  });
+  const materializer = createMaterializer();
+  const parser = init(
+    (resolve, typer) => {
+      const language = ruleExpressionLanguage(resolve, typer);
+      for (const table of [language.INFIX_OPS, language.PREFIX_OPS]) {
+        if (typeof table === 'function')
+          throw new Error('Budgeted language requires operator tables');
+        for (const key of Object.keys(table)) {
+          const delegate = table[key];
+          table[key] = (...args: ExpressionThunk[]) => {
+            consumeWork();
+            const result = delegate(
+              ...(args as [ExpressionThunk, ExpressionThunk]),
+            );
+            if (Array.isArray(result)) checkArrayLength(result.length);
+            return result;
+          };
+        }
+      }
+      return language;
+    },
+    (term: string) => {
+      consumeWork();
+      if (typeof term !== 'string') throw new Error(`Invalid term: ${term}`);
+      if (!activeResolver)
+        throw new Error('Expression evaluated without a resolver');
+      return materializer.protect(activeResolver(term)) as ExpressionValue;
+    },
+  );
 
   function validateSource(source: string) {
     if (source.length > 100_000)
@@ -118,13 +174,72 @@ export function createExpressionEngine(): ExpressionEngine {
       throw new UserError('Expression contains unclosed grouping');
   }
 
-  function entry(source: string) {
-    let cached = syntax.get(source);
-    if (!cached) {
-      validateSource(source);
-      cached = { metadata: { source, ...extractAssignment(source) } };
-      if (syntax.size >= cacheLimit) syntax.delete(syntax.keys().next().value!);
+  function entry(source: string): Entry {
+    const existing = syntax.get(source);
+    if (existing) return existing;
+    validateSource(source);
+    const metadata = { source, ...extractAssignment(source) };
+    const parsedSource = (
+      metadata.lhs?.includes('[') ? (metadata.rhs ?? '') : source
+    ).replace(/^\s*return\s+/, '');
+    // The upstream tokenizer merges adjacent symbolic comma/unary operators.
+    // Separate argument commas outside literals before tokenization.
+    let normalized = '';
+    let quote = '';
+    for (let index = 0; index < parsedSource.length; index++) {
+      const character = parsedSource[index];
+      normalized += character;
+      if (quote) {
+        if (character === '\\' && index + 1 < parsedSource.length)
+          normalized += parsedSource[++index];
+        else if (character === quote) quote = '';
+      } else if (character === '"' || character === "'") quote = character;
+      else if (character === ',') normalized += ' ';
+    }
+    const rawTokens = parser.tokenize(normalized);
+    if (rawTokens.length > maxTokens)
+      throw new UserError(`Expression exceeds maxTokens (${maxTokens})`);
+    const tokens: string[] = [];
+    for (let i = 0; i < rawTokens.length; i++) {
+      if (rawTokens[i] === '[' && rawTokens[i + 1] === ']') {
+        tokens.push('EMPTY');
+        i++;
+      } else tokens.push(rawTokens[i]);
+    }
+    for (let i = 0; i < tokens.length - 1; i++) {
+      const token = tokens[i];
+      if (tokens[i + 1] === '(' && /^[$A-Z_a-z][$\w.]*$/.test(token)) {
+        if (tokens[i + 2] === ')')
+          throw new UserError(`Function ${token} requires an argument`);
+        try {
+          if (!parser.getPrefixOp(token) && !parser.getInfixOp(token))
+            throw new Error();
+        } catch {
+          throw new UserError(`Unknown function: ${token}`);
+        }
+      }
+    }
+    consumeWork(tokens.length);
+    const rpn = parser.tokensToRpn(tokens);
+    const thunk = parser.rpnToThunk(rpn);
+    if (rpn.length)
+      throw new UserError(
+        'Invalid expression: unused terms or unsupported syntax',
+      );
+    const bytes =
+      256 +
+      source.length * 4 +
+      tokens.reduce((sum, token) => sum + 256 + token.length * 2, 0);
+    const cached = { metadata, thunk, bytes };
+    if (cacheLimit > 0 && bytes <= cacheBytes) {
+      while (syntax.size >= cacheLimit || estimatedBytes + bytes > cacheBytes) {
+        const oldest = syntax.keys().next().value;
+        if (oldest === undefined) break;
+        estimatedBytes -= syntax.get(oldest)?.bytes ?? 0;
+        syntax.delete(oldest);
+      }
       syntax.set(source, cached);
+      estimatedBytes += bytes;
     }
     return cached;
   }
@@ -134,62 +249,27 @@ export function createExpressionEngine(): ExpressionEngine {
     return { ...entry(expression).metadata };
   }
 
-  function evaluate(
+  function evaluateWithContext(
     compiled: CompiledExpression,
     termResolver: TermResolver,
-  ): ExpressionValue {
+  ): unknown {
     const previous = activeResolver;
     activeResolver = termResolver;
     try {
       const cached = entry(compiled.source);
-      if (!cached.thunk) {
-        const source = (
-          cached.metadata.lhs?.includes('[')
-            ? cached.metadata.rhs!
-            : compiled.source
-        ).replace(/^\s*return\s+/, '');
-        const rawTokens = parser.tokenize(source);
-        const tokens: string[] = [];
-        for (let i = 0; i < rawTokens.length; i++) {
-          if (rawTokens[i] === '[' && rawTokens[i + 1] === ']') {
-            tokens.push('EMPTY');
-            i++;
-          } else tokens.push(rawTokens[i]);
-        }
-        for (let i = 0; i < tokens.length - 1; i++) {
-          const token = tokens[i];
-          if (tokens[i + 1] === '(' && /^[$A-Z_a-z][$\w.]*$/.test(token)) {
-            if (tokens[i + 2] === ')')
-              throw new UserError(`Function ${token} requires an argument`);
-            // This engine exposes only the built-in language's function set.
-            // Unknown calls must not degrade to their argument or an undefined term.
-            try {
-              if (!parser.getPrefixOp(token) && !parser.getInfixOp(token))
-                throw new Error();
-            } catch {
-              throw new UserError(`Unknown function: ${token}`);
-            }
-          }
-        }
-        const rpn = parser.tokensToRpn(tokens);
-        const thunk = parser.rpnToThunk(rpn);
-        if (rpn.length !== 0)
-          throw new UserError(
-            'Invalid expression: unused terms or unsupported syntax',
-          );
-        cached.thunk = thunk;
-      }
       const { lhs, assignmentOperator } = cached.metadata;
       // Bracketed write targets are paths, not array literals in the parser.
       // Resolve their current value separately for compound assignment.
       if (lhs?.includes('[')) {
         if (assignmentOperator === '=')
-          return parser.thunkToValue(cached.thunk);
+          return materializer.materialize(cached.thunk);
         const current = termResolver(lhs);
         if (assignmentOperator === '??=')
-          return current ?? parser.thunkToValue(cached.thunk);
-        const a = num(current);
-        const b = num(parser.thunkToValue(cached.thunk));
+          return current ?? materializer.materialize(cached.thunk);
+        const a = num(current as ExpressionValue);
+        const b = num(
+          materializer.materialize(cached.thunk) as ExpressionValue,
+        );
         switch (assignmentOperator) {
           case '+=':
             return a + b;
@@ -203,19 +283,43 @@ export function createExpressionEngine(): ExpressionEngine {
             throw new UserError('Unsupported assignment operator');
         }
       }
-      return parser.thunkToValue(cached.thunk);
+      return materializer.materialize(cached.thunk);
     } finally {
       // Resolver callbacks may re-enter this engine or throw.
       activeResolver = previous;
     }
   }
 
+  function evaluate(
+    compiled: CompiledExpression,
+    resolver: TermResolver,
+  ): unknown {
+    const existing = currentExecutionBudget();
+    if (existing) return evaluateWithContext(compiled, resolver);
+    const budget = new ExecutionBudget(options.limits);
+    return withExecutionBudget(budget, () => {
+      const result = evaluateWithContext(compiled, resolver);
+      budget.checkDeadline();
+      return result;
+    });
+  }
+
   function evaluateExpression(
     expression: string,
     termResolver: TermResolver,
-  ): ExpressionValue {
+  ): unknown {
     return evaluate(compile(expression), termResolver);
   }
 
-  return { compile, evaluate, evaluateExpression };
+  return {
+    compile,
+    evaluate,
+    evaluateExpression,
+    cacheStats: () => ({
+      entries: syntax.size,
+      estimatedBytes,
+      maxEntries: cacheLimit,
+      maxBytes: cacheBytes,
+    }),
+  };
 }
