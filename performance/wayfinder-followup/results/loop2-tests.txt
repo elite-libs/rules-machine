@@ -1,0 +1,116 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts (7 tests | 7 failed) 28ms
+   ❯ executable documentation showcases (7)
+     × guide tiers preserve higher discounts and map returns its mapped result 8ms
+     × cart workflow maps item prices before summing and computes documented total 1ms
+     × access and subscription defaults do not override explicit decisions 1ms
+     × loan and fraud workflows return dictionaries and use host-supplied time 1ms
+     × sales tax uses two-argument GET and excludes grocery items 1ms
+     × loot outcomes replay supplied random rolls 7ms
+     × validation returns an object and handles absent fields safely 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > guide tiers preserve higher discounts and map returns its mapped result
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/guide.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:32:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > cart workflow maps item prices before summing and computes documented total
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/examples.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:42:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > access and subscription defaults do not override explicit decisions
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/examples.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:52:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > loan and fraud workflows return dictionaries and use host-supplied time
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/examples.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:76:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > sales tax uses two-argument GET and excludes grocery items
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/examples.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:98:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > loot outcomes replay supplied random rolls
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/examples.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:116:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  .cache/wayfinder-followup/baseline/src/documentation.test.ts > executable documentation showcases > validation returns an object and handles absent fields safely
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/baseline/docs/examples.md'
+ ❯ example .cache/wayfinder-followup/baseline/src/documentation.test.ts:11:20
+      9|   name: string,
+     10| ): (input: Record<string, unknown>) => unknown {
+     11|   const markdown = readFileSync(new URL(`../${file}`, import.meta.url)…
+       |                    ^
+     12|   const block = [...markdown.matchAll(/```(?:ts|javascript)\n([\s\S]*?…
+     13|     .map((match) => match[1])
+ ❯ .cache/wayfinder-followup/baseline/src/documentation.test.ts:132:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed | 35 passed (36)
+      Tests  7 failed | 918 passed (925)
+   Start at  17:08:51
+   Duration  4.93s (import 35%, transform 33%, tests 27%, worker 5%)
+
+  Transform  transforming modules took 6.07s · 33% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

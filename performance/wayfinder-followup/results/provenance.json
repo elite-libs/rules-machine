@@ -1,0 +1,86 @@
+{
+  "at": "2026-10-14T23:37:08.545140+00:00",
+  "taskStartUTC": "2026-10-14T23:03:37Z",
+  "deadlineUTC": "2026-10-15T00:03:37Z",
+  "mergedMain": "4f06377355477bb12fc6c719b39b4b57bb8a4459",
+  "codeCommit": "9adecf3",
+  "reviewCommit": "a43570f",
+  "branch": "perf/astra-followup-2026-10-14",
+  "sourceHashes": {
+    "src/utils/string-path.ts": "f6fe33e06574c372bb9ba62427545c16b74a8d789e9a60d7ac55ae85b6a7b0fa",
+    "src/utils/string-path.test.ts": "8bf4599f63944ccfbef57d58d954288a1f4fba71f17071f145f04e8b9d67a4c4",
+    "src/utils/paths.ts": "cac5fc99d0656e25c593244e3a20b4cef24b54fd9c55e675e854df226bfbdbed",
+    "src/expression-engine/language-utils.ts": "c829351af82641310fe50e2395aad6100ad5f46f65d41a57332f1c834bdac81a",
+    "src/structural-engine/executor.ts": "d6a8e64758b0764204dccfcf6eededc923c9b9a9f239b5f031b8fca2900170e6",
+    "src/structural-engine/hardening.test.ts": "a09b9e9a935f65205e6c9dfb4818c6ba2b71c8be7f65e78ba088ceb3dab4526d",
+    "tsup.config.ts": "48e586d68d44c97ceefa2a9a5113fc8cc30f911bd1315f13015c65ba972c16de",
+    "package.json": "f8412435a9014df7548105bdf5b6a12f99e414a15cd09a58f27f53ab992f56eb",
+    "pnpm-lock.yaml": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d"
+  },
+  "dependencyManifestAndLockUnchangedFromMergedBaseline": true,
+  "deliveredModules": {
+    "index.mjs": "abe5ec5e021b40f4a89499f430783dc564934242d88d8f83e306b4c7405f78fe",
+    "index.cjs": "8de7bf7cb103fbdc4844e1863ba07ed38ee0177c58eb3deab25679624edbefd7",
+    "index.global.js": "b3cb902996020bf73bff7f9288fbff77ece2a3020be8983218617ce2acab3d03"
+  },
+  "campaigns": {
+    "loop1-minify": {
+      "role": "screening",
+      "blocks": 6,
+      "observations": 84,
+      "rawSHA256": "781ac9a8bab105ad694dd2af7a62d4f3eb60be18a889ec82e84e83331544181f",
+      "environmentSHA256": "d50961d92a391e12252cabc977a827c681a930174fce21d11810b548f9857590"
+    },
+    "loop2-validation": {
+      "role": "screening",
+      "blocks": 6,
+      "observations": 84,
+      "rawSHA256": "f5a91d7a9f0565ee8a4752979a02921a8f48e297088e83e0fbcec1a6e2635eac",
+      "environmentSHA256": "ea60b65a810576d0aafa3575a5f31e5e46015798e5638b6348ca693cc01a3aeb"
+    },
+    "loop2-warmed": {
+      "role": "screening",
+      "blocks": 6,
+      "observations": 84,
+      "rawSHA256": "b610fe776908fc3b49a46f3a78a2582eb81d6a7aeef0f9c70669039352ac45c4",
+      "environmentSHA256": "e6b5e81545031fa01d74774780c4bedafb528e91b1214655900de947039ce79b"
+    },
+    "loop3-trace-warmed": {
+      "role": "screening",
+      "blocks": 6,
+      "observations": 84,
+      "rawSHA256": "4c326c0186a762074bc05a0898a29ed6ac529456d70b3b92143654c49942f808",
+      "environmentSHA256": "388350b5de09ad3e641ba483bfac12a7eec5f55c0fcc42db6d2c88356123917b"
+    },
+    "loop4-path-warmed": {
+      "role": "screening",
+      "blocks": 6,
+      "observations": 84,
+      "rawSHA256": "b2572bc22a36ccb6df766a38af25d2c071f4d9d61d84dc103e04f123a7b8afc3",
+      "environmentSHA256": "446cdd1b7343284eb3537db561681f03bce9792250328537a1b42f682daf5460"
+    },
+    "final-confirmation": {
+      "role": "confirmation",
+      "blocks": 12,
+      "observations": 168,
+      "rawSHA256": "8eacdbaf55ccd4f418c4b46b52cb64bca70242d0e558a085ea013d309239f808",
+      "environmentSHA256": "596006c5f2f9bd3e905f45869f0c7b3c956e92a7d9432450c542c98bed4a60ad"
+    }
+  },
+  "instrumentHashes": {
+    "sizes.mjs": "b6d4aefd77fbe9f351e84abd6570eede340a3e3a2c7b9fa5e35ac6cfb8235cfd",
+    "worker.mjs": "1192bbaffec987280c960726b41eeecfab859f1d96c4bbabc3b98fcdf44fcd4b",
+    "run.mjs": "cd9cde387b4ca287fb6f5c847f0cfb29f06efec6f42bfde10568e8c598f41f7a",
+    "analyze.mjs": "f1226e2ebf72ef5553e87145e0af6458f3fe30b3f2290b62795fee7a5e068482",
+    "check-built-functions.mjs": "f55d543172066abd29ef7b04a217868b48eca47d795975a4de5a0c5f07c6e9c3"
+  },
+  "nodePerformance": "26.8.2",
+  "nodeCorrectness": [
+    "24.21.0",
+    "26.8.2"
+  ],
+  "rust": "unchanged binary;419sharedcasesrerun, noRusttimings",
+  "runtimeSpeedupEstablished": false,
+  "modelReportingCosts": "unavailable",
+  "paidRemoteCompute": false
+}

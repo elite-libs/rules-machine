@@ -1,0 +1,5 @@
+npm warn Unknown project config "strict-peer-dependencies". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown project config "package-import-method". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown project config "resolution-mode". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown project config "https-only". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Packed ESM, CommonJS, browser-global and declaration smoke checks passed.

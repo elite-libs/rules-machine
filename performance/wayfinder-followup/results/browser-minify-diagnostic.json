@@ -1,0 +1,772 @@
+{
+  "at": "2026-10-14T23:14:16.708Z",
+  "counts": {
+    "array-map-16": 1024,
+    "array-map-256": 151,
+    "array-map-4096": 9,
+    "eligibility": 100,
+    "pricing-0": 86,
+    "pricing-1024": 86,
+    "pricing-32768": 55
+  },
+  "raw": [
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.700000047683716,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 24,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.200000047683716,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 31.899999976158142,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 34,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 32.5,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 33.699999928474426,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 41.700000047683716,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 17.399999976158142,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 18.09999990463257,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 29.700000047683716,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 31.199999928474426,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.5,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "minified",
+      "block": 0,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 28.200000047683716,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 24.200000047683716,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 24.799999952316284,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 31.600000023841858,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 31.200000047683716,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 31.5,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 31.100000023841858,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 33.5,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 31.5,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 18.699999928474426,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 21.200000047683716,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 31.399999976158142,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 30.299999952316284,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "minified",
+      "block": 1,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 28.300000071525574,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 35.299999952316284,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.899999976158142,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 24,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 29.799999952316284,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 29.199999928474426,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.40000009536743,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.899999976158142,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 30.90000009536743,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 30.799999952316284,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 17.09999990463257,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 16.799999952316284,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 29.300000071525574,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 29.399999976158142,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 26.799999952316284,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "minified",
+      "block": 2,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.600000023841858,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.200000047683716,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.399999976158142,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.600000023841858,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.200000047683716,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.300000071525574,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 31.700000047683716,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 28,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 25.699999928474426,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 17.299999952316284,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 17.40000009536743,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 30,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 29.799999952316284,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "minified",
+      "block": 3,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.100000023841858,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "baseline",
+      "block": 3,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.40000009536743,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.600000023841858,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.5,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 29.600000023841858,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.100000023841858,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 32.200000047683716,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 32.299999952316284,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 29.600000023841858,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 28,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 18,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 16.90000009536743,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 30.09999990463257,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 29.600000023841858,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "baseline",
+      "block": 4,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 28,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "minified",
+      "block": 4,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.299999952316284,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 22.899999976158142,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 421200,
+      "completed": 3200,
+      "elapsedMs": 23.40000009536743,
+      "fixture": "eligibility",
+      "iterations": 100
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 29,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 29.799999952316284,
+      "fixture": "pricing-0",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.300000071525574,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 562381504,
+      "completed": 2752,
+      "elapsedMs": 30.600000023841858,
+      "fixture": "pricing-1024",
+      "iterations": 86
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 31.700000047683716,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 3106444000,
+      "completed": 1760,
+      "elapsedMs": 27.600000023841858,
+      "fixture": "pricing-32768",
+      "iterations": 55
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 18.09999990463257,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 2924561408,
+      "completed": 1024,
+      "elapsedMs": 17,
+      "fixture": "array-map-16",
+      "iterations": 1024
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 30.899999976158142,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 1630823943,
+      "completed": 151,
+      "elapsedMs": 29.700000047683716,
+      "fixture": "array-map-256",
+      "iterations": 151
+    },
+    {
+      "arm": "minified",
+      "block": 5,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.399999976158142,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    },
+    {
+      "arm": "baseline",
+      "block": 5,
+      "checksum": 2476884121,
+      "completed": 9,
+      "elapsedMs": 27.100000023841858,
+      "fixture": "array-map-4096",
+      "iterations": 9
+    }
+  ],
+  "scope": "Six paired within-tab diagnostic batches, fresh factories, >=150ms warmup, baseline-fixed counts, complete oracles before/after and timed count/digest; NOT independent browser processes",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.45 Chrome/152.0.7977.130 Electron/44.4.2 Safari/537.36"
+}

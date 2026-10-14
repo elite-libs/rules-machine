@@ -1,0 +1,189 @@
+{
+  "environment": {
+    "at": "2026-10-14T23:14:28.933Z",
+    "fixtureVersion": "shared-subset-v2",
+    "followupRunnerSha256": "165f195033185e502e874fcd8ad53e352802a3b720dc184abfca2a781f53ff1d",
+    "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+    "node": "v26.8.2",
+    "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+    "cpus": 8,
+    "platform": "linux 7.2.5-3-omarchy x64",
+    "memory": 67342082048,
+    "blocks": 6,
+    "baseline": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+    "tuned": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/loop2-dist/index.mjs",
+    "rust": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+    "moduleHashes": {
+      "baseline": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+      "tuned": "e14454cfea0e1c836b8b3b40b2bacc48781afda500d3a0cd8769ef5f3f35e049",
+      "rust": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+    },
+    "followupWorkerHash": "1192bbaffec987280c960726b41eeecfab859f1d96c4bbabc3b98fcdf44fcd4b",
+    "harnessHashes": {
+      "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+      "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626",
+      "worker.mjs": "057224f7554de4a3c32a7db7b8722241bfd8b53814d35cf8c4e8169c676ce2b1",
+      "run.mjs": "ab2af1b63b0f54bb79a6fba97d93eec3ec73c88915dc97edc1f19a9f7e16a43f",
+      "verify.mjs": "9a299c8bd27160a8c02b7af23b62fecd9e2cd9f5d68b5fb1f3cdf115b51d0aa1"
+    },
+    "command": [
+      "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+      "/home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs",
+      "baseline=.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+      "tuned=.cache/wayfinder-followup/loop2-dist/index.mjs",
+      "blocks=6",
+      "output=performance/wayfinder-followup/results/loop2-warmed"
+    ]
+  },
+  "observations": 84,
+  "rows": [
+    {
+      "fixture": "eligibility",
+      "baseline": {
+        "medianNs": 86981.80729166666,
+        "minNs": 46082.45410156249,
+        "maxNs": 108256.52864583336,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 49766.567545572936,
+        "minNs": 35884.112955729164,
+        "maxNs": 145316.56477864584,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.2878478111639602,
+          "lower95": 0.8391893350503387,
+          "upper95": 1.9200803103814785
+        }
+      }
+    },
+    {
+      "fixture": "pricing-0",
+      "baseline": {
+        "medianNs": 60267.37500000001,
+        "minNs": 53413.875000000015,
+        "maxNs": 112248.6863970588,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 72633.17794117647,
+        "minNs": 61284.20919117648,
+        "maxNs": 132218.87426470587,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 0.8141690951071793,
+          "lower95": 0.6026223769916038,
+          "upper95": 1.1327988757832506
+        }
+      }
+    },
+    {
+      "fixture": "pricing-1024",
+      "baseline": {
+        "medianNs": 75074.03826530615,
+        "minNs": 42011.19387755103,
+        "maxNs": 238213.13903061225,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 69976.33577806121,
+        "minNs": 45339.82525510205,
+        "maxNs": 136167.6556122449,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.2617233966894106,
+          "lower95": 0.8949201418855403,
+          "upper95": 1.7170892631526742
+        }
+      }
+    },
+    {
+      "fixture": "pricing-32768",
+      "baseline": {
+        "medianNs": 93201.96050347223,
+        "minNs": 58452.63281250003,
+        "maxNs": 164980.18576388888,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 90605.64973958328,
+        "minNs": 52513.64496527773,
+        "maxNs": 137084.57118055556,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.1352163351142384,
+          "lower95": 0.9049165058948914,
+          "upper95": 1.4170838008136915
+        }
+      }
+    },
+    {
+      "fixture": "array-map-16",
+      "baseline": {
+        "medianNs": 100308.81400550585,
+        "minNs": 65164.41259463181,
+        "maxNs": 146834.7873365451,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 85836.14659325534,
+        "minNs": 68431.03819683415,
+        "maxNs": 224645.13902271166,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.0215362443856821,
+          "lower95": 0.6595133956196602,
+          "upper95": 1.5246984618535722
+        }
+      }
+    },
+    {
+      "fixture": "array-map-256",
+      "baseline": {
+        "medianNs": 979346.869047619,
+        "minNs": 759382.1190476189,
+        "maxNs": 2004539.3809523808,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 1089628.0634920634,
+        "minNs": 693652.4206349204,
+        "maxNs": 1388889.3015873013,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.0381244942258987,
+          "lower95": 0.8180076192328865,
+          "upper95": 1.3031850856831475
+        }
+      }
+    },
+    {
+      "fixture": "array-map-4096",
+      "baseline": {
+        "medianNs": 12496913.649999999,
+        "minNs": 9246144.700000001,
+        "maxNs": 21223822.700000007,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 11150713.65,
+        "minNs": 8802924.8,
+        "maxNs": 32661842.3,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 0.988836842095763,
+          "lower95": 0.8234917255014377,
+          "upper95": 1.1410442398576435
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "tuned": {
+      "ratio": 1.067034700802448,
+      "lower95": 1.0242862416331955,
+      "upper95": 1.1065065071885978
+    }
+  },
+  "method": "Equal-weight geometric throughput ratios, paired whole process blocks;10000 deterministic percentile bootstrap resamples; per-slice intervals unadjusted."
+}

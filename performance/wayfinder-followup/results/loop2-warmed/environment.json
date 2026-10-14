@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-14T23:14:28.933Z",
+  "fixtureVersion": "shared-subset-v2",
+  "followupRunnerSha256": "165f195033185e502e874fcd8ad53e352802a3b720dc184abfca2a781f53ff1d",
+  "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+  "node": "v26.8.2",
+  "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+  "cpus": 8,
+  "platform": "linux 7.2.5-3-omarchy x64",
+  "memory": 67342082048,
+  "blocks": 6,
+  "baseline": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+  "tuned": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/loop2-dist/index.mjs",
+  "rust": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+  "moduleHashes": {
+    "baseline": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+    "tuned": "e14454cfea0e1c836b8b3b40b2bacc48781afda500d3a0cd8769ef5f3f35e049",
+    "rust": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+  },
+  "followupWorkerHash": "1192bbaffec987280c960726b41eeecfab859f1d96c4bbabc3b98fcdf44fcd4b",
+  "harnessHashes": {
+    "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+    "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626",
+    "worker.mjs": "057224f7554de4a3c32a7db7b8722241bfd8b53814d35cf8c4e8169c676ce2b1",
+    "run.mjs": "ab2af1b63b0f54bb79a6fba97d93eec3ec73c88915dc97edc1f19a9f7e16a43f",
+    "verify.mjs": "9a299c8bd27160a8c02b7af23b62fecd9e2cd9f5d68b5fb1f3cdf115b51d0aa1"
+  },
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs",
+    "baseline=.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+    "tuned=.cache/wayfinder-followup/loop2-dist/index.mjs",
+    "blocks=6",
+    "output=performance/wayfinder-followup/results/loop2-warmed"
+  ]
+}

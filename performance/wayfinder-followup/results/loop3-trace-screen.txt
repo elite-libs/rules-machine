@@ -1,0 +1,205 @@
+1/6 eligibility baseline: 61487 ns/op
+1/6 eligibility tuned: 136074 ns/op
+1/6 pricing-0 baseline: 158430 ns/op
+1/6 pricing-0 tuned: 121604 ns/op
+1/6 pricing-1024 baseline: 207352 ns/op
+1/6 pricing-1024 tuned: 169002 ns/op
+1/6 pricing-32768 baseline: 129912 ns/op
+1/6 pricing-32768 tuned: 155096 ns/op
+1/6 array-map-16 baseline: 305227 ns/op
+1/6 array-map-16 tuned: 72328 ns/op
+1/6 array-map-256 baseline: 850131 ns/op
+1/6 array-map-256 tuned: 817463 ns/op
+1/6 array-map-4096 baseline: 25492273 ns/op
+1/6 array-map-4096 tuned: 19265364 ns/op
+2/6 eligibility tuned: 131057 ns/op
+2/6 eligibility baseline: 186252 ns/op
+2/6 pricing-0 tuned: 155913 ns/op
+2/6 pricing-0 baseline: 125024 ns/op
+2/6 pricing-1024 tuned: 59604 ns/op
+2/6 pricing-1024 baseline: 145951 ns/op
+2/6 pricing-32768 tuned: 86641 ns/op
+2/6 pricing-32768 baseline: 70847 ns/op
+2/6 array-map-16 tuned: 87119 ns/op
+2/6 array-map-16 baseline: 134486 ns/op
+2/6 array-map-256 tuned: 2132569 ns/op
+2/6 array-map-256 baseline: 884438 ns/op
+2/6 array-map-4096 tuned: 10775513 ns/op
+2/6 array-map-4096 baseline: 12205459 ns/op
+3/6 eligibility baseline: 36902 ns/op
+3/6 eligibility tuned: 43231 ns/op
+3/6 pricing-0 baseline: 68940 ns/op
+3/6 pricing-0 tuned: 84817 ns/op
+3/6 pricing-1024 baseline: 60600 ns/op
+3/6 pricing-1024 tuned: 76689 ns/op
+3/6 pricing-32768 baseline: 84098 ns/op
+3/6 pricing-32768 tuned: 90622 ns/op
+3/6 array-map-16 baseline: 70294 ns/op
+3/6 array-map-16 tuned: 69773 ns/op
+3/6 array-map-256 baseline: 599076 ns/op
+3/6 array-map-256 tuned: 662665 ns/op
+3/6 array-map-4096 baseline: 9875651 ns/op
+3/6 array-map-4096 tuned: 11590946 ns/op
+4/6 eligibility tuned: 31266 ns/op
+4/6 eligibility baseline: 34243 ns/op
+4/6 pricing-0 tuned: 48661 ns/op
+4/6 pricing-0 baseline: 53670 ns/op
+4/6 pricing-1024 tuned: 45265 ns/op
+4/6 pricing-1024 baseline: 60452 ns/op
+4/6 pricing-32768 tuned: 65147 ns/op
+4/6 pricing-32768 baseline: 50247 ns/op
+4/6 array-map-16 tuned: 55892 ns/op
+4/6 array-map-16 baseline: 62225 ns/op
+4/6 array-map-256 tuned: 802644 ns/op
+4/6 array-map-256 baseline: 641157 ns/op
+4/6 array-map-4096 tuned: 7875610 ns/op
+4/6 array-map-4096 baseline: 8549242 ns/op
+5/6 eligibility baseline: 24826 ns/op
+5/6 eligibility tuned: 18548 ns/op
+5/6 pricing-0 baseline: 29593 ns/op
+5/6 pricing-0 tuned: 29369 ns/op
+5/6 pricing-1024 baseline: 48238 ns/op
+5/6 pricing-1024 tuned: 70486 ns/op
+5/6 pricing-32768 baseline: 52881 ns/op
+5/6 pricing-32768 tuned: 49797 ns/op
+5/6 array-map-16 baseline: 45631 ns/op
+5/6 array-map-16 tuned: 56454 ns/op
+5/6 array-map-256 baseline: 580131 ns/op
+5/6 array-map-256 tuned: 609956 ns/op
+5/6 array-map-4096 baseline: 7878920 ns/op
+5/6 array-map-4096 tuned: 9391711 ns/op
+6/6 eligibility tuned: 23908 ns/op
+6/6 eligibility baseline: 20314 ns/op
+6/6 pricing-0 tuned: 91816 ns/op
+6/6 pricing-0 baseline: 52245 ns/op
+6/6 pricing-1024 tuned: 41792 ns/op
+6/6 pricing-1024 baseline: 29800 ns/op
+6/6 pricing-32768 tuned: 31221 ns/op
+6/6 pricing-32768 baseline: 36189 ns/op
+6/6 array-map-16 tuned: 55207 ns/op
+6/6 array-map-16 baseline: 53985 ns/op
+6/6 array-map-256 tuned: 607455 ns/op
+6/6 array-map-256 baseline: 341367 ns/op
+6/6 array-map-4096 tuned: 5312028 ns/op
+6/6 array-map-4096 baseline: 5971582 ns/op
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 36901.94480846774,
+      "minNs": 20314.005796370966,
+      "maxNs": 186251.65196572585,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 43230.81955645161,
+      "minNs": 18547.783518145174,
+      "maxNs": 136073.86365927418,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "pricing-0",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 68940.2464717742,
+      "minNs": 29593.211693548397,
+      "maxNs": 158429.60231854836,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 91816.16028225805,
+      "minNs": 29368.69909274193,
+      "maxNs": 155912.86844758064,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "pricing-1024",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 60599.587357954566,
+      "minNs": 29800.45028409093,
+      "maxNs": 207351.90696022724,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 70485.91548295454,
+      "minNs": 41791.9978693182,
+      "maxNs": 169002.31392045453,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "pricing-32768",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 70847.37965425533,
+      "minNs": 36189.074135638286,
+      "maxNs": 129912.3161569149,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 86640.86502659573,
+      "minNs": 31221.483710106382,
+      "maxNs": 155096.41888297873,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "array-map-16",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 70294.23016759778,
+      "minNs": 45631.10726256981,
+      "maxNs": 305226.7027932961,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 69772.83798882681,
+      "minNs": 55206.50726256985,
+      "maxNs": 87119.02122905027,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "array-map-256",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 641157.117647059,
+      "minNs": 341366.94957983174,
+      "maxNs": 884438.0840336134,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 802644.0588235293,
+      "minNs": 607455.218487395,
+      "maxNs": 2132568.5294117643,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "array-map-4096",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 9875650.749999998,
+      "minNs": 5971581.749999998,
+      "maxNs": 25492273.374999996,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 10775513.374999996,
+      "minNs": 5312027.874999998,
+      "maxNs": 19265364.124999993,
+      "blocks": 6
+    }
+  }
+]

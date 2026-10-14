@@ -1,0 +1,67 @@
+{
+  "baseline": {
+    "sourceCount": 69,
+    "lodashSources": [
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_arrayMap.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_copyArray.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/isArray.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_freeGlobal.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_root.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_Symbol.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_getRawTag.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_objectToString.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_baseGetTag.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/isObjectLike.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/isSymbol.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/isObject.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/isFunction.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_coreJsData.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_isMasked.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_toSource.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_baseIsNative.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_getValue.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_getNative.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_nativeCreate.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_hashClear.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_hashDelete.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_hashGet.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_hashHas.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_hashSet.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_Hash.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_listCacheClear.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/eq.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_assocIndexOf.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_listCacheDelete.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_listCacheGet.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_listCacheHas.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_listCacheSet.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_ListCache.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_Map.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_mapCacheClear.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_isKeyable.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_getMapData.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_mapCacheDelete.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_mapCacheGet.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_mapCacheHas.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_mapCacheSet.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_MapCache.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/memoize.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_memoizeCapped.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_stringToPath.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_toKey.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/_baseToString.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/toString.js",
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/toPath.js"
+    ],
+    "newStringPath": []
+  },
+  "final": {
+    "sourceCount": 21,
+    "lodashSources": [
+      "../node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/isObject.js"
+    ],
+    "newStringPath": [
+      "../src/utils/string-path.ts"
+    ]
+  }
+}

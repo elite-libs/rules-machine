@@ -1,0 +1,16 @@
+# Gap-phase native comparison
+
+2026-10-14T23:07:52.531Z; v26.8.2; Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz. 6 process blocks, 84 observations. Input reset and digest included.
+
+| Fixture | baseline µs/op | tuned µs/op |
+|---|---:|---:|
+| eligibility | 60.47 | 52.80 |
+| pricing-0 | 124.92 | 88.24 |
+| pricing-1024 | 119.96 | 102.67 |
+| pricing-32768 | 111.57 | 170.27 |
+| array-map-16 | 149.66 | 157.31 |
+| array-map-256 | 1486.91 | 1522.72 |
+| array-map-4096 | 23877.27 | 15716.86 |
+
+tuned: 1.09× [0.99, 1.20].
+

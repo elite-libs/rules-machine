@@ -1,0 +1,14 @@
+{
+  "iterations": {
+    "eligibility": 31,
+    "pricing-0": 28,
+    "pricing-1024": 15,
+    "pricing-32768": 21,
+    "array-map-16": 2500,
+    "array-map-256": 38,
+    "array-map-4096": 6
+  },
+  "blocks": 6,
+  "order": "alternating AB/BA paired processes, two arms, seven unchanged fixtures",
+  "warmup": ">=250ms each process, chunks max(1,floor(iterations/5)); warm counters reset before timing"
+}

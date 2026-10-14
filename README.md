@@ -358,6 +358,8 @@ For example, `ruleFactory(rules, { atomic: true, limits: { maxOperations: 200_00
 
 Validation allows at most 100 levels of rule nesting and 10,000 structural nodes. Rule objects and child lists must contain enumerable data properties; sparse rule lists, symbol keys, getters and unexpected keys reject before execution. Expressions allow 100,000 characters, 100 grouping levels and at most 1,024 tokens. `expression.maxTokens` may lower that limit. The factory's syntax cache defaults to 512 entries and 8 MiB of conservative source/token accounting; configure `expression.maxCacheEntries` / `expression.maxCacheBytes`, or set either to zero to disable retention. This estimate is not measured VM heap usage. `createExpressionEngine().cacheStats()` exposes the accounting.
 
+String paths use a separate module-local cache shared by that module’s factories: at most 500 paths and 1 MiB of UTF-16 string-content accounting. Entries above 16 KiB are parsed without retention. Array/map overhead is outside that accounting, so it is not a VM heap limit. This cache stores path text and segments, not resolved input objects; expression-cache options and `cacheStats()` do not control or report it.
+
 `RANGE` requires finite safe integer bounds and at most 100,000 items; `GCD` requires finite safe integers; `ISPRIME` accepts integers up to 1e12 and returns false below the prime domain. `DATE` accepts finite epoch milliseconds, ISO date-only strings interpreted as UTC, ISO datetimes with an explicit `Z` or offset, and unit-bearing relative durations such as `"-2 days"`. `DATEISO` uses the same parser. Invalid dates, rollover dates, ambiguous local datetimes, bare numeric strings and host objects reject. Relative durations read the clock on every evaluation; they are not cached results.
 
 Use `AND` and `OR` for logical operators, double quotes for string literals, and `STRING([...])` for string concatenation. JavaScript `&&`, `||`, arbitrary function calls, wildcard paths, and object-valued `return` rules are unsupported. Return objects with a string expression such as `DICT(["valid", "errors"], [valid, errors])`. Pass nested arrays through input because the parser does not reliably support nested array literals. Legacy `FILTER_VALUES` and `INCLUDES_VALUES` remove matching values; they preserve exclusion behavior for compatibility.
@@ -413,3 +415,5 @@ BSD-3-Clause — See [LICENSE](LICENSE.md) for details.
 
 - [JSON Rules Engine](https://www.npmjs.com/package/json-rules-engine)
 - [Martin Fowler: Rules Engine](https://martinfowler.com/bliki/RulesEngine.html)
+
+Browser IIFE builds are minified by default; `NODE_ENV=development pnpm build` keeps them readable. Node ESM/CommonJS retain the existing opt-in `NODE_ENV=production` minification. All formats retain source maps.

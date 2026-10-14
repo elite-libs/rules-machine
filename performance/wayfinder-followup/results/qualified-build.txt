@@ -1,0 +1,27 @@
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /home/dan/code/oss/rules-machine/tsup.config.ts
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /home/dan/code/oss/rules-machine/tsup.config.ts
+CLI Target: es2022
+CLI Target: es2022
+IIFE Build start
+CLI Cleaning output folder
+CJS Build start
+ESM Build start
+IIFE dist/index.global.js     70.43 KB
+IIFE dist/index.global.js.map 253.68 KB
+IIFE ⚡️ Build success in 133ms
+CJS dist/index.cjs     138.83 KB
+CJS dist/index.cjs.map 244.08 KB
+CJS ⚡️ Build success in 141ms
+ESM dist/index.mjs     138.27 KB
+ESM dist/index.mjs.map 244.01 KB
+ESM ⚡️ Build success in 146ms
+DTS Build start
+DTS ⚡️ Build success in 5329ms
+DTS dist/index.d.cts 6.54 KB
+DTS dist/index.d.ts  6.54 KB

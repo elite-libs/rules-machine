@@ -1,0 +1,279 @@
+src/expression-engine/cache.test.ts:41:22 lint/style/useTemplate  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Template literals are preferred over string concatenation.
+  
+    39 │     expect(() => engine.compile('a'.repeat(100_001))).toThrow('maximum length');
+    40 │     expect(() =>
+  > 41 │       engine.compile('('.repeat(101) + '1' + ')'.repeat(101)),
+       │                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    42 │     ).toThrow('maximum nesting');
+    43 │     expect(
+  
+  i Unsafe fix: Use a template literal.
+  
+     39  39 │       expect(() => engine.compile('a'.repeat(100_001))).toThrow('maximum length');
+     40  40 │       expect(() =>
+     41     │ - ······engine.compile('('.repeat(101)·+·'1'·+·')'.repeat(101)),
+         41 │ + ······engine.compile(`${'('.repeat(101)}1${')'.repeat(101)}`),
+     42  42 │       ).toThrow('maximum nesting');
+     43  43 │       expect(
+  
+
+src/expression-engine/cache.test.ts:44:33 lint/style/useTemplate  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Template literals are preferred over string concatenation.
+  
+    42 │     ).toThrow('maximum nesting');
+    43 │     expect(
+  > 44 │       engine.evaluateExpression('"' + '('.repeat(101) + '"', () => 0),
+       │                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    45 │     ).toBe('('.repeat(101));
+    46 │   });
+  
+  i Unsafe fix: Use a template literal.
+  
+     42  42 │       ).toThrow('maximum nesting');
+     43  43 │       expect(
+     44     │ - ······engine.evaluateExpression('"'·+·'('.repeat(101)·+·'"',·()·=>·0),
+         44 │ + ······engine.evaluateExpression(`"${'('.repeat(101)}"`,·()·=>·0),
+     45  45 │       ).toBe('('.repeat(101));
+     46  46 │     });
+  
+
+examples/aws-lambda-service/lib/transformers.ts:71:25 lint/style/noNonNullAssertion ━━━━━━━━━━━━━━━━
+
+  ! Forbidden non-null assertion.
+  
+    69 │ ) {
+    70 │   if (typeof keyMapping === 'string') keyMapping = { [keyMapping]: true };
+  > 71 │   return Object.entries(keyMapping!).reduce((output, [toKey, fromKey]) => {
+       │                         ^^^^^^^^^^^
+    72 │     set(
+    73 │       output,
+  
+
+examples/aws-lambda-service/rules/app-rules.ts:6:54 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    4 │   getDiscount: {
+    5 │     rules: [
+  > 6 │       { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
+      │                                                      ^^^^
+    7 │       { if: 'price >= 100', then: 'discount = 20' },
+    8 │       { return: 'discount' },
+  
+
+examples/aws-lambda-service/rules/app-rules.ts:7:29 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    5 │     rules: [
+    6 │       { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
+  > 7 │       { if: 'price >= 100', then: 'discount = 20' },
+      │                             ^^^^
+    8 │       { return: 'discount' },
+    9 │     ],
+  
+
+src/arrays.test.ts:14:15 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    12 │             {
+    13 │               if: 'GET($item, userScore) < 0',
+  > 14 │               then: 'userScore = PUT($item, 0, userScore)',
+       │               ^^^^
+    15 │             },
+    16 │             'scoreById = PUT($item, GET($item, userScore), scoreById)',
+  
+
+src/expression-engine/engine.test.ts:98:18 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+     96 │   test('should handle nested property access', () => {
+     97 │     const engine = createExpressionEngine();
+   > 98 │     const input: any = { 'user.plan': 'premium' };
+        │                  ^^^
+     99 │     const result = engine.evaluateExpression('user.plan', (term) => {
+    100 │       return input[term];
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:24:22 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    22 │ describe('unpackArgs', () => {
+    23 │   test('should call function with single argument when result is not array', () => {
+  > 24 │     const fn = (arg: any) => arg() * 2;
+       │                      ^^^
+    25 │     const wrapped = unpackArgs(fn);
+    26 │     expect(wrapped(() => 5)).toBe(10);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:30:23 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    29 │   test('should call function with array when result is array and lengths match', () => {
+  > 30 │     const fn = (args: any) => {
+       │                       ^^^
+    31 │       const arr = args();
+    32 │       return arr[0]() + arr[1]();
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:39:23 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    38 │   test('should throw when too few arguments for multi-arg function', () => {
+  > 39 │     const fn = (arg1: any, arg2: any) => arg1() + arg2();
+       │                       ^^^
+    40 │     const wrapped = unpackArgs(fn);
+    41 │     expect(() => wrapped(() => 5)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:39:34 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    38 │   test('should throw when too few arguments for multi-arg function', () => {
+  > 39 │     const fn = (arg1: any, arg2: any) => arg1() + arg2();
+       │                                  ^^^
+    40 │     const wrapped = unpackArgs(fn);
+    41 │     expect(() => wrapped(() => 5)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language.ts:112:72 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    110 │ type Callable = (...args: ExpressionArray<ExpressionThunk>) => ExpressionValue;
+    111 │ 
+  > 112 │ type TermSetterFunction = (keyPath: string, value: ExpressionValue) => any;
+        │                                                                        ^^^
+    113 │ 
+    114 │ export const ruleExpressionLanguage = (
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/structural-engine/executor.test.ts:6:34 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    4 │ describe('Executor edge cases', () => {
+    5 │   test('should handle nested array rules properly', () => {
+  > 6 │     const rules = [{ if: 'true', then: ['x = 1', 'y = 2'] }, { return: 'x' }];
+      │                                  ^^^^
+    7 │     expect(ruleFactory(rules)()).toBe(1);
+    8 │   });
+  
+
+src/structural-engine/executor.test.ts:17:55 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    16 │   test('should throw error for reserved array field names', () => {
+  > 17 │     expect(() => ruleFactory('x = 1')({ $item: 1 } as any)).toThrow();
+       │                                                       ^^^
+    18 │     expect(() => ruleFactory('x = 1')({ $index: 0 } as any)).toThrow();
+    19 │     expect(() => ruleFactory('x = 1')({ $array: [] } as any)).toThrow();
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/structural-engine/executor.test.ts:18:56 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    16 │   test('should throw error for reserved array field names', () => {
+    17 │     expect(() => ruleFactory('x = 1')({ $item: 1 } as any)).toThrow();
+  > 18 │     expect(() => ruleFactory('x = 1')({ $index: 0 } as any)).toThrow();
+       │                                                        ^^^
+    19 │     expect(() => ruleFactory('x = 1')({ $array: [] } as any)).toThrow();
+    20 │   });
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/structural-engine/executor.test.ts:19:57 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    17 │     expect(() => ruleFactory('x = 1')({ $item: 1 } as any)).toThrow();
+    18 │     expect(() => ruleFactory('x = 1')({ $index: 0 } as any)).toThrow();
+  > 19 │     expect(() => ruleFactory('x = 1')({ $array: [] } as any)).toThrow();
+       │                                                         ^^^
+    20 │   });
+    21 │ 
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/structural-engine/executor.test.ts:36:9 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    34 │       {
+    35 │         if: { and: ['x > 0', 'x < 10'] },
+  > 36 │         then: {
+       │         ^^^^
+    37 │           if: 'x > 5',
+    38 │           then: 'result = "high"',
+  
+
+src/structural-engine/executor.test.ts:38:11 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    36 │         then: {
+    37 │           if: 'x > 5',
+  > 38 │           then: 'result = "high"',
+       │           ^^^^
+    39 │           else: 'result = "low"',
+    40 │         },
+  
+
+src/structural-engine/executor.test.ts:52:43 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    50 │   test('should handle or conditions in if statements', () => {
+    51 │     const rules = [
+  > 52 │       { if: { or: ['x == 1', 'x == 3'] }, then: 'result = "match"' },
+       │                                           ^^^^
+    53 │       { return: 'result' },
+    54 │     ];
+  
+
+src/structural-engine/executor.test.ts:151:30 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    149 │     const rules = ['x = 1', 'y = 2', { return: 'y' }];
+    150 │     const fn = ruleFactory(rules, { trace: true });
+  > 151 │     const result = fn({}) as any;
+        │                              ^^^
+    152 │     // When trace is enabled in ruleFactory options, it returns ExecutionResult
+    153 │     expect(result.input).toBeDefined();
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 77.
+Checked 43 files in 271ms. No fixes applied.
+Found 95 warnings.
+Found 2 infos.

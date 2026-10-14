@@ -553,3 +553,5 @@ Addressing the critical findings should be prioritized, followed by security har
 
 **Generated:** April 6, 2026
 **Next Review:** Recommend quarterly security audits after remediation
+
+Post-merge follow-up: [Astra performance and bundle tuning](performance/wayfinder-followup/RESULTS.md).

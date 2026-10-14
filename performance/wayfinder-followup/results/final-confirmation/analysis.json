@@ -1,0 +1,187 @@
+{
+  "environment": {
+    "at": "2026-10-14T23:25:45.353Z",
+    "role": "confirmation",
+    "purpose": "Two-arm Node workload comparison; no Rust arm executed",
+    "fixtureVersion": "shared-subset-v2",
+    "followupRunnerSha256": "cd9cde387b4ca287fb6f5c847f0cfb29f06efec6f42bfde10568e8c598f41f7a",
+    "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+    "node": "v26.8.2",
+    "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+    "cpus": 8,
+    "platform": "linux 7.2.5-3-omarchy x64",
+    "memory": 67342082048,
+    "blocks": 12,
+    "baseline": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+    "tuned": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/qualified-dist/index.mjs",
+    "moduleHashes": {
+      "baseline": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+      "tuned": "abe5ec5e021b40f4a89499f430783dc564934242d88d8f83e306b4c7405f78fe"
+    },
+    "followupWorkerHash": "1192bbaffec987280c960726b41eeecfab859f1d96c4bbabc3b98fcdf44fcd4b",
+    "harnessHashes": {
+      "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+      "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626"
+    },
+    "command": [
+      "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+      "/home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs",
+      "baseline=.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+      "tuned=.cache/wayfinder-followup/qualified-dist/index.mjs",
+      "blocks=12",
+      "role=confirmation",
+      "output=performance/wayfinder-followup/results/final-confirmation"
+    ]
+  },
+  "observations": 168,
+  "rows": [
+    {
+      "fixture": "eligibility",
+      "baseline": {
+        "medianNs": 93928.1904761905,
+        "minNs": 48189.477678571435,
+        "maxNs": 153371.70907738095,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 67690.7663690476,
+        "minNs": 50365.662946428594,
+        "maxNs": 191728.67113095237,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.131279088182064,
+          "lower95": 0.8054658332912761,
+          "upper95": 1.5306645052358507
+        }
+      }
+    },
+    {
+      "fixture": "pricing-0",
+      "baseline": {
+        "medianNs": 118933.2046130953,
+        "minNs": 58121.474702380976,
+        "maxNs": 259702.88020833337,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 149206.98102678577,
+        "minNs": 51984.16517857142,
+        "maxNs": 284602.5416666667,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.8048814417558156,
+          "lower95": 0.5694663893047607,
+          "upper95": 1.1612632432398282
+        }
+      }
+    },
+    {
+      "fixture": "pricing-1024",
+      "baseline": {
+        "medianNs": 98003.65118243244,
+        "minNs": 54380.85430743243,
+        "maxNs": 223202.99873310814,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 109434.40118243243,
+        "minNs": 57331.764358108136,
+        "maxNs": 235401.71114864864,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.9941527450640164,
+          "lower95": 0.7456152289555825,
+          "upper95": 1.3518307882276468
+        }
+      }
+    },
+    {
+      "fixture": "pricing-32768",
+      "baseline": {
+        "medianNs": 136960.89318647544,
+        "minNs": 73379.10092213117,
+        "maxNs": 355967.4308401639,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 112903.05020491802,
+        "minNs": 77451.78586065576,
+        "maxNs": 236966.2684426229,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.1113371247049384,
+          "lower95": 0.8687123781985183,
+          "upper95": 1.3624374571868625
+        }
+      }
+    },
+    {
+      "fixture": "array-map-16",
+      "baseline": {
+        "medianNs": 172709.53703703705,
+        "minNs": 73459.48765432094,
+        "maxNs": 479039.48765432095,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 178190.1193415638,
+        "minNs": 68925.16049382709,
+        "maxNs": 530273.720164609,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 0.867408330236016,
+          "lower95": 0.5712063421477241,
+          "upper95": 1.2795025529384927
+        }
+      }
+    },
+    {
+      "fixture": "array-map-256",
+      "baseline": {
+        "medianNs": 1268649.948979592,
+        "minNs": 640530.673469388,
+        "maxNs": 2982575.102040817,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 1334106.867346939,
+        "minNs": 773420.9591836735,
+        "maxNs": 2734491.673469389,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.0076532586090252,
+          "lower95": 0.6999238814419076,
+          "upper95": 1.4891182416593365
+        }
+      }
+    },
+    {
+      "fixture": "array-map-4096",
+      "baseline": {
+        "medianNs": 15953255.152173914,
+        "minNs": 11919725.478260873,
+        "maxNs": 25934563.826086957,
+        "blocks": 12
+      },
+      "tuned": {
+        "medianNs": 18330510.478260867,
+        "minNs": 10542505.391304348,
+        "maxNs": 28454322.043478265,
+        "blocks": 12,
+        "speedup": {
+          "ratio": 1.0481997346529106,
+          "lower95": 0.7919908825937901,
+          "upper95": 1.3765911742597332
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "tuned": {
+      "ratio": 0.9884163221190528,
+      "lower95": 0.9229384769380844,
+      "upper95": 1.0712465055806706
+    }
+  },
+  "method": "Equal-weight geometric throughput ratios, paired whole process blocks;10000 deterministic percentile bootstrap resamples; per-slice intervals unadjusted."
+}

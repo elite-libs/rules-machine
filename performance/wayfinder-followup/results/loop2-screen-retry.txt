@@ -1,0 +1,205 @@
+1/6 eligibility baseline: 42247 ns/op
+1/6 eligibility tuned: 64832 ns/op
+1/6 pricing-0 baseline: 84901 ns/op
+1/6 pricing-0 tuned: 68990 ns/op
+1/6 pricing-1024 baseline: 93464 ns/op
+1/6 pricing-1024 tuned: 93920 ns/op
+1/6 pricing-32768 baseline: 75840 ns/op
+1/6 pricing-32768 tuned: 72364 ns/op
+1/6 array-map-16 baseline: 111111 ns/op
+1/6 array-map-16 tuned: 172120 ns/op
+1/6 array-map-256 baseline: 779456 ns/op
+1/6 array-map-256 tuned: 1015255 ns/op
+1/6 array-map-4096 baseline: 8845760 ns/op
+1/6 array-map-4096 tuned: 9786567 ns/op
+2/6 eligibility tuned: 33603 ns/op
+2/6 eligibility baseline: 23719 ns/op
+2/6 pricing-0 tuned: 37645 ns/op
+2/6 pricing-0 baseline: 73563 ns/op
+2/6 pricing-1024 tuned: 57212 ns/op
+2/6 pricing-1024 baseline: 46608 ns/op
+2/6 pricing-32768 tuned: 52421 ns/op
+2/6 pricing-32768 baseline: 56620 ns/op
+2/6 array-map-16 tuned: 98496 ns/op
+2/6 array-map-16 baseline: 94647 ns/op
+2/6 array-map-256 tuned: 1122086 ns/op
+2/6 array-map-256 baseline: 904471 ns/op
+2/6 array-map-4096 tuned: 13300953 ns/op
+2/6 array-map-4096 baseline: 11962255 ns/op
+3/6 eligibility baseline: 45441 ns/op
+3/6 eligibility tuned: 40662 ns/op
+3/6 pricing-0 baseline: 67797 ns/op
+3/6 pricing-0 tuned: 88512 ns/op
+3/6 pricing-1024 baseline: 89209 ns/op
+3/6 pricing-1024 tuned: 77285 ns/op
+3/6 pricing-32768 baseline: 55906 ns/op
+3/6 pricing-32768 tuned: 72238 ns/op
+3/6 array-map-16 baseline: 98874 ns/op
+3/6 array-map-16 tuned: 102188 ns/op
+3/6 array-map-256 baseline: 702773 ns/op
+3/6 array-map-256 tuned: 1218729 ns/op
+3/6 array-map-4096 baseline: 18798542 ns/op
+3/6 array-map-4096 tuned: 10321097 ns/op
+4/6 eligibility tuned: 30160 ns/op
+4/6 eligibility baseline: 28314 ns/op
+4/6 pricing-0 tuned: 60466 ns/op
+4/6 pricing-0 baseline: 117811 ns/op
+4/6 pricing-1024 tuned: 58501 ns/op
+4/6 pricing-1024 baseline: 68618 ns/op
+4/6 pricing-32768 tuned: 84834 ns/op
+4/6 pricing-32768 baseline: 91494 ns/op
+4/6 array-map-16 tuned: 99956 ns/op
+4/6 array-map-16 baseline: 139168 ns/op
+4/6 array-map-256 tuned: 706158 ns/op
+4/6 array-map-256 baseline: 1082907 ns/op
+4/6 array-map-4096 tuned: 8057379 ns/op
+4/6 array-map-4096 baseline: 7240442 ns/op
+5/6 eligibility baseline: 37665 ns/op
+5/6 eligibility tuned: 30698 ns/op
+5/6 pricing-0 baseline: 62047 ns/op
+5/6 pricing-0 tuned: 59330 ns/op
+5/6 pricing-1024 baseline: 62375 ns/op
+5/6 pricing-1024 tuned: 73036 ns/op
+5/6 pricing-32768 baseline: 75852 ns/op
+5/6 pricing-32768 tuned: 90574 ns/op
+5/6 array-map-16 baseline: 149100 ns/op
+5/6 array-map-16 tuned: 188050 ns/op
+5/6 array-map-256 baseline: 1151624 ns/op
+5/6 array-map-256 tuned: 866891 ns/op
+5/6 array-map-4096 baseline: 11760473 ns/op
+5/6 array-map-4096 tuned: 12092032 ns/op
+6/6 eligibility tuned: 34322 ns/op
+6/6 eligibility baseline: 39632 ns/op
+6/6 pricing-0 tuned: 42177 ns/op
+6/6 pricing-0 baseline: 78113 ns/op
+6/6 pricing-1024 tuned: 64864 ns/op
+6/6 pricing-1024 baseline: 63847 ns/op
+6/6 pricing-32768 tuned: 74078 ns/op
+6/6 pricing-32768 baseline: 72119 ns/op
+6/6 array-map-16 tuned: 94192 ns/op
+6/6 array-map-16 baseline: 178542 ns/op
+6/6 array-map-256 tuned: 872683 ns/op
+6/6 array-map-256 baseline: 1911080 ns/op
+6/6 array-map-4096 tuned: 10834314 ns/op
+6/6 array-map-4096 baseline: 12005723 ns/op
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 39632.31298076923,
+      "minNs": 23719.109615384612,
+      "maxNs": 45441.18846153846,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 34322.087499999994,
+      "minNs": 30159.82163461539,
+      "maxNs": 64832.45913461537,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "pricing-0",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 78112.89880952379,
+      "minNs": 62047.47619047619,
+      "maxNs": 117810.89434523808,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 60466.3199404762,
+      "minNs": 37645.2425595238,
+      "maxNs": 88512.22619047621,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "pricing-1024",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 68617.771875,
+      "minNs": 46608.08125,
+      "maxNs": 93464.478125,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 73036.275,
+      "minNs": 57211.962500000016,
+      "maxNs": 93920.01354166666,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "pricing-32768",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 75839.90625,
+      "minNs": 55905.625694444454,
+      "maxNs": 91494.26319444443,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 74077.78819444444,
+      "minNs": 52421.4388888889,
+      "maxNs": 90573.97777777779,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "array-map-16",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 139167.51776649742,
+      "minNs": 94646.75634517772,
+      "maxNs": 178541.68527918786,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 102187.94923857872,
+      "minNs": 94191.92893401011,
+      "maxNs": 188050.19289340096,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "array-map-256",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 1082906.7763157897,
+      "minNs": 702773.0131578948,
+      "maxNs": 1911080.0394736843,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 1015255.1578947369,
+      "minNs": 706158.4736842104,
+      "maxNs": 1218728.7631578948,
+      "blocks": 6
+    }
+  },
+  {
+    "fixture": "array-map-4096",
+    "shared": true,
+    "originalFixtureShared": false,
+    "baseline": {
+      "medianNs": 11962255.230769228,
+      "minNs": 7240441.53846154,
+      "maxNs": 18798541.846153848,
+      "blocks": 6
+    },
+    "tuned": {
+      "medianNs": 10834314.384615382,
+      "minNs": 8057378.846153846,
+      "maxNs": 13300953.153846154,
+      "blocks": 6
+    }
+  }
+]

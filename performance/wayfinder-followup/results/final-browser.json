@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-14T23:26:30.887Z",
+  "bundleBytes": 72125,
+  "checks": {
+    "array-map-16": true,
+    "array-map-256": true,
+    "array-map-4096": true,
+    "eligibility": true,
+    "errorIdentity": true,
+    "pricing-0": true,
+    "pricing-1024": true,
+    "pricing-32768": true,
+    "quotedPath": true
+  },
+  "scope": "Final minified IIFE: complete seven-fixture result/input oracles and targeted changed-seam checks; functional qualification, not timing",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.45 Chrome/152.0.7977.130 Electron/44.4.2 Safari/537.36",
+  "codeCommit": "9adecf3",
+  "bundleSHA256": "b3cb902996020bf73bff7f9288fbff77ece2a3020be8983218617ce2acab3d03"
+}

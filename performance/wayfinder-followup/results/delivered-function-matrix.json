@@ -1,0 +1,593 @@
+{
+  "at": "2026-10-14T23:36:02.356Z",
+  "node": "v26.8.2",
+  "scope": "Actual delivered minified IIFE executed in Node; baseline/final results, mutated inputs and error name/message compared across valid/invalid arities/domains. Not full function coverage or browser-process timing.",
+  "baseline": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+  "functions": 97,
+  "probes": 7956,
+  "passed": true,
+  "rows": [
+    {
+      "name": "NEG",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ADD",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "SUB",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "MUL",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "DIV",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "MOD",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "ISPRIME",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "GCD",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "DATE",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "DATEISO",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "NOT",
+      "probes": 82,
+      "successfulDomainProbes": 8,
+      "passed": true
+    },
+    {
+      "name": "ABS",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ACOS",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ACOSH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ASIN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ASINH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ATAN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ATAN2",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "ATANH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "CUBEROOT",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "CEIL",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "COS",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "COSH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "EXP",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "FLOOR",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "LN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "LOG",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "LOG2",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "SIN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "SINH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "SQRT",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "TAN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "TANH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "ROUND",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "SIGN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "TRUNC",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "IF",
+      "probes": 82,
+      "successfulDomainProbes": 7,
+      "passed": true
+    },
+    {
+      "name": "AVERAGE",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "SUM",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "CHAR",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "CODE",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "DEC2BIN",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "DEC2HEX",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "DEC2STR",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "BIN2DEC",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "HEX2DEC",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "STR2DEC",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "DEGREES",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "RADIANS",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "MIN",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "MAX",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "SORT",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "REVERSE",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "INDEX",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "LENGTH",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "JOIN",
+      "probes": 82,
+      "successfulDomainProbes": 16,
+      "passed": true
+    },
+    {
+      "name": "STRING",
+      "probes": 82,
+      "successfulDomainProbes": 7,
+      "passed": true
+    },
+    {
+      "name": "STRING_CONTAINS",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "STRING_ENDS_WITH",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "STRING_STARTS_WITH",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "SPLIT",
+      "probes": 82,
+      "successfulDomainProbes": 4,
+      "passed": true
+    },
+    {
+      "name": "CHARARRAY",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "ARRAY",
+      "probes": 82,
+      "successfulDomainProbes": 81,
+      "passed": true
+    },
+    {
+      "name": "ISNAN",
+      "probes": 82,
+      "successfulDomainProbes": 3,
+      "passed": true
+    },
+    {
+      "name": "MAP",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "REDUCE",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "RANGE",
+      "probes": 82,
+      "successfulDomainProbes": 9,
+      "passed": true
+    },
+    {
+      "name": "UPPER",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "LOWER",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "ZIP",
+      "probes": 82,
+      "successfulDomainProbes": 50,
+      "passed": true
+    },
+    {
+      "name": "UNZIP",
+      "probes": 83,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "TAKE",
+      "probes": 82,
+      "successfulDomainProbes": 24,
+      "passed": true
+    },
+    {
+      "name": "DROP",
+      "probes": 82,
+      "successfulDomainProbes": 24,
+      "passed": true
+    },
+    {
+      "name": "SLICE",
+      "probes": 82,
+      "successfulDomainProbes": 2,
+      "passed": true
+    },
+    {
+      "name": "CONCAT",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "HEAD",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "TAIL",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "LAST",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "CONS",
+      "probes": 82,
+      "successfulDomainProbes": 10,
+      "passed": true
+    },
+    {
+      "name": "FILTER",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "TAKEWHILE",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "DROPWHILE",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "CONTAINS",
+      "probes": 82,
+      "successfulDomainProbes": 66,
+      "passed": true
+    },
+    {
+      "name": "INCLUDES",
+      "probes": 82,
+      "successfulDomainProbes": 66,
+      "passed": true
+    },
+    {
+      "name": "OBJECT_CONTAINS",
+      "probes": 82,
+      "successfulDomainProbes": 8,
+      "passed": true
+    },
+    {
+      "name": "COUNT_KEYS",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "OMIT",
+      "probes": 82,
+      "successfulDomainProbes": 14,
+      "passed": true
+    },
+    {
+      "name": "REMOVE_VALUES",
+      "probes": 82,
+      "successfulDomainProbes": 66,
+      "passed": true
+    },
+    {
+      "name": "FILTER_VALUES",
+      "probes": 82,
+      "successfulDomainProbes": 66,
+      "passed": true
+    },
+    {
+      "name": "INCLUDES_VALUES",
+      "probes": 82,
+      "successfulDomainProbes": 66,
+      "passed": true
+    },
+    {
+      "name": "GET",
+      "probes": 82,
+      "successfulDomainProbes": 5,
+      "passed": true
+    },
+    {
+      "name": "PUT",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "DICT",
+      "probes": 82,
+      "successfulDomainProbes": 18,
+      "passed": true
+    },
+    {
+      "name": "UNZIPDICT",
+      "probes": 83,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "KEYS",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "VALUES",
+      "probes": 82,
+      "successfulDomainProbes": 1,
+      "passed": true
+    },
+    {
+      "name": "THROW",
+      "probes": 82,
+      "successfulDomainProbes": 0,
+      "passed": true
+    }
+  ]
+}

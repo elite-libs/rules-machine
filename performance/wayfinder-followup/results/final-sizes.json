@@ -1,0 +1,64 @@
+{
+  "at": "2026-10-14T23:28:40.549Z",
+  "node": "v26.8.2",
+  "directory": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/qualified-dist",
+  "scope": "All emitted JS, source maps and declarations; compression sizes measured independently per file, not npm tarball size",
+  "files": [
+    {
+      "name": "index.cjs",
+      "raw": 142163,
+      "gzip": 29094,
+      "brotli": 23822,
+      "sha256": "8de7bf7cb103fbdc4844e1863ba07ed38ee0177c58eb3deab25679624edbefd7"
+    },
+    {
+      "name": "index.cjs.map",
+      "raw": 251013,
+      "gzip": 52130,
+      "brotli": 43157,
+      "sha256": "3a75348c66d6e2a08522d77e122979f1d33e8b243f4eafb3c37683cab801d0e2"
+    },
+    {
+      "name": "index.d.cts",
+      "raw": 6704,
+      "gzip": 2082,
+      "brotli": 1750,
+      "sha256": "84375a7565f645817202f71a69d1392b338b006cf5d18b864eb8bd26a787ab51"
+    },
+    {
+      "name": "index.d.ts",
+      "raw": 6704,
+      "gzip": 2082,
+      "brotli": 1750,
+      "sha256": "84375a7565f645817202f71a69d1392b338b006cf5d18b864eb8bd26a787ab51"
+    },
+    {
+      "name": "index.global.js",
+      "raw": 72125,
+      "gzip": 22101,
+      "brotli": 18446,
+      "sha256": "b3cb902996020bf73bff7f9288fbff77ece2a3020be8983218617ce2acab3d03"
+    },
+    {
+      "name": "index.global.js.map",
+      "raw": 260838,
+      "gzip": 60783,
+      "brotli": 49969,
+      "sha256": "7207ee69d5cf2fbd0205d2564e15e720672b3af43fee7a7b4b58bca17c80af6c"
+    },
+    {
+      "name": "index.mjs",
+      "raw": 141588,
+      "gzip": 28959,
+      "brotli": 23687,
+      "sha256": "abe5ec5e021b40f4a89499f430783dc564934242d88d8f83e306b4c7405f78fe"
+    },
+    {
+      "name": "index.mjs.map",
+      "raw": 250941,
+      "gzip": 52031,
+      "brotli": 43169,
+      "sha256": "55a034a60d896b4a938631eeb4fd204d656b746e64e43b4137ceb197992c8c45"
+    }
+  ]
+}

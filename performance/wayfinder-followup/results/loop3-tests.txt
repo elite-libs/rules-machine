@@ -1,0 +1,13 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+
+ Test Files  18 passed (18)
+      Tests  463 passed (463)
+   Start at  17:11:13
+   Duration  2.12s (transform 42%, import 28%, tests 25%, worker 5%)
+
+  Transform  transforming modules took 3.31s · 42% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

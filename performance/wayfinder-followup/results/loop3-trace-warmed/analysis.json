@@ -1,0 +1,189 @@
+{
+  "environment": {
+    "at": "2026-10-14T23:16:53.768Z",
+    "fixtureVersion": "shared-subset-v2",
+    "followupRunnerSha256": "165f195033185e502e874fcd8ad53e352802a3b720dc184abfca2a781f53ff1d",
+    "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+    "node": "v26.8.2",
+    "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+    "cpus": 8,
+    "platform": "linux 7.2.5-3-omarchy x64",
+    "memory": 67342082048,
+    "blocks": 6,
+    "baseline": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+    "tuned": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/trace-only-dist/index.mjs",
+    "rust": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment",
+    "moduleHashes": {
+      "baseline": "2ee464b289edc23e3cc124e290081081db404d32c759d4938d1af639e20075e1",
+      "tuned": "13a14c0f9e063d320012ce37c9b51c4484c4da62e3743c25b2305577d431cf85",
+      "rust": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+    },
+    "followupWorkerHash": "1192bbaffec987280c960726b41eeecfab859f1d96c4bbabc3b98fcdf44fcd4b",
+    "harnessHashes": {
+      "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+      "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626",
+      "worker.mjs": "057224f7554de4a3c32a7db7b8722241bfd8b53814d35cf8c4e8169c676ce2b1",
+      "run.mjs": "ab2af1b63b0f54bb79a6fba97d93eec3ec73c88915dc97edc1f19a9f7e16a43f",
+      "verify.mjs": "9a299c8bd27160a8c02b7af23b62fecd9e2cd9f5d68b5fb1f3cdf115b51d0aa1"
+    },
+    "command": [
+      "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+      "/home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs",
+      "baseline=.cache/wayfinder-followup/unminified-baseline-dist/index.mjs",
+      "tuned=.cache/wayfinder-followup/trace-only-dist/index.mjs",
+      "blocks=6",
+      "output=performance/wayfinder-followup/results/loop3-trace-warmed"
+    ]
+  },
+  "observations": 84,
+  "rows": [
+    {
+      "fixture": "eligibility",
+      "baseline": {
+        "medianNs": 35572.54309475806,
+        "minNs": 20314.005796370966,
+        "maxNs": 186251.65196572585,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 37248.56451612903,
+        "minNs": 18547.783518145174,
+        "maxNs": 136073.86365927418,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 0.9383775176070462,
+          "lower95": 0.6748600605626238,
+          "upper95": 1.2365532232645495
+        }
+      }
+    },
+    {
+      "fixture": "pricing-0",
+      "baseline": {
+        "medianNs": 61304.93674395162,
+        "minNs": 29593.211693548397,
+        "maxNs": 158429.60231854836,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 88316.40322580643,
+        "minNs": 29368.69909274193,
+        "maxNs": 155912.86844758064,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 0.9015610251229084,
+          "lower95": 0.7184702955816933,
+          "upper95": 1.1037483256687015
+        }
+      }
+    },
+    {
+      "fixture": "pricing-1024",
+      "baseline": {
+        "medianNs": 60525.57990056821,
+        "minNs": 29800.45028409093,
+        "maxNs": 207351.90696022724,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 65044.76598011362,
+        "minNs": 41791.9978693182,
+        "maxNs": 169002.31392045453,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.075454542616997,
+          "lower95": 0.7832459394696586,
+          "upper95": 1.6059514216329507
+        }
+      }
+    },
+    {
+      "fixture": "pricing-32768",
+      "baseline": {
+        "medianNs": 61863.996841755325,
+        "minNs": 36189.074135638286,
+        "maxNs": 129912.3161569149,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 75893.91539228722,
+        "minNs": 31221.483710106382,
+        "maxNs": 155096.41888297873,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 0.9192606044832944,
+          "lower95": 0.8223160338816715,
+          "upper95": 1.0427424497948774
+        }
+      }
+    },
+    {
+      "fixture": "array-map-16",
+      "baseline": {
+        "medianNs": 66259.4340782123,
+        "minNs": 45631.10726256981,
+        "maxNs": 305226.7027932961,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 63113.559217877075,
+        "minNs": 55206.50726256985,
+        "maxNs": 87119.02122905027,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.3394573383492987,
+          "lower95": 0.9424477942067804,
+          "upper95": 2.2029489673500007
+        }
+      }
+    },
+    {
+      "fixture": "array-map-256",
+      "baseline": {
+        "medianNs": 620116.4621848741,
+        "minNs": 341366.94957983174,
+        "maxNs": 884438.0840336134,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 732654.294117647,
+        "minNs": 607455.218487395,
+        "maxNs": 2132568.5294117643,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 0.7416934087079587,
+          "lower95": 0.566464182448849,
+          "upper95": 0.9411803895800082
+        }
+      }
+    },
+    {
+      "fixture": "array-map-4096",
+      "baseline": {
+        "medianNs": 9212446.4375,
+        "minNs": 5971581.749999998,
+        "maxNs": 25492273.374999996,
+        "blocks": 6
+      },
+      "tuned": {
+        "medianNs": 10083612.125,
+        "minNs": 5312027.874999998,
+        "maxNs": 19265364.124999993,
+        "blocks": 6,
+        "speedup": {
+          "ratio": 1.0456783626806296,
+          "lower95": 0.9218937158704565,
+          "upper95": 1.1830267757145425
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "tuned": {
+      "ratio": 0.9801200313466866,
+      "lower95": 0.8860522967441629,
+      "upper95": 1.087612542420294
+    }
+  },
+  "method": "Equal-weight geometric throughput ratios, paired whole process blocks;10000 deterministic percentile bootstrap resamples; per-slice intervals unadjusted."
+}
