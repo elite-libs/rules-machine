@@ -17,7 +17,7 @@ export function autoDetectType(
 }
 
 export function isNumber(value: string): boolean {
-  return /^[0-9.]+$/.test(`${value}`);
+  return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(value);
 }
 
 export function toNumber(value: string | number): number {
@@ -40,7 +40,9 @@ const boolExpressions = [
 ] as const;
 
 export function isBoolean(value: string): boolean {
-  return `${value}`.toLowerCase() in boolExpressions;
+  return (boolExpressions as readonly string[]).includes(
+    `${value}`.toLowerCase(),
+  );
 }
 
 export function toBoolean(value: unknown): boolean {

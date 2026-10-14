@@ -11,9 +11,9 @@ import {
   type TermType,
   type TermTyper,
 } from 'expressionparser/dist/ExpressionParser.js';
-import get from 'lodash/get.js';
 import { UserError } from '../utils/errors';
-import { toArray } from '../utils/utils';
+import { getOwnPath } from '../utils/paths';
+import { isNumber, toArray } from '../utils/utils';
 import {
   array,
   char,
@@ -116,14 +116,19 @@ export const ruleExpressionLanguage = (
     MOD: (a, b) => num(a()) % num(b()),
     ISPRIME: (arg) => {
       const val = num(arg());
+      if (!Number.isSafeInteger(val) || val < 2) return false;
+      if (val > 1_000_000_000_000)
+        throw new UserError('ISPRIME supports integers up to 1000000000000');
       for (let i = 2, s = Math.sqrt(val); i <= s; i++)
         if (val % i === 0) return false;
 
-      return val !== 1;
+      return true;
     },
     GCD: (arg1, arg2) => {
       let a = num(arg1());
       let b = num(arg2());
+      if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b))
+        throw new UserError('GCD expects finite safe integers');
       a = Math.abs(a);
       b = Math.abs(b);
       if (b > a) {
@@ -163,7 +168,7 @@ export const ruleExpressionLanguage = (
     CEIL: (arg) => Math.ceil(num(arg())),
 
     COS: (arg) => Math.cos(num(arg())),
-    COSH: (arg) => Math.cos(num(arg())),
+    COSH: (arg) => Math.cosh(num(arg())),
     EXP: (arg) => Math.exp(num(arg())),
     FLOOR: (arg) => Math.floor(num(arg())),
     LN: (arg) => Math.log(num(arg())),
@@ -273,6 +278,10 @@ export const ruleExpressionLanguage = (
     RANGE: (arg1, arg2) => {
       const start = num(arg1());
       const limit = num(arg2());
+      if (!Number.isSafeInteger(start) || !Number.isSafeInteger(limit))
+        throw new UserError('RANGE expects finite safe integer bounds');
+      if (limit - start > 100_000)
+        throw new UserError('RANGE is limited to 100000 items');
       const result = [];
       for (let i = start; i < limit; i++) result.push(i);
 
@@ -360,7 +369,7 @@ export const ruleExpressionLanguage = (
       };
 
       let i = 0;
-      while (satisfaction(arr[i]) && i < arr.length) i++;
+      while (i < arr.length && satisfaction(arr[i])) i++;
 
       return arr.slice(0, i);
     },
@@ -377,7 +386,7 @@ export const ruleExpressionLanguage = (
       };
 
       let i = 0;
-      while (satisfaction(arr[i]) && i < arr.length) i++;
+      while (i < arr.length && satisfaction(arr[i])) i++;
 
       return arr.slice(i);
     },
@@ -426,14 +435,14 @@ export const ruleExpressionLanguage = (
       const rawKey = arg1();
       const key = typeof rawKey === 'string' ? rawKey : num(rawKey);
       const inputObj = obj(arg2());
-      return get(inputObj, key);
+      return getOwnPath(inputObj, key) as ExpressionValue;
     },
     PUT: (arg1, arg2, arg3) => {
       const rawKey = arg1();
       const key = typeof rawKey === 'string' ? rawKey : num(rawKey);
       const value = arg2();
       const inputObj = obj(arg3());
-      return Object.assign({}, inputObj, { [key]: value });
+      return { ...inputObj, [key]: value };
     },
     DICT: (arg1, arg2) => {
       const arr1 = evalArray(arg1());
@@ -442,7 +451,12 @@ export const ruleExpressionLanguage = (
 
       arr1.forEach((v1: ExpressionValue, i: number) => {
         const key = string(v1);
-        result[key] = arr2[i];
+        Object.defineProperty(result, key, {
+          value: arr2[i],
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
       });
 
       return result;
@@ -459,7 +473,12 @@ export const ruleExpressionLanguage = (
         const [key, value] = kvPair;
 
         try {
-          result[evalString(key)] = value;
+          Object.defineProperty(result, evalString(key), {
+            value,
+            enumerable: true,
+            writable: true,
+            configurable: true,
+          });
         } catch (err) {
           throw new Error(
             `UNZIPDICT keys; ${err instanceof Error ? err.message : String(err)}`,
@@ -503,8 +522,9 @@ export const ruleExpressionLanguage = (
       ['*', '/', '%', 'MOD'],
       ['+', '-'],
       ['<', '>', '<=', '>='],
-      ['=', '!=', '<>', '~='],
+      ['==', '!=', '<>', '~='],
       ['AND', 'OR'],
+      ['=', '+=', '-=', '*=', '/=', '??='],
       [','],
     ],
     LITERAL_OPEN: '"',
@@ -543,7 +563,7 @@ export const ruleExpressionLanguage = (
     },
     // @ts-expect-error
     termDelegate: (term: string) => {
-      const numVal = parseFloat(term);
+      const numVal = isNumber(term) ? Number(term) : Number.NaN;
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
           case 'E':
@@ -576,6 +596,8 @@ export const ruleExpressionLanguage = (
             return Number.EPSILON;
           case 'UNDEFINED':
             return undefined;
+          case 'NULL':
+            return null;
           default:
             return termDelegate(term);
         }
@@ -585,7 +607,7 @@ export const ruleExpressionLanguage = (
     },
 
     termTyper: (term: string): TermType => {
-      const numVal = parseFloat(term);
+      const numVal = isNumber(term) ? Number(term) : Number.NaN;
 
       if (Number.isNaN(numVal)) {
         switch (term.toUpperCase()) {
@@ -611,6 +633,8 @@ export const ruleExpressionLanguage = (
             return 'boolean';
           case 'EMPTY':
             return 'array';
+          case 'NULL':
+            return 'object';
           case 'INFINITY':
             return 'number';
           case 'EPSILON':

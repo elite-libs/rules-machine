@@ -1,4 +1,3 @@
-import set from 'lodash/set.js';
 import toPath from 'lodash/toPath.js';
 import { UserError } from './errors';
 
@@ -25,5 +24,26 @@ export function assertWritablePath(path: string): void {
 
 export function setOwnPath(data: object, path: string, value: unknown): void {
   assertWritablePath(path);
-  set(data, path, value);
+  const keys = toPath(path);
+  let target = data as Record<string, unknown>;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i];
+    let child = Object.hasOwn(target, key) ? target[key] : undefined;
+    if (child === null || typeof child !== 'object') {
+      child = /^\d+$/.test(keys[i + 1]) ? [] : {};
+      Object.defineProperty(target, key, {
+        value: child,
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      });
+    }
+    target = child as Record<string, unknown>;
+  }
+  Object.defineProperty(target, keys[keys.length - 1], {
+    value,
+    enumerable: true,
+    writable: true,
+    configurable: true,
+  });
 }

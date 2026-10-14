@@ -30,19 +30,18 @@ describe('autoDetectType', () => {
   });
 
   test('should detect boolean from string', () => {
-    // Note: isBoolean only returns true for array indices '0'-'7' and 'length'
-    // toBoolean('0') returns false, toBoolean('1') returns true
     expect(autoDetectType('0')).toBe(false);
     expect(autoDetectType('1')).toBe(true);
-    // These are not detected as booleans due to isBoolean implementation
-    expect(autoDetectType('true')).toBe('true');
-    expect(autoDetectType('false')).toBe('false');
+    expect(autoDetectType('true')).toBe(true);
+    expect(autoDetectType('false')).toBe(false);
+    expect(autoDetectType('2')).toBe(2);
+    expect(autoDetectType('length')).toBe('length');
   });
 
   test('should detect number from string', () => {
     expect(autoDetectType('42')).toBe(42);
     expect(autoDetectType('3.14')).toBe(3.14);
-    // Note: '0' is detected as boolean first, so it returns true not 0
+    // Explicit boolean aliases 0 and 1 are detected before numbers.
   });
 
   test('should return string for non-boolean/number string', () => {
@@ -85,8 +84,12 @@ describe('isNumber', () => {
     expect(isNumber('12abc')).toBe(false);
   });
 
-  test('should return false for negative numbers (no minus sign in regex)', () => {
-    expect(isNumber('-42')).toBe(false);
+  test('recognizes signed decimals and scientific notation', () => {
+    expect(isNumber('-42')).toBe(true);
+    expect(isNumber('1.2e3')).toBe(true);
+    expect(isNumber('.5')).toBe(true);
+    expect(isNumber('..')).toBe(false);
+    expect(isNumber('1.2.3')).toBe(false);
   });
 });
 
@@ -111,22 +114,21 @@ describe('toNumber', () => {
 });
 
 describe('isBoolean', () => {
-  test('should return true for array index strings (0-7)', () => {
-    // Note: isBoolean uses `in` operator on array which checks indices
-    expect(isBoolean('0')).toBe(true);
-    expect(isBoolean('1')).toBe(true);
-    expect(isBoolean('2')).toBe(true);
-    expect(isBoolean('7')).toBe(true);
+  test.each([
+    'true',
+    'false',
+    'yes',
+    'no',
+    'on',
+    'off',
+    '0',
+    '1',
+    'TRUE',
+  ])('recognizes %s', (value) => {
+    expect(isBoolean(value)).toBe(true);
   });
-
-  test('should return false for non-index strings', () => {
-    expect(isBoolean('true')).toBe(false);
-    expect(isBoolean('false')).toBe(false);
-    expect(isBoolean('hello')).toBe(false);
-  });
-
-  test('should return true for length property', () => {
-    expect(isBoolean('length')).toBe(true);
+  test.each(['2', '7', 'length', 'map', 'hello', ''])('rejects %s', (value) => {
+    expect(isBoolean(value)).toBe(false);
   });
 });
 

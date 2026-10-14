@@ -1,7 +1,8 @@
 import { UserError } from '../utils/errors';
 import { assertWritablePath } from '../utils/paths';
 
-const keyPath = /^[$A-Z_a-z][$\w]*(?:(?:\.[$\w]+)|(?:\[(?:\d+|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\]))*$/;
+const keyPath =
+  /^[$A-Z_a-z][$\w]*(?:(?:\.[$\w]+)|(?:\[(?:\d+|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\]))*$/;
 
 /** Detect only top-level assignment operators, never operators inside literals. */
 export function extractAssignment(source: string): {
@@ -19,19 +20,35 @@ export function extractAssignment(source: string): {
       else if (ch === quote) quote = '';
       continue;
     }
-    if (ch === '"' || ch === "'") { quote = ch; continue; }
-    if (ch === '(' || ch === '[') { depth++; continue; }
-    if (ch === ')' || ch === ']') { depth--; continue; }
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      continue;
+    }
+    if (ch === '(' || ch === '[') {
+      depth++;
+      continue;
+    }
+    if (ch === ')' || ch === ']') {
+      depth--;
+      continue;
+    }
     if (depth !== 0 || ch !== '=') continue;
     const previous = source[i - 1];
     if ('=!<>~'.includes(previous ?? '') || source[i + 1] === '=') continue;
     let start = i;
     let operator = '=';
-    if (previous === '?' && source[i - 2] === '?') { start -= 2; operator = '??='; }
-    else if (previous && '+-*/'.includes(previous)) { start--; operator = `${previous}=`; }
-    if (assignmentOperator) throw new UserError('Chained assignments are not supported');
+    if (previous === '?' && source[i - 2] === '?') {
+      start -= 2;
+      operator = '??=';
+    } else if (previous && '+-*/'.includes(previous)) {
+      start--;
+      operator = `${previous}=`;
+    }
+    if (assignmentOperator)
+      throw new UserError('Chained assignments are not supported');
     lhs = source.slice(0, start).trim();
-    if (!keyPath.test(lhs)) throw new UserError(`Invalid assignment target: ${lhs}`);
+    if (!keyPath.test(lhs))
+      throw new UserError(`Invalid assignment target: ${lhs}`);
     assertWritablePath(lhs);
     assignmentOperator = operator;
   }

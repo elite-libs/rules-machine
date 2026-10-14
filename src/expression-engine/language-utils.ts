@@ -115,7 +115,7 @@ export const obj = (obj: ExpressionValue) => {
 
 /**
  *
- * FILTER_VALUES will ONLY INCLUDE values that are in the 1st argument.
+ * FILTER_VALUES excludes values present in the first argument.
  *
  * ```js
  * FILTER_VALUES([1 ,3], [1, 2, 3, 4, 5])

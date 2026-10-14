@@ -8,16 +8,20 @@ export type {
   ExpressionEngine,
   TermResolver,
 } from './expression-engine/engine';
+export { createExpressionEngine } from './expression-engine/engine';
 export type {
   ExecutionResult,
   ExecutorOptions,
   RuleExecutor,
   TraceRow,
 } from './structural-engine/executor';
-export { extractValueOrLiteral } from './structural-engine/executor';
+export {
+  createRuleExecutor,
+  extractValueOrLiteral,
+} from './structural-engine/executor';
 export type { Rule } from './structural-engine/types';
 
-interface RuleMachineOptions {
+export interface RuleMachineOptions {
   trace?: boolean;
   ignoreMissingKeys?: boolean;
 }
