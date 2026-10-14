@@ -154,6 +154,33 @@
             }
           ],
           "input": {}
+        },
+        {
+          "name": "round-negative-zero",
+          "rules": "[ROUND(-0.4), ROUND(-0.5), ROUND(-1.5), ROUND(4503599627370496)]",
+          "input": {}
+        },
+        {
+          "name": "ascii-string-index",
+          "rules": "text.1",
+          "input": {
+            "text": "hello"
+          }
+        },
+        {
+          "name": "array-leading-zero-read",
+          "rules": "items.01",
+          "input": {
+            "items": [
+              3,
+              4
+            ]
+          }
+        },
+        {
+          "name": "compact-negative-after-comma",
+          "rules": "[ADD(2,-1), SLICE(-3,-1,[1,2,3,4]), [1,-2]]",
+          "input": {}
         }
       ]
     },
@@ -592,6 +619,148 @@
       "options": {
         "trace": true
       }
+    }
+  ],
+  "supportedFunctions": [
+    {
+      "name": "ABS",
+      "expression": "ABS(-3)"
+    },
+    {
+      "name": "NEG",
+      "expression": "NEG(2)"
+    },
+    {
+      "name": "NOT",
+      "expression": "NOT(0)"
+    },
+    {
+      "name": "FLOOR",
+      "expression": "FLOOR(2.8)"
+    },
+    {
+      "name": "CEIL",
+      "expression": "CEIL(2.2)"
+    },
+    {
+      "name": "ROUND",
+      "expression": "ROUND(-0.4)"
+    },
+    {
+      "name": "SQRT",
+      "expression": "SQRT(9)"
+    },
+    {
+      "name": "ISNAN",
+      "expression": "ISNAN(0 / 0)"
+    },
+    {
+      "name": "ADD",
+      "expression": "ADD(2,3)"
+    },
+    {
+      "name": "SUB",
+      "expression": "SUB(2,3)"
+    },
+    {
+      "name": "MUL",
+      "expression": "MUL(2,3)"
+    },
+    {
+      "name": "DIV",
+      "expression": "DIV(2,3)"
+    },
+    {
+      "name": "MOD",
+      "expression": "MOD(7,3)"
+    },
+    {
+      "name": "LENGTH",
+      "expression": "LENGTH(\"hello\")"
+    },
+    {
+      "name": "COUNT_KEYS",
+      "expression": "COUNT_KEYS(obj)"
+    },
+    {
+      "name": "MIN",
+      "expression": "MIN([])"
+    },
+    {
+      "name": "MAX",
+      "expression": "MAX([])"
+    },
+    {
+      "name": "SORT",
+      "expression": "SORT([3,1,2])"
+    },
+    {
+      "name": "REVERSE",
+      "expression": "REVERSE([1,2])"
+    },
+    {
+      "name": "HEAD",
+      "expression": "HEAD([])"
+    },
+    {
+      "name": "TAIL",
+      "expression": "TAIL([1,2])"
+    },
+    {
+      "name": "LAST",
+      "expression": "LAST([])"
+    },
+    {
+      "name": "RANGE",
+      "expression": "RANGE(-2,2)"
+    },
+    {
+      "name": "INDEX",
+      "expression": "INDEX(\"abc\",1)"
+    },
+    {
+      "name": "TAKE",
+      "expression": "TAKE(-1,[1,2,3])"
+    },
+    {
+      "name": "DROP",
+      "expression": "DROP(2,[1,2,3])"
+    },
+    {
+      "name": "SLICE",
+      "expression": "SLICE(-3, -1, [1,2,3,4])"
+    },
+    {
+      "name": "CONCAT",
+      "expression": "CONCAT([1],[2])"
+    },
+    {
+      "name": "CONS",
+      "expression": "CONS(0,[1])"
+    },
+    {
+      "name": "CONTAINS",
+      "expression": "CONTAINS([2],[1,2])"
+    },
+    {
+      "name": "INCLUDES",
+      "expression": "INCLUDES(7,[1,2])"
+    },
+    {
+      "name": "REMOVE_VALUES",
+      "expression": "REMOVE_VALUES(2,[1,2])"
+    },
+    {
+      "name": "STRING_CONTAINS",
+      "expression": "STRING_CONTAINS(\"\u00e9\",\"caf\u00e9\")"
+    },
+    {
+      "name": "STRING_STARTS_WITH",
+      "expression": "STRING_STARTS_WITH(\"ca\",\"caf\u00e9\")"
+    },
+    {
+      "name": "STRING_ENDS_WITH",
+      "expression": "STRING_ENDS_WITH(\"\u00e9\",\"caf\u00e9\")"
     }
   ]
 }

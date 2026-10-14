@@ -101,12 +101,27 @@ impl Value {
         })
     }
     pub fn wire(&self) -> Result<Json> {
-        self.encode(0, &mut Vec::new(), true)
+        self.encode(0, &mut Vec::new(), true, &mut 0)
     }
     pub fn legacy(&self) -> Result<Json> {
-        self.encode(0, &mut Vec::new(), false)
+        self.encode(0, &mut Vec::new(), false, &mut 0)
     }
-    fn encode(&self, depth: usize, active: &mut Vec<usize>, tagged: bool) -> Result<Json> {
+    fn encode(
+        &self,
+        depth: usize,
+        active: &mut Vec<usize>,
+        tagged: bool,
+        bytes: &mut usize,
+    ) -> Result<Json> {
+        *bytes = bytes.saturating_add(
+            48 + match self {
+                Self::String(s) => s.len().saturating_mul(6),
+                _ => 0,
+            },
+        );
+        if *bytes > 8 * 1024 * 1024 - 1024 {
+            return Err("Serialized value exceeds 8MiB response budget".into());
+        }
         if depth > 40 {
             return Err("Value nesting exceeds 40".into());
         }
@@ -164,7 +179,7 @@ impl Value {
                 let list = v
                     .borrow()
                     .iter()
-                    .map(|v| v.encode(depth + 1, active, tagged))
+                    .map(|v| v.encode(depth + 1, active, tagged, bytes))
                     .collect::<Result<Vec<_>>>()?;
                 if tagged {
                     json!(["array", list])
@@ -177,14 +192,18 @@ impl Value {
                     let list = v
                         .borrow()
                         .iter()
-                        .map(|(k, v)| Ok(json!([k, v.encode(depth + 1, active, true)?])))
+                        .map(|(k, v)| {
+                            *bytes = bytes.saturating_add(k.len().saturating_mul(6));
+                            Ok(json!([k, v.encode(depth + 1, active, true, bytes)?]))
+                        })
                         .collect::<Result<Vec<_>>>()?;
                     json!(["object", list])
                 } else {
                     let mut out = serde_json::Map::new();
                     for (k, v) in v.borrow().iter() {
+                        *bytes = bytes.saturating_add(k.len().saturating_mul(6));
                         if !matches!(v, Self::Undefined) {
-                            out.insert(k.clone(), v.encode(depth + 1, active, false)?);
+                            out.insert(k.clone(), v.encode(depth + 1, active, false, bytes)?);
                         }
                     }
                     Json::Object(out)
@@ -341,6 +360,9 @@ fn property(v: &Value, key: &str) -> Value {
             if key == "length" {
                 Value::Number(a.borrow().len() as f64)
             } else {
+                if key.len() > 1 && key.starts_with('0') {
+                    return Value::Undefined;
+                }
                 key.parse::<usize>()
                     .ok()
                     .and_then(|i| a.borrow().get(i).cloned())
@@ -350,6 +372,13 @@ fn property(v: &Value, key: &str) -> Value {
         Value::String(s) => {
             if key == "length" {
                 Value::Number(s.encode_utf16().count() as f64)
+            } else if s.is_ascii() {
+                key.parse::<usize>()
+                    .ok()
+                    .filter(|_| key == "0" || !key.starts_with('0'))
+                    .and_then(|i| s.as_bytes().get(i))
+                    .map(|v| Value::String((*v as char).to_string()))
+                    .unwrap_or(Value::Undefined)
             } else {
                 Value::Undefined
             }
@@ -366,6 +395,9 @@ fn get(input: &Value, p: &str) -> Result<Value> {
     }
     let mut v = input.clone();
     for key in keys {
+        if matches!(&v,Value::String(s)if !s.is_ascii()) && key.parse::<usize>().is_ok() {
+            return Err("Non-ASCII string index reads are unsupported".into());
+        }
         v = property(&v, &key)
     }
     Ok(v)
@@ -438,6 +470,9 @@ fn write(target: &Value, key: &str, value: Value) -> Result<()> {
                 }
                 a.resize(n as usize, Value::Undefined);
                 return Ok(());
+            }
+            if key.len() > 1 && key.starts_with('0') {
+                return Err("Named array properties are unsupported".into());
             }
             let i = key
                 .parse::<usize>()
@@ -1240,7 +1275,17 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
         "NEG" => Value::Number(-n(0)?),
         "FLOOR" => Value::Number(n(0)?.floor()),
         "CEIL" => Value::Number(n(0)?.ceil()),
-        "ROUND" => Value::Number((n(0)? + 0.5).floor()),
+        "ROUND" => {
+            let v = n(0)?;
+            Value::Number(if !v.is_finite() || v.fract() == 0.0 {
+                v
+            } else if v >= -0.5 && v < 0.0 {
+                -0.0
+            } else {
+                let floor = v.floor();
+                if v - floor < 0.5 { floor } else { floor + 1.0 }
+            })
+        }
         "SQRT" => Value::Number(n(0)?.sqrt()),
         "ADD" => Value::Number(n(0)? + n(1)?),
         "SUB" => Value::Number(n(0)? - n(1)?),
@@ -1439,7 +1484,23 @@ pub fn digest(v: &Value) -> Result<u32> {
         Value::Array(v) => v.borrow().iter().enumerate().try_fold(17u32, |s, (i, v)| {
             Ok::<_, String>(s.wrapping_add(digest(v)?.wrapping_mul(i as u32 + 1)))
         })?,
-        _ => return Err("Unsupported benchmark digest type".into()),
+        Value::Undefined => 19,
+        Value::Null => 23,
+        Value::Number(_) => 29,
+        Value::Object(v) => {
+            v.borrow()
+                .iter()
+                .enumerate()
+                .try_fold(31u32, |sum, (i, (key, value))| {
+                    Ok::<_, String>(
+                        sum.wrapping_add(
+                            digest(&Value::String(key.clone()))?
+                                .wrapping_add(digest(value)?)
+                                .wrapping_mul(i as u32 + 1),
+                        ),
+                    )
+                })?
+        }
     })
 }
 /// A session stores syntax only. Inputs/results are never inserted in the cache.
@@ -1523,7 +1584,10 @@ impl Session {
                     .and_then(Json::as_bool)
                     .unwrap_or(true);
                 let (result, input) = program.execute(input, ignore)?;
-                let output = json!({"result":result.wire()?,"input":input.wire()?});
+                let mut bytes = 0;
+                let result = result.encode(0, &mut Vec::new(), true, &mut bytes)?;
+                let input = input.encode(0, &mut Vec::new(), true, &mut bytes)?;
+                let output = json!({"result":result,"input":input});
                 self.completed += 1;
                 Ok(output)
             }

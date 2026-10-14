@@ -15,9 +15,17 @@ fn legacy(v: &Json) -> Result<Json> {
         return Err("Invalid iteration count".into());
     }
     let mut outputs = vec![];
+    let mut output_bytes = 0;
     for input in inputs {
         let (result, input) = program.execute(Value::from_json(input), true)?;
-        outputs.push(json!({"result":result.legacy()?,"input":input.legacy()?}));
+        let output = json!({"result":result.legacy()?,"input":input.legacy()?});
+        output_bytes += serde_json::to_vec(&output)
+            .map_err(|e| e.to_string())?
+            .len();
+        if output_bytes > MAX_FRAME - 1024 {
+            return Err("Legacy output exceeds frame budget".into());
+        }
+        outputs.push(output);
     }
     for _ in 0..warmup {
         for input in inputs {
