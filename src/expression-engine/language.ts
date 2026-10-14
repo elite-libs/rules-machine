@@ -560,11 +560,17 @@ export const ruleExpressionLanguage = (
     },
     KEYS: (arg1) => {
       const inputObj = obj(arg1());
-      return Object.keys(inputObj).sort();
+      const keys = Object.keys(inputObj);
+      checkArrayLength(keys.length);
+      consumeWork(keys.length);
+      return keys.sort();
     },
     VALUES: (arg1) => {
       const inputObj = obj(arg1());
-      return Object.keys(inputObj)
+      const keys = Object.keys(inputObj);
+      checkArrayLength(keys.length);
+      consumeWork(keys.length);
+      return keys
         .sort()
         .map((key) => readData(inputObj, key) as ExpressionValue);
     },

@@ -182,5 +182,10 @@ describe('materialization provenance and immutable host values', () => {
         evaluate('RANGE(0, 3)'),
       ),
     ).toThrow(ResourceLimitError);
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxArrayLength: 2 }), () =>
+        evaluate('KEYS(record)', { record: { a: 1, b: 2, c: 3 } }),
+      ),
+    ).toThrow(ResourceLimitError);
   });
 });
