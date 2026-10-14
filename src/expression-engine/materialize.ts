@@ -1,4 +1,9 @@
-import { checkArrayLength, consumeWork } from '../utils/budget';
+import {
+  checkArrayLength,
+  checkDataDepth,
+  checkStringLength,
+  consumeWork,
+} from '../utils/budget';
 import { UserError } from '../utils/errors';
 
 // Weak markers carry provenance across lazy built-in helpers without retaining inputs.
@@ -9,6 +14,10 @@ const objectLike = (value: unknown): value is object =>
 /** Mark one input value, without walking or reading its graph. */
 export function protectInput<T>(value: T): T {
   consumeWork();
+  if (typeof value === 'string') {
+    checkStringLength(value.length);
+    consumeWork(value.length);
+  }
   if (Array.isArray(value)) checkArrayLength(value.length);
   if (objectLike(value)) protectedValues.add(value);
   return value;
@@ -78,9 +87,14 @@ export function rejectHostCallback(value: unknown): void {
 export function createMaterializer() {
   function materialize(expression: unknown): unknown {
     const copies = new WeakMap<object, object>();
-    const visit = (original: unknown): unknown => {
+    const visit = (original: unknown, depth = 0): unknown => {
+      checkDataDepth(depth);
       consumeWork();
       const value = unwrapInternal(original);
+      if (typeof value === 'string') {
+        checkStringLength(value.length);
+        consumeWork(value.length);
+      }
       if (
         !objectLike(value) ||
         typeof value === 'function' ||
@@ -103,7 +117,7 @@ export function createMaterializer() {
       copies.set(value, copy);
       for (const [key, child] of dataEntries(value)) {
         Object.defineProperty(copy, key, {
-          value: visit(child),
+          value: visit(child, depth + 1),
           enumerable: true,
           writable: true,
           configurable: true,
@@ -122,6 +136,9 @@ export function describeValue(value: unknown): string {
   if (typeof value === 'object')
     return Array.isArray(value) ? '[array]' : '[object]';
   if (typeof value === 'function') return '[function]';
-  if (typeof value === 'string') return JSON.stringify(value);
+  if (typeof value === 'string')
+    return JSON.stringify(
+      value.length > 200 ? `${value.slice(0, 200)}…` : value,
+    );
   return String(value);
 }

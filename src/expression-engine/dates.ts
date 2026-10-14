@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { consumeWork } from '../utils/budget';
+import { checkStringLength, consumeWork } from '../utils/budget';
 import { UserError } from '../utils/errors';
 
 const timeLimit = 8_640_000_000_000_000;
@@ -38,6 +38,7 @@ export function parseDate(
     throw new UserError(
       'DATE expects epoch milliseconds, an ISO date, or a duration string',
     );
+  checkStringLength(value.length);
   consumeWork(value.length);
   const text = value.trim();
   if (text.length <= 100 && duration.test(text)) {

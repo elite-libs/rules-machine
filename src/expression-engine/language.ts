@@ -12,6 +12,7 @@ import type {
 } from 'expressionparser/dist/ExpressionParser.js';
 import {
   checkArrayLength,
+  checkStringLength,
   consumeWork,
   ResourceLimitError,
 } from '../utils/budget';
@@ -334,8 +335,18 @@ export const ruleExpressionLanguage = (
 
       return result;
     },
-    UPPER: (arg) => string(arg()).toUpperCase(),
-    LOWER: (arg) => string(arg()).toLowerCase(),
+    UPPER: (arg) => {
+      const value = string(arg()).toUpperCase();
+      checkStringLength(value.length);
+      consumeWork(value.length);
+      return value;
+    },
+    LOWER: (arg) => {
+      const value = string(arg()).toLowerCase();
+      checkStringLength(value.length);
+      consumeWork(value.length);
+      return value;
+    },
 
     ZIP: (arg1, arg2) => {
       const arr1 = evalArray(arg1());

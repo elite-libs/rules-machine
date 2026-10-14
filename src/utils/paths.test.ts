@@ -162,3 +162,23 @@ test('journals descriptors and array length changes for atomic rollback', () => 
   expect(values).toEqual([1, 2, 3]);
   expect(input).not.toHaveProperty('added');
 });
+
+test('bounds traversed path depth before reading or writing', () => {
+  const input = { nested: { value: 1 } };
+  expect(() =>
+    withExecutionBudget(new ExecutionBudget({ maxDataDepth: 1 }), () =>
+      getOwnPath(input, 'nested.value'),
+    ),
+  ).toThrow(/maxDataDepth/);
+  expect(() =>
+    withExecutionBudget(new ExecutionBudget({ maxDataDepth: 1 }), () =>
+      setOwnPath(input, 'added.value', 2),
+    ),
+  ).toThrow(/maxDataDepth/);
+  expect(input).not.toHaveProperty('added');
+  expect(
+    withExecutionBudget(new ExecutionBudget({ maxDataDepth: 1 }), () =>
+      getOwnPath({ 'nested.value': 3 }, 'nested.value'),
+    ),
+  ).toBe(3);
+});

@@ -172,13 +172,80 @@ describe('materialization provenance and immutable host values', () => {
   ])('preserves nested provenance through generated containers: %s', (source) => {
     const fn = vi.fn(() => 42);
     const nested = { fn };
-    const input = { record: { nested }, keyList: ['nested'], valueList: [nested] };
+    const input = {
+      record: { nested },
+      keyList: ['nested'],
+      valueList: [nested],
+    };
     expect(evaluate(source, input)).toBe(fn);
     expect(fn).not.toHaveBeenCalled();
     const replacement = vi.fn(() => 99);
     nested.fn = replacement;
     expect(evaluate(source, input)).toBe(replacement);
     expect(replacement).not.toHaveBeenCalled();
+  });
+
+  test('ignores host array species, constructor and iteration hooks', () => {
+    const hook = vi.fn(() => {
+      throw new Error('must not execute');
+    });
+    class HostArray extends Array<number> {
+      static get [Symbol.species]() {
+        hook();
+        return Array;
+      }
+    }
+    const items = new HostArray(1, 2, 3);
+    Object.defineProperty(items, 'constructor', { get: hook });
+    Object.defineProperty(items, Symbol.iterator, { get: hook });
+    Object.freeze(items);
+    expect(evaluate('SUM(items)', { items })).toBe(6);
+    expect(evaluate('SORT(items)', { items })).toEqual([1, 2, 3]);
+    expect(evaluate('MAP("ABS", items)', { items })).toEqual([1, 2, 3]);
+    expect(hook).not.toHaveBeenCalled();
+  });
+
+  test('bounds bulk string work and all primitive string materialization', () => {
+    const values = createMaterializer();
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxOperations: 10 }), () =>
+        evaluate('UPPER(s)', { s: 'a'.repeat(100_000) }),
+      ),
+    ).toThrow(ResourceLimitError);
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxStringLength: 5 }), () =>
+        values.materialize(() => '123456'),
+      ),
+    ).toThrow(/maxStringLength/);
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxStringLength: 6 }), () =>
+        evaluate('JOIN("xx", items)', { items: ['abc', 'def'] }),
+      ),
+    ).toThrow(/maxStringLength/);
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxStringLength: 1 }), () =>
+        evaluate('UPPER(s)', { s: 'ß' }),
+      ),
+    ).toThrow(/maxStringLength/);
+  });
+
+  test('bounds fresh data descent before recursion while preserving cycles', () => {
+    const values = createMaterializer();
+    let deep: Record<string, unknown> = {};
+    for (let i = 0; i < 130; i++) deep = { child: deep };
+    expect(() => values.materialize(() => deep)).toThrow(/maxDataDepth/);
+    expect(() =>
+      withExecutionBudget(new ExecutionBudget({ maxDataDepth: 4 }), () =>
+        values.materialize(() => deep),
+      ),
+    ).toThrow(/maxDataDepth/);
+    const cycle: Record<string, unknown> = {};
+    cycle.self = cycle;
+    const copy = withExecutionBudget(
+      new ExecutionBudget({ maxDataDepth: 1 }),
+      () => values.materialize(() => cycle),
+    ) as typeof cycle;
+    expect(copy.self).toBe(copy);
   });
 
   test('enforces traversal and allocation budgets before large array copies', () => {
