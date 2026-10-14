@@ -40,7 +40,11 @@ try {
     const batch = async n => {
       const start = performance.now();
       let sum = 0;
-      for (let i = 0; i < n; i++) sum = (sum + checksum(await run())) >>> 0;
+      if (bridge) {
+        for (let i = 0; i < n; i++) sum = (sum + checksum(await run())) >>> 0;
+      } else {
+        for (let i = 0; i < n; i++) sum = (sum + checksum(run())) >>> 0;
+      }
       const elapsed = performance.now() - start;
       if (sum !== expectedChecksum(f.expected, n)) throw Error(`Timed output mismatch ${f.name}`);
       return { elapsed, sum };
