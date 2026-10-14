@@ -19,6 +19,7 @@ export const appHooks = {
   onUserRegister: ruleFactory([
     userRules.applyFreeTrial,
     userRules.applyNewUserPromotion,
+    { return: 'user' },
   ]),
   getDiscountPercent: ruleFactory([
     rewardsRules.convertRewardsToPercentDiscount,
@@ -32,19 +33,19 @@ Here's where we use our app-level functions (`registerUser`, `calculateCartDisco
 
 ```ts
 // `./src/users/index.ts`
-import appHooks from './src/app-hooks';
+import { appHooks } from '../app-hooks';
 
 const { onUserRegister, getDiscountPercent } = appHooks;
 
 export function registerUser(user) {
   // Call a rules function just like any other function.
-  const updatedUser = onUserRegister(user);
+  const updatedUser = onUserRegister({ user });
   // Then continue on to your business logic.
   return api.post(updatedUser);
 }
 
 export function calculateCartDiscount({ user, cart }) {
-  const percentDiscount = getDiscountPercent(user);
+  const percentDiscount = getDiscountPercent({ user });
   return cart.total * percentDiscount;
 }
 ```
@@ -54,9 +55,8 @@ export function calculateCartDiscount({ user, cart }) {
 See `userRules` and `rewardsRules` below for an idea how to layer your detailed rules.
 
 ````ts
-// `./src/users/rules.ts` - locate next to user module.
-// OR
-// `./src/rules/user.ts` - locate in central rules folder.
+// `./src/rules/users.ts`
+import type { Rule } from '@elite-libs/rules-machine';
 export const userRules: Record<string, Rule[]> = {
   /**
    * Example Input: (User object)
@@ -71,7 +71,8 @@ export const userRules: Record<string, Rule[]> = {
    * ```
    */
   applyNewUserPromotion: ['user.rewardsBalance = 500'],
-  applyFreeTrial: ["user.subscriptionExpires = DATEISO('+1 month')"],
+  // Fixed 30-day trial; calendar-month arithmetic belongs in the host.
+  applyFreeTrial: ['user.subscriptionExpires = DATEISO("30d")'],
 };
 
 // `./src/rules/rewards.ts`
@@ -80,13 +81,10 @@ export const rewardsRules: Record<string, Rule[]> = {
    * convertRewardsToPercentDiscount determines a user's `discountPercent`.
    */
   convertRewardsToPercentDiscount: [
-    { if: 'user.rewardsBalance >= 1000', then: 'discountPercent = 0.05' },
+    'discountPercent = 0',
+    { if: 'user.rewardsBalance >= 100', then: 'discountPercent = 0.01' },
     { if: 'user.rewardsBalance >= 250', then: 'discountPercent = 0.02' },
-    {
-      if: 'user.rewardsBalance >= 100',
-      then: 'discountPercent = 0.01',
-      else: 'discountPercent = 0',
-    },
+    { if: 'user.rewardsBalance >= 1000', then: 'discountPercent = 0.05' },
     { return: 'discountPercent' },
   ],
 };

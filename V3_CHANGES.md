@@ -1,52 +1,21 @@
-# Rules Machine v3 Breaking Changes
+# Historical v3 Planning Notes
 
-## Summary
+This file originated during version 3 planning. It is not a release announcement; the package version in `package.json` identifies the current release. Use the README for current execution contracts and limits.
 
-This document outlines the breaking changes and improvements in version 3.
+## Array Literal Limitations
 
-## Breaking Changes
-
-### 1. Nested Array Literal Limitation
-
-**Issue**: The expression parser does not support inline nested array literals like `[[\"a\", 1], [\"b\", 2]]`.
-
-**Workaround**: Pass nested arrays via the input object:
+The expression parser does not reliably support nested array literals such as `[["a", 1], ["b", 2]]`. Pass nested arrays through the input object:
 
 ```javascript
-// Instead of (doesn't work):
-ruleFactory('UNZIPDICT([["a", 1], ["b", 2]])')()
-
-// Use this (works):
-ruleFactory('UNZIPDICT(pairs)', { return: 'result' })({ 
-  pairs: [['a', 1], ['b', 2]] 
-})
+const convertPairs = ruleFactory({ return: 'UNZIPDICT(pairs)' });
+convertPairs({ pairs: [['a', 1], ['b', 2]] });
+// { a: 1, b: 2 }
 ```
 
-**Affected Functions**:
-- `DICT(keys, values)` - Works when keys/values come from input
-- `UNZIPDICT(pairs)` - Works when pairs come from input
+`DICT(["a", "b"], [1, 2])` uses flat arrays and does not require that workaround. The second argument to `ruleFactory` contains execution options such as `{ trace: true }`; a return rule belongs in the first argument.
 
-**Future**: In v4, we may vendor the expression parser to add full nested literal support.
+## Compatibility Checks
 
-## Coverage Improvements in v3
+Current hardening rejects malformed or ambiguous rule objects, unsafe assignment paths, and programs exceeding documented limits. Nested logical groups now execute recursively, nested returns propagate, and array callback variables no longer remain on the input after execution. Review applications that depended on those previous behaviors before upgrading.
 
-Test coverage improved from 68.86% to 87.58%:
-
-- **language.ts**: 54.42% → 78.58% (+24.16%)
-- **executor.ts**: 90.48% (branch coverage 82.56% → 83.78%)
-- **utils.ts**: 45.28% → 100% (+54.72%)
-- **engine.ts**: 83.33% → 100% (+16.67%)
-- **language-utils.ts**: 58.85% → 98.85% (+40%)
-
-## New Tests Added
-
-- 267 total tests (up from 51)
-- Comprehensive math function tests
-- Array function tests
-- Object function tests
-- Executor edge case tests
-- Error handling tests
-
-## Migration Guide
-
-No migration needed for existing code. The nested array limitation only affects new code patterns that weren't previously documented or tested.
+Run `pnpm test` and `pnpm test:coverage` for the current test count and coverage. Historical coverage percentages in this planning document were not release guarantees.
