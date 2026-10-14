@@ -1,0 +1,166 @@
+{
+  "baseline": {
+    "source": "ee300ad",
+    "runtimeSource": "ee300ad",
+    "dependencyBuildSource": "ee300ad",
+    "dependencies": {
+      "expressionparser": {
+        "version": "1.1.9",
+        "entry": "/tmp/rules-machine-baseline/node_modules/.pnpm/expressionparser@1.1.9/node_modules/expressionparser/dist/index.js",
+        "entrySha256": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+        "packageSha256": "3aa52a124d86870ea52234531b566e7b53aa93f712e22f01ab60c6bf2a7ed5db",
+        "parserSha256": "e90faf028a5bcc097c9285d9ec985c60071776500e3ac39f89cca9a1066a0abd"
+      },
+      "lodash": {
+        "version": "4.17.23",
+        "entry": "/tmp/rules-machine-baseline/node_modules/.pnpm/lodash@4.17.23/node_modules/lodash/lodash.js",
+        "entrySha256": "71b4b7f5d2fc2d69399fd3edd7104fa10f9fd73fc600130825c3032ee8c50dad",
+        "packageSha256": "cbdbb6796a36727ab08e8fb599aa51d0348b83d878e62b8831c15b5694b2b6c6"
+      },
+      "ms": {
+        "version": "2.1.3",
+        "entry": "/tmp/rules-machine-baseline/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js",
+        "entrySha256": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+        "packageSha256": "1a6b4d9739790c0b94ab96c8cc0507e281c164c311ff4fbf5e57fb8d26290b40"
+      }
+    },
+    "declaredProductionDependencies": {
+      "debug": "^4.4.0",
+      "expressionparser": "^1.1.5",
+      "lodash": "^4.17.21",
+      "ms": "^2.1.3"
+    },
+    "buildTools": {
+      "tsup": "8.5.1",
+      "typescript": "5.9.3",
+      "vitest": "3.2.4",
+      "esbuild": "0.27.7"
+    },
+    "packageManagerDeclaration": "pnpm@10.12.0",
+    "packageSha256": "22043ce2de583c19d4a09ea5b9bc3af219a916e637cf52b94a693a3f0f8b04c2",
+    "tsupConfigSha256": "26c40c9ebc0137e5aaec141707bb872a70e9d07a9e879ea48daa8dd84abe4ca8",
+    "lockSha256": "a58c21a1a266bbd98a4b2cf737dadf818c80d90cde65a9d027071754997db518",
+    "moduleSha256": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3"
+  },
+  "upgrade": {
+    "source": "ee300ad",
+    "runtimeSource": "ee300ad",
+    "dependencyBuildSource": "ad5c47a",
+    "dependencies": {
+      "expressionparser": {
+        "version": "1.1.9",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.js",
+        "entrySha256": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+        "packageSha256": "3aa52a124d86870ea52234531b566e7b53aa93f712e22f01ab60c6bf2a7ed5db",
+        "parserSha256": "34de4720a6823e7a4ccfa3d9618bcc0e18ef9beb253256ca68af68f36d1c2540"
+      },
+      "lodash": {
+        "version": "4.18.1",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/lodash.js",
+        "entrySha256": "f5465f55566bf544aad0a31c6135889ca1ed81eea8f53ec61c6cbe86926f07cf",
+        "packageSha256": "5ef0a453b679125b155af19e1477f93b577ea826a57e1545f77608d326966e6a"
+      },
+      "ms": {
+        "version": "2.1.3",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js",
+        "entrySha256": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+        "packageSha256": "1a6b4d9739790c0b94ab96c8cc0507e281c164c311ff4fbf5e57fb8d26290b40"
+      }
+    },
+    "declaredProductionDependencies": {
+      "debug": "^4.4.0",
+      "expressionparser": "^1.1.5",
+      "lodash": "^4.17.21",
+      "ms": "^2.1.3"
+    },
+    "buildTools": {
+      "tsup": "8.5.1",
+      "typescript": "5.9.3",
+      "vitest": "5.0.3",
+      "esbuild": "0.28.2"
+    },
+    "packageManagerDeclaration": "pnpm@10.12.0",
+    "packageSha256": "22043ce2de583c19d4a09ea5b9bc3af219a916e637cf52b94a693a3f0f8b04c2",
+    "tsupConfigSha256": "26c40c9ebc0137e5aaec141707bb872a70e9d07a9e879ea48daa8dd84abe4ca8",
+    "lockSha256": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d",
+    "moduleSha256": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+    "rebuildCheck": {
+      "measuredModuleSha256": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+      "rebuiltModuleSha256": "d8c168f3f41e6f5d36978269e16470c3c6f9d01ea8d190ae4215af200f8bdfb3",
+      "byteIdentical": true,
+      "meaning": "Original source/config rebuilt after confirmation with final dependency/build chain emitted identical code; measured arm valid for rebuilt source."
+    }
+  },
+  "tuned": {
+    "source": "ad5c47a",
+    "runtimeSource": "79c23b6",
+    "dependencyBuildSource": "ad5c47a",
+    "dependencies": {
+      "expressionparser": {
+        "version": "1.1.9",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/expressionparser@1.1.9_patch_hash=26efe118e3369373e762287712811f04e195b47c0e35a4965799f4d00787ad31/node_modules/expressionparser/dist/index.js",
+        "entrySha256": "308901739834f2338be5b479027c50404788acbcbf714620afcaad94d1ed4f5a",
+        "packageSha256": "3aa52a124d86870ea52234531b566e7b53aa93f712e22f01ab60c6bf2a7ed5db",
+        "parserSha256": "34de4720a6823e7a4ccfa3d9618bcc0e18ef9beb253256ca68af68f36d1c2540"
+      },
+      "lodash": {
+        "version": "4.18.1",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/lodash@4.18.1/node_modules/lodash/lodash.js",
+        "entrySha256": "f5465f55566bf544aad0a31c6135889ca1ed81eea8f53ec61c6cbe86926f07cf",
+        "packageSha256": "5ef0a453b679125b155af19e1477f93b577ea826a57e1545f77608d326966e6a"
+      },
+      "ms": {
+        "version": "2.1.3",
+        "entry": "/home/dan/code/oss/rules-machine/node_modules/.pnpm/ms@2.1.3/node_modules/ms/index.js",
+        "entrySha256": "e5f0b6a946a9b2b356a28557728410717df54ea2f599edb619f9839df6b7b0e9",
+        "packageSha256": "1a6b4d9739790c0b94ab96c8cc0507e281c164c311ff4fbf5e57fb8d26290b40"
+      }
+    },
+    "declaredProductionDependencies": {
+      "expressionparser": "1.1.9",
+      "lodash": "4.18.1",
+      "ms": "^2.1.3"
+    },
+    "buildTools": {
+      "tsup": "8.5.1",
+      "typescript": "5.9.3",
+      "vitest": "5.0.3",
+      "esbuild": "0.28.2"
+    },
+    "packageManagerDeclaration": "pnpm@10.34.6",
+    "packageSha256": "f8412435a9014df7548105bdf5b6a12f99e414a15cd09a58f27f53ab992f56eb",
+    "tsupConfigSha256": "c74c403574256c2a70d834003a8852717b3f055d74488597977391200d35c428",
+    "lockSha256": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d",
+    "moduleSha256": "f967b3bce498c904d8a80997d503ad0da3f2b259950ba131a005df3cc5958c5e"
+  },
+  "rust": {
+    "source": "4bcf91f",
+    "compiler": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "profile": "release",
+    "cargoLockSha256": "0202e182c25c988edabdc1026cbfdc17c138b0e93d85c2a952eb79192321c7b7",
+    "mainSha256": "cd47e18e85a6b9afd4f5d8473b9a9090ad75ab64ae3884d54517c16b57cde46f",
+    "binarySha256": "709abd99a205722e40c1c6c2ca673e53a4b7d63e6eb279337f1b0898fbfd21bb"
+  },
+  "finalAdvisoryAudit": {
+    "source": "ad5c47a",
+    "afterSha256": "3cc0b046e86ff8a387b5d168a182138547dd9adcf3c891710c598383c529a86b",
+    "after": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0
+    },
+    "dependencyOverrides": {
+      "vite": "7.3.7",
+      "postcss": "8.5.29",
+      "nanoid": "3.3.20",
+      "esbuild": "0.28.2",
+      "source-map-js": "1.2.2"
+    }
+  },
+  "priorEvidence": {
+    "directory": "performance/comparison/results/2026-10-14",
+    "status": "preserved byte-for-byte; pre-security evidence is historical, not final patched-tree performance"
+  }
+}
