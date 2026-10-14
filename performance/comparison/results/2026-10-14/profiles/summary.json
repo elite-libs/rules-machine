@@ -1,0 +1,214 @@
+{
+  "baseline-final": {
+    "samples": 1185,
+    "totalSampledMs": 1296.695,
+    "topSelf": [
+      {
+        "frame": "(anonymous) dist/index.js:615",
+        "selfMs": 202.425,
+        "selfPercent": 15.610841408349687
+      },
+      {
+        "frame": "(anonymous) dist/ExpressionParser.js:27",
+        "selfMs": 159.743,
+        "selfPercent": 12.319242381593204
+      },
+      {
+        "frame": "(anonymous) dist/ExpressionParser.js:25",
+        "selfMs": 108.054,
+        "selfPercent": 8.333031283378126
+      },
+      {
+        "frame": "upperCaser dist/ExpressionParser.js:106",
+        "selfMs": 83.682,
+        "selfPercent": 6.453483664238699
+      },
+      {
+        "frame": "(anonymous) dist/ExpressionParser.js:117",
+        "selfMs": 77.653,
+        "selfPercent": 5.988532384253815
+      },
+      {
+        "frame": "(garbage collector) :0",
+        "selfMs": 55.521,
+        "selfPercent": 4.281731633113416
+      },
+      {
+        "frame": "tokenize dist/ExpressionParser.js:214",
+        "selfMs": 52.677,
+        "selfPercent": 4.062404806064649
+      },
+      {
+        "frame": "exports.init dist/index.js:19",
+        "selfMs": 42.846,
+        "selfPercent": 3.3042465653064137
+      },
+      {
+        "frame": "ruleExpressionLanguage dist/index.js:264",
+        "selfMs": 36.398,
+        "selfPercent": 2.8069823667092106
+      },
+      {
+        "frame": "termTyper dist/index.js:710",
+        "selfMs": 34.46,
+        "selfPercent": 2.6575254782350513
+      },
+      {
+        "frame": "expressionToRpn dist/ExpressionParser.js:464",
+        "selfMs": 31.078,
+        "selfPercent": 2.396708555211519
+      },
+      {
+        "frame": "getPrefixOp dist/ExpressionParser.js:139",
+        "selfMs": 25.675,
+        "selfPercent": 1.9800338553013621
+      },
+      {
+        "frame": "isInArray dist/ExpressionParser.js:4",
+        "selfMs": 25.661,
+        "selfPercent": 1.9789541873763683
+      },
+      {
+        "frame": "ExpressionParser dist/ExpressionParser.js:83",
+        "selfMs": 25.315,
+        "selfPercent": 1.9522709658015183
+      },
+      {
+        "frame": "tokensToRpn dist/ExpressionParser.js:305",
+        "selfMs": 24.709,
+        "selfPercent": 1.9055367684767812
+      },
+      {
+        "frame": "resolveCase dist/ExpressionParser.js:130",
+        "selfMs": 22.413,
+        "selfPercent": 1.7284712287777775
+      },
+      {
+        "frame": "logTrace dist/index.js:788",
+        "selfMs": 19.334,
+        "selfPercent": 1.491021404416613
+      },
+      {
+        "frame": "(anonymous) dist/ExpressionParser.js:126",
+        "selfMs": 18.2,
+        "selfPercent": 1.403568302492105
+      },
+      {
+        "frame": "(anonymous) dist/ExpressionParser.js:29",
+        "selfMs": 15.006,
+        "selfPercent": 1.1572497773184904
+      },
+      {
+        "frame": "compile dist/index.js:754",
+        "selfMs": 15.005,
+        "selfPercent": 1.157172658180991
+      }
+    ]
+  },
+  "tuned-final": {
+    "samples": 680,
+    "totalSampledMs": 750.69,
+    "topSelf": [
+      {
+        "frame": "logTrace dist/index.mjs:2812",
+        "selfMs": 142.51,
+        "selfPercent": 18.983868174612688
+      },
+      {
+        "frame": "writeData dist/index.mjs:1840",
+        "selfMs": 90.02,
+        "selfPercent": 11.991634363052658
+      },
+      {
+        "frame": "structuredClone worker/js_transferable:113",
+        "selfMs": 69.918,
+        "selfPercent": 9.313831275226791
+      },
+      {
+        "frame": "visit dist/index.mjs:3173",
+        "selfMs": 51.526,
+        "selfPercent": 6.863818620202747
+      },
+      {
+        "frame": "termDelegate dist/index.mjs:2566",
+        "selfMs": 46.153,
+        "selfPercent": 6.148077102399126
+      },
+      {
+        "frame": "getOwnPath dist/index.mjs:1850",
+        "selfMs": 29.959,
+        "selfPercent": 3.990861740532044
+      },
+      {
+        "frame": "(garbage collector) :0",
+        "selfMs": 24.635,
+        "selfPercent": 3.2816475509198204
+      },
+      {
+        "frame": "evaluate dist/index.mjs:2709",
+        "selfMs": 23.602,
+        "selfPercent": 3.144040815782813
+      },
+      {
+        "frame": "(anonymous) dist/index.mjs:95",
+        "selfMs": 19.344,
+        "selfPercent": 2.5768293170283343
+      },
+      {
+        "frame": "evaluate dist/index.mjs:80",
+        "selfMs": 18.913,
+        "selfPercent": 2.5194154710999213
+      },
+      {
+        "frame": "structuredClone :0",
+        "selfMs": 18.223,
+        "selfPercent": 2.4275000333026946
+      },
+      {
+        "frame": "evaluateRule dist/index.mjs:3024",
+        "selfMs": 17.201,
+        "selfPercent": 2.2913586167392666
+      },
+      {
+        "frame": "handleRule dist/index.mjs:2862",
+        "selfMs": 17.173,
+        "selfPercent": 2.287628714915611
+      },
+      {
+        "frame": "(anonymous) dist/index.mjs:3196",
+        "selfMs": 13.887,
+        "selfPercent": 1.8498980937537466
+      },
+      {
+        "frame": "(idle) :0",
+        "selfMs": 11.026,
+        "selfPercent": 1.468782053843797
+      },
+      {
+        "frame": "isNumber dist/index.mjs:1942",
+        "selfMs": 10.785,
+        "selfPercent": 1.436678256004476
+      },
+      {
+        "frame": "execute dist/index.mjs:2805",
+        "selfMs": 10.158,
+        "selfPercent": 1.3531550973104745
+      },
+      {
+        "frame": "setOwnPath dist/index.mjs:1866",
+        "selfMs": 9.645,
+        "selfPercent": 1.2848179674699276
+      },
+      {
+        "frame": "copyArray lodash/_copyArray.js:9",
+        "selfMs": 7.522,
+        "selfPercent": 1.0020114827691855
+      },
+      {
+        "frame": "assertWritablePath dist/index.mjs:1861",
+        "selfMs": 7.479,
+        "selfPercent": 0.996283419254286
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "iterations": {
+    "eligibility": 36,
+    "pricing-0": 20
+  },
+  "blocks": 1,
+  "order": "balanced cyclic baseline/tuned/rust; reverse on odd blocks",
+  "warmup": "max(1, floor(iterations/5)) batches"
+}

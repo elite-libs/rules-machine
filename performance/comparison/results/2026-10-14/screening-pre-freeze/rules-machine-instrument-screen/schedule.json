@@ -1,0 +1,9 @@
+{
+  "iterations": {
+    "eligibility": 15,
+    "array-map-16": 83
+  },
+  "blocks": 1,
+  "order": "simple cyclic rotations; 12 blocks balance every position for 4-arm shared and 3-arm array workloads",
+  "warmup": "max(1, floor(iterations/5)) batches"
+}

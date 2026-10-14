@@ -1,0 +1,52 @@
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "baseline": {
+      "medianNs": 430092.3645833333,
+      "minNs": 430092.3645833333,
+      "maxNs": 430092.3645833333,
+      "blocks": 1
+    },
+    "upgrade": {
+      "medianNs": 339403.7291666666,
+      "minNs": 339403.7291666666,
+      "maxNs": 339403.7291666666,
+      "blocks": 1
+    },
+    "tuned": {
+      "medianNs": 31990.402083333345,
+      "minNs": 31990.402083333345,
+      "maxNs": 31990.402083333345,
+      "blocks": 1
+    },
+    "rust": {
+      "medianNs": 3096.320833333333,
+      "minNs": 3096.320833333333,
+      "maxNs": 3096.320833333333,
+      "blocks": 1
+    }
+  },
+  {
+    "fixture": "array-map-16",
+    "shared": false,
+    "baseline": {
+      "medianNs": 777187.8072289156,
+      "minNs": 777187.8072289156,
+      "maxNs": 777187.8072289156,
+      "blocks": 1
+    },
+    "upgrade": {
+      "medianNs": 1209818.674698795,
+      "minNs": 1209818.674698795,
+      "maxNs": 1209818.674698795,
+      "blocks": 1
+    },
+    "tuned": {
+      "medianNs": 128465.38554216867,
+      "minNs": 128465.38554216867,
+      "maxNs": 128465.38554216867,
+      "blocks": 1
+    }
+  }
+]

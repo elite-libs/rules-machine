@@ -1,0 +1,201 @@
+{
+  "at": "2026-10-14T00:11:42.637Z",
+  "classification": "Diagnostic only; additional workloads not acceptance confirmation. Cold=1000 factories+one evaluation each; memory=one mutable rule program over unique sources, explicit full GC snapshots. Three independent cold processes, one memory process per arm; Node only.",
+  "raw": [
+    {
+      "arm": "baseline",
+      "block": 0,
+      "mode": "cold",
+      "elapsedNs": 54188815.99999999,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "baseline",
+      "block": 1,
+      "mode": "cold",
+      "elapsedNs": 48589076.99999999,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "baseline",
+      "block": 2,
+      "mode": "cold",
+      "elapsedNs": 55345851,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "baseline",
+      "block": 0,
+      "mode": "memory",
+      "completed": 10000,
+      "checksum": 50165000,
+      "snapshots": [
+        {
+          "uniqueExpressions": 0,
+          "rss": 62644224,
+          "heapTotal": 7999488,
+          "heapUsed": 5031584,
+          "external": 1699062,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 1000,
+          "rss": 68186112,
+          "heapTotal": 10096640,
+          "heapUsed": 5432936,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 5000,
+          "rss": 68177920,
+          "heapTotal": 10358784,
+          "heapUsed": 5389336,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 10000,
+          "rss": 72765440,
+          "heapTotal": 14815232,
+          "heapUsed": 5407760,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        }
+      ]
+    },
+    {
+      "arm": "upgrade",
+      "block": 0,
+      "mode": "cold",
+      "elapsedNs": 55009665,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "upgrade",
+      "block": 1,
+      "mode": "cold",
+      "elapsedNs": 51294175.00000001,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "upgrade",
+      "block": 2,
+      "mode": "cold",
+      "elapsedNs": 56490627,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "upgrade",
+      "block": 0,
+      "mode": "memory",
+      "completed": 10000,
+      "checksum": 50165000,
+      "snapshots": [
+        {
+          "uniqueExpressions": 0,
+          "rss": 62734336,
+          "heapTotal": 7475200,
+          "heapUsed": 5061272,
+          "external": 1699061,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 1000,
+          "rss": 68333568,
+          "heapTotal": 10620928,
+          "heapUsed": 5462632,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 5000,
+          "rss": 73052160,
+          "heapTotal": 14553088,
+          "heapUsed": 5419032,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 10000,
+          "rss": 73371648,
+          "heapTotal": 14553088,
+          "heapUsed": 5438568,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        }
+      ]
+    },
+    {
+      "arm": "tuned",
+      "block": 0,
+      "mode": "cold",
+      "elapsedNs": 58723207,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "tuned",
+      "block": 1,
+      "mode": "cold",
+      "elapsedNs": 50319536,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "tuned",
+      "block": 2,
+      "mode": "cold",
+      "elapsedNs": 55581320.99999999,
+      "completed": 1000,
+      "checksum": 52000
+    },
+    {
+      "arm": "tuned",
+      "block": 0,
+      "mode": "memory",
+      "completed": 10000,
+      "checksum": 50165000,
+      "snapshots": [
+        {
+          "uniqueExpressions": 0,
+          "rss": 62578688,
+          "heapTotal": 8261632,
+          "heapUsed": 5031432,
+          "external": 1699061,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 1000,
+          "rss": 66772992,
+          "heapTotal": 10883072,
+          "heapUsed": 5721728,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 5000,
+          "rss": 73736192,
+          "heapTotal": 17174528,
+          "heapUsed": 5728664,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        },
+        {
+          "uniqueExpressions": 10000,
+          "rss": 82841600,
+          "heapTotal": 25825280,
+          "heapUsed": 5758824,
+          "external": 1699065,
+          "arrayBuffers": 137593
+        }
+      ]
+    }
+  ]
+}

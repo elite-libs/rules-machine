@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-14T00:03:36.745Z",
+  "fixtureVersion": "shared-subset-v1",
+  "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+  "node": "v26.8.2",
+  "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+  "cpus": 8,
+  "platform": "linux 7.2.5-3-omarchy x64",
+  "memory": 67342082048,
+  "blocks": 1,
+  "baseline": "/tmp/rules-machine-baseline/dist/index.js",
+  "tuned": "/tmp/rules-machine-performance/dist/index.js",
+  "rust": "/tmp/rules-machine-performance/experiments/rusty-rules/target/release/rusty-rules-experiment"
+}
