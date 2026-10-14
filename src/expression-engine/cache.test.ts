@@ -64,6 +64,14 @@ describe('syntax cache context isolation', () => {
     );
     expect(engine.evaluateExpression('"a && b"', () => 0)).toBe('a && b');
   });
+  test('normalizes empty array syntax without sharing mutable results', () => {
+    const engine = createExpressionEngine();
+    const first = engine.evaluateExpression('[]', () => 0) as unknown[];
+    first.push(1);
+    expect(engine.evaluateExpression('[]', () => 0)).toEqual([]);
+    expect(engine.evaluateExpression('[[], 2]', () => 0)).toEqual([[], 2]);
+    expect(engine.evaluateExpression('"[]"', () => 0)).toBe('[]');
+  });
   test('recognizes compact assignment and ignores assignment text in literals', () => {
     const engine = createExpressionEngine();
     expect(engine.compile('x+=2')).toMatchObject({

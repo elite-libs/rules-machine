@@ -133,7 +133,14 @@ export function createExpressionEngine(): ExpressionEngine {
       const cached = entry(compiled.source);
       if (!cached.thunk) {
         const source = compiled.source.replace(/^\s*return\s+/, '');
-        const tokens = parser.tokenize(source);
+        const rawTokens = parser.tokenize(source);
+        const tokens: string[] = [];
+        for (let i = 0; i < rawTokens.length; i++) {
+          if (rawTokens[i] === '[' && rawTokens[i + 1] === ']') {
+            tokens.push('EMPTY');
+            i++;
+          } else tokens.push(rawTokens[i]);
+        }
         for (let i = 0; i < tokens.length - 1; i++) {
           const token = tokens[i];
           if (tokens[i + 1] === '(' && /^[$A-Z_a-z][$\w.]*$/.test(token)) {
