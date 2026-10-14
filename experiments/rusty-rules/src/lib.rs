@@ -1576,6 +1576,18 @@ impl Session {
                 };
                 let input = Value::from_wire(v.get("input").ok_or("Missing tagged input")?)?;
                 let options = v.get("options");
+                if let Some(options) = options {
+                    let object = options.as_object().ok_or("Options must be object")?;
+                    if object
+                        .keys()
+                        .any(|k| !matches!(k.as_str(), "trace" | "ignoreMissingKeys"))
+                    {
+                        return Err("Unsupported execution option".into());
+                    }
+                    if object.values().any(|v| !v.is_boolean()) {
+                        return Err("Execution options must be booleans".into());
+                    }
+                }
                 if options.and_then(|o| o.get("trace")).and_then(Json::as_bool) == Some(true) {
                     return Err("Tracing is unsupported by this Rust bridge".into());
                 }

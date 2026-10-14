@@ -9,7 +9,7 @@ import { fixtures, expected, fixtureVersion } from '../comparison/fixtures.mjs';
 const args=Object.fromEntries(process.argv.slice(2).map(arg=>{const i=arg.indexOf('=');return [arg.slice(0,i),arg.slice(i+1)];}));
 const baseline=resolve(args.baseline||'performance/comparison/baseline/index.js');
 const upgrade=args.upgrade?resolve(args.upgrade):undefined;
-const tuned=resolve(args.tuned||'dist/index.js');
+const tuned=resolve(args.tuned||'dist/index.mjs');
 const rust=resolve(args.rust||'experiments/rusty-rules/target/release/rusty-rules-experiment');
 const output=resolve(args.output||'performance/comparison/artifacts');mkdirSync(output,{recursive:true});
 const armsTemplate=['baseline',...(upgrade?['upgrade']:[]),'tuned',...(args.rustEnabled==='false'?[]:['rust'])];
