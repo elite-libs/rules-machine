@@ -2,6 +2,8 @@
 
 Example of a Lambda service that uses the Rules Machine library.
 
+This is a legacy v1 sample: its package targets `@elite-libs/rules-machine@^1.4.7` and an older standalone Serverless toolchain. The root v2 library tests and pnpm advisory scan do not validate this deployment. The commands below describe that historical setup; migrate and validate the sample separately before using it as a v2 deployment example.
+
 To keep this example simple, rules are hard-coded in the [`/rules/app-rules.ts`](/rules/app-rules.ts) file.
 
 ## Usage

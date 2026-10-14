@@ -342,7 +342,7 @@ console.log(result.trace);
 
 Assignments mutate the supplied input. Reads use own data properties and reject accessors. Input objects, frozen values, cycles, aliases and functions can be returned by identity without recursive mutation or function invocation. Functions and class instances are opaque: traversal, coercion and host callbacks reject. Built-in higher-order functions accept built-in names. Proxies and custom expression engines remain host code; use ordinary data for predictable execution. Assignment needs writable destinations and rejects `__proto__`, `constructor`, and `prototype` paths. Array callback variables are restored after each callback. A `return` in an array's `run` finishes that callback; other returns finish the pipeline.
 
-By default, a runtime error leaves earlier assignments in place. Use `{ atomic: true }` to restore interpreter-owned property writes on an uncaught failure, including resource exhaustion. Rollback preserves existing object identities, aliases, array holes and descriptors. A handled rule `catch` continues the transaction; it does not create a savepoint. This option cannot undo external host side effects. Enabled traces snapshot historical values without invoking getters or `toJSON`; cycles, functions and accessors use descriptive markers. The returned trace result's `input` is the live caller object.
+By default, a runtime error leaves earlier assignments in place. Use `{ atomic: true }` to restore interpreter-owned property writes on an uncaught failure, including resource exhaustion. Rollback preserves existing object identities, aliases, array holes and descriptors. A handled rule `catch` continues the transaction; it does not create a savepoint. The atomic journal has a hard ceiling of 100,000 property records, including temporary callback context. This option cannot undo external host side effects. Enabled traces snapshot historical values without invoking getters or `toJSON`; cycles, functions and accessors use descriptive markers. The returned trace result's `input` is the live caller object.
 
 Execution is synchronous and uses cooperative resource limits. A `ResourceLimitError` bypasses rule `catch` handlers. Defaults per execution are:
 
@@ -393,6 +393,8 @@ Use `AND` and `OR` for logical operators, double quotes for string literals, and
 5. Submit a PR
 
 ### Development
+
+Use the pinned pnpm version and `pnpm-lock.yaml` for reproducible development. The obsolete Bun lockfile was removed because it named dependencies that no longer match this package.
 
 ```bash
 pnpm install
