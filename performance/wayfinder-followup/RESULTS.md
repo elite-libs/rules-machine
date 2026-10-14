@@ -73,3 +73,7 @@ TMPDIR="$PWD/.cache/wayfinder-followup" pnpm exec vitest run --config performanc
 ```
 
 The initial infrastructure failures and invalid capture/launch attempts are described in the [attempt record](results/attempts.md), plan and retained logs. No valid timed observation was removed. Final branch and evidence are pushed under the standing branch-push authorization; main contains the requested Wayfinder merge, while subsequent tuning remains isolated for review. No issue or PR is published. Local compute only; model/reporting costs unavailable.
+
+## Post-merge advisory reconciliation
+
+The final GitHub push reports one remaining moderate default-branch alert, down from 144 before the Wayfinder merge. A read-only alert lookup verifies #38 is `esbuild` in `examples/aws-lambda-service/package.json`, development scope. The standalone legacy example migration remains a separate documented boundary; no advisory was dismissed or example deployment changed. This is GitHub alert reconciliation, not a new public advisory scan. [Retained verification](results/merge-verification.json).

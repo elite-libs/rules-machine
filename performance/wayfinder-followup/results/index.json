@@ -1,10 +1,10 @@
 {
-  "at": "2026-10-14T23:38:35.787198+00:00",
+  "at": "2026-10-14T23:39:59.902563+00:00",
   "files": [
     {
       "path": "RESULTS.md",
-      "bytes": 10320,
-      "sha256": "2907643fb035267780ff7c41f3c924220c57582512c78800df154dbfbedbd5f0"
+      "bytes": 10858,
+      "sha256": "fd7b86d9fd9935b68da2a537d279b3fb8995e6c3e16a2106ab13301c4cab60e8"
     },
     {
       "path": "analyze.mjs",
@@ -460,6 +460,11 @@
       "path": "results/loop4-path-warmed/summary.json",
       "bytes": 2698,
       "sha256": "c09bbb5abf136fe64aea364bdcbe841bb384b076079c69eafd100eeb4c1be814"
+    },
+    {
+      "path": "results/merge-verification.json",
+      "bytes": 890,
+      "sha256": "505e449bfb6e5bb1a3b9fa9b0a5e1c2778dedabcf7fabc57bdcec92b546050ce"
     },
     {
       "path": "results/provenance.json",

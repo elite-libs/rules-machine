@@ -1,0 +1,21 @@
+{
+  "checkedAtUTC": "2026-10-14T23:39:59.902563+00:00",
+  "mergedMain": "4f06377355477bb12fc6c719b39b4b57bb8a4459",
+  "observedTuningBranchAtCheck": "075df63414383c5b5f0bbea1cc55a966a17b387f",
+  "sourceOfRefs": "git ls-remote origin main perf/astra-followup-2026-10-14",
+  "defaultBranchAlertsFromPush": {
+    "count": 1,
+    "severity": "moderate"
+  },
+  "remainingAlertReadOnlyVerification": {
+    "number": 38,
+    "state": "open",
+    "severity": "medium",
+    "package": "esbuild",
+    "ecosystem": "npm",
+    "manifest": "examples/aws-lambda-service/package.json",
+    "scope": "development",
+    "url": "https://github.com/elite-libs/rules-machine/security/dependabot/38"
+  },
+  "interpretation": "Remaining alert is in the standalone legacy AWS example development toolchain, not the root library manifest. No example migration, advisory dismissal or new issue/PR was performed."
+}
