@@ -30,6 +30,7 @@ function errorDescription(error: unknown): string {
     (typeof error === 'object' || typeof error === 'function')
   ) {
     const descriptor = Object.getOwnPropertyDescriptor(error, 'message');
+    if (!descriptor && error instanceof Error) return '';
     return descriptor &&
       'value' in descriptor &&
       typeof descriptor.value === 'string'

@@ -199,3 +199,93 @@ test('input aliases cannot inject a cycle or mutate a selected conditional branc
   expect(ruleFactory(condition)({ program: condition, injected })).toBe(2);
   expect(calls).toBe(0);
 });
+
+describe('independent engine and argument branding review', () => {
+  test('marker laundering through generated containers never executes host functions', () => {
+    for (const expression of [
+      'ABS(ARRAY(items))',
+      'ABS(REVERSE(items))',
+      'ABS(FILTER_VALUES(EMPTY, OMIT("missing", items)))',
+      'MAP("ABS", CONS(OMIT("missing", items), EMPTY))',
+      'REDUCE("ADD", 0, OMIT("missing", items))',
+    ]) {
+      let calls = 0;
+      const callback = () => {
+        calls++;
+        return 7;
+      };
+      const items = Object.assign([callback], { isArgumentsArray: true });
+      expect(() => ruleFactory(expression)({ items })).toThrow();
+      expect(calls).toBe(0);
+    }
+  });
+  test('argument identity checks do not consult marker getters', () => {
+    let calls = 0;
+    const items = Object.defineProperty([1], 'isArgumentsArray', {
+      get() {
+        calls++;
+        return true;
+      },
+    });
+    expect(() => ruleFactory('ABS(items)')({ items })).toThrow();
+    expect(calls).toBe(0);
+  });
+  test('normal comma and higher-order argument construction stays compatible', () => {
+    expect(ruleFactory('ADD(1,2)')()).toBe(3);
+    expect(ruleFactory('MAP("ABS",items)')({ items: [-2, 3] })).toEqual([2, 3]);
+    expect(ruleFactory('REDUCE("ADD",0,items)')({ items: [1, 2, 3] })).toBe(6);
+  });
+  test('compiled source is an own primitive data field and forged metadata is ignored', () => {
+    let calls = 0;
+    const engine = createExpressionEngine();
+    const inherited = Object.create({
+      get source() {
+        calls++;
+        return '1';
+      },
+    });
+    expect(() => engine.evaluate(inherited, () => undefined)).toThrow('source');
+    const boxed = { source: new String('1') };
+    expect(() => engine.evaluate(boxed as never, () => undefined)).toThrow(
+      'source',
+    );
+    const compiled = Object.defineProperties(
+      { source: '1' },
+      {
+        lhs: {
+          get() {
+            calls++;
+            throw new Error('lhs');
+          },
+        },
+        assignmentOperator: {
+          get() {
+            calls++;
+            throw new Error('assignment');
+          },
+        },
+      },
+    );
+    expect(engine.evaluate(compiled as never, () => undefined)).toBe(1);
+    expect(calls).toBe(0);
+  });
+});
+
+test('ordinary Error without an own message keeps empty trace text', () => {
+  const engine = createExpressionEngine();
+  const error = new Error();
+  const executor = createRuleExecutor(
+    {
+      ...engine,
+      evaluate(compiled, resolver) {
+        if (compiled.source === 'trigger') throw error;
+        return engine.evaluate(compiled, resolver);
+      },
+    },
+    { trace: true },
+  );
+  const result = executor.execute({ try: 'trigger', catch: '1' }) as {
+    trace: { operation: string; error?: unknown }[];
+  };
+  expect(result.trace.find((row) => row.operation === 'error')?.error).toBe('');
+});

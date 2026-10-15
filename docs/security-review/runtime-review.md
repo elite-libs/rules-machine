@@ -31,3 +31,13 @@ The synchronous dynamic budget of nested injected custom-engine calls is a separ
 ## Verification
 
 Dedicated regressions live in `src/structural-engine/security-runtime.test.ts`. Before the patch, the nonextensible array restoration and message-getter tests failed with exact state/getter-count evidence. After the initial patch, 108 focused tests passed across security-runtime, limits-atomic, hardening and existing index trace snapshots. Additional targeted cases cover partial truncation, sparse nonextensible tails, BigInt/Symbol output, key accounting and arbitrary thrown-value coercion. The final combined runtime/index run passed 127 tests, TypeScript typecheck passed, and owned-file Biome checks passed; the coordinator owns the integrated full-suite run.
+
+## Independent coordinator-patch review
+
+Reviewed the coordinator's standalone-engine cold-compilation budget, primitive source and own-descriptor metadata checks, and private WeakSet argument-array branding. No bypass was found in the focused variants. Source validation rejects object wrappers before method lookup; fake compiled source accessors and inherited source getters are not called; cached metadata ignores caller-supplied assignment/lhs getters. Evaluation restores the resolver in `finally` even on validation failure.
+
+Argument lists receive authority only at internal comma/call construction sites. Ordinary copied arrays retain their data properties but do not inherit WeakSet authority. Independent variants laundered a forged marker/function array through ARRAY, REVERSE, FILTER_VALUES, CONS plus MAP, and REDUCE; none executed the host function. A marker getter was not consulted. Ordinary comma, MAP and REDUCE argument construction retained expected results. Generated result materialization creates new containers, so the private brand is not retained by copied output.
+
+The coordinator's path guard rejects Object.prototype, Array.prototype and own constructor-function targets without inspecting constructor function properties; this closes the standard intrinsic-prototype alias considered during runtime review. The broader custom-prototype-record behavior remains governed by existing own-property shadowing tests, rather than replacing it with a new blanket rejection contract.
+
+The combined dedicated security-runtime/security-engine/security-inputs run passed23 tests and TypeScript typecheck passed. The runtime helper also preserves ordinary empty Error trace text without reading inherited accessors. Full-suite validation remains coordinator-owned.
