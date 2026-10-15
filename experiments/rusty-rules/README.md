@@ -4,6 +4,15 @@ This crate implements an experimental subset of the TypeScript engine. It is a r
 
 The Node bridge owns one persistent child process. It serializes inputs and returns copies; TypeScript input mutation and cross-process object identity do not carry over. Native throughput measurements do not describe bridge performance.
 
+## Install from crates.io
+
+```sh
+cargo add rusty-rules-experiment@0.1.1
+cargo install rusty-rules-experiment --version 0.1.1 --locked
+```
+
+The crate includes the Rust library and worker binary. The Node bridge remains in this repository; see [crate usage](CRATE_README.md) for a Rust API example.
+
 ## Build and validate
 
 Run from the repository root with Node.js 24+, the repository's pnpm dependencies, and Rust installed. The recorded security qualification used Rust 1.99.0. Offline Cargo commands require dependencies to be present in your local Cargo cache.

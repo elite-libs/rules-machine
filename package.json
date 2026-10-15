@@ -1,6 +1,6 @@
 {
   "name": "@elite-libs/rules-machine",
-  "version": "2.0.0-rc1",
+  "version": "2.0.0-rc2",
   "description": "\ud83d\udcd0 A fast serializable logical Rules Engine.",
   "type": "module",
   "homepage": "https://github.com/elite-libs/rules-machine",
