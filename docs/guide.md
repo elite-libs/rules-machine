@@ -4,6 +4,8 @@ A step-by-step guide to using Rules Machine in your projects.
 
 ## Installation
 
+Use Node.js 24 or newer. ESM, CommonJS, TypeScript declarations, and a browser global build are available; see [package formats](../README.md#installation).
+
 ```bash
 pnpm add @elite-libs/rules-machine
 # or
@@ -205,7 +207,7 @@ ruleFactory([
 ]);
 ```
 
-See [API Reference](../README.md#built-in-functions) for the full list.
+See the [built-in function overview](../README.md#built-in-functions) and [function-domain notes](../README.md#function-domains-and-expression-syntax).
 
 ### String Literals
 
@@ -217,40 +219,53 @@ ruleFactory(['status = "active"', 'message = STRING(["Hello, ", user.name])']);
 
 ## Debugging with Traces
 
-Enable tracing to see execution details:
+Enable tracing to receive execution metadata alongside the result:
 
 ```ts
-const engine = ruleFactory(rules, { trace: true });
-const result = engine({ price: 45 });
+const engine = ruleFactory([
+  'discount = 0',
+  { if: 'price >= 25', then: 'discount = 5' },
+  { return: 'discount' },
+], { trace: true });
+const input = { price: 45 };
+const result = engine(input);
 
-console.log(result.trace);
-// [
-//   { operation: 'begin', startTime: 123456.789 },
-//   { operation: 'if', rule: 'price >= 25', result: true },
-//   { operation: 'evalRule', rule: 'discount = 5', value: 5 },
-//   { operation: 'return', rule: 'discount', result: 5 },
-//   { operation: 'complete', runTime: 0.42 }
-// ]
+console.log(result.lastValue); // 5
+console.log(result.returnValue); // 5 (the explicit return)
+console.log(result.input === input); // true
+console.table(result.trace);
 ```
 
-Trace output includes:
+The traced result contains `input`, `trace`, `lastValue`, `returnValue`, and elapsed `runTime` in milliseconds. Each trace row has an `operation`; additional fields depend on the operation, such as `rule`, `value`, `result`, `currentState`, `stepRow`, and `stepCount`. Timing rows include `startTime` or `runTime`. Inspect actual rows rather than assuming every operation shares a schema.
 
-- Operation type
-- Rule executed
-- Input/output values
-- Timing information
-- Step count
+Trace values are historical snapshots, with markers for cycles, accessors and functions. The result's `input` remains the live caller object. Treat traces as application data: they can contain sensitive rule inputs and outputs.
 
-## Options
+## Options and failure behavior
 
 ```ts
-ruleFactory(rules, options);
+const engine = ruleFactory([
+  'total = price * quantity',
+  { return: 'total' },
+], {
+  ignoreMissingKeys: false,
+  atomic: true,
+  limits: { maxOperations: 200_000, maxDurationMs: 50 },
+});
+
+engine({ price: 10, quantity: 3 }); // 30
 ```
 
-| Option              | Type      | Default | Description                             |
-| ------------------- | --------- | ------- | --------------------------------------- |
-| `trace`             | `boolean` | `false` | Enable detailed execution tracing       |
-| `ignoreMissingKeys` | `boolean` | `true`  | Skip undefined keys instead of throwing |
+| Option | Default | Description |
+| --- | --- | --- |
+| `trace` | `false` | Return trace metadata instead of a bare value. |
+| `ignoreMissingKeys` | `true` | Resolve missing keys as `undefined`; `false` rejects missing lookups. |
+| `atomic` | `false` | Restore interpreter-owned property writes on an uncaught failure. |
+| `limits` | [Default limits](../README.md#resource-limits) | Set cooperative work, array, string, data-depth and duration limits. |
+| `expression` | Bounded cache enabled | Configure token and syntax-cache bounds. |
+
+Ordinary runtime errors can be handled by a rule's `try/catch`. `ResourceLimitError` bypasses those handlers. By default, earlier assignments remain after a failure. Atomic execution restores writes when an error escapes the pipeline; a handled rule error continues the same transaction and does not roll back earlier writes.
+
+These limits are cooperative. They cannot interrupt Proxy traps, host callbacks, or every native operation, and they are not a strict heap cap. Use a caller-owned killable worker or process when strict cancellation or isolation is required. See the [full execution contract](../README.md#execution-contract-and-limits) for bounds and rollback limitations.
 
 ## Security Considerations
 
@@ -278,7 +293,7 @@ engine({ $array: [] });
 
 ### No `eval()`
 
-Rules Machine uses safe expression parsing via [`expressionparser`](https://www.npmjs.com/package/expressionparser). It never uses `eval()` or `Function()`.
+Rules Machine parses expressions via [`expressionparser`](https://www.npmjs.com/package/expressionparser). It never uses `eval()` or `Function()`.
 
 See [execution contracts and limits](../README.md#execution-contract-and-limits) for mutation, supported syntax, numeric bounds, and the synchronous trust model.
 
@@ -298,10 +313,12 @@ ruleFactory([
 
 ### Stateful Rules
 
-Track state across rule execution:
+Track state within an execution. Reusing an input also preserves its assigned fields across calls; use fresh input for independent decisions:
 
 ```ts
 ruleFactory([
+  'discount = 0',
+  'appliedDiscount = false',
   { if: 'price <= 100', then: ['discount = 5', 'appliedDiscount = true'] },
   {
     if: { and: ['price >= 90', 'appliedDiscount != true'] },
@@ -331,3 +348,4 @@ ruleFactory([
 - Explore [Examples](./examples.md) for real-world patterns
 - Review [Why Use a Rules Engine?](./why.md) for use cases
 - Check the [API Reference](../README.md#api-reference) for details
+- Read the [security review](./security-review/RESULTS.md) for verified fixes and remaining limits

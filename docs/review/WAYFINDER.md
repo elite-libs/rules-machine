@@ -2,7 +2,7 @@
 
 Update, 2026-10-14: the user authorized integration; the umbrella branch was fast-forwarded and pushed to `main` at `4f06377`. The original delivery below is historical. Post-merge Astra tuning is tracked in [ticket 08](tickets/08-astra-performance-bundle.md) and its [separate evidence](../../performance/wayfinder-followup/RESULTS.md).
 
-The subsequent deep security review starts from merged main `ef4f3c5` and is tracked in [ticket 09](tickets/09-deep-security.md), with [its own plan](../security-review/PLAN.md). Fixes remain on `security/deep-review-2026-10-14`; branch pushes are authorized, while issues and PR drafts stay local. This follow-up is not automatically merged.
+The subsequent deep security review starts from merged main `ef4f3c5` and is tracked in [ticket 09](tickets/09-deep-security.md), with [its own plan](../security-review/PLAN.md). The user subsequently authorized merging `security/deep-review-2026-10-14` and refreshing the public documentation. See the [integration record](../security-review/INTEGRATION.md) for delivery and verification. Issues and PR drafts stay local.
 
 Started 2026-10-13. Original revision: `ee300adbf33a5a8b4d75c0b6eafd5198c1b5d230`.
 Execution budget: up to four hours, at most four agents including reporting.
@@ -38,7 +38,7 @@ flowchart TD
 | [04 Distribution](tickets/04-distribution.md) | Coordinator | Install/build/typecheck/lint/test and actual ESM/CJS/browser artifact checks | Implemented and locally verified |
 | [05 Remaining contracts](tickets/05-residual-contracts.md) | Coordinator, Architect, Performance | Host/date/resource/cache/trace/type contracts; Rust core/bridge and end-to-end measurements | Implemented and locally verified |
 | [08 Astra performance/bundle follow-up](tickets/08-astra-performance-bundle.md) | Coordinator, Astra | Four measured mechanisms, source/bundle/runtime correctness gates and retained evidence | Complete; browser bundle wins, runtime-only candidates rejected |
-| [09 Deep security](tickets/09-deep-security.md) | Coordinator, runtime reviewer, Astra | Bounded reproductions, defensive fixes, source/package/browser/Rust qualification and residual boundaries | Complete;12 finding families fixed and locally qualified on security branch |
+| [09 Deep security](tickets/09-deep-security.md) | Coordinator, runtime reviewer, Astra | Bounded reproductions, defensive fixes, source/package/browser/Rust qualification and residual boundaries | Complete; 12 finding families fixed and qualified; integration authorized |
 | [07 API/design/test boundaries](tickets/07-api-design-test-boundaries.md) | Coordinator | Close concrete interface defect; record unresolved contracts and missing deployment evidence | Interface fix verified; design follow-ups explicit |
 | [06 Dependency advisories](tickets/06-dependency-advisories.md) | Coordinator |16 findings patched,0 known findings on re-audit; regression and performance confirmation | Implemented and locally verified |
 

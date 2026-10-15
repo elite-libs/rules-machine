@@ -1,6 +1,6 @@
 # Rules Machine Examples
 
-Real-world patterns and use cases for Rules Machine.
+Patterns for composing Rules Machine programs. Import `ruleFactory` as shown in the first example; later snippets reuse that import. Assignments mutate the input object. Initialize per-run state explicitly when reusing inputs, and see the [execution contracts](../README.md#execution-contract-and-limits) for rollback, tracing and limits.
 
 ## Table of Contents
 
@@ -20,6 +20,7 @@ Real-world patterns and use cases for Rules Machine.
 import { ruleFactory } from '@elite-libs/rules-machine';
 
 const getDiscount = ruleFactory([
+  'discount = 0',
   { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
   { if: 'price > 50', then: 'discount = 10' },
   { if: 'price >= 100', then: 'discount = 20' },
@@ -36,6 +37,7 @@ getDiscount({ price: 150 }); // 20
 ```ts
 const calculateStackableDiscount = ruleFactory([
   'discount = 0',
+  'user.discountApplied = false',
   // First discount: base price threshold
   {
     if: 'price <= 100',
@@ -463,10 +465,12 @@ const findMatch = ruleFactory([
 // Define rule sets
 const discountRules = {
   standard: [
+    'discount = 0',
     { if: 'price >= 100', then: 'discount = 10' },
     { return: 'discount' },
   ],
   premium: [
+    'discount = 0',
     { if: 'price >= 50', then: 'discount = 15' },
     { if: 'price >= 100', then: 'discount = 25' },
     { return: 'discount' },
@@ -477,6 +481,7 @@ const discountRules = {
 // Select rule set dynamically
 function getDiscount(user, cart) {
   const ruleSet = discountRules[user.tier];
+  if (!ruleSet) throw new Error("Unknown discount tier");
   const engine = ruleFactory(ruleSet);
   return engine({ ...user, ...cart });
 }
@@ -565,7 +570,7 @@ const result = complianceEngine(transaction);
 // Store audit trail
 await auditLog.create({
   transactionId: transaction.id,
-  decision: result.returnValue,
+  decision: result.lastValue,
   trace: result.trace,
   timestamp: new Date().toISOString(),
 });

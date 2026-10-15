@@ -1,6 +1,6 @@
 # 09: Deep security, input validation and safety
 
-Parent: [Wayfinder](../WAYFINDER.md). Branch: `security/deep-review-2026-10-14`, baseline main `ef4f3c5`. Status: complete and locally qualified; branch delivery is recorded separately. User authorized up to three parallel review/reporting subagents and one to two hours. No issue or PR publication or automatic merge.
+Parent: [Wayfinder](../WAYFINDER.md). Branch: `security/deep-review-2026-10-14`, baseline main `ef4f3c5`. Status: complete and locally qualified; subsequent integration is recorded in [INTEGRATION.md](../../security-review/INTEGRATION.md). User authorized up to three parallel review/reporting subagents and one to two hours. The original review excluded issue/PR publication and automatic merging. The user subsequently authorized the merge; issues and PR drafts remain local.
 
 Review plan and threat boundaries: [security review plan](../../security-review/PLAN.md). Confirm and fix descriptor/prototype/callback provenance weaknesses, execution/compilation resource gaps, atomicity and rule-validation aliasing, trace serialization, and Rust worker/protocol robustness. Preserve bounded before/after evidence; distinguish ordinary JSON threats from caller-supplied host capabilities and trusted integration hooks.
 

@@ -1,6 +1,6 @@
 # Why Use a Rules Engine?
 
-Rules Machine helps you solve specific challenges that arise when business logic becomes complex, frequent-changing, or requires auditability.
+Rules Machine helps you solve specific challenges that arise when business logic becomes complex, frequently changing, or requires auditability.
 
 ## When to Consider a Rules Engine
 
@@ -26,7 +26,7 @@ Your industry requires hundreds or thousands of rules per transaction:
 
 **Problem:** Hand-coded rules obscure core application logic. Adding features to a `DepositTransaction` controller shouldn't require reading 2,000 lines of currency and country-code checks.
 
-**Solution:** Isolate business rules in JSON/YAML files. Name, group, and chain them logically. Reference common rules by name (`applySalesTax`) to avoid duplication.
+**Solution:** Isolate business rules in JSON/YAML files. Name, group, and chain them logically. Compose shared rule arrays in your application before passing them to `ruleFactory`; the engine does not resolve named rule sets for you.
 
 ### 3. Tracing Errors & Miscalculations
 
@@ -102,7 +102,7 @@ Look for these patterns in your codebase:
 
 ### Pros
 
-- **Declarative** — Uses structured JSON and a subset of JavaScript
+- **Declarative** — Uses structured JSON and a dedicated expression language
 - **Observable** — Provides execution traces with timing and step details
 - **Portable** — Rules are serializable and can be shared across environments
 - **Incremental** — Easy to start experimenting; scale as needed
@@ -138,7 +138,7 @@ Sales tax rates and rules are defined by multiple layers of government (City, Co
 
 **Without rules engine:** Logic scattered across services, hard to trace decisions.
 
-**With rules engine:** Each eligibility check is a named rule with full traceability.
+**With rules engine:** Each eligibility check is an explicit rule that can be inspected through execution traces.
 
 ---
 
