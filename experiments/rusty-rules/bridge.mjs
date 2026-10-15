@@ -43,11 +43,14 @@ export class RustBridge {
       if(end+1>this.maxFrameBytes){this.#fail(new RustBridgeError('FRAME_LIMIT','Worker response frame exceeds limit'));return;}
       const line=this.#buffer.subarray(0,end);this.#buffer=end+1===this.#buffer.length?Buffer.alloc(0):this.#buffer.subarray(end+1);
       let response;try{response=JSON.parse(line.toString('utf8'));}catch(error){this.#fail(new RustBridgeError('INVALID_RESPONSE','Worker emitted invalid JSON',{cause:error}));return;}
-      if(!response||typeof response!=='object'||Array.isArray(response)||!Object.hasOwn(response,'id')||Object.hasOwn(response,'result')===Object.hasOwn(response,'error')){this.#fail(new RustBridgeError('INVALID_RESPONSE','Invalid response envelope'));return;}
+      if(!response||typeof response!=='object'||Array.isArray(response)||!Object.hasOwn(response,'id')||!Number.isSafeInteger(response.id)||response.id<=0||Object.hasOwn(response,'result')===Object.hasOwn(response,'error')){this.#fail(new RustBridgeError('INVALID_RESPONSE','Invalid response envelope'));return;}
+      // Treat worker output as a protocol boundary. Never coerce malformed error
+      // fields or remove a request before validating the complete envelope.
+      if(Object.hasOwn(response,'error')&&(!response.error||typeof response.error!=='object'||Array.isArray(response.error)||!Object.hasOwn(response.error,'code')||typeof response.error.code!=='string'||!response.error.code||!Object.hasOwn(response.error,'message')||typeof response.error.message!=='string')){this.#fail(new RustBridgeError('INVALID_RESPONSE','Invalid worker error'));return;}
       const request=this.#pending.get(response.id);
       if(!request){this.#fail(new RustBridgeError('INVALID_RESPONSE','Worker returned unknown request id'));return;}
       this.#pending.delete(response.id);this.#queuedBytes-=request.bytes;request.cleanup();
-      if(response.error){request.reject(new RustBridgeError(response.error.code||'RULE_ERROR',String(response.error.message)));}
+      if(Object.hasOwn(response,'error')){request.reject(new RustBridgeError(response.error.code,response.error.message));}
       else if(Object.hasOwn(response,'result'))request.resolve(response.result);
       else{this.#fail(new RustBridgeError('INVALID_RESPONSE','Worker omitted result/error'));request.reject(new RustBridgeError('INVALID_RESPONSE','Worker omitted result/error'));return;}
     }

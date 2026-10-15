@@ -102,3 +102,23 @@ test('normal raw request options survive conservative envelope validation',async
     assert.deepEqual(await bridge.request('stats',{options}),{options});
   }finally{await dead(bridge);}
 });
+
+test('malformed error fields fail closed without coercion or orphaned pending requests',async()=>{
+  const malformed=[null,false,0,'error',[],{}, {code:'RULE_ERROR'}, {code:1,message:'failure'}, {code:'',message:'failure'}, {code:'RULE_ERROR',message:null}, {code:'RULE_ERROR',message:{toString:null,valueOf:null}}];
+  for(const error of malformed){
+    const response=JSON.stringify({id:1,error});
+    const bridge=fake(`process.stdin.once('data',()=>process.stdout.write(${JSON.stringify(response+'\n')}));`);
+    const first=bridge.stats(),second=bridge.stats();
+    await Promise.all([assert.rejects(first,{code:'INVALID_RESPONSE'}),assert.rejects(second,{code:'INVALID_RESPONSE'})]);
+    await dead(bridge);
+  }
+});
+
+test('well-formed worker errors preserve code and empty messages without closing a healthy worker',async()=>{
+  const source='let first=true;process.stdin.on("data",chunk=>{for(const line of chunk.toString().trim().split("\\n")){const request=JSON.parse(line);process.stdout.write(JSON.stringify(first?(first=false,{id:request.id,error:{code:"RULE_ERROR",message:""}}):{id:request.id,result:{ok:true}})+"\\n");}})';
+  const bridge=fake(source);
+  try{
+    await assert.rejects(bridge.stats(),{code:'RULE_ERROR',message:''});
+    assert.deepEqual(await bridge.stats(),{ok:true});
+  }finally{await dead(bridge);}
+});
