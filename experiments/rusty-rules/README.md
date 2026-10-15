@@ -6,6 +6,8 @@ The Node bridge owns one persistent child process. It serializes inputs and retu
 
 ## Install from crates.io
 
+For Rust library consumers, use [`rules-machine`](https://crates.io/crates/rules-machine/0.1.1): `cargo add rules-machine@0.1.1`. It re-exports this pinned core through the `rules_machine` namespace; see the [library example](../rules-machine/README.md). The worker binary retains its existing package name below.
+
 [`rusty-rules-experiment` 0.1.1](https://crates.io/crates/rusty-rules-experiment/0.1.1) is available on crates.io.
 
 ```sh

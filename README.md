@@ -421,6 +421,7 @@ The [October 2026 security review](./docs/security-review/RESULTS.md) records fi
 - **[Getting Started Guide](./docs/guide.md)** — Step-by-step tutorial
 - **[Examples](./docs/examples.md)** — Real-world patterns and use cases
 - **[Security review](./docs/security-review/RESULTS.md)** — Findings, verification, compatibility changes, and remaining limits
+- **[Rust library on crates.io](https://crates.io/crates/rules-machine)** — `cargo add rules-machine`; experimental subset with [Rust API example](./experiments/rules-machine/README.md)
 - **[Experimental Rust core](./experiments/rusty-rules/README.md)** — Supported subset, Node worker bridge, and transport contract
 
 ## Contributing
