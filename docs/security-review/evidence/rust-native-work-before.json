@@ -1,0 +1,197 @@
+{
+  "request": {
+    "id": 1,
+    "op": "execute",
+    "rules": {
+      "map": "items",
+      "run": "LENGTH(RANGE(0,100000))"
+    },
+    "input": [
+      "object",
+      [
+        [
+          "items",
+          [
+            "array",
+            [
+              [
+                "number",
+                0
+              ],
+              [
+                "number",
+                1
+              ],
+              [
+                "number",
+                2
+              ],
+              [
+                "number",
+                3
+              ],
+              [
+                "number",
+                4
+              ],
+              [
+                "number",
+                5
+              ],
+              [
+                "number",
+                6
+              ],
+              [
+                "number",
+                7
+              ],
+              [
+                "number",
+                8
+              ],
+              [
+                "number",
+                9
+              ],
+              [
+                "number",
+                10
+              ],
+              [
+                "number",
+                11
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  "request_bytes": 281,
+  "response": {
+    "id": 1,
+    "result": {
+      "input": [
+        "object",
+        [
+          [
+            "items",
+            [
+              "array",
+              [
+                [
+                  "number",
+                  0.0
+                ],
+                [
+                  "number",
+                  1.0
+                ],
+                [
+                  "number",
+                  2.0
+                ],
+                [
+                  "number",
+                  3.0
+                ],
+                [
+                  "number",
+                  4.0
+                ],
+                [
+                  "number",
+                  5.0
+                ],
+                [
+                  "number",
+                  6.0
+                ],
+                [
+                  "number",
+                  7.0
+                ],
+                [
+                  "number",
+                  8.0
+                ],
+                [
+                  "number",
+                  9.0
+                ],
+                [
+                  "number",
+                  10.0
+                ],
+                [
+                  "number",
+                  11.0
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "result": [
+        "array",
+        [
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ],
+          [
+            "number",
+            100000.0
+          ]
+        ]
+      ]
+    }
+  },
+  "exit_code": 0,
+  "seconds": 0.028853166004410014,
+  "expected_native_generated_elements": 1200000,
+  "note": "LENGTH discards each temporary RANGE before next callback; peak range is at most100000 values, not the dangerous retained quadratic case.",
+  "binary_sha256": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d",
+  "binary_source": "91ef65e (pre-security frozen release artifact)"
+}

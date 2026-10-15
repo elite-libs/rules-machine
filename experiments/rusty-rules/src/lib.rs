@@ -6,6 +6,35 @@ use std::{
     rc::Rc,
 };
 pub type Result<T> = std::result::Result<T, String>;
+const MAX_WORK: usize = 1_000_000;
+fn consume_work(steps: &mut usize, units: usize) -> Result<()> {
+    *steps = steps.saturating_add(units);
+    if *steps > MAX_WORK {
+        return Err("Evaluation step budget exceeded".into());
+    }
+    Ok(())
+}
+fn clone_value(value: &Value, steps: &mut usize) -> Result<Value> {
+    if let Value::String(text) = value {
+        consume_work(steps, text.len())?;
+    }
+    Ok(value.clone())
+}
+fn clone_values(items: &[Value], steps: &mut usize) -> Result<Vec<Value>> {
+    consume_work(steps, items.len())?;
+    for value in items {
+        if let Value::String(text) = value {
+            consume_work(steps, text.len())?;
+        }
+    }
+    Ok(items.to_vec())
+}
+fn array_items(value: &Value, steps: &mut usize) -> Result<Vec<Value>> {
+    let Value::Array(items) = value else {
+        return Err("Expected array".into());
+    };
+    clone_values(&items.borrow(), steps)
+}
 #[derive(Clone, Debug)]
 pub enum Value {
     Undefined,
@@ -242,14 +271,18 @@ impl Value {
                     }
                 })
             }
-            "array" => Self::array(
-                one()?
-                    .as_array()
-                    .ok_or("Invalid array")?
-                    .iter()
-                    .map(|v| Self::decode(v, depth + 1))
-                    .collect::<Result<_>>()?,
-            ),
+            "array" => {
+                let values = one()?.as_array().ok_or("Invalid array")?;
+                if values.len() > 100_000 {
+                    return Err("Input array exceeds 100000 elements".into());
+                }
+                Self::array(
+                    values
+                        .iter()
+                        .map(|v| Self::decode(v, depth + 1))
+                        .collect::<Result<_>>()?,
+                )
+            }
             "object" => {
                 let mut out = BTreeMap::new();
                 for entry in one()?.as_array().ok_or("Invalid object")? {
@@ -433,30 +466,35 @@ fn path(s: &str) -> Result<Vec<String>> {
     }
     Ok(parts)
 }
-fn property(v: &Value, key: &str) -> Value {
-    match v {
-        Value::Object(o) => o.borrow().get(key).cloned().unwrap_or(Value::Undefined),
+fn property(v: &Value, key: &str, steps: &mut usize) -> Result<Value> {
+    Ok(match v {
+        Value::Object(o) => match o.borrow().get(key) {
+            Some(value) => clone_value(value, steps)?,
+            None => Value::Undefined,
+        },
         Value::Array(a) => {
             if key == "length" {
                 Value::Number(a.borrow().len() as f64)
             } else {
                 if key.len() > 1 && key.starts_with('0') {
-                    return Value::Undefined;
+                    return Ok(Value::Undefined);
                 }
-                key.parse::<usize>()
-                    .ok()
-                    .and_then(|i| a.borrow().get(i).cloned())
-                    .unwrap_or(Value::Undefined)
+                let items = a.borrow();
+                match key.parse::<usize>().ok().and_then(|i| items.get(i)) {
+                    Some(value) => clone_value(value, steps)?,
+                    None => Value::Undefined,
+                }
             }
         }
-        Value::String(s) => {
+        Value::String(text) => {
+            consume_work(steps, text.len())?;
             if key == "length" {
-                Value::Number(s.encode_utf16().count() as f64)
-            } else if s.is_ascii() {
+                Value::Number(text.encode_utf16().count() as f64)
+            } else if text.is_ascii() {
                 key.parse::<usize>()
                     .ok()
                     .filter(|_| key == "0" || !key.starts_with('0'))
-                    .and_then(|i| s.as_bytes().get(i))
+                    .and_then(|i| text.as_bytes().get(i))
                     .map(|v| Value::String((*v as char).to_string()))
                     .unwrap_or(Value::Undefined)
             } else {
@@ -464,24 +502,26 @@ fn property(v: &Value, key: &str) -> Value {
             }
         }
         _ => Value::Undefined,
-    }
+    })
 }
-fn get(input: &Value, p: &str) -> Result<Value> {
+fn get(input: &Value, p: &str, steps: &mut usize) -> Result<Value> {
+    consume_work(steps, p.len())?;
     let keys = path(p)?;
-    get_predecoded(input, p, &keys)
+    get_predecoded(input, p, &keys, steps)
 }
-fn get_predecoded(input: &Value, p: &str, keys: &[String]) -> Result<Value> {
+fn get_predecoded(input: &Value, p: &str, keys: &[String], steps: &mut usize) -> Result<Value> {
+    consume_work(steps, p.len())?;
     if let Value::Object(o) = input {
-        if let Some(v) = o.borrow().get(p) {
-            return Ok(v.clone());
+        if let Some(value) = o.borrow().get(p) {
+            return clone_value(value, steps);
         }
     }
-    let mut v = input.clone();
+    let mut v = clone_value(input, steps)?;
     for key in keys {
         if matches!(&v,Value::String(s)if !s.is_ascii()) && key.parse::<usize>().is_ok() {
             return Err("Non-ASCII string index reads are unsupported".into());
         }
-        v = property(&v, key)
+        v = property(&v, key, steps)?;
     }
     Ok(v)
 }
@@ -491,64 +531,68 @@ fn contains_reference(
     active: &mut Vec<usize>,
     completed: &mut HashMap<usize, usize>,
     depth: usize,
-) -> bool {
-    if depth > 100 {
-        return true;
+    steps: &mut usize,
+) -> Result<bool> {
+    consume_work(steps, 1)?;
+    if depth > 100 || value.same(target) {
+        return Ok(true);
     }
-    if value.same(target) {
-        return true;
+    let id = match value {
+        Value::Array(v) => Rc::as_ptr(v) as usize,
+        Value::Object(v) => Rc::as_ptr(v) as usize,
+        _ => return Ok(false),
+    };
+    if active.contains(&id) {
+        return Ok(true);
     }
+    if completed
+        .get(&id)
+        .is_some_and(|seen_depth| depth <= *seen_depth)
+    {
+        return Ok(false);
+    }
+    active.push(id);
+    let mut found = false;
     match value {
         Value::Array(v) => {
-            let id = Rc::as_ptr(v) as usize;
-            if active.contains(&id) {
-                return true;
+            let values = v.borrow();
+            consume_work(steps, values.len())?;
+            for child in values.iter() {
+                if contains_reference(child, target, active, completed, depth + 1, steps)? {
+                    found = true;
+                    break;
+                }
             }
-            if completed
-                .get(&id)
-                .is_some_and(|seen_depth| depth <= *seen_depth)
-            {
-                return false;
-            }
-            active.push(id);
-            let found = v
-                .borrow()
-                .iter()
-                .any(|v| contains_reference(v, target, active, completed, depth + 1));
-            active.pop();
-            if !found {
-                completed.insert(id, depth);
-            }
-            found
         }
         Value::Object(v) => {
-            let id = Rc::as_ptr(v) as usize;
-            if active.contains(&id) {
-                return true;
+            let values = v.borrow();
+            consume_work(steps, values.len())?;
+            for child in values.values() {
+                if contains_reference(child, target, active, completed, depth + 1, steps)? {
+                    found = true;
+                    break;
+                }
             }
-            if completed
-                .get(&id)
-                .is_some_and(|seen_depth| depth <= *seen_depth)
-            {
-                return false;
-            }
-            active.push(id);
-            let found = v
-                .borrow()
-                .values()
-                .any(|v| contains_reference(v, target, active, completed, depth + 1));
-            active.pop();
-            if !found {
-                completed.insert(id, depth);
-            }
-            found
         }
-        _ => false,
+        _ => unreachable!(),
     }
+    active.pop();
+    if !found {
+        completed.insert(id, depth);
+    }
+    Ok(found)
 }
-fn write(target: &Value, key: &str, value: Value) -> Result<()> {
+fn write(target: &Value, key: &str, value: Value, steps: &mut usize) -> Result<()> {
+    consume_work(steps, 1)?;
     if matches!(value, Value::Array(_) | Value::Object(_))
-        && contains_reference(&value, target, &mut Vec::new(), &mut HashMap::new(), 0)
+        && contains_reference(
+            &value,
+            target,
+            &mut Vec::new(),
+            &mut HashMap::new(),
+            0,
+            steps,
+        )?
     {
         return Err("Cyclic writes are unsupported".into());
     }
@@ -594,7 +638,8 @@ fn write(target: &Value, key: &str, value: Value) -> Result<()> {
         _ => Err("Write target is not object".into()),
     }
 }
-fn set(input: &Value, p: &str, value: Value) -> Result<()> {
+fn set(input: &Value, p: &str, value: Value, steps: &mut usize) -> Result<()> {
+    consume_work(steps, p.len())?;
     let mut keys = path(p)?;
     if let Value::Object(o) = input {
         if o.borrow().contains_key(p) {
@@ -603,18 +648,18 @@ fn set(input: &Value, p: &str, value: Value) -> Result<()> {
     }
     let mut target = input.clone();
     for i in 0..keys.len() - 1 {
-        let mut child = property(&target, &keys[i]);
+        let mut child = property(&target, &keys[i], steps)?;
         if !matches!(child, Value::Array(_) | Value::Object(_)) {
             child = if keys[i + 1].parse::<usize>().is_ok() {
                 Value::array(vec![])
             } else {
                 Value::Object(Rc::new(RefCell::new(BTreeMap::new())))
             };
-            write(&target, &keys[i], child.clone())?
+            write(&target, &keys[i], child.clone(), steps)?
         }
         target = child;
     }
-    write(&target, keys.last().unwrap(), value)
+    write(&target, keys.last().unwrap(), value, steps)
 }
 #[derive(Clone, Debug)]
 enum Expr {
@@ -1148,20 +1193,23 @@ struct Context {
 }
 impl Context {
     fn eval(&mut self, e: &Expr) -> Result<Value> {
-        self.steps += 1;
-        if self.steps > 1_000_000 {
-            return Err("Evaluation step budget exceeded".into());
-        }
+        consume_work(&mut self.steps, 1)?;
         match e {
-            Expr::Literal(v) => Ok(match v {
-                Value::Object(_) => Value::Object(Rc::new(RefCell::new(BTreeMap::new()))),
-                _ => v.clone(),
-            }),
-            Expr::Array(a) => Ok(Value::array(
-                a.iter().map(|e| self.eval(e)).collect::<Result<_>>()?,
-            )),
+            Expr::Literal(v) => {
+                let value = clone_value(v, &mut self.steps)?;
+                Ok(match value {
+                    Value::Object(_) => Value::Object(Rc::new(RefCell::new(BTreeMap::new()))),
+                    value => value,
+                })
+            }
+            Expr::Array(a) => {
+                consume_work(&mut self.steps, a.len())?;
+                Ok(Value::array(
+                    a.iter().map(|e| self.eval(e)).collect::<Result<_>>()?,
+                ))
+            }
             Expr::Path(p, keys) => {
-                let v = get_predecoded(&self.input, p, keys)?;
+                let v = get_predecoded(&self.input, p, keys, &mut self.steps)?;
                 if matches!(v, Value::Undefined) {
                     match p.to_ascii_uppercase().as_str() {
                         "YES" | "ON" => return Ok(Value::Bool(true)),
@@ -1240,14 +1288,14 @@ impl Context {
                     .iter()
                     .map(|e| self.eval(e))
                     .collect::<Result<Vec<_>>>()?;
-                call(name, &a)
+                call(name, &a, &mut self.steps)
             }
         }
     }
     fn statement(&mut self, s: &Statement) -> Result<Value> {
         let value = if let Some((lhs, op)) = &s.lhs {
             if op == "??=" {
-                let old = get(&self.input, lhs)?;
+                let old = get(&self.input, lhs, &mut self.steps)?;
                 if matches!(old, Value::Undefined) && !self.ignore_missing {
                     return Err(format!("Undefined key: {lhs}"));
                 }
@@ -1259,7 +1307,7 @@ impl Context {
             } else if op == "=" {
                 self.eval(&s.expr)?
             } else {
-                let a = get(&self.input, lhs)?.number()?;
+                let a = get(&self.input, lhs, &mut self.steps)?.number()?;
                 let b = self.eval(&s.expr)?.number()?;
                 Value::Number(match op.as_str() {
                     "+=" => a + b,
@@ -1272,9 +1320,9 @@ impl Context {
         } else {
             self.eval(&s.expr)?
         };
-        self.last = value.clone();
+        self.last = clone_value(&value, &mut self.steps)?;
         if let Some((lhs, _)) = &s.lhs {
-            set(&self.input, lhs, value)?;
+            set(&self.input, lhs, value, &mut self.steps)?;
             Ok(self.input.clone())
         } else {
             Ok(value)
@@ -1302,21 +1350,19 @@ impl Context {
         }
     }
     fn run(&mut self, r: &Rule) -> Result<bool> {
-        self.steps += 1;
-        if self.steps > 1_000_000 {
-            return Err("Evaluation step budget exceeded".into());
-        }
+        consume_work(&mut self.steps, 1)?;
         match r {
             Rule::Expression(e) => {
                 self.last = self.statement(e)?;
             }
             Rule::Sequence(a) => {
+                consume_work(&mut self.steps, a.len())?;
                 let mut values = vec![];
                 for r in a {
                     if self.run(r)? {
                         return Ok(true);
                     }
-                    values.push(self.last.clone())
+                    values.push(clone_value(&self.last, &mut self.steps)?)
                 }
                 self.last = Value::array(values);
             }
@@ -1344,11 +1390,12 @@ impl Context {
                 Err(_) => return self.run(no),
             },
             Rule::Array(method, p, body, dest) => {
-                let data = get(&self.input, p)?;
+                let data = get(&self.input, p, &mut self.steps)?;
                 let Value::Array(items) = &data else {
                     return Err("Expected array".into());
                 };
                 let len = items.borrow().len();
+                consume_work(&mut self.steps, len)?;
                 let mut values = vec![];
                 let mut answer = match method.as_str() {
                     "every" => Value::Bool(true),
@@ -1359,11 +1406,10 @@ impl Context {
                 for index in 0..len {
                     // Fetch each item at callback time, preserving mutation and
                     // captured-length behavior without formatting an index key.
-                    let item = items
-                        .borrow()
-                        .get(index)
-                        .cloned()
-                        .unwrap_or(Value::Undefined);
+                    let item = match items.borrow().get(index) {
+                        Some(value) => clone_value(value, &mut self.steps)?,
+                        None => Value::Undefined,
+                    };
                     let context_keys = ["$item", "$index", "$array"];
                     // The input references are already validated acyclic data.
                     // insert returns the previous binding: save on the stack,
@@ -1374,12 +1420,14 @@ impl Context {
                         };
                         let mut object = object.borrow_mut();
                         [
-                            object.insert("$item".into(), item.clone()),
+                            object.insert("$item".into(), clone_value(&item, &mut self.steps)?),
                             object.insert("$index".into(), Value::Number(index as f64)),
                             object.insert("$array".into(), data.clone()),
                         ]
                     };
-                    let result = self.run(body).map(|_| self.last.clone());
+                    let result = self
+                        .run(body)
+                        .and_then(|_| clone_value(&self.last, &mut self.steps));
                     {
                         let Value::Object(object) = &self.input else {
                             unreachable!()
@@ -1426,7 +1474,12 @@ impl Context {
                     answer = Value::array(values)
                 }
                 if let Some(dest) = dest {
-                    set(&self.input, dest, answer.clone())?
+                    set(
+                        &self.input,
+                        dest,
+                        clone_value(&answer, &mut self.steps)?,
+                        &mut self.steps,
+                    )?
                 }
                 self.last = answer;
             }
@@ -1434,9 +1487,8 @@ impl Context {
         Ok(false)
     }
 }
-fn call(name: &str, a: &[Value]) -> Result<Value> {
+fn call(name: &str, a: &[Value], steps: &mut usize) -> Result<Value> {
     let n = |i: usize| a[i].number();
-    let arr = |i: usize| a[i].items();
     Ok(match name {
         "NOT" => Value::Bool(!a[0].truthy()),
         "ISNAN" => Value::Bool(n(0)?.is_nan()),
@@ -1463,7 +1515,10 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
         "MOD" => Value::Number(n(0)? % n(1)?),
         "LENGTH" => Value::Number(match &a[0] {
             Value::Array(v) => v.borrow().len(),
-            Value::String(v) => v.encode_utf16().count(),
+            Value::String(v) => {
+                consume_work(steps, v.len())?;
+                v.encode_utf16().count()
+            }
             _ => return Err("LENGTH expects array or string".into()),
         } as f64),
         "COUNT_KEYS" => Value::Number(match &a[0] {
@@ -1472,9 +1527,9 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
         } as f64),
         "MIN" | "MAX" => {
             let items = if matches!(a[0], Value::Array(_)) {
-                arr(0)?
+                array_items(&a[0], steps)?
             } else {
-                vec![a[0].clone()]
+                vec![clone_value(&a[0], steps)?]
             };
             let mut answer = if name == "MIN" {
                 f64::INFINITY
@@ -1522,6 +1577,7 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
             {
                 return Err("Invalid RANGE bounds".into());
             }
+            consume_work(steps, (end - start).max(0.0) as usize)?;
             let mut values = vec![];
             let mut v = start;
             while v < end {
@@ -1539,12 +1595,12 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
                 Value::Undefined
             } else {
                 match &a[0] {
-                    Value::Array(v) => v
-                        .borrow()
-                        .get(index as usize)
-                        .cloned()
-                        .unwrap_or(Value::Undefined),
+                    Value::Array(v) => match v.borrow().get(index as usize) {
+                        Some(value) => clone_value(value, steps)?,
+                        None => Value::Undefined,
+                    },
                     Value::String(s) => {
+                        consume_work(steps, s.len())?;
                         if !s.is_ascii() {
                             return Err("Non-ASCII string INDEX unsupported".into());
                         }
@@ -1558,19 +1614,25 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
             }
         }
         "HEAD" | "LAST" => {
-            let v = arr(0)?;
-            if name == "HEAD" { v.first() } else { v.last() }
-                .cloned()
-                .unwrap_or(Value::Undefined)
+            let v = array_items(&a[0], steps)?;
+            match if name == "HEAD" { v.first() } else { v.last() } {
+                Some(value) => clone_value(value, steps)?,
+                None => Value::Undefined,
+            }
         }
-        "TAIL" => Value::array(arr(0)?.into_iter().skip(1).collect()),
+        "TAIL" => Value::array(array_items(&a[0], steps)?.into_iter().skip(1).collect()),
         "REVERSE" => {
-            let mut v = arr(0)?;
+            let mut v = array_items(&a[0], steps)?;
             v.reverse();
             Value::array(v)
         }
         "SORT" => {
-            let mut v = arr(0)?;
+            let mut v = array_items(&a[0], steps)?;
+            consume_work(
+                steps,
+                v.len()
+                    .saturating_mul(v.len().checked_ilog2().unwrap_or(0) as usize + 1),
+            )?;
             for v in &v {
                 if v.number()?.is_nan() {
                     return Err(
@@ -1588,8 +1650,13 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
             Value::array(v)
         }
         "CONCAT" => {
-            let mut v = arr(0)?;
-            let tail = arr(1)?;
+            if let (Value::Array(left), Value::Array(right)) = (&a[0], &a[1]) {
+                if left.borrow().len().saturating_add(right.borrow().len()) > 100_000 {
+                    return Err("CONCAT exceeds 100000 elements".into());
+                }
+            }
+            let mut v = array_items(&a[0], steps)?;
+            let tail = array_items(&a[1], steps)?;
             if v.len().saturating_add(tail.len()) > 100_000 {
                 return Err("CONCAT exceeds 100000 elements".into());
             }
@@ -1597,11 +1664,12 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
             Value::array(v)
         }
         "CONS" => {
-            let tail = arr(1)?;
+            consume_work(steps, 1)?;
+            let tail = array_items(&a[1], steps)?;
             if tail.len() >= 100_000 {
                 return Err("CONS exceeds 100000 elements".into());
             }
-            let mut v = vec![a[0].clone()];
+            let mut v = vec![clone_value(&a[0], steps)?];
             v.extend(tail);
             Value::array(v)
         }
@@ -1611,9 +1679,9 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
                     n(0)?,
                     Some(n(1)?),
                     if matches!(a[2], Value::Array(_)) {
-                        arr(2)?
+                        array_items(&a[2], steps)?
                     } else {
-                        vec![a[2].clone()]
+                        vec![clone_value(&a[2], steps)?]
                     },
                 )
             } else {
@@ -1621,9 +1689,9 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
                     n(0)?,
                     None,
                     if matches!(a[1], Value::Array(_)) {
-                        arr(1)?
+                        array_items(&a[1], steps)?
                     } else {
-                        vec![a[1].clone()]
+                        vec![clone_value(&a[1], steps)?]
                     },
                 )
             };
@@ -1648,30 +1716,61 @@ fn call(name: &str, a: &[Value]) -> Result<Value> {
             Value::array(if start > end {
                 vec![]
             } else {
-                v[start..end].to_vec()
+                clone_values(&v[start..end], steps)?
             })
         }
         "CONTAINS" | "INCLUDES" | "REMOVE_VALUES" => {
             let matches = if matches!(a[0], Value::Array(_)) {
-                arr(0)?
+                array_items(&a[0], steps)?
             } else {
-                vec![a[0].clone()]
+                vec![clone_value(&a[0], steps)?]
             };
             let data = if matches!(a[1], Value::Array(_)) {
-                arr(1)?
+                array_items(&a[1], steps)?
             } else {
-                vec![a[1].clone()]
+                vec![clone_value(&a[1], steps)?]
             };
-            let contains = |v: &Value| {
-                matches.iter().any(|m|m.same(v)||matches!((m,v),(Value::Number(a),Value::Number(b))if a.is_nan()&&b.is_nan()))
+            let mut contains = |v: &Value| -> Result<bool> {
+                for m in &matches {
+                    consume_work(steps, 1)?;
+                    if let (Value::String(left), Value::String(right)) = (m, v) {
+                        if left.len() == right.len() {
+                            consume_work(steps, left.len())?;
+                        }
+                    }
+                    if m.same(v)
+                        || matches!((m,v),(Value::Number(a),Value::Number(b))if a.is_nan()&&b.is_nan())
+                    {
+                        return Ok(true);
+                    }
+                }
+                Ok(false)
             };
             if name == "REMOVE_VALUES" {
-                Value::array(data.into_iter().filter(|v| !contains(v)).collect())
+                let mut output = vec![];
+                for value in data {
+                    if !contains(&value)? {
+                        output.push(value);
+                    }
+                }
+                Value::array(output)
             } else {
-                Value::Bool(data.iter().any(contains))
+                let mut found = false;
+                for value in &data {
+                    if contains(value)? {
+                        found = true;
+                        break;
+                    }
+                }
+                Value::Bool(found)
             }
         }
         "STRING_CONTAINS" | "STRING_STARTS_WITH" | "STRING_ENDS_WITH" => {
+            for value in a {
+                if let Value::String(text) = value {
+                    consume_work(steps, text.len())?;
+                }
+            }
             let needle = a[0].string()?;
             let text = a[1].string()?;
             Value::Bool(match name {
@@ -1837,13 +1936,10 @@ mod graph_tests {
         }
         let target = Value::Object(Rc::new(RefCell::new(BTreeMap::new())));
         let mut completed = HashMap::new();
-        assert!(!contains_reference(
-            &value,
-            &target,
-            &mut Vec::new(),
-            &mut completed,
-            0
-        ));
+        assert!(
+            !contains_reference(&value, &target, &mut Vec::new(), &mut completed, 0, &mut 0,)
+                .unwrap()
+        );
         assert_eq!(completed.len(), 36);
     }
 }
@@ -1874,5 +1970,111 @@ mod power_domain_tests {
         ] {
             assert!(!is_power_of_two_magnitude(value));
         }
+    }
+}
+
+#[cfg(test)]
+mod work_budget_tests {
+    use super::*;
+    fn numbers() -> Value {
+        Value::array((0..4).map(|v| Value::Number(v as f64)).collect())
+    }
+    fn exhausted(name: &str, args: &[Value], remaining: usize) {
+        let mut work = MAX_WORK - remaining;
+        assert_eq!(
+            call(name, args, &mut work).unwrap_err(),
+            "Evaluation step budget exceeded",
+            "{name}"
+        );
+        assert!(
+            consume_work(&mut work, 1).is_err(),
+            "exhaustion must remain sticky"
+        );
+    }
+    #[test]
+    fn native_array_work_is_charged_before_copy_or_allocation() {
+        exhausted("RANGE", &[Value::Number(0.0), Value::Number(100_000.0)], 1);
+        for name in ["MIN", "MAX", "HEAD", "LAST", "TAIL", "REVERSE", "SORT"] {
+            exhausted(name, &[numbers()], 3);
+        }
+        exhausted("CONCAT", &[numbers(), numbers()], 3);
+        exhausted("CONS", &[Value::Number(1.0), numbers()], 3);
+        for name in ["TAKE", "DROP"] {
+            exhausted(name, &[Value::Number(1.0), numbers()], 3);
+        }
+        exhausted(
+            "SLICE",
+            &[Value::Number(0.0), Value::Number(2.0), numbers()],
+            3,
+        );
+        for name in ["CONTAINS", "INCLUDES", "REMOVE_VALUES"] {
+            exhausted(name, &[numbers(), numbers()], 8);
+        }
+    }
+    #[test]
+    fn string_clone_and_comparison_work_is_bounded() {
+        let text = Value::String("x".repeat(64));
+        exhausted(
+            "INDEX",
+            &[Value::array(vec![text.clone()]), Value::Number(0.0)],
+            8,
+        );
+        exhausted("HEAD", &[Value::array(vec![text.clone()])], 8);
+        exhausted("STRING_CONTAINS", &[text.clone(), text.clone()], 100);
+        exhausted(
+            "CONTAINS",
+            &[Value::array(vec![text.clone()]), Value::array(vec![text])],
+            132,
+        );
+    }
+    #[test]
+    fn structural_work_failure_restores_context_and_cannot_be_caught() {
+        let input = Value::from_json(&json!({"items":[1,2]}));
+        let program = Program::compile(
+            &json!({"try":{"map":"items","run":"RANGE(0,20)"},"catch":"caught=true"}),
+        )
+        .unwrap();
+        let mut context = Context {
+            input: input.clone(),
+            last: input.clone(),
+            ignore_missing: true,
+            steps: MAX_WORK - 20,
+        };
+        assert_eq!(
+            context.run(&program.rules[0]).unwrap_err(),
+            "Evaluation step budget exceeded"
+        );
+        assert_eq!(input.legacy().unwrap(), json!({"items":[1.0,2.0]}));
+    }
+    #[test]
+    fn array_literals_sequences_and_cycle_scans_charge_before_work() {
+        let input = Value::from_json(&json!({"x":0}));
+        let program = Program::compile(&json!([["x=1", "x=2", "x=3", "x=4"]])).unwrap();
+        let mut context = Context {
+            input: input.clone(),
+            last: input.clone(),
+            ignore_missing: true,
+            steps: MAX_WORK - 2,
+        };
+        assert!(context.run(&program.rules[0]).is_err());
+        assert_eq!(input.legacy().unwrap(), json!({"x":0.0}));
+        context.steps = MAX_WORK - 2;
+        assert!(context.eval(&expression("[1,2,3,4]").unwrap()).is_err());
+        let mut work = MAX_WORK - 2;
+        assert!(write(&input, "extra", numbers(), &mut work).is_err());
+        assert_eq!(input.legacy().unwrap(), json!({"x":0.0}));
+    }
+}
+
+#[cfg(test)]
+mod decode_limit_tests {
+    use super::*;
+    #[test]
+    fn rejects_excessive_array_length_before_decoding_elements() {
+        let oversized = json!(["array", vec![Json::Null; 100_001]]);
+        assert_eq!(
+            Value::from_wire(&oversized).unwrap_err(),
+            "Input array exceeds 100000 elements"
+        );
     }
 }

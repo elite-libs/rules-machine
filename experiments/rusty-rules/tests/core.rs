@@ -389,3 +389,21 @@ fn zero_program_cache_limit_rejects_prepare_without_eviction_loop() {
         "p1"
     );
 }
+
+#[test]
+fn aggregate_native_ranges_exhaust_work_before_retained_growth() {
+    // LENGTH drops each temporary range, keeping this regression's peak memory
+    // to one 100k-element range rather than retaining a dangerous nested output.
+    let input = Value::from_json(&json!({"items":[0,1,2,3,4,5,6,7,8,9,10,11]}));
+    let program =
+        Program::compile(&json!({"map":"items","run":"LENGTH(RANGE(0,100000))"})).unwrap();
+    assert_eq!(
+        program.execute(input.clone(), true).unwrap_err(),
+        "Evaluation step budget exceeded"
+    );
+    let state = input.legacy().unwrap();
+    assert!(state.get("$item").is_none());
+    assert!(state.get("$index").is_none());
+    assert!(state.get("$array").is_none());
+    assert_eq!(state["items"].as_array().unwrap().len(), 12);
+}
