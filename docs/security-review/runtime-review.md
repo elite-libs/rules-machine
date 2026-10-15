@@ -40,4 +40,13 @@ Argument lists receive authority only at internal comma/call construction sites.
 
 The coordinator's path guard rejects Object.prototype, Array.prototype and own constructor-function targets without inspecting constructor function properties; this closes the standard intrinsic-prototype alias considered during runtime review. The broader custom-prototype-record behavior remains governed by existing own-property shadowing tests, rather than replacing it with a new blanket rejection contract.
 
-The combined dedicated security-runtime/security-engine/security-inputs run passed23 tests and TypeScript typecheck passed. The runtime helper also preserves ordinary empty Error trace text without reading inherited accessors. Full-suite validation remains coordinator-owned.
+The combined dedicated security-runtime/security-engine/security-inputs run passed 23 tests and TypeScript typecheck passed. The runtime helper also preserves ordinary empty Error trace text without reading inherited accessors. Full-suite validation remains coordinator-owned.
+
+## Rust worker protocol and cache follow-up
+
+Two additional bounded findings were confirmed in the Rust worker:
+
+- **Host Rust API:** Session exposes a mutable `cache_limit`; zero made the prepare eviction loop permanent after its queue emptied. Prepare now rejects zero immediately with a fixed error. The regression runs in a killable subprocess with a five-second watchdog, so a future infinite-loop regression cannot hang the parent test process. Protocol defaults remain 128; there is no JSON command for changing this limit.
+- **Direct worker JSON protocol:** Arbitrary request IDs were copied into response envelopes without type/size validation. A 7,900,101-byte valid request with a 7.3 MB string ID and 600k payload produced an 8,500,091-byte response despite the 8,388,608-byte frame contract. The bounded watchdog probe completed in 0.09 s; size evidence is retained in `evidence/rust-id-frame-probe.json`. Main now accepts only positive safe-integer IDs before compiling/running commands, and invalid IDs receive a constant error with id:null. This bounds ID framing overhead and never echoes hostile IDs. Node RustBridge already generated numeric IDs, so this closes a direct worker protocol issue rather than a public bridge-generated request issue.
+
+Thirty offline Rust tests passed after these fixes, including protocol subprocess checks for invalid/structured/large IDs and both safe-integer endpoints. No dependencies were downloaded. A separate audit identified uncharged native array work; its correction and validation are recorded in the next handoff rather than conflated with protocol framing.

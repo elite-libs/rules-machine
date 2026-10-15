@@ -1748,6 +1748,9 @@ impl Session {
         let op = v.get("op").and_then(Json::as_str).ok_or("Missing op")?;
         match op {
             "prepare" => {
+                if self.cache_limit == 0 {
+                    return Err("Program cache limit must be positive".into());
+                }
                 let source = v.get("rules").ok_or("Missing rules")?;
                 let bytes = serde_json::to_vec(source).map_err(|e| e.to_string())?.len();
                 if bytes > self.byte_limit {

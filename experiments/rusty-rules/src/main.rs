@@ -82,11 +82,20 @@ fn main() {
             Err(e) => json!({"id":null,"error":{"code":"INVALID_JSON","message":e.to_string()}}),
             Ok(v) => {
                 if v.get("op").is_some() {
-                    let id = v.get("id").cloned().unwrap_or(Json::Null);
-                    match session.command(&v) {
-                        Ok(result) => json!({"id":id,"result":result}),
-                        Err(message) => {
-                            json!({"id":id,"error":{"code":"RULE_ERROR","message":message}})
+                    // Never echo an untrusted tree/string as an ID. In addition
+                    // to correlation ambiguity it could exceed the frame budget
+                    // reserved for the response envelope after value encoding.
+                    match v.get("id").and_then(Json::as_u64) {
+                        Some(id) if (1..=9_007_199_254_740_991).contains(&id) => {
+                            match session.command(&v) {
+                                Ok(result) => json!({"id":id,"result":result}),
+                                Err(message) => {
+                                    json!({"id":id,"error":{"code":"RULE_ERROR","message":message}})
+                                }
+                            }
+                        }
+                        _ => {
+                            json!({"id":null,"error":{"code":"INVALID_REQUEST","message":"Request id must be a positive safe integer"}})
                         }
                     }
                 } else {

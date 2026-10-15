@@ -339,3 +339,53 @@ fn callback_reads_later_mutated_items_at_callback_time() {
     assert_eq!(value["result"], json!([1.0, 99.0]));
     assert_eq!(value["input"]["items"], json!([1.0, 99.0]));
 }
+
+#[test]
+fn zero_program_cache_limit_rejects_prepare_without_eviction_loop() {
+    // Keep a future regression confined to a killable test subprocess.
+    if std::env::var_os("RULES_MACHINE_TEST_ZERO_CACHE_CHILD").is_none() {
+        use std::{
+            process::{Command, Stdio},
+            thread,
+            time::{Duration, Instant},
+        };
+        let mut child = Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "zero_program_cache_limit_rejects_prepare_without_eviction_loop",
+            ])
+            .env("RULES_MACHINE_TEST_ZERO_CACHE_CHILD", "1")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap();
+        let deadline = Instant::now() + Duration::from_secs(5);
+        loop {
+            if let Some(status) = child.try_wait().unwrap() {
+                assert!(status.success(), "cache-limit subprocess failed");
+                return;
+            }
+            if Instant::now() > deadline {
+                let _ = child.kill();
+                let _ = child.wait();
+                panic!("zero cache-limit prepare exceeded watchdog");
+            }
+            thread::sleep(Duration::from_millis(5));
+        }
+    }
+    let mut session = Session::default();
+    session.cache_limit = 0;
+    assert_eq!(
+        session
+            .command(&json!({"op":"prepare","rules":"1"}))
+            .unwrap_err(),
+        "Program cache limit must be positive"
+    );
+    session.cache_limit = 1;
+    assert_eq!(
+        session
+            .command(&json!({"op":"prepare","rules":"1"}))
+            .unwrap()["program"],
+        "p1"
+    );
+}

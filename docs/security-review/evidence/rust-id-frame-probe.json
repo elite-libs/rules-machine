@@ -1,0 +1,9 @@
+{
+  "request_bytes": 7900101,
+  "response_bytes": 8500091,
+  "frame_limit": 8388608,
+  "exit_code": 0,
+  "seconds": 0.09148728399304673,
+  "stderr": "",
+  "response_kind": "success"
+}
