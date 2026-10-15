@@ -1,3 +1,4 @@
+import { runInNewContext } from 'node:vm';
 import { expect, test, vi } from 'vitest';
 import { ruleFactory } from '../index';
 import { ExecutionBudget, withExecutionBudget } from '../utils/budget';
@@ -37,6 +38,67 @@ test('assignment treats custom-prototype records as opaque without touching thei
   expect(() => ruleFactory('target.value = 1')({ target })).toThrow(/opaque/);
   expect(Object.hasOwn(target, 'value')).toBe(false);
   expect(hook).not.toHaveBeenCalled();
+});
+
+test('iterator and generator prototype aliases cannot be mutated, including across realms', () => {
+  const foreign = runInNewContext(`(() => {
+    const sync = Object.getPrototypeOf((function*(){}).prototype);
+    const async = Object.getPrototypeOf((async function*(){}).prototype);
+    return [sync, Object.getPrototypeOf(sync), async, Object.getPrototypeOf(async), Object.getPrototypeOf([][Symbol.iterator]())];
+  })()`);
+  const sync = Object.getPrototypeOf(function* () {}.prototype);
+  const async = Object.getPrototypeOf(async function* () {}.prototype);
+  const targets = [
+    Object.prototype,
+    Array.prototype,
+    Math,
+    sync,
+    Object.getPrototypeOf(sync),
+    async,
+    Object.getPrototypeOf(async),
+    Object.getPrototypeOf([][Symbol.iterator]()),
+    ...foreign,
+  ];
+  const key = '__rules_machine_security_probe__';
+  for (const target of targets) {
+    let failed = false;
+    let mutated = false;
+    try {
+      try {
+        ruleFactory(`target.${key} = 1`)({ target });
+      } catch {
+        failed = true;
+      }
+      mutated = Object.hasOwn(target, key);
+    } finally {
+      Reflect.deleteProperty(target, key);
+    }
+    expect(failed).toBe(true);
+    expect(mutated).toBe(false);
+  }
+});
+
+test('host-protocol write rejection never reads protocol or constructor accessors', () => {
+  for (const key of [
+    Symbol.iterator,
+    Symbol.asyncIterator,
+    Symbol.toStringTag,
+    'constructor',
+  ]) {
+    const hook = vi.fn(() => 1);
+    const target = Object.defineProperty({}, key, { get: hook });
+    expect(() => ruleFactory('target.value = 2')({ target })).toThrow(
+      /host prototype/,
+    );
+    expect(Object.hasOwn(target, 'value')).toBe(false);
+    expect(hook).not.toHaveBeenCalled();
+  }
+});
+
+test('ordinary JSON constructor data remains writable without constructor traversal', () => {
+  const target = JSON.parse('{"constructor":{"safe":true},"value":1}');
+  ruleFactory('target.value = 2')({ target });
+  expect(target).toEqual({ constructor: { safe: true }, value: 2 });
 });
 
 test('joining stops converting primitives as soon as the output limit is exceeded', () => {

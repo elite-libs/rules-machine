@@ -9,6 +9,11 @@ import { recordMutation } from './mutations';
 import { stringToPath as toPath } from './string-path';
 
 const unsafe = new Set(['__proto__', 'prototype', 'constructor']);
+const hostProtocolKeys = [
+  Symbol.iterator,
+  Symbol.asyncIterator,
+  Symbol.toStringTag,
+];
 
 function writeData(target: object, key: string, value: unknown) {
   consumeWork();
@@ -19,8 +24,9 @@ function writeData(target: object, key: string, value: unknown) {
     target === Object.prototype ||
     target === Array.prototype ||
     (constructor &&
-      'value' in constructor &&
-      typeof constructor.value === 'function')
+      (!('value' in constructor) || typeof constructor.value === 'function')) ||
+    (!Array.isArray(target) &&
+      hostProtocolKeys.some((key) => Object.hasOwn(target, key)))
   )
     throw new UserError('Cannot assign through a host prototype');
   if (!Array.isArray(target)) {
