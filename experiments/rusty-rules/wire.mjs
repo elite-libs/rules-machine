@@ -138,7 +138,11 @@ export function decode(wire, depth=0) {
   if(tag==='undefined'&&wire.length===1)return undefined;
   if(tag==='null'&&wire.length===1)return null;
   if(wire.length!==2)throw new TypeError('Invalid tagged-v1 tuple length');
-  if(tag==='boolean'&&typeof value==='boolean'||tag==='string'&&typeof value==='string')return value;
+  if(tag==='boolean'&&typeof value==='boolean')return value;
+  if(tag==='string'&&typeof value==='string'){
+    if(!String.prototype.isWellFormed.call(value))throw new TypeError('Lone UTF-16 surrogates are unsupported');
+    return value;
+  }
   if(tag==='number') {
     if(typeof value==='number'&&Number.isFinite(value))return value;
     if(value==='NaN')return NaN;if(value==='Infinity')return Infinity;if(value==='-Infinity')return -Infinity;if(value==='-0')return -0;
@@ -148,6 +152,7 @@ export function decode(wire, depth=0) {
     const out={};
     for(const pair of value) {
       if(!Array.isArray(pair)||pair.length!==2||typeof pair[0]!=='string'||Object.hasOwn(out,pair[0]))throw new TypeError('Invalid/duplicate object entry');
+      if(!String.prototype.isWellFormed.call(pair[0]))throw new TypeError('Lone UTF-16 surrogates are unsupported');
       Object.defineProperty(out,pair[0],{value:decode(pair[1],depth+1),writable:true,enumerable:true,configurable:true});
     }
     return out;

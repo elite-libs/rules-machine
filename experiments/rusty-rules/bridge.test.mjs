@@ -119,6 +119,34 @@ test('well-formed worker errors preserve code and empty messages without closing
   const bridge=fake(source);
   try{
     await assert.rejects(bridge.stats(),{code:'RULE_ERROR',message:''});
-    assert.deepEqual(await bridge.stats(),{ok:true});
+    assert.deepEqual(await bridge.request('stats'),{ok:true});
   }finally{await dead(bridge);}
+});
+
+test('malformed typed command results fail closed with stable protocol errors',async()=>{
+  for(const [method,result]of [['prepare',null],['prepare',{program:1}],['release',{}],['release',{released:1}],['stats',{}],['execute',null],['execute',{result:['bad'],input:['object',[]]}],['execute',{result:['null'],input:['number',1]}]]){
+    const response=JSON.stringify({id:1,result});
+    const bridge=fake(`process.stdin.once('data',()=>process.stdout.write(${JSON.stringify(response+'\n')}));`);
+    try{
+      const promise=method==='prepare'?bridge.prepare('1'):method==='release'?bridge.release('p1'):method==='execute'?bridge.execute('1'):bridge.stats();
+      await assert.rejects(promise,{code:'INVALID_RESPONSE'});
+      assert.equal(bridge.closed,true);
+    }finally{await dead(bridge);}
+  }
+});
+
+test('invalid typed result rejects later responses in the same stdout chunk',async()=>{
+  const source='let data="";process.stdin.on("data",chunk=>{data+=chunk;const lines=data.trim().split("\\n");if(lines.length<2)return;const [a,b]=lines.map(JSON.parse);process.stdout.write(JSON.stringify({id:a.id,result:{program:1}})+"\\n"+JSON.stringify({id:b.id,result:{ok:true}})+"\\n");});';
+  const bridge=fake(source);
+  try{
+    const first=bridge.prepare('1'),second=bridge.request('stats');
+    await Promise.all([assert.rejects(first,{code:'INVALID_RESPONSE'}),assert.rejects(second,{code:'INVALID_RESPONSE'})]);
+  }finally{await dead(bridge);}
+});
+
+test('tagged decoding rejects lone UTF-16 surrogates in values and keys',()=>{
+  assert.throws(()=>decode(['string','\ud800']),/surrogate/);
+  assert.throws(()=>decode(['object',[['\udc00',['null']]]]),/surrogate/);
+  assert.equal(decode(['string','😀']),'😀');
+  assert.deepEqual(decode(['object',[['😀',['null']]]]),{'😀':null});
 });

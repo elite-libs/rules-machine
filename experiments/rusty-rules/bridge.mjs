@@ -5,6 +5,26 @@ function ruleData(rules){
   function check(v){if(v===undefined||typeof v==='number'&&!Number.isFinite(v))throw new TypeError('Rules require ordinary JSON values');if(v&&typeof v==='object')for(const child of Object.values(v))check(child);}
   check(value);return value;
 }
+function commandResult(op,output){
+  if(!output||typeof output!=='object'||Array.isArray(output))throw new TypeError('Expected command result object');
+  if(op==='prepare'){
+    if(!Object.hasOwn(output,'program')||typeof output.program!=='string'||!output.program)throw new TypeError('Invalid program handle');
+    return output.program;
+  }
+  if(op==='release'){
+    if(!Object.hasOwn(output,'released')||typeof output.released!=='boolean')throw new TypeError('Invalid release result');
+    return output.released;
+  }
+  if(op==='stats'){
+    for(const field of ['programs','cacheLimit','completed','retainedInputs','programSourceBytes','sourceByteLimit'])
+      if(!Object.hasOwn(output,field)||!Number.isSafeInteger(output[field])||output[field]<0)throw new TypeError('Invalid worker statistics');
+    return output;
+  }
+  if(!Object.hasOwn(output,'result')||!Object.hasOwn(output,'input'))throw new TypeError('Missing tagged execution result');
+  const result=decode(output.result),input=decode(output.input);
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new TypeError('Invalid execution input object');
+  return {result,input};
+}
 export class RustBridgeError extends Error {
   constructor(code,message,options){super(message,options);this.name='RustBridgeError';this.code=code;}
 }
@@ -49,14 +69,20 @@ export class RustBridge {
       if(Object.hasOwn(response,'error')&&(!response.error||typeof response.error!=='object'||Array.isArray(response.error)||!Object.hasOwn(response.error,'code')||typeof response.error.code!=='string'||!response.error.code||!Object.hasOwn(response.error,'message')||typeof response.error.message!=='string')){this.#fail(new RustBridgeError('INVALID_RESPONSE','Invalid worker error'));return;}
       const request=this.#pending.get(response.id);
       if(!request){this.#fail(new RustBridgeError('INVALID_RESPONSE','Worker returned unknown request id'));return;}
+      let result;
+      if(Object.hasOwn(response,'result')){
+        try{result=request.validate?request.validate(response.result):response.result;}
+        catch(error){this.#fail(new RustBridgeError('INVALID_RESPONSE','Invalid typed worker result',{cause:error}));return;}
+      }
       this.#pending.delete(response.id);this.#queuedBytes-=request.bytes;request.cleanup();
       if(Object.hasOwn(response,'error')){request.reject(new RustBridgeError(response.error.code,response.error.message));}
-      else if(Object.hasOwn(response,'result'))request.resolve(response.result);
+      else if(Object.hasOwn(response,'result'))request.resolve(result);
       else{this.#fail(new RustBridgeError('INVALID_RESPONSE','Worker omitted result/error'));request.reject(new RustBridgeError('INVALID_RESPONSE','Worker omitted result/error'));return;}
     }
     if(this.#buffer.length>this.maxFrameBytes)this.#fail(new RustBridgeError('FRAME_LIMIT','Worker response exceeds frame limit'));
   }
-  request(op,payload={}, {signal,timeoutMs=this.timeoutMs}={}) {
+  request(op,payload={},options={}) {return this.#submit(op,payload,options);}
+  #submit(op,payload, {signal,timeoutMs=this.timeoutMs}={},validate) {
     if(this.#closed)return Promise.reject(new RustBridgeError('CLOSED','Bridge is closed'));
     if(signal?.aborted)return Promise.reject(new RustBridgeError('ABORTED','Request aborted before submission'));
     if(!Number.isSafeInteger(timeoutMs)||timeoutMs<=0)return Promise.reject(new TypeError('timeoutMs must be positive integer'));
@@ -78,23 +104,20 @@ export class RustBridge {
       const abort=()=>this.#fail(new RustBridgeError('ABORTED','Request aborted; owned worker terminated'));
       const timer=setTimeout(()=>this.#fail(new RustBridgeError('TIMEOUT','Request timed out; owned worker terminated')),timeoutMs);
       const cleanup=()=>{clearTimeout(timer);signal?.removeEventListener('abort',abort);};
-      this.#pending.set(id,{resolve,reject,cleanup,bytes});this.#queuedBytes+=bytes;signal?.addEventListener('abort',abort,{once:true});
+      this.#pending.set(id,{resolve,reject,cleanup,bytes,validate});this.#queuedBytes+=bytes;signal?.addEventListener('abort',abort,{once:true});
       // Node streams buffer writes in order. maxPending/maxFrameBytes bound queued
       // data; callback errors fail all pending work rather than losing a request.
       this.#child.stdin.write(frame,error=>{if(error)this.#fail(new RustBridgeError('WRITE_FAILED',error.message,{cause:error}));});
     });
   }
-  async prepare(rules,options){return (await this.request('prepare',{rules:ruleData(rules)},options)).program;}
+  async prepare(rules,options){return this.#submit('prepare',{rules:ruleData(rules)},options,output=>commandResult('prepare',output));}
   async execute(rules,input={}, {options={},...requestOptions}={}) {
-    const output=await this.request('execute',{rules:ruleData(rules),input:encode(input),options},requestOptions);
-    return this.#decode(output);
+    return this.#submit('execute',{rules:ruleData(rules),input:encode(input),options},requestOptions,output=>commandResult('execute',output));
   }
   async run(program,input={}, {options={},...requestOptions}={}) {
-    const output=await this.request('run',{program,input:encode(input),options},requestOptions);
-    return this.#decode(output);
+    return this.#submit('run',{program,input:encode(input),options},requestOptions,output=>commandResult('run',output));
   }
-  #decode(output){try{return {result:decode(output.result),input:decode(output.input)};}catch(error){this.#fail(new RustBridgeError('INVALID_RESPONSE','Invalid tagged worker result',{cause:error}));throw error;}}
-  async release(program,options){return (await this.request('release',{program},options)).released;}
-  stats(options){return this.request('stats',{},options);}
+  async release(program,options){return this.#submit('release',{program},options,output=>commandResult('release',output));}
+  stats(options){return this.#submit('stats',{},options,output=>commandResult('stats',output));}
   async close(){if(!this.#closed)this.#fail(new RustBridgeError('CLOSED','Bridge closed by caller'));await this.#closePromise;}
 }
