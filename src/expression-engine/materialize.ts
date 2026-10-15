@@ -136,6 +136,8 @@ export function describeValue(value: unknown): string {
   if (typeof value === 'object')
     return Array.isArray(value) ? '[array]' : '[object]';
   if (typeof value === 'function') return '[function]';
+  if (typeof value === 'bigint') return '[bigint]';
+  if (typeof value === 'symbol') return '[symbol]';
   if (typeof value === 'string')
     return JSON.stringify(
       value.length > 200 ? `${value.slice(0, 200)}…` : value,

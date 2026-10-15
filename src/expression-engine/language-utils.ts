@@ -23,10 +23,20 @@ import {
   unwrapInternal,
 } from './materialize';
 
+// A public property is data, not authority to execute array elements as thunks.
+const argumentArrays = new WeakSet<object>();
+export function markArgumentsArray(value: unknown[]): ArgumentsArray {
+  argumentArrays.add(value);
+  Object.defineProperty(value, 'isArgumentsArray', {
+    value: true,
+    enumerable: true,
+    writable: true,
+    configurable: true,
+  });
+  return value as ArgumentsArray;
+}
 export const isArgumentsArray = (value: unknown): value is ArgumentsArray =>
-  Array.isArray(value) &&
-  !isProtectedInput(value) &&
-  readData(value, 'isArgumentsArray') === true;
+  Array.isArray(value) && argumentArrays.has(value);
 
 export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
   const result = expr();
@@ -41,6 +51,11 @@ export const unpackArgs = (f: Delegate) => (expr: ExpressionThunk) => {
     }
     return f(() => result);
   } else if (result.length === f.length || f.length === 0) {
+    for (const argument of result) {
+      consumeWork();
+      if (typeof argument !== 'function' || isProtectedInput(argument))
+        throw new UserError('Invalid internal expression argument');
+    }
     return f.apply(null, result);
   } else {
     throw new UserError(`Incorrect number of arguments. Expected ${f.length}`);
@@ -208,9 +223,10 @@ export const omitProperties = (
       checkDataDepth(active.size + 1);
       active.add(value);
       try {
-        return array(value)
-          .map((part) => segmentText(part, active))
-          .join(',');
+        return joinValues(
+          array(value).map((part) => segmentText(part, active)),
+          ',',
+        );
       } finally {
         active.delete(value);
       }
@@ -297,6 +313,8 @@ export function joinValues(
   separator: string,
 ): string {
   let characters = Math.max(0, values.length - 1) * separator.length;
+  checkStringLength(characters);
+  consumeWork(characters);
   const strings = values.map((value) => {
     if (
       value !== null &&
@@ -307,9 +325,9 @@ export function joinValues(
       throw new UserError('String joining accepts primitive values only');
     const text = value == null ? '' : String(value);
     characters += text.length;
+    checkStringLength(characters);
+    consumeWork(text.length);
     return text;
   });
-  checkStringLength(characters);
-  consumeWork(characters);
   return strings.join(separator);
 }

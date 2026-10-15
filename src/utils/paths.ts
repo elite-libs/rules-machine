@@ -14,6 +14,15 @@ function writeData(target: object, key: string, value: unknown) {
   consumeWork();
   if (typeof target === 'function')
     throw new UserError('Cannot assign through a host function');
+  const constructor = Object.getOwnPropertyDescriptor(target, 'constructor');
+  if (
+    target === Object.prototype ||
+    target === Array.prototype ||
+    (constructor &&
+      'value' in constructor &&
+      typeof constructor.value === 'function')
+  )
+    throw new UserError('Cannot assign through a host prototype');
   if (!Array.isArray(target)) {
     const prototype = Object.getPrototypeOf(target);
     if (

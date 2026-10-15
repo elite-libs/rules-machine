@@ -614,9 +614,9 @@ function checkInvalidKeys<TInput extends object>(data: TInput) {
     'isPrototypeOf',
     'propertyIsEnumerable',
   ];
-  const unsafeKeys = Object.keys(data).filter((key) =>
-    dangerousKeys.includes(key),
-  );
+  const keys = Object.keys(data);
+  consumeWork(keys.length);
+  const unsafeKeys = keys.filter((key) => dangerousKeys.includes(key));
   if (unsafeKeys.length > 0)
     throw new UserError(`Unsafe keys found in input: ${unsafeKeys.join(', ')}`);
   if (arrayFields.some((key) => key in data))

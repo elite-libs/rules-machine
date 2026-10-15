@@ -175,6 +175,8 @@ export function createExpressionEngine(
   }
 
   function entry(source: string): Entry {
+    if (typeof source !== 'string')
+      throw new UserError('Expression source must be a primitive string');
     const existing = syntax.get(source);
     if (existing) return existing;
     consumeWork(source.length);
@@ -257,7 +259,20 @@ export function createExpressionEngine(
     const previous = activeResolver;
     activeResolver = termResolver;
     try {
-      const cached = entry(compiled.source);
+      if (compiled === null || typeof compiled !== 'object')
+        throw new UserError(
+          'Compiled expression requires an own string source',
+        );
+      const descriptor = Object.getOwnPropertyDescriptor(compiled, 'source');
+      if (
+        !descriptor ||
+        !('value' in descriptor) ||
+        typeof descriptor.value !== 'string'
+      )
+        throw new UserError(
+          'Compiled expression requires an own string source data property',
+        );
+      const cached = entry(descriptor.value);
       const { lhs, assignmentOperator } = cached.metadata;
       // Bracketed write targets are paths, not array literals in the parser.
       // Resolve their current value separately for compound assignment.
@@ -291,25 +306,35 @@ export function createExpressionEngine(
     }
   }
 
+  function withBudget<T>(run: () => T): T {
+    if (currentExecutionBudget()) return run();
+    const budget = new ExecutionBudget(options.limits);
+    return withExecutionBudget(budget, () => {
+      const result = run();
+      budget.checkDeadline();
+      return result;
+    });
+  }
+
   function evaluate(
     compiled: CompiledExpression,
     resolver: TermResolver,
   ): unknown {
-    const existing = currentExecutionBudget();
-    if (existing) return evaluateWithContext(compiled, resolver);
-    const budget = new ExecutionBudget(options.limits);
-    return withExecutionBudget(budget, () => {
-      const result = evaluateWithContext(compiled, resolver);
-      budget.checkDeadline();
-      return result;
-    });
+    if (typeof resolver !== 'function')
+      throw new UserError('Term resolver must be a function');
+    return withBudget(() => evaluateWithContext(compiled, resolver));
   }
 
   function evaluateExpression(
     expression: string,
     termResolver: TermResolver,
   ): unknown {
-    return evaluate(compile(expression), termResolver);
+    if (typeof termResolver !== 'function')
+      throw new UserError('Term resolver must be a function');
+    // Compile inside the same budget: cold parsing must not evade work limits.
+    return withBudget(() =>
+      evaluateWithContext(compile(expression), termResolver),
+    );
   }
 
   return {

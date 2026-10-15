@@ -33,6 +33,7 @@ import {
   isArgumentsArray,
   iterable,
   joinValues,
+  markArgumentsArray,
   num,
   obj,
   objectContainsValues,
@@ -84,8 +85,7 @@ const getInfixOps = (_termDelegate: TermDelegate): InfixOps => ({
       ? aVal
       : [() => aVal];
     const args: ExpressionArray<ExpressionValue> = aArr.concat([b]);
-    args.isArgumentsArray = true;
-    return args as ArgumentsArray;
+    return markArgumentsArray(args);
   },
   '%': (a, b) => num(a()) % num(b()),
   '=': (_, b) => b(),
@@ -123,8 +123,7 @@ export const ruleExpressionLanguage = (
     const upperName = name.toUpperCase();
     if (hasOwnProperty(prefixOps, upperName)) {
       return (...args) => {
-        args.isArgumentsArray = true;
-        return prefixOps[upperName](() => args);
+        return prefixOps[upperName](() => markArgumentsArray(args));
       };
     } else if (hasOwnProperty(infixOps, upperName)) {
       return (...args) => infixOps[upperName](args[0], args[1]);
