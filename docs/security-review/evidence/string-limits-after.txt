@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+
+ Test Files  3 passed (3)
+      Tests  157 passed (157)
+   Start at  18:00:36
+   Duration  1.03s (transform 68%, import 17%, tests 12%, worker 3%)
+

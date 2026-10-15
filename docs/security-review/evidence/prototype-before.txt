@@ -1,0 +1,26 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/expression-engine/security-inputs.test.ts (3 tests | 1 failed) 22ms
+   × assignment cannot mutate an intrinsic prototype supplied through an alias 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > assignment cannot mutate an intrinsic prototype supplied through an alias
+AssertionError: expected undefined to be an instance of Error
+ ❯ src/expression-engine/security-inputs.test.ts:25:19
+     23|     Reflect.deleteProperty(Object.prototype, key);
+     24|   }
+     25|   expect(failure).toBeInstanceOf(Error);
+       |                   ^
+     26|   expect(mutated).toBe(false);
+     27| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  17:55:18
+   Duration  391ms (transform 75%, import 14%, tests 8%, worker 3%)
+

@@ -1,0 +1,141 @@
+{
+  "at": "2026-10-15T00:24:51.199Z",
+  "node": "v26.8.2",
+  "baseline": "ef4f3c5 runtime, qualified artifact9adecf3",
+  "candidate": "6cf27cc TypeScript",
+  "results": {
+    "baseline": {
+      "argumentMarker": {
+        "ok": true,
+        "result": 7,
+        "hostCallbackCalls": 1
+      },
+      "coldCompilation": {
+        "ok": true,
+        "result": 1,
+        "cacheEntries": 1
+      },
+      "sourceAccessor": {
+        "ok": true,
+        "result": 1,
+        "getterCalls": 1
+      },
+      "atomicTruncation": {
+        "ok": false,
+        "error": "AggregateError",
+        "message": "Atomic rollback failed",
+        "length": 0,
+        "ownSlots": []
+      },
+      "ruleAlias": {
+        "ok": true,
+        "result": 9,
+        "getterCalls": 1
+      },
+      "nestedOmitPath": {
+        "ok": true,
+        "result": {}
+      },
+      "rootValidation": {
+        "ok": true,
+        "result": 1,
+        "mutated": true
+      },
+      "intrinsicAliases": [
+        {
+          "ok": true,
+          "result": 1,
+          "mutated": true
+        },
+        {
+          "ok": true,
+          "result": 1,
+          "mutated": true
+        },
+        {
+          "ok": true,
+          "result": 1,
+          "mutated": true
+        },
+        {
+          "ok": true,
+          "result": 1,
+          "mutated": true
+        }
+      ]
+    },
+    "candidate": {
+      "argumentMarker": {
+        "ok": false,
+        "error": "UserError",
+        "message": "Expected number, found: object [array]",
+        "hostCallbackCalls": 0
+      },
+      "coldCompilation": {
+        "ok": false,
+        "error": "ResourceLimitError",
+        "message": "Execution exceeded maxOperations (20)",
+        "cacheEntries": 0
+      },
+      "sourceAccessor": {
+        "ok": false,
+        "error": "UserError",
+        "message": "Compiled expression requires an own string source data property",
+        "getterCalls": 0
+      },
+      "atomicTruncation": {
+        "ok": false,
+        "error": "UserError",
+        "message": "Atomic execution cannot truncate a nonextensible array with removable elements",
+        "length": 3,
+        "ownSlots": [
+          "0",
+          "1",
+          "2"
+        ]
+      },
+      "ruleAlias": {
+        "ok": true,
+        "result": 1,
+        "getterCalls": 0
+      },
+      "nestedOmitPath": {
+        "ok": false,
+        "error": "ResourceLimitError",
+        "message": "String exceeds maxStringLength (30)"
+      },
+      "rootValidation": {
+        "ok": false,
+        "error": "ResourceLimitError",
+        "message": "Execution exceeded maxOperations (100)",
+        "mutated": false
+      },
+      "intrinsicAliases": [
+        {
+          "ok": false,
+          "error": "UserError",
+          "message": "Cannot assign through a host prototype",
+          "mutated": false
+        },
+        {
+          "ok": false,
+          "error": "UserError",
+          "message": "Cannot assign through a host prototype",
+          "mutated": false
+        },
+        {
+          "ok": false,
+          "error": "UserError",
+          "message": "Cannot assign through a host prototype",
+          "mutated": false
+        },
+        {
+          "ok": false,
+          "error": "UserError",
+          "message": "Cannot assign through a host prototype",
+          "mutated": false
+        }
+      ]
+    }
+  }
+}

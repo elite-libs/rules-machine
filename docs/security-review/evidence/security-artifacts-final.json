@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-15T00:16:45.344Z",
+  "node": "v26.8.2",
+  "esm": [
+    "ordinary comma and higher-order calls",
+    "forged callback marker never executes supplied function",
+    "compiled-source accessor never executes",
+    "cold compilation cannot escape work limits",
+    "root validation work precedes mutation",
+    "nested OMIT path text stays bounded",
+    "validated program cannot be replaced through an input alias",
+    "atomic truncation preserves nonextensible array elements",
+    "intrinsic prototype aliases are not writable",
+    "iterator and generator prototypes are not writable",
+    "trace formatting never invokes error message getters",
+    "trace keys obey string limits"
+  ],
+  "cjs": [
+    "ordinary comma and higher-order calls",
+    "forged callback marker never executes supplied function",
+    "compiled-source accessor never executes",
+    "cold compilation cannot escape work limits",
+    "root validation work precedes mutation",
+    "nested OMIT path text stays bounded",
+    "validated program cannot be replaced through an input alias",
+    "atomic truncation preserves nonextensible array elements",
+    "intrinsic prototype aliases are not writable",
+    "iterator and generator prototypes are not writable",
+    "trace formatting never invokes error message getters",
+    "trace keys obey string limits"
+  ],
+  "iife": [
+    "ordinary comma and higher-order calls",
+    "forged callback marker never executes supplied function",
+    "compiled-source accessor never executes",
+    "cold compilation cannot escape work limits",
+    "root validation work precedes mutation",
+    "nested OMIT path text stays bounded",
+    "validated program cannot be replaced through an input alias",
+    "atomic truncation preserves nonextensible array elements",
+    "intrinsic prototype aliases are not writable",
+    "iterator and generator prototypes are not writable",
+    "trace formatting never invokes error message getters",
+    "trace keys obey string limits"
+  ]
+}

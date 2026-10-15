@@ -1,0 +1,285 @@
+src/expression-engine/cache.test.ts:41:22 lint/style/useTemplate  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Template literals are preferred over string concatenation.
+  
+    39 │     expect(() => engine.compile('a'.repeat(100_001))).toThrow('maximum length');
+    40 │     expect(() =>
+  > 41 │       engine.compile('('.repeat(101) + '1' + ')'.repeat(101)),
+       │                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    42 │     ).toThrow('maximum nesting');
+    43 │     expect(
+  
+  i Unsafe fix: Use a template literal.
+  
+     39  39 │       expect(() => engine.compile('a'.repeat(100_001))).toThrow('maximum length');
+     40  40 │       expect(() =>
+     41     │ - ······engine.compile('('.repeat(101)·+·'1'·+·')'.repeat(101)),
+         41 │ + ······engine.compile(`${'('.repeat(101)}1${')'.repeat(101)}`),
+     42  42 │       ).toThrow('maximum nesting');
+     43  43 │       expect(
+  
+
+src/expression-engine/cache.test.ts:44:33 lint/style/useTemplate  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Template literals are preferred over string concatenation.
+  
+    42 │     ).toThrow('maximum nesting');
+    43 │     expect(
+  > 44 │       engine.evaluateExpression('"' + '('.repeat(101) + '"', () => 0),
+       │                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    45 │     ).toBe('('.repeat(101));
+    46 │   });
+  
+  i Unsafe fix: Use a template literal.
+  
+     42  42 │       ).toThrow('maximum nesting');
+     43  43 │       expect(
+     44     │ - ······engine.evaluateExpression('"'·+·'('.repeat(101)·+·'"',·()·=>·0),
+         44 │ + ······engine.evaluateExpression(`"${'('.repeat(101)}"`,·()·=>·0),
+     45  45 │       ).toBe('('.repeat(101));
+     46  46 │     });
+  
+
+examples/aws-lambda-service/lib/transformers.ts:71:25 lint/style/noNonNullAssertion ━━━━━━━━━━━━━━━━
+
+  ! Forbidden non-null assertion.
+  
+    69 │ ) {
+    70 │   if (typeof keyMapping === 'string') keyMapping = { [keyMapping]: true };
+  > 71 │   return Object.entries(keyMapping!).reduce((output, [toKey, fromKey]) => {
+       │                         ^^^^^^^^^^^
+    72 │     set(
+    73 │       output,
+  
+
+examples/aws-lambda-service/rules/app-rules.ts:6:54 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    4 │   getDiscount: {
+    5 │     rules: [
+  > 6 │       { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
+      │                                                      ^^^^
+    7 │       { if: 'price >= 100', then: 'discount = 20' },
+    8 │       { return: 'discount' },
+  
+
+examples/aws-lambda-service/rules/app-rules.ts:7:29 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    5 │     rules: [
+    6 │       { if: { and: ['price >= 25', 'price <= 50'] }, then: 'discount = 5' },
+  > 7 │       { if: 'price >= 100', then: 'discount = 20' },
+      │                             ^^^^
+    8 │       { return: 'discount' },
+    9 │     ],
+  
+
+src/arrays.test.ts:14:15 lint/suspicious/noThenProperty ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Do not add then to an object.
+  
+    12 │             {
+    13 │               if: 'GET($item, userScore) < 0',
+  > 14 │               then: 'userScore = PUT($item, 0, userScore)',
+       │               ^^^^
+    15 │             },
+    16 │             'scoreById = PUT($item, GET($item, userScore), scoreById)',
+  
+
+src/expression-engine/engine.test.ts:98:18 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+     96 │   test('should handle nested property access', () => {
+     97 │     const engine = createExpressionEngine();
+   > 98 │     const input: any = { 'user.plan': 'premium' };
+        │                  ^^^
+     99 │     const result = engine.evaluateExpression('user.plan', (term) => {
+    100 │       return input[term];
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:24:22 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    22 │ describe('unpackArgs', () => {
+    23 │   test('should call function with single argument when result is not array', () => {
+  > 24 │     const fn = (arg: any) => arg() * 2;
+       │                      ^^^
+    25 │     const wrapped = unpackArgs(fn);
+    26 │     expect(wrapped(() => 5)).toBe(10);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:30:23 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    29 │   test('should call function with array when result is array and lengths match', () => {
+  > 30 │     const fn = (args: any) => {
+       │                       ^^^
+    31 │       const arr = args();
+    32 │       return arr[0]() + arr[1]();
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:39:23 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    38 │   test('should throw when too few arguments for multi-arg function', () => {
+  > 39 │     const fn = (arg1: any, arg2: any) => arg1() + arg2();
+       │                       ^^^
+    40 │     const wrapped = unpackArgs(fn);
+    41 │     expect(() => wrapped(() => 5)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:39:34 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    38 │   test('should throw when too few arguments for multi-arg function', () => {
+  > 39 │     const fn = (arg1: any, arg2: any) => arg1() + arg2();
+       │                                  ^^^
+    40 │     const wrapped = unpackArgs(fn);
+    41 │     expect(() => wrapped(() => 5)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:60:30 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    59 │   test('should throw UserError when input is not number', () => {
+  > 60 │     expect(() => num('42' as any)).toThrow(UserError);
+       │                              ^^^
+    61 │     expect(() => num('42' as any)).toThrow('Expected number');
+    62 │     expect(() => num(true as any)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:61:30 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    59 │   test('should throw UserError when input is not number', () => {
+    60 │     expect(() => num('42' as any)).toThrow(UserError);
+  > 61 │     expect(() => num('42' as any)).toThrow('Expected number');
+       │                              ^^^
+    62 │     expect(() => num(true as any)).toThrow(UserError);
+    63 │     expect(() => num(null as any)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:62:30 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    60 │     expect(() => num('42' as any)).toThrow(UserError);
+    61 │     expect(() => num('42' as any)).toThrow('Expected number');
+  > 62 │     expect(() => num(true as any)).toThrow(UserError);
+       │                              ^^^
+    63 │     expect(() => num(null as any)).toThrow(UserError);
+    64 │     expect(() => num({} as any)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:63:30 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    61 │     expect(() => num('42' as any)).toThrow('Expected number');
+    62 │     expect(() => num(true as any)).toThrow(UserError);
+  > 63 │     expect(() => num(null as any)).toThrow(UserError);
+       │                              ^^^
+    64 │     expect(() => num({} as any)).toThrow(UserError);
+    65 │   });
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:64:28 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    62 │     expect(() => num(true as any)).toThrow(UserError);
+    63 │     expect(() => num(null as any)).toThrow(UserError);
+  > 64 │     expect(() => num({} as any)).toThrow(UserError);
+       │                            ^^^
+    65 │   });
+    66 │ });
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:75:57 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    74 │   test('should unpack function values in array', () => {
+  > 75 │     const result = array([() => 1, () => 2, () => 3] as any);
+       │                                                         ^^^
+    76 │     expect(result).toEqual([1, 2, 3]);
+    77 │   });
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:80:34 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    79 │   test('should throw UserError when input is not array', () => {
+  > 80 │     expect(() => array('test' as any)).toThrow(UserError);
+       │                                  ^^^
+    81 │     expect(() => array('test' as any)).toThrow('Expected array');
+    82 │     expect(() => array(42 as any)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:81:34 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    79 │   test('should throw UserError when input is not array', () => {
+    80 │     expect(() => array('test' as any)).toThrow(UserError);
+  > 81 │     expect(() => array('test' as any)).toThrow('Expected array');
+       │                                  ^^^
+    82 │     expect(() => array(42 as any)).toThrow(UserError);
+    83 │     expect(() => array(null as any)).toThrow(UserError);
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+src/expression-engine/language-utils.test.ts:82:30 lint/suspicious/noExplicitAny ━━━━━━━━━━━━━━━━━━━
+
+  ! Unexpected any. Specify a different type.
+  
+    80 │     expect(() => array('test' as any)).toThrow(UserError);
+    81 │     expect(() => array('test' as any)).toThrow('Expected array');
+  > 82 │     expect(() => array(42 as any)).toThrow(UserError);
+       │                              ^^^
+    83 │     expect(() => array(null as any)).toThrow(UserError);
+    84 │   });
+  
+  i any disables many type checking rules. Its use should be avoided.
+  
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 77.
+Checked 46 files in 364ms. No fixes applied.
+Found 95 warnings.
+Found 2 infos.

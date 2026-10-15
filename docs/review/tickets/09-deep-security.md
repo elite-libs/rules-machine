@@ -1,0 +1,11 @@
+# 09: Deep security, input validation and safety
+
+Parent: [Wayfinder](../WAYFINDER.md). Branch: `security/deep-review-2026-10-14`, baseline main `ef4f3c5`. Status: complete and locally qualified; branch delivery is recorded separately. User authorized up to three parallel review/reporting subagents and one to two hours. No issue or PR publication or automatic merge.
+
+Review plan and threat boundaries: [security review plan](../../security-review/PLAN.md). Confirm and fix descriptor/prototype/callback provenance weaknesses, execution/compilation resource gaps, atomicity and rule-validation aliasing, trace serialization, and Rust worker/protocol robustness. Preserve bounded before/after evidence; distinguish ordinary JSON threats from caller-supplied host capabilities and trusted integration hooks.
+
+Acceptance: meaningful regression tests, independent source review, Node 24/26 source and packed-consumer gates, delivered browser artifact checks, Rust core/bridge/shared compatibility, fresh authorized dependency audit, and candid residual scope/performance costs. Raw evidence belongs in `docs/security-review/evidence` and final findings will link the exact reproduction and fix.
+
+The input-review worker ended early with a provider content flag; coordinator assumed its unfinished scope. The runtime reviewer completed structural/Rust review and independent cross-layer variants; Astra completed a separate TypeScript review. Reporting is coordinator-driven; no unattended timer is claimed.
+
+All 12 reproduced finding families are fixed. Final source `252629f` includes TypeScript `6cf27cc`, Rust `8176e25`, and bridge/wire `252629f`. [Results](../../security-review/RESULTS.md), [cost evidence](../../security-review/PERFORMANCE.md), [machine reconciliation](../../security-review/evidence/reconciliation.json), and [local PR draft](../prs/08-deep-security.md) supply acceptance evidence and remaining design/scope boundaries. Final gates:499 TypeScript tests on each Node 24/26,36 Rust tests,20 bridge tests on each Node,419 shared cases,11,158 numeric/domain cases,7,956 built-function probes,12 actual-browser checks and 10,864 hostile-hook probes with zero calls. Root advisory audit is0/150; the separate legacy example alert remains open. Timing evidence does not establish a performance-neutral change.

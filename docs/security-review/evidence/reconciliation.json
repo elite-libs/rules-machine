@@ -1,0 +1,231 @@
+{
+  "at": "2026-10-15T00:31:05.585Z",
+  "baseline": "ef4f3c5f13446ad8a79de79f61501dc9fcd4b78f",
+  "qualifiedBaselineRuntimeSourceUnchanged": true,
+  "sourceSnapshotHead": "252629f815c7ec5ed25a4b1e2b80b4627851a3f2",
+  "branch": "security/deep-review-2026-10-14",
+  "codeCommits": {
+    "typescript": "6cf27cc82651e07ec3316ed225f5cc597e4bea71",
+    "rust": "8176e2532a6afc44d56951a08d12eb245dd02b12",
+    "bridge": "252629f815c7ec5ed25a4b1e2b80b4627851a3f2"
+  },
+  "node": "v26.8.2",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)",
+  "sourceHashes": {
+    "experiments/rusty-rules/Cargo.lock": "0202e182c25c988edabdc1026cbfdc17c138b0e93d85c2a952eb79192321c7b7",
+    "experiments/rusty-rules/Cargo.toml": "42c80404c2c63adaeec98ba5ef61f1e40adf25a0fb735a49aca77ce298c912aa",
+    "experiments/rusty-rules/bridge.mjs": "0cb51da1afebf733a71c7bf3c47d883e7af86b385909207b5f0f0976cc6bd900",
+    "experiments/rusty-rules/src/lib.rs": "6b5fb01c36cc5be88a3943ea317fec9c6ba0baf692d0e0aa3f1cf4bb413a2abd",
+    "experiments/rusty-rules/src/main.rs": "23d0a171d25e606dd410e0d978f00a08f1b38498b3a9532acfc46ec16d976d39",
+    "experiments/rusty-rules/wire.mjs": "b0e305fe173ab735544b7ab6f1407827be172c29a18c672762b8b364f8787b94",
+    "package.json": "f8412435a9014df7548105bdf5b6a12f99e414a15cd09a58f27f53ab992f56eb",
+    "pnpm-lock.yaml": "53fcc1d0f50646da3bf54a0fdf421b53e1d27ff0a4c55881df805d6e4422395d",
+    "src/__snapshots__/index.test.ts.snap": "ffdce918b95626e98ce17f51feca04a3b8dfa32e006256b783a132675559e91c",
+    "src/arrays.test.ts": "810556236f92ee347d13fe484ded32b02f5a2eec8e542eded617168202462f8c",
+    "src/documentation.test.ts": "78998db7748b2c6710ac4564b8e18f2af7c3e0ad466b8d72b133f5860885d8f6",
+    "src/expression-engine/assignment.test.ts": "7c72136eb3acbcfcbd0b35698d693c6669741a2ed2a40a4d9ef2a6d2cd2075fd",
+    "src/expression-engine/assignment.ts": "5b8aa022636103cf956b009c5d45dde2b62af9f93377510e548ca017bd0b0921",
+    "src/expression-engine/cache.test.ts": "d493152145ba9363a9e82914ffda91cec4bff865fd8d9010047e306ec8313d16",
+    "src/expression-engine/dates.test.ts": "fca1ea9d8f518b6f1168b205513de4a57f379cec933ec652284dd77132ef6367",
+    "src/expression-engine/dates.ts": "ab421b6cc7bc946ab70a473971c8d85aad330ccb44ab49541ade139a4695c291",
+    "src/expression-engine/dependency-security.test.ts": "14fb2a393ed9438a6587fcb74f9dd5cb5699d46251b80bb679a28fcf7e86f4d9",
+    "src/expression-engine/engine.test.ts": "ed515d22c6266666c2e1f145c7524e02e2358670d2afbb5895f58ab939de893c",
+    "src/expression-engine/engine.ts": "326621f875fc7966a84cbdb95dbfde8a7d79b90474475877365ec45b14041e00",
+    "src/expression-engine/language-coverage.test.ts": "6f0d4ddbc2c21b89b4412b3ddcdd2dc2844215160d5687bc8ba52d8621a17d76",
+    "src/expression-engine/language-utils.test.ts": "418813d1bf67311534521984d1054065a61f9b267d7dfce5eb46b4cfd4ee3f3d",
+    "src/expression-engine/language-utils.ts": "490a2cdf19d1bd8ea5354f80629d928418f880ad3c48e30b605c7dac087434e1",
+    "src/expression-engine/language.ts": "47098aa423357cddb7b0d92cd171e1f67c5a3738d96fd131004a53e52dfc1784",
+    "src/expression-engine/materialize.test.ts": "728a200b6209bdd7f50d22cd8bf3cc8d85f04e7ed91ccfc51b799d44b51f14b7",
+    "src/expression-engine/materialize.ts": "7338cd5b1cb4097e4a30338f9b7df6e92f4b0e80fc5b3098f8d59b4f28d47faf",
+    "src/expression-engine/safety.test.ts": "7fcf0150b47659cee99b68d4cf6bb142a9b92726744d97652c9e596d9ad5c34a",
+    "src/expression-engine/security-engine.test.ts": "7ccf110ffe40e56d7f5f6cb308dd6a8ecafe318f403d68b3677b2076c59a6107",
+    "src/expression-engine/security-inputs.test.ts": "31ff3d77753b8f9d7eb047053da4ad2b12df3f1ec69bb5efaeeb9e302b2d8f7c",
+    "src/index.test.ts": "cc951ed9d9b94dd5f1126cdc96bbe4877aa71cddac60bb14e55a8887c45c9fd7",
+    "src/index.ts": "a7099816041117e5813b7ecaf7d95ce4987cb85cc48ee0152a922d7b70a2116d",
+    "src/structural-engine/executor.test.ts": "bf77e359594f7e63553f25551fe7f6b3bf3345a1a4d33c6b71171d17f24c549a",
+    "src/structural-engine/executor.ts": "c18c0819c186b2a507d510cfe73e42daead1af878bc0f59053721bd55d3cd8f1",
+    "src/structural-engine/hardening.test.ts": "a09b9e9a935f65205e6c9dfb4818c6ba2b71c8be7f65e78ba088ceb3dab4526d",
+    "src/structural-engine/limits-atomic.test.ts": "0e7d692783ebae0acaf5bbffe1d6fd98195b44b926dbd830094d98278c0d8280",
+    "src/structural-engine/security-runtime.test.ts": "83099339fd922319c0da045dd97b1cdaf459d413c1f51b3155be0cfa1f2a3d0d",
+    "src/structural-engine/types.ts": "3f6b591f9b73b3f65b2cd37c4fe0f144236479621f3ee2f6fea758ce0dc49a84",
+    "src/types.ts": "236fbf187e55f1252e77c03784ba2dc41f46128c9ece3651c51d1319f5bcf718",
+    "src/utils/budget.ts": "08cef14ad73701cd893d5a6521b438d6b5974236a6023489476effd119f9602a",
+    "src/utils/errors.test.ts": "cf549865f6dfed68e17567292e96b193394e90451f9610e83b0633cac75cc833",
+    "src/utils/errors.ts": "99ec260b75875296f7c17df5d0be6984544c91fda10757b1414b2f4746676658",
+    "src/utils/mockDateHelper.ts": "cc19de1091c859405942c5ef4eb2a909c46198470fdc0f6dae61aa289b665795",
+    "src/utils/mutations.ts": "6c6bcebc499716fa458797c1877d8a5528c96dee37077ce65dec432168e627bd",
+    "src/utils/paths.test.ts": "e0d501e05f35cce810e036e48a4be2d7477efb68e8d8e12ef8a9120f4c445fb1",
+    "src/utils/paths.ts": "4d9fe5430aa48d7c639ff0a8bfa9cbc1183030adfb92cb9bedb6aa5df6f61db6",
+    "src/utils/snapshot.ts": "ab06f8299d06924cafdfe1f1e7d8ef5df4feb2f8401f0d2b93c8fb34d74fe919",
+    "src/utils/string-path.test.ts": "8bf4599f63944ccfbef57d58d954288a1f4fba71f17071f145f04e8b9d67a4c4",
+    "src/utils/string-path.ts": "f6fe33e06574c372bb9ba62427545c16b74a8d789e9a60d7ac55ae85b6a7b0fa",
+    "src/utils/utils.test.ts": "c49651d4e2a771fb1bf9ce82034218ce8ec317ddf6a965ea9f7bf05852bdba08",
+    "src/utils/utils.ts": "bdd344ac695505dbb8b3cfdb950251e3b4141a83b3d7a228af3cf4bb9e7be816",
+    "tsup.config.ts": "48e586d68d44c97ceefa2a9a5113fc8cc30f911bd1315f13015c65ba972c16de"
+  },
+  "artifactSizes": [
+    {
+      "name": "index.mjs",
+      "baseline": {
+        "raw": 141588,
+        "gzip": 28959
+      },
+      "candidate": {
+        "raw": 144975,
+        "gzip": 29633
+      },
+      "sha256": "6f37b8d42f6d8daf2a0615fee2cf39a1339f9321b6f8d97e7420d4704eeae1a5"
+    },
+    {
+      "name": "index.cjs",
+      "baseline": {
+        "raw": 142163,
+        "gzip": 29094
+      },
+      "candidate": {
+        "raw": 145550,
+        "gzip": 29768
+      },
+      "sha256": "83749a33acde84a69619cad570b6f087af0e4ecf9aa4625ba0391f7f188d34f0"
+    },
+    {
+      "name": "index.global.js",
+      "baseline": {
+        "raw": 72125,
+        "gzip": 22101
+      },
+      "candidate": {
+        "raw": 73878,
+        "gzip": 22541
+      },
+      "sha256": "ca13282ec1bbbb51f7cb3c62cea6cbfaff670e0b3d9a63628756aaf0067e77ab"
+    },
+    {
+      "name": "index.d.ts",
+      "baseline": {
+        "raw": 6704,
+        "gzip": 2082
+      },
+      "candidate": {
+        "raw": 6704,
+        "gzip": 2082
+      },
+      "sha256": "84375a7565f645817202f71a69d1392b338b006cf5d18b864eb8bd26a787ab51"
+    }
+  ],
+  "rustBinary": {
+    "sha256": "f9136deb3beb7504ad19b0d29e2ed44711a8c0cbef08b8560eeaed771a5353ae",
+    "baselineSha256": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d"
+  },
+  "checks": {
+    "sourceTestsPerNode": 499,
+    "sourceFiles": 22,
+    "nodeVersions": [
+      "24.21.0",
+      "26.8.2"
+    ],
+    "packedConsumers": "both Node versions pass ESM/CJS/IIFE/declarations",
+    "rustTests": 36,
+    "bridgeTestsPerNode": 20,
+    "sharedCases": 419,
+    "numericDomainCases": 11158,
+    "builtFunctionProbes": 7956,
+    "builtFunctions": 97,
+    "iifePublicTests": 58,
+    "browserSecurityCases": 12,
+    "hostileHookMatrix": {
+      "at": "2026-10-15T00:14:53.487Z",
+      "node": "v26.8.2",
+      "functions": 97,
+      "payloadFamilies": 7,
+      "templates": 8,
+      "traceModes": 2,
+      "probes": 10864,
+      "returned": 502,
+      "rejected": 10362,
+      "hostHooksInvoked": 0,
+      "scope": "Bounded hostile callbacks/accessors/coercion/iteration/argument-marker matrix against delivered ESM; expected domain errors are counted, not failures. Not exhaustive fuzzing or a sandbox proof."
+    },
+    "rootAudit": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 150,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 150
+    },
+    "coverage": {
+      "lines": {
+        "total": 1354,
+        "covered": 1278,
+        "skipped": 0,
+        "pct": 94.38
+      },
+      "statements": {
+        "total": 1498,
+        "covered": 1398,
+        "skipped": 0,
+        "pct": 93.32
+      },
+      "functions": {
+        "total": 288,
+        "covered": 275,
+        "skipped": 0,
+        "pct": 95.48
+      },
+      "branches": {
+        "total": 1033,
+        "covered": 939,
+        "skipped": 0,
+        "pct": 90.9
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "diagnosticCost": {
+    "typescript": {
+      "ratio": 0.9909512435667271,
+      "lower95": 0.8991770488680422,
+      "upper95": 1.0827374964773826
+    },
+    "rust": {
+      "ratio": 0.9895234666864139,
+      "lower95": 0.8521119777477904,
+      "upper95": 1.141924080191078
+    },
+    "observationsPerLanguage": 84,
+    "blocksPerLanguage": 6,
+    "targetedEligibility": {
+      "ratio": {
+        "ratio": 1.0496851463163437,
+        "lower95": 0.7972116624347261,
+        "upper95": 1.3698923641789842
+      },
+      "blocks": 12,
+      "observations": 24,
+      "initialFlagReplicated": false
+    },
+    "classification": "Descriptive security-cost diagnostic; uncontrolled host, no clear aggregate change, unadjusted slice intervals; not bridge/browser latency or production validation"
+  },
+  "legacyExample": {
+    "manifest": "examples/aws-lambda-service/package.json",
+    "number": 38,
+    "package": "esbuild",
+    "scope": "development",
+    "severity": "medium",
+    "state": "open",
+    "url": "https://github.com/elite-libs/rules-machine/security/dependabot/38"
+  },
+  "paidRemoteCompute": false,
+  "modelReportingCosts": "unavailable"
+}

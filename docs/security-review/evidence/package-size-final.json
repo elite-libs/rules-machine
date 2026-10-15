@@ -1,0 +1,91 @@
+[
+  {
+    "id": "@elite-libs/rules-machine@2.0.0-rc1",
+    "name": "@elite-libs/rules-machine",
+    "version": "2.0.0-rc1",
+    "size": 272616,
+    "unpackedSize": 1204562,
+    "shasum": "cdd6599edb0ec1ef34f4c9df4ce80e4197f02dd2",
+    "integrity": "sha512-BhxImL3orxpaAxlrsQX7I25iVDW3vMUOVNYEPvAe3Ojki12HtPjwwdAgUicMDn1aZHyW08vFJJAq9iyDVH2O0w==",
+    "filename": "elite-libs-rules-machine-2.0.0-rc1.tgz",
+    "files": [
+      {
+        "path": "DESIGN_IDEAS.md",
+        "size": 2985,
+        "mode": 420
+      },
+      {
+        "path": "EXAMPLES.md",
+        "size": 2670,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE.md",
+        "size": 1518,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 16920,
+        "mode": 420
+      },
+      {
+        "path": "REVIEW_2026.md",
+        "size": 16109,
+        "mode": 420
+      },
+      {
+        "path": "V3_CHANGES.md",
+        "size": 1345,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.cjs",
+        "size": 145550,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.cjs.map",
+        "size": 257525,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.d.cts",
+        "size": 6704,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.d.ts",
+        "size": 6704,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.global.js",
+        "size": 73878,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.global.js.map",
+        "size": 267599,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.mjs",
+        "size": 144975,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.mjs.map",
+        "size": 257453,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 2627,
+        "mode": 420
+      }
+    ],
+    "entryCount": 15,
+    "bundled": []
+  }
+]

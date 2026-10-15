@@ -1,0 +1,43 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+      Coverage enabled with v8
+
+
+ Test Files  22 passed (22)
+      Tests  499 passed (499)
+   Start at  18:26:09
+   Duration  6.92s (transform 36%, tests 29%, import 21%, worker 14%)
+
+  Transform  transforming modules took 9.17s · 36% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   93.32 |     90.9 |   95.48 |   94.38 |                   
+ ...ression-engine |   91.94 |    88.03 |   94.88 |   93.53 |                   
+  assignment.ts    |   93.61 |     90.9 |     100 |   95.23 | 41,60             
+  dates.ts         |   97.43 |    97.95 |     100 |     100 | 46                
+  engine.ts        |   93.37 |    89.85 |     100 |   95.27 | ...93,297-299,333 
+  ...uage-utils.ts |   94.01 |    84.09 |     100 |    94.8 | ...01,222,254-261 
+  language.ts      |   89.33 |    81.89 |   92.56 |   91.09 | ...10-413,544-569 
+  materialize.ts   |    93.1 |    90.66 |     100 |   94.66 | 32,36,69,110      
+ ...uctural-engine |   95.46 |    93.66 |   96.55 |   95.22 |                   
+  executor.ts      |   95.46 |    93.66 |   96.55 |   95.22 | ...89,704,718,743 
+ src/utils         |      95 |    93.67 |   97.61 |   96.12 |                   
+  budget.ts        |   97.14 |    94.59 |     100 |   97.14 | 53                
+  errors.ts        |      75 |      100 |   66.66 |      75 | 9                 
+  ...DateHelper.ts |   91.66 |       50 |     100 |     100 | 3-10              
+  mutations.ts     |   90.69 |    87.09 |     100 |    92.3 | 10,26,89          
+  paths.ts         |   96.15 |    96.51 |     100 |   97.22 | 21,131            
+  snapshot.ts      |   91.89 |    88.23 |     100 |   93.54 | 32-33             
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 93.32% ( 1398/1498 )
+Branches     : 90.9% ( 939/1033 )
+Functions    : 95.48% ( 275/288 )
+Lines        : 94.38% ( 1278/1354 )
+================================================================================

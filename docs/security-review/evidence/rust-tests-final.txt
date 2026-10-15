@@ -1,0 +1,68 @@
+   Compiling rusty-rules-experiment v0.1.0 (/home/dan/code/oss/rules-machine/experiments/rusty-rules)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
+     Running unittests src/lib.rs (experiments/rusty-rules/target/debug/deps/rusty_rules_experiment-a74a853d5348cc3e)
+
+running 7 tests
+test graph_tests::repeated_alias_cycle_scan_visits_unique_nodes ... ok
+test power_domain_tests::exact_binary_significands_include_subnormal_powers ... ok
+test work_budget_tests::native_array_work_is_charged_before_copy_or_allocation ... ok
+test work_budget_tests::array_literals_sequences_and_cycle_scans_charge_before_work ... ok
+test work_budget_tests::string_clone_and_comparison_work_is_bounded ... ok
+test work_budget_tests::structural_work_failure_restores_context_and_cannot_be_caught ... ok
+test decode_limit_tests::rejects_excessive_array_length_before_decoding_elements ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running unittests src/main.rs (experiments/rusty-rules/target/debug/deps/rusty_rules_experiment-d22a3b449aec92c0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/core.rs (experiments/rusty-rules/target/debug/deps/core-af4f9c831141ec68)
+
+running 27 tests
+test arrays_scope_and_callback_returns ... ok
+test callback_fast_scope_preserves_dsl_cycle_guard ... ok
+test callback_reads_later_mutated_items_at_callback_time ... ok
+test cyclic_write_rejects_without_retained_cycle ... ok
+test json_decoder_preserves_adjacent_binary_values ... ok
+test minmax_signed_zero_and_sort_nan_domain ... ok
+test nested_callback_overwrites_and_error_restore_parent_slots ... ok
+test array_predicates ... ok
+test nested_sequences_and_return ... ok
+test null_and_undefined_are_distinct ... ok
+test parser_escape_uses_next_character_verbatim ... ok
+test paths_and_compound ... ok
+test prepared_path_segments_preserve_exact_keys_and_fresh_inputs ... ok
+test recursive_conditions ... ok
+test try_catch_and_return ... ok
+test power_domain_rejects_nearby_bases_and_accepts_subnormal_powers ... ok
+test unary_case_and_short_circuit ... ok
+test unknown_syntax_rejects ... ok
+test unknown_bare_function_rejects ... ok
+test assignment_result_aliases ... ok
+test wire_no_collision ... ok
+test zero_program_cache_limit_rejects_prepare_without_eviction_loop ... ok
+test cache_is_bounded_and_releases ... ok
+test array_append_at_limit_rejects ... ok
+test allocation_and_numeric_domains_reject_early ... ok
+test aggregate_native_ranges_exhaust_work_before_retained_growth ... ok
+test response_expansion_and_source_byte_cache_are_bounded ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.78s
+
+     Running tests/protocol.rs (experiments/rusty-rules/target/debug/deps/protocol-fcae7e71847bf51f)
+
+running 2 tests
+test safe_integer_request_ids_preserve_protocol_correlation ... ok
+test invalid_request_ids_reject_before_command_and_are_never_echoed ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+   Doc-tests rusty_rules_experiment
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,26 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/expression-engine/security-inputs.test.ts (1 test | 1 failed) 58ms
+   × input argument markers cannot turn copied host functions into expression thunks 51ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > input argument markers cannot turn copied host functions into expression thunks
+AssertionError: expected [Function] to throw an error
+ ❯ src/expression-engine/security-inputs.test.ts:7:71
+      5|   const callback = vi.fn(() => 7);
+      6|   const items = Object.assign([callback], { isArgumentsArray: true });
+      7|   expect(() => ruleFactory('ABS(OMIT("missing", items))')({ items })).…
+       |                                                                       ^
+      8|   expect(callback).not.toHaveBeenCalled();
+      9| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  17:47:38
+   Duration  1.42s (transform 74%, import 13%, tests 7%, worker 5%, environment 1%)
+

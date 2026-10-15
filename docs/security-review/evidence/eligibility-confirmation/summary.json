@@ -1,0 +1,19 @@
+[
+  {
+    "fixture": "eligibility",
+    "shared": true,
+    "originalFixtureShared": true,
+    "baseline": {
+      "medianNs": 95899.00397727269,
+      "minNs": 45137.716477272734,
+      "maxNs": 151516.45625,
+      "blocks": 12
+    },
+    "tuned": {
+      "medianNs": 84739.06818181822,
+      "minNs": 62860.31079545457,
+      "maxNs": 131376.28238636363,
+      "blocks": 12
+    }
+  }
+]

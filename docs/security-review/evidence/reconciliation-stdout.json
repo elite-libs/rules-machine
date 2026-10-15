@@ -1,0 +1,110 @@
+{
+  "sourceSnapshotHead": "252629f815c7ec5ed25a4b1e2b80b4627851a3f2",
+  "checks": {
+    "lines": {
+      "total": 1354,
+      "covered": 1278,
+      "skipped": 0,
+      "pct": 94.38
+    },
+    "statements": {
+      "total": 1498,
+      "covered": 1398,
+      "skipped": 0,
+      "pct": 93.32
+    },
+    "functions": {
+      "total": 288,
+      "covered": 275,
+      "skipped": 0,
+      "pct": 95.48
+    },
+    "branches": {
+      "total": 1033,
+      "covered": 939,
+      "skipped": 0,
+      "pct": 90.9
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "cost": {
+    "typescript": {
+      "ratio": 0.9909512435667271,
+      "lower95": 0.8991770488680422,
+      "upper95": 1.0827374964773826
+    },
+    "rust": {
+      "ratio": 0.9895234666864139,
+      "lower95": 0.8521119777477904,
+      "upper95": 1.141924080191078
+    },
+    "observationsPerLanguage": 84,
+    "blocksPerLanguage": 6,
+    "targetedEligibility": {
+      "ratio": {
+        "ratio": 1.0496851463163437,
+        "lower95": 0.7972116624347261,
+        "upper95": 1.3698923641789842
+      },
+      "blocks": 12,
+      "observations": 24,
+      "initialFlagReplicated": false
+    },
+    "classification": "Descriptive security-cost diagnostic; uncontrolled host, no clear aggregate change, unadjusted slice intervals; not bridge/browser latency or production validation"
+  },
+  "sizes": [
+    {
+      "name": "index.mjs",
+      "baseline": {
+        "raw": 141588,
+        "gzip": 28959
+      },
+      "candidate": {
+        "raw": 144975,
+        "gzip": 29633
+      },
+      "sha256": "6f37b8d42f6d8daf2a0615fee2cf39a1339f9321b6f8d97e7420d4704eeae1a5"
+    },
+    {
+      "name": "index.cjs",
+      "baseline": {
+        "raw": 142163,
+        "gzip": 29094
+      },
+      "candidate": {
+        "raw": 145550,
+        "gzip": 29768
+      },
+      "sha256": "83749a33acde84a69619cad570b6f087af0e4ecf9aa4625ba0391f7f188d34f0"
+    },
+    {
+      "name": "index.global.js",
+      "baseline": {
+        "raw": 72125,
+        "gzip": 22101
+      },
+      "candidate": {
+        "raw": 73878,
+        "gzip": 22541
+      },
+      "sha256": "ca13282ec1bbbb51f7cb3c62cea6cbfaff670e0b3d9a63628756aaf0067e77ab"
+    },
+    {
+      "name": "index.d.ts",
+      "baseline": {
+        "raw": 6704,
+        "gzip": 2082
+      },
+      "candidate": {
+        "raw": 6704,
+        "gzip": 2082
+      },
+      "sha256": "84375a7565f645817202f71a69d1392b338b006cf5d18b864eb8bd26a787ab51"
+    }
+  ]
+}

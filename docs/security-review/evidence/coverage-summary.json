@@ -1,0 +1,450 @@
+{
+  "total": {
+    "lines": {
+      "total": 1354,
+      "covered": 1278,
+      "skipped": 0,
+      "pct": 94.38
+    },
+    "statements": {
+      "total": 1498,
+      "covered": 1398,
+      "skipped": 0,
+      "pct": 93.32
+    },
+    "functions": {
+      "total": 288,
+      "covered": 275,
+      "skipped": 0,
+      "pct": 95.48
+    },
+    "branches": {
+      "total": 1033,
+      "covered": 939,
+      "skipped": 0,
+      "pct": 90.9
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/index.ts": {
+    "lines": {
+      "total": 4,
+      "covered": 4,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 2,
+      "covered": 2,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 4,
+      "covered": 4,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 2,
+      "covered": 2,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/expression-engine/assignment.ts": {
+    "lines": {
+      "total": 42,
+      "covered": 40,
+      "skipped": 0,
+      "pct": 95.23
+    },
+    "functions": {
+      "total": 1,
+      "covered": 1,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 47,
+      "covered": 44,
+      "skipped": 0,
+      "pct": 93.61
+    },
+    "branches": {
+      "total": 44,
+      "covered": 40,
+      "skipped": 0,
+      "pct": 90.9
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/expression-engine/dates.ts": {
+    "lines": {
+      "total": 37,
+      "covered": 37,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 4,
+      "covered": 4,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 39,
+      "covered": 38,
+      "skipped": 0,
+      "pct": 97.43
+    },
+    "branches": {
+      "total": 49,
+      "covered": 48,
+      "skipped": 0,
+      "pct": 97.95
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/expression-engine/engine.ts": {
+    "lines": {
+      "total": 148,
+      "covered": 141,
+      "skipped": 0,
+      "pct": 95.27
+    },
+    "functions": {
+      "total": 16,
+      "covered": 16,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 166,
+      "covered": 155,
+      "skipped": 0,
+      "pct": 93.37
+    },
+    "branches": {
+      "total": 138,
+      "covered": 124,
+      "skipped": 0,
+      "pct": 89.85
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/expression-engine/language-utils.ts": {
+    "lines": {
+      "total": 154,
+      "covered": 146,
+      "skipped": 0,
+      "pct": 94.8
+    },
+    "functions": {
+      "total": 32,
+      "covered": 32,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 167,
+      "covered": 157,
+      "skipped": 0,
+      "pct": 94.01
+    },
+    "branches": {
+      "total": 88,
+      "covered": 74,
+      "skipped": 0,
+      "pct": 84.09
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/expression-engine/language.ts": {
+    "lines": {
+      "total": 348,
+      "covered": 317,
+      "skipped": 0,
+      "pct": 91.09
+    },
+    "functions": {
+      "total": 148,
+      "covered": 137,
+      "skipped": 0,
+      "pct": 92.56
+    },
+    "statements": {
+      "total": 375,
+      "covered": 335,
+      "skipped": 0,
+      "pct": 89.33
+    },
+    "branches": {
+      "total": 116,
+      "covered": 95,
+      "skipped": 0,
+      "pct": 81.89
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/expression-engine/materialize.ts": {
+    "lines": {
+      "total": 75,
+      "covered": 71,
+      "skipped": 0,
+      "pct": 94.66
+    },
+    "functions": {
+      "total": 14,
+      "covered": 14,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 87,
+      "covered": 81,
+      "skipped": 0,
+      "pct": 93.1
+    },
+    "branches": {
+      "total": 75,
+      "covered": 68,
+      "skipped": 0,
+      "pct": 90.66
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/structural-engine/executor.ts": {
+    "lines": {
+      "total": 314,
+      "covered": 299,
+      "skipped": 0,
+      "pct": 95.22
+    },
+    "functions": {
+      "total": 29,
+      "covered": 28,
+      "skipped": 0,
+      "pct": 96.55
+    },
+    "statements": {
+      "total": 353,
+      "covered": 337,
+      "skipped": 0,
+      "pct": 95.46
+    },
+    "branches": {
+      "total": 284,
+      "covered": 266,
+      "skipped": 0,
+      "pct": 93.66
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/budget.ts": {
+    "lines": {
+      "total": 35,
+      "covered": 34,
+      "skipped": 0,
+      "pct": 97.14
+    },
+    "functions": {
+      "total": 10,
+      "covered": 10,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 35,
+      "covered": 34,
+      "skipped": 0,
+      "pct": 97.14
+    },
+    "branches": {
+      "total": 37,
+      "covered": 35,
+      "skipped": 0,
+      "pct": 94.59
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/errors.ts": {
+    "lines": {
+      "total": 4,
+      "covered": 3,
+      "skipped": 0,
+      "pct": 75
+    },
+    "functions": {
+      "total": 3,
+      "covered": 2,
+      "skipped": 0,
+      "pct": 66.66
+    },
+    "statements": {
+      "total": 4,
+      "covered": 3,
+      "skipped": 0,
+      "pct": 75
+    },
+    "branches": {
+      "total": 1,
+      "covered": 1,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/mockDateHelper.ts": {
+    "lines": {
+      "total": 10,
+      "covered": 10,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 4,
+      "covered": 4,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 12,
+      "covered": 11,
+      "skipped": 0,
+      "pct": 91.66
+    },
+    "branches": {
+      "total": 4,
+      "covered": 2,
+      "skipped": 0,
+      "pct": 50
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/mutations.ts": {
+    "lines": {
+      "total": 39,
+      "covered": 36,
+      "skipped": 0,
+      "pct": 92.3
+    },
+    "functions": {
+      "total": 6,
+      "covered": 6,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 43,
+      "covered": 39,
+      "skipped": 0,
+      "pct": 90.69
+    },
+    "branches": {
+      "total": 31,
+      "covered": 27,
+      "skipped": 0,
+      "pct": 87.09
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/paths.ts": {
+    "lines": {
+      "total": 72,
+      "covered": 70,
+      "skipped": 0,
+      "pct": 97.22
+    },
+    "functions": {
+      "total": 7,
+      "covered": 7,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 78,
+      "covered": 75,
+      "skipped": 0,
+      "pct": 96.15
+    },
+    "branches": {
+      "total": 86,
+      "covered": 83,
+      "skipped": 0,
+      "pct": 96.51
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/snapshot.ts": {
+    "lines": {
+      "total": 31,
+      "covered": 29,
+      "skipped": 0,
+      "pct": 93.54
+    },
+    "functions": {
+      "total": 2,
+      "covered": 2,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 37,
+      "covered": 34,
+      "skipped": 0,
+      "pct": 91.89
+    },
+    "branches": {
+      "total": 34,
+      "covered": 30,
+      "skipped": 0,
+      "pct": 88.23
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/string-path.ts": {
+    "lines": {
+      "total": 23,
+      "covered": 23,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 3,
+      "covered": 3,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 26,
+      "covered": 26,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 14,
+      "covered": 14,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "/home/dan/code/oss/rules-machine/src/utils/utils.ts": {
+    "lines": {
+      "total": 18,
+      "covered": 18,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 7,
+      "covered": 7,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 25,
+      "covered": 25,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 30,
+      "covered": 30,
+      "skipped": 0,
+      "pct": 100
+    }
+  }
+}

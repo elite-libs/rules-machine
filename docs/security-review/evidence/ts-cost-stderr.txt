@@ -1,0 +1,19 @@
+node:fs:779
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open '/home/dan/code/oss/rules-machine/performance/comparison/baseline/index.js'
+    at Object.openSync (node:fs:779:18)
+    at readFileSync (node:fs:625:35)
+    at sha256 (file:///home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs:22:48)
+    at file:///home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs:23:549
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/dan/code/oss/rules-machine/performance/comparison/baseline/index.js'
+}
+
+Node.js v26.8.2

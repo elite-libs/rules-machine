@@ -1,0 +1,29 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/utils/paths.test.ts (15 tests | 1 failed) 21ms
+   ❯ own data paths (7)
+     × creates arrays and never traverses an inherited object 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/paths.test.ts > own data paths > creates arrays and never traverses an inherited object
+UserError: Cannot traverse an opaque host object
+ ❯ ownData src/utils/paths.ts:77:13
+     75|     const prototype = Object.getPrototypeOf(data);
+     76|     if (prototype !== Object.prototype && prototype !== null)
+     77|       throw new UserError('Cannot traverse an opaque host object');
+       |             ^
+     78|   }
+     79|   const descriptor = Object.getOwnPropertyDescriptor(Object(data), key…
+ ❯ setOwnPath src/utils/paths.ts:123:17
+ ❯ src/utils/paths.test.ts:20:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 37 passed (38)
+   Start at  17:55:39
+   Duration  332ms (transform 65%, import 18%, tests 13%, worker 4%)
+

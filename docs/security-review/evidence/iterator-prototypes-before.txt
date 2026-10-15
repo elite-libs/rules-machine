@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/expression-engine/security-inputs.test.ts (8 tests | 1 failed) 49ms
+   × iterator and generator prototype aliases cannot be mutated, including across realms 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > iterator and generator prototype aliases cannot be mutated, including across realms
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/expression-engine/security-inputs.test.ts:62:20
+     60|       mutated = Object.hasOwn(target, key);
+     61|     } finally { Reflect.deleteProperty(target, key); }
+     62|     expect(failed).toBe(true);
+       |                    ^
+     63|     expect(mutated).toBe(false);
+     64|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  18:11:27
+   Duration  543ms (transform 71%, tests 14%, import 13%, worker 3%)
+

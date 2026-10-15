@@ -1,0 +1,27 @@
+✔ persistent prepare/run framing, data values and separate instances (50.411944ms)
+✔ roundtrip has no tag-object collisions and preserves undefined ownership (2.290497ms)
+✔ rule errors do not poison the worker or leak scope (9.407469ms)
+✔ pending and queued-byte backpressure reject before writing (16.656365ms)
+✔ deadline kills worker and rejects every pending request (43.11277ms)
+✔ abort before submission leaves healthy worker; submitted abort kills owned worker (15.640739ms)
+✔ spawn failure, premature process exit, malformed and wrong-id responses clean pending requests (444.826518ms)
+✔ frame limits are enforced for requests and partial responses (212.689085ms)
+✔ close rejects pending work and is idempotent (26.642336ms)
+✔ wire preflight bounds aliased expansion before constructing a frame (11.949876ms)
+✔ wire memoization preserves depth limits for aliases reached at deeper paths (8.214245ms)
+✔ wire preflight rejects accessors and proxies without host callbacks (14.781593ms)
+✔ raw JSON preflight bounds aliases and retains room for tagged depth40 (17.320981ms)
+✔ raw request and options validation reject expansion and host hooks before submission (70.216135ms)
+✔ normal raw request options survive conservative envelope validation (288.157982ms)
+✔ malformed error fields fail closed without coercion or orphaned pending requests (1572.593791ms)
+✔ well-formed worker errors preserve code and empty messages without closing a healthy worker (88.689197ms)
+✔ malformed typed command results fail closed with stable protocol errors (1217.900649ms)
+✔ invalid typed result rejects later responses in the same stdout chunk (144.504615ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4419.379967

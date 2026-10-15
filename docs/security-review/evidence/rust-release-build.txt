@@ -1,0 +1,8 @@
+error: process didn't exit successfully: `rustc -vV` (exit status: 1)
+--- stderr
+mise ERROR No version is set for shim: rustc
+Set a global default version with one of the following:
+mise use -g rust@1.99.0
+mise ERROR Version: 2026.10.3 linux-x64 (2026-10-05)
+mise ERROR Run with --verbose or MISE_VERBOSE=1 for more information
+

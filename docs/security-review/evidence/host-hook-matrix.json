@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-15T00:14:53.487Z",
+  "node": "v26.8.2",
+  "functions": 97,
+  "payloadFamilies": 7,
+  "templates": 8,
+  "traceModes": 2,
+  "probes": 10864,
+  "returned": 502,
+  "rejected": 10362,
+  "hostHooksInvoked": 0,
+  "scope": "Bounded hostile callbacks/accessors/coercion/iteration/argument-marker matrix against delivered ESM; expected domain errors are counted, not failures. Not exhaustive fuzzing or a sandbox proof."
+}

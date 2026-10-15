@@ -1,0 +1,25 @@
+{
+  "toolIcon": {
+    "_tag": "website",
+    "pageUrl": "http://127.0.0.1:8765/"
+  },
+  "value": {
+    "at": "2026-10-15T00:17:22.730Z",
+    "bundleCharacters": 73878,
+    "passed": [
+      "ordinary comma and higher-order calls",
+      "forged callback marker never executes supplied function",
+      "compiled-source accessor never executes",
+      "cold compilation cannot escape work limits",
+      "root validation work precedes mutation",
+      "nested OMIT path text stays bounded",
+      "validated program cannot be replaced through an input alias",
+      "atomic truncation preserves nonextensible array elements",
+      "intrinsic prototype aliases are not writable",
+      "iterator and generator prototypes are not writable",
+      "trace formatting never invokes error message getters",
+      "trace keys obey string limits"
+    ],
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) T3Code(Alpha)/0.0.45 Chrome/152.0.7977.130 Electron/44.4.2 Safari/537.36"
+  }
+}

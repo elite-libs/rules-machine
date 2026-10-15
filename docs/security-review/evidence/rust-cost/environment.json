@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-15T00:20:26.436Z",
+  "classification": "Six-block candidate screening; not final confirmation.",
+  "node": "v26.8.2",
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/rust-tuning/measure.mjs",
+    ".cache/security-review/baseline-rust",
+    "experiments/rusty-rules/target/release/rusty-rules-experiment",
+    "docs/security-review/evidence/rust-cost",
+    "6",
+    "91ef65e",
+    "8176e25"
+  ],
+  "oldSource": "91ef65e",
+  "newSource": "8176e25",
+  "binaries": {
+    "old": "/home/dan/code/oss/rules-machine/.cache/security-review/baseline-rust",
+    "new": "/home/dan/code/oss/rules-machine/experiments/rusty-rules/target/release/rusty-rules-experiment"
+  },
+  "hashes": {
+    "old": "149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d",
+    "new": "f9136deb3beb7504ad19b0d29e2ed44711a8c0cbef08b8560eeaed771a5353ae"
+  },
+  "instrumentSha256": "31633d061747c31dc788ba86f69637ad8ced21b296f874421454863b72419e7f",
+  "fixtureSha256": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+  "schedule": {
+    "eligibility": 1425,
+    "pricing-0": 454,
+    "pricing-1024": 449,
+    "pricing-32768": 47,
+    "array-map-16": 9131,
+    "array-map-256": 686,
+    "array-map-4096": 30
+  },
+  "blocks": 6,
+  "ordering": "Alternating old/new and new/old; 6 blocks balance position.",
+  "boundary": "Native fresh value construction/input validation/evaluate/digest, preparation and JSON process boundary excluded. Actual counts and weighted digest validated."
+}

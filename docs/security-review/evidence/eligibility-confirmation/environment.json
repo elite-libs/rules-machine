@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-15T00:28:57.065Z",
+  "role": "targeted-security-cost-confirmation",
+  "purpose": "Two-arm Node workload comparison; no Rust arm executed",
+  "fixtureVersion": "shared-subset-v2",
+  "followupRunnerSha256": "cd9cde387b4ca287fb6f5c847f0cfb29f06efec6f42bfde10568e8c598f41f7a",
+  "fixtureHash": "49929f8a37a4640527dffbf2390afb1681b011221593aa9e8955c89a5ec832d3",
+  "node": "v26.8.2",
+  "cpu": "Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz",
+  "cpus": 8,
+  "platform": "linux 7.2.5-3-omarchy x64",
+  "memory": 67342082048,
+  "blocks": 12,
+  "baseline": "/home/dan/code/oss/rules-machine/.cache/wayfinder-followup/qualified-dist/index.mjs",
+  "tuned": "/home/dan/code/oss/rules-machine/dist/index.mjs",
+  "moduleHashes": {
+    "baseline": "abe5ec5e021b40f4a89499f430783dc564934242d88d8f83e306b4c7405f78fe",
+    "tuned": "6f37b8d42f6d8daf2a0615fee2cf39a1339f9321b6f8d97e7420d4704eeae1a5"
+  },
+  "followupWorkerHash": "1192bbaffec987280c960726b41eeecfab859f1d96c4bbabc3b98fcdf44fcd4b",
+  "harnessHashes": {
+    "fixtures.mjs": "64349a2fb00b8d4031b84875160a6b8b8ce05d99ccc08bb9147fb9bc2b12d4a2",
+    "digest.mjs": "eddddb4650e0065d0be5ecd66aca23e7c8474870521337bbe00645f8c365e626"
+  },
+  "command": [
+    "/home/dan/.local/share/mise/installs/node/26.8.2/bin/node",
+    "/home/dan/code/oss/rules-machine/performance/wayfinder-followup/run.mjs",
+    "baseline=.cache/wayfinder-followup/qualified-dist/index.mjs",
+    "tuned=dist/index.mjs",
+    "output=docs/security-review/evidence/eligibility-confirmation",
+    "blocks=12",
+    "only=eligibility",
+    "role=targeted-security-cost-confirmation"
+  ]
+}

@@ -1,0 +1,2 @@
+   Compiling rusty-rules-experiment v0.1.0 (/home/dan/code/oss/rules-machine/experiments/rusty-rules)
+    Finished `release` profile [optimized] target(s) in 9.48s

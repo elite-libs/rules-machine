@@ -1,0 +1,64 @@
+{
+  "at": "2026-10-15T00:16:54.605Z",
+  "node": "v26.8.2",
+  "directory": "/home/dan/code/oss/rules-machine/dist",
+  "scope": "All emitted JS, source maps and declarations; compression sizes measured independently per file, not npm tarball size",
+  "files": [
+    {
+      "name": "index.cjs",
+      "raw": 145550,
+      "gzip": 29768,
+      "brotli": 24420,
+      "sha256": "83749a33acde84a69619cad570b6f087af0e4ecf9aa4625ba0391f7f188d34f0"
+    },
+    {
+      "name": "index.cjs.map",
+      "raw": 257525,
+      "gzip": 53682,
+      "brotli": 44536,
+      "sha256": "cca14c9752cfeefa9f36086b6dc9c55667d167894c3386c8f1df2d7960d28bbc"
+    },
+    {
+      "name": "index.d.cts",
+      "raw": 6704,
+      "gzip": 2082,
+      "brotli": 1750,
+      "sha256": "84375a7565f645817202f71a69d1392b338b006cf5d18b864eb8bd26a787ab51"
+    },
+    {
+      "name": "index.d.ts",
+      "raw": 6704,
+      "gzip": 2082,
+      "brotli": 1750,
+      "sha256": "84375a7565f645817202f71a69d1392b338b006cf5d18b864eb8bd26a787ab51"
+    },
+    {
+      "name": "index.global.js",
+      "raw": 73878,
+      "gzip": 22541,
+      "brotli": 18918,
+      "sha256": "ca13282ec1bbbb51f7cb3c62cea6cbfaff670e0b3d9a63628756aaf0067e77ab"
+    },
+    {
+      "name": "index.global.js.map",
+      "raw": 267599,
+      "gzip": 62504,
+      "brotli": 51525,
+      "sha256": "62763758391254e235058b0219e7addf6f5bfb8ccda875e6b1d8d78b76fd5cef"
+    },
+    {
+      "name": "index.mjs",
+      "raw": 144975,
+      "gzip": 29633,
+      "brotli": 24283,
+      "sha256": "6f37b8d42f6d8daf2a0615fee2cf39a1339f9321b6f8d97e7420d4704eeae1a5"
+    },
+    {
+      "name": "index.mjs.map",
+      "raw": 257453,
+      "gzip": 53576,
+      "brotli": 44566,
+      "sha256": "dff7f64fb21e8a6747b03c11426f5931c560fedabb6575a1843fe527c822a1f2"
+    }
+  ]
+}

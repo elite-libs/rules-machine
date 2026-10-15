@@ -1,0 +1,70 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/expression-engine/security-inputs.test.ts (6 tests | 3 failed) 36ms
+   × joining stops converting primitives as soon as the output limit is exceeded 9ms
+   × OMIT applies string bounds to nested path segments before joining them 3ms
+   × diagnostics summarize bigint and symbol primitives without expanding their text 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > joining stops converting primitives as soon as the output limit is exceeded
+AssertionError: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ src/expression-engine/security-inputs.test.ts:60:23
+     58|   }
+     59|   expect(failure).toMatchObject({ name: 'ResourceLimitError' });
+     60|   expect(conversions).toBe(2);
+       |                       ^
+     61| });
+     62|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > OMIT applies string bounds to nested path segments before joining them
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ src/expression-engine/security-inputs.test.ts:70:5
+     68|       data: {},
+     69|     }),
+     70|   ).toThrow(/maxStringLength/);
+       |     ^
+     71| });
+     72|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > diagnostics summarize bigint and symbol primitives without expanding their text
+AssertionError: expected '123' to be '[bigint]' // Object.is equality
+
+Expected: "[bigint]"
+Received: "123"
+
+ ❯ src/expression-engine/security-inputs.test.ts:74:31
+     72|
+     73| test('diagnostics summarize bigint and symbol primitives without expan…
+     74|   expect(describeValue(123n)).toBe('[bigint]');
+       |                               ^
+     75|   expect(describeValue(Symbol('x'.repeat(1_000)))).toBe('[symbol]');
+     76| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  18:00:25
+   Duration  420ms (transform 70%, tests 14%, import 13%, worker 3%)
+

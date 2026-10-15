@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/expression-engine/security-inputs.test.ts (7 tests | 1 failed) 73ms
+   × mandatory root-key validation consumes the execution work budget before writes 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/expression-engine/security-inputs.test.ts > mandatory root-key validation consumes the execution work budget before writes
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ src/expression-engine/security-inputs.test.ts:84:5
+     82|   expect(() =>
+     83|     ruleFactory('changed = 1', { limits: { maxOperations: 100 } })(inp…
+     84|   ).toThrow(/maxOperations/);
+       |     ^
+     85|   expect(Object.hasOwn(input, 'changed')).toBe(false);
+     86| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  18:02:46
+   Duration  1.09s (transform 75%, import 14%, tests 9%, worker 2%)
+

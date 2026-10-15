@@ -1,0 +1,6 @@
+{
+  "status": 1,
+  "signal": null,
+  "stdout": "",
+  "stderr": "file:///home/dan/code/oss/rules-machine/experiments/rusty-rules/bridge.mjs:50\n      if(response.error){request.reject(new RustBridgeError(response.error.code||'RULE_ERROR',String(response.error.message)));}\n                                                                                              ^\n\nTypeError: Cannot convert object to primitive value\n    at String (<anonymous>)\n    at #data (file:///home/dan/code/oss/rules-machine/experiments/rusty-rules/bridge.mjs:50:95)\n    at Socket.<anonymous> (file:///home/dan/code/oss/rules-machine/experiments/rusty-rules/bridge.mjs:24:51)\n    at Socket.emit (node:events:514:20)\n    at addChunk (node:internal/streams/readable:575:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:526:3)\n    at Readable.push (node:internal/streams/readable:406:5)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)\n\nNode.js v26.8.2\n"
+}

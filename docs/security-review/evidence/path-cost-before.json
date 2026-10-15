@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-14T23:51:28.016Z",
+  "node": "v26.8.2",
+  "modulePath": "file:///home/dan/code/oss/rules-machine/dist/index.mjs",
+  "scope": "diagnostic;3-second child watchdog per size",
+  "rows": [
+    {
+      "repetitions": 1000,
+      "keyCharacters": 3000,
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"ms\":6.358297,\"error\":\"ResourceLimitError\",\"message\":\"Data exceeds maxDataDepth (128)\"}\n",
+      "stderr": ""
+    },
+    {
+      "repetitions": 2000,
+      "keyCharacters": 6000,
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"ms\":14.214543999999997,\"error\":\"ResourceLimitError\",\"message\":\"Data exceeds maxDataDepth (128)\"}\n",
+      "stderr": ""
+    },
+    {
+      "repetitions": 4000,
+      "keyCharacters": 12000,
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"ms\":7.8781820000000025,\"error\":\"ResourceLimitError\",\"message\":\"Data exceeds maxDataDepth (128)\"}\n",
+      "stderr": ""
+    },
+    {
+      "repetitions": 8000,
+      "keyCharacters": 24000,
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"ms\":21.308070999999998,\"error\":\"ResourceLimitError\",\"message\":\"Data exceeds maxDataDepth (128)\"}\n",
+      "stderr": ""
+    },
+    {
+      "repetitions": 16000,
+      "keyCharacters": 48000,
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"ms\":27.862376999999995,\"error\":\"ResourceLimitError\",\"message\":\"Data exceeds maxDataDepth (128)\"}\n",
+      "stderr": ""
+    }
+  ]
+}

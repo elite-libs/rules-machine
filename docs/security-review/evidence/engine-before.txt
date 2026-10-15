@@ -1,0 +1,66 @@
+
+ RUN  v5.0.3 /home/dan/code/oss/rules-machine
+
+ ❯ src/expression-engine/security-engine.test.ts (3 tests | 3 failed) 38ms
+   × standalone convenience evaluation charges cold source work before caching it 23ms
+   × compile rejects non-string source without invoking supplied methods 9ms
+   × evaluate rejects source accessors in supplied compiled metadata 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/expression-engine/security-engine.test.ts > standalone convenience evaluation charges cold source work before caching it
+AssertionError: expected function to throw an error, but it didn't
+ ❯ src/expression-engine/security-engine.test.ts:8:68
+      6|   const engine = createExpressionEngine({ limits: { maxOperations: 20 …
+      7|   const source = `${' '.repeat(1_000)}1`;
+      8|   expect(() => engine.evaluateExpression(source, () => undefined)).toT…
+       |                                                                    ^
+      9|   expect(engine.cacheStats().entries).toBe(0);
+     10| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/expression-engine/security-engine.test.ts > compile rejects non-string source without invoking supplied methods
+AssertionError: expected [Function] to throw error matching /string/ but got '(intermediate value)(intermediate val…'
+
+- Expected:
+/string/
+
++ Received:
+"(intermediate value)(intermediate value)(intermediate value).replace is not a function"
+
+ ❯ src/expression-engine/security-engine.test.ts:16:61
+     14|   const source = { length: 1, trim };
+     15|   const engine = createExpressionEngine();
+     16|   expect(() => engine.compile(source as unknown as string)).toThrow(/s…
+       |                                                             ^
+     17|   expect(trim).not.toHaveBeenCalled();
+     18| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/expression-engine/security-engine.test.ts > evaluate rejects source accessors in supplied compiled metadata
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ src/expression-engine/security-engine.test.ts:24:69
+     22|   const compiled = Object.defineProperty({}, 'source', { get: source }…
+     23|   const engine = createExpressionEngine();
+     24|   expect(() => engine.evaluate(compiled as never, () => undefined)).to…
+       |                                                                     ^
+     25|   expect(source).not.toHaveBeenCalled();
+     26| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  17:48:19
+   Duration  699ms (transform 74%, import 14%, tests 9%, worker 3%)
+

@@ -1,0 +1,49 @@
+✖ malformed typed command results fail closed with stable protocol errors (181.287157ms)
+
+Interrupted while running:
+
+⚠ experiments/rusty-rules/bridge.test.mjs (experiments/rusty-rules/bridge.test.mjs:1:1)
+✖ experiments/rusty-rules/bridge.test.mjs (41515.756511ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41532.724884
+
+✖ failing tests:
+
+test at experiments/rusty-rules/bridge.test.mjs:126:1
+✖ malformed typed command results fail closed with stable protocol errors (181.287157ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'INVALID_RESPONSE'
+  - }
+  
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///home/dan/code/oss/rules-machine/experiments/rusty-rules/bridge.test.mjs:131:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Cannot read properties of null (reading 'program')
+        at RustBridge.prepare (file:///home/dan/code/oss/rules-machine/experiments/rusty-rules/bridge.mjs:87:103)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async waitForActual (node:assert:615:5)
+        at async strict.rejects (node:assert:738:25)
+        at async TestContext.<anonymous> (file:///home/dan/code/oss/rules-machine/experiments/rusty-rules/bridge.test.mjs:131:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    expected: { code: 'INVALID_RESPONSE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at experiments/rusty-rules/bridge.test.mjs:1:1
+✖ experiments/rusty-rules/bridge.test.mjs (41515.756511ms)
+  'Promise resolution is still pending but the event loop has already resolved'

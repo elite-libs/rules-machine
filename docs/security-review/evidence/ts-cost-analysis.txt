@@ -1,0 +1,16 @@
+# Paired Node workload comparison
+
+2026-10-15T00:19:00.912Z; v26.8.2; Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz. 6 process blocks, 84 observations. Input reset and digest included.
+
+| Fixture | baseline µs/op | tuned µs/op |
+|---|---:|---:|
+| eligibility | 52.46 | 93.51 |
+| pricing-0 | 121.09 | 66.24 |
+| pricing-1024 | 79.62 | 107.29 |
+| pricing-32768 | 124.47 | 113.90 |
+| array-map-16 | 103.69 | 107.17 |
+| array-map-256 | 1499.75 | 1093.38 |
+| array-map-4096 | 14418.73 | 17318.13 |
+
+tuned: 0.99× [0.90, 1.08].
+
