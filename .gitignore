@@ -133,3 +133,5 @@ performance/comparison/artifacts/
 performance/comparison/baseline/
 
 node_modules
+
+experiments/rules-machine/target/
