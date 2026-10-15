@@ -6,7 +6,7 @@ The Node bridge owns one persistent child process. It serializes inputs and retu
 
 ## Install from crates.io
 
-Release `0.1.1` is prepared but publication is pending account email verification. The commands below apply after the release is available; use the source build instructions meanwhile.
+[`rusty-rules-experiment` 0.1.1](https://crates.io/crates/rusty-rules-experiment/0.1.1) is available on crates.io.
 
 ```sh
 cargo add rusty-rules-experiment@0.1.1
