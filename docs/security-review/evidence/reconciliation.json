@@ -1,8 +1,8 @@
 {
-  "at": "2026-10-15T00:31:05.585Z",
+  "at": "2026-10-15T00:38:21.700Z",
   "baseline": "ef4f3c5f13446ad8a79de79f61501dc9fcd4b78f",
   "qualifiedBaselineRuntimeSourceUnchanged": true,
-  "sourceSnapshotHead": "252629f815c7ec5ed25a4b1e2b80b4627851a3f2",
+  "sourceSnapshotHead": "7ad27f8b1a8992cc7ccc4c09f273bfb853344ad8",
   "branch": "security/deep-review-2026-10-14",
   "codeCommits": {
     "typescript": "6cf27cc82651e07ec3316ed225f5cc597e4bea71",
@@ -61,7 +61,8 @@
     "src/utils/string-path.ts": "f6fe33e06574c372bb9ba62427545c16b74a8d789e9a60d7ac55ae85b6a7b0fa",
     "src/utils/utils.test.ts": "c49651d4e2a771fb1bf9ce82034218ce8ec317ddf6a965ea9f7bf05852bdba08",
     "src/utils/utils.ts": "bdd344ac695505dbb8b3cfdb950251e3b4141a83b3d7a228af3cf4bb9e7be816",
-    "tsup.config.ts": "48e586d68d44c97ceefa2a9a5113fc8cc30f911bd1315f13015c65ba972c16de"
+    "tsup.config.ts": "48e586d68d44c97ceefa2a9a5113fc8cc30f911bd1315f13015c65ba972c16de",
+    "vitest.config.ts": "6762c9d9fe297b3220ad60435a15444983fed6ee91c58cb94471c6e95b237ffb"
   },
   "artifactSizes": [
     {

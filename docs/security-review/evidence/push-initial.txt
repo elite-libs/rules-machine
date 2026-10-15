@@ -1,0 +1,10 @@
+remote: 
+remote: Create a pull request for 'security/deep-review-2026-10-14' on GitHub by visiting:        
+remote:      https://github.com/elite-libs/rules-machine/pull/new/security/deep-review-2026-10-14        
+remote: 
+remote: GitHub found 1 vulnerability on elite-libs/rules-machine's default branch (1 moderate). To find out more, visit:        
+remote:      https://github.com/elite-libs/rules-machine/security/dependabot/38        
+remote: 
+To github.com:elite-libs/rules-machine.git
+ * [new branch]      security/deep-review-2026-10-14 -> security/deep-review-2026-10-14
+branch 'security/deep-review-2026-10-14' set up to track 'origin/security/deep-review-2026-10-14'.

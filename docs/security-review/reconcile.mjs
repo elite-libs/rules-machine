@@ -11,13 +11,13 @@ const git=(...args)=>execFileSync('git',args,{encoding:'utf8'}).trim();
 const baseline='.cache/wayfinder-followup/qualified-dist';
 assert.equal(sha(`${baseline}/index.mjs`),'abe5ec5e021b40f4a89499f430783dc564934242d88d8f83e306b4c7405f78fe');
 assert.equal(sha('.cache/security-review/baseline-rust'),'149a9bcda421ee1645eaddf9869cd93553d5942718be493f94f7e73c3d57971d');
-for(const file of ['source-node24-final.txt','source-node26-final.txt'])assert.match(read(root+file),/Tests\s+499 passed/);
+for(const file of ['source-node24-final.txt','source-node26-final.txt','default-discovery-node24.txt','default-discovery-node26.txt'])assert.match(read(root+file),/Tests\s+499 passed/);
 for(const file of ['bridge-final-all.txt','bridge-final-node24.txt'])assert.match(read(root+file),/pass 20/);
 for(const file of ['shared-typed-final.txt','numeric-typed-final.txt'])assert.match(read(root+file),/0 differences/);
 assert.equal(json(root+'host-hook-matrix.json').hostHooksInvoked,0);
 assert.equal(json(root+'built-function-matrix-final.json').passed,true);
 assert.equal(json(root+'dependency-audit.json').metadata.vulnerabilities.total??Object.values(json(root+'dependency-audit.json').metadata.vulnerabilities).reduce((a,b)=>a+b,0),0);
-const sourcePaths=git('ls-files','src','experiments/rusty-rules/src','experiments/rusty-rules/bridge.mjs','experiments/rusty-rules/wire.mjs','experiments/rusty-rules/Cargo.toml','experiments/rusty-rules/Cargo.lock','tsup.config.ts','package.json','pnpm-lock.yaml').split('\n');
+const sourcePaths=git('ls-files','src','experiments/rusty-rules/src','experiments/rusty-rules/bridge.mjs','experiments/rusty-rules/wire.mjs','experiments/rusty-rules/Cargo.toml','experiments/rusty-rules/Cargo.lock','tsup.config.ts','vitest.config.ts','package.json','pnpm-lock.yaml').split('\n');
 const sizes=['index.mjs','index.cjs','index.global.js','index.d.ts'].map(name=>{
   const old=readFileSync(`${baseline}/${name}`),now=readFileSync(`dist/${name}`);
   return {name,baseline:{raw:old.length,gzip:gzipSync(old,{level:9,mtime:0}).length},candidate:{raw:now.length,gzip:gzipSync(now,{level:9,mtime:0}).length},sha256:sha(`dist/${name}`)};

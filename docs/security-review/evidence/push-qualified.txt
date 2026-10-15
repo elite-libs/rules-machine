@@ -1,0 +1,6 @@
+remote: 
+remote: GitHub found 1 vulnerability on elite-libs/rules-machine's default branch (1 moderate). To find out more, visit:        
+remote:      https://github.com/elite-libs/rules-machine/security/dependabot/38        
+remote: 
+To github.com:elite-libs/rules-machine.git
+   29fb936..7ad27f8  security/deep-review-2026-10-14 -> security/deep-review-2026-10-14

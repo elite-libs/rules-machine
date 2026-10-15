@@ -1,0 +1,23 @@
+{
+  "verifiedAtUTC": "2026-10-15T00:38:55.069053+00:00",
+  "startedAtUTC": "2026-10-14T23:44:17+00:00",
+  "elapsedMinutesAtQualification": 54.63,
+  "origin": "git@github.com:elite-libs/rules-machine.git",
+  "branch": "security/deep-review-2026-10-14",
+  "qualifiedPushedSource": "7ad27f8b1a8992cc7ccc4c09f273bfb853344ad8",
+  "remoteMainUnchanged": "ef4f3c5f13446ad8a79de79f61501dc9fcd4b78f",
+  "runtimeSource": "252629f815c7ec5ed25a4b1e2b80b4627851a3f2",
+  "subsequentCommits": "Delivery metadata and generated-evidence attributes only; source remains qualified at this commit.",
+  "topicBranchHostedRuns": [],
+  "mainMergedByThisReview": false,
+  "issuesCreated": false,
+  "pullRequestsCreated": false,
+  "releasesPublished": false,
+  "independentFinalAudit": {
+    "agent": "/root/astra_tuning",
+    "sourceAndArtifactHashMismatches": 0,
+    "scope": "Recorded runtime source hashes, four delivered artifacts, Rust release binary and qualification/observation counts; subsequent test-discovery-only config passed both default Node suites and typecheck."
+  },
+  "paidRemoteCompute": false,
+  "modelReportingCosts": "unavailable"
+}

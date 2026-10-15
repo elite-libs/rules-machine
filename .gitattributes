@@ -1,0 +1,2 @@
+# Preserve raw review evidence while keeping generated observations collapsed.
+docs/security-review/evidence/** linguist-generated=true
